@@ -7,6 +7,15 @@ plugins {
 dependencies {
     implementation 'com.google.auto.service:auto-service:1.0'
     annotationProcessor 'com.google.auto.service:auto-service:1.0'
+
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.2'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.2'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.7.2'
+
+}
+
+test {
+    useJUnitPlatform()
 }
 
 java {
