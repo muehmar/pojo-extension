@@ -6,9 +6,6 @@ plugins {
 ext {
     group = 'io.github.muehmar'
     version = '0.1.0-SNAPSHOT'
-
-    javaTargetVersion = '11'
-    javaSourceVersion = '11'
 }
 
 allprojects {
@@ -16,7 +13,8 @@ allprojects {
 
     version = rootProject.ext.version
     group = rootProject.ext.group
-    sourceCompatibility = '11'
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
     repositories {
         mavenCentral()

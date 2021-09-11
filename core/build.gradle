@@ -4,6 +4,11 @@ plugins {
     id 'signing'
 }
 
+dependencies {
+    implementation 'com.google.auto.service:auto-service:1.0'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0'
+}
+
 java {
     withJavadocJar()
     withSourcesJar()
