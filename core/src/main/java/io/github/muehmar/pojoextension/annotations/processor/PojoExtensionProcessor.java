@@ -47,48 +47,44 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     final Set<? extends Element> elementsAnnotatedWith =
         roundEnv.getElementsAnnotatedWith(PojoExtension.class);
 
-    if (elementsAnnotatedWith.isEmpty()) {
-      return false;
-    }
-    elementsAnnotatedWith.forEach(
-        element -> {
-          final ClassDsc classDsc = ClassDsc.fromFullClassName(element.toString());
-          final Name className = classDsc.getName();
-          final Name extensionClassName = className.append("Extension");
-          final PackageName classPackage = classDsc.getPkg();
-
-          final PList<PojoMember> members =
-              PList.fromIter(element.getEnclosedElements())
-                  .filter(e -> e.getKind().equals(ElementKind.FIELD))
-                  .map(
-                      e -> {
-                        final ClassDsc classDscField =
-                            ClassDsc.fromFullClassName(e.asType().toString());
-                        final Name fieldName = Name.of(e.getSimpleName().toString());
-                        return new PojoMember(
-                            new Type(
-                                classDscField.getName(), classDscField.getPkg(), PList.empty()),
-                            fieldName,
-                            true);
-                      });
-
-          final Pojo pojoExtension = new Pojo(extensionClassName, className, classPackage, members);
-
-          final JavaGenerator javaGenerator = new JavaGenerator(new JavaResolver());
-          final WriterImpl writer = new WriterImpl();
-          javaGenerator.generate(writer, pojoExtension, new PojoSettings(false));
-
-          try {
-            JavaFileObject builderFile =
-                processingEnv.getFiler().createSourceFile(extensionClassName.asString());
-            try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
-              out.println(writer.asString());
-            }
-          } catch (IOException e) {
-            throw new UncheckedIOException(e);
-          }
-        });
+    elementsAnnotatedWith.forEach(this::processElement);
 
     return false;
+  }
+
+  private void processElement(Element element) {
+    final ClassDsc classDsc = ClassDsc.fromFullClassName(element.toString());
+    final Name className = classDsc.getName();
+    final Name extensionClassName = className.append("Extension");
+    final PackageName classPackage = classDsc.getPkg();
+
+    final PList<PojoMember> members =
+        PList.fromIter(element.getEnclosedElements())
+            .filter(e -> e.getKind().equals(ElementKind.FIELD))
+            .map(
+                e -> {
+                  final ClassDsc classDscField = ClassDsc.fromFullClassName(e.asType().toString());
+                  final Name fieldName = Name.of(e.getSimpleName().toString());
+                  return new PojoMember(
+                      new Type(classDscField.getName(), classDscField.getPkg(), PList.empty()),
+                      fieldName,
+                      true);
+                });
+
+    final Pojo pojoExtension = new Pojo(extensionClassName, className, classPackage, members);
+
+    final JavaGenerator javaGenerator = new JavaGenerator(new JavaResolver());
+    final WriterImpl writer = new WriterImpl();
+    javaGenerator.generate(writer, pojoExtension, new PojoSettings(false));
+
+    try {
+      JavaFileObject builderFile =
+          processingEnv.getFiler().createSourceFile(extensionClassName.asString());
+      try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
+        out.println(writer.asString());
+      }
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 }
