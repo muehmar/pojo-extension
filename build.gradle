@@ -4,8 +4,9 @@ plugins {
 }
 
 ext {
+    isSnapshot = true
     group = 'io.github.muehmar'
-    version = '0.1.0'
+    version = '0.2.0' + (project.ext.isSnapshot ? '-SNAPSHOT' : '')
 }
 
 allprojects {
