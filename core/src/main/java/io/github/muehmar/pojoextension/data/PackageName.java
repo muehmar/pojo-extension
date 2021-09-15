@@ -13,6 +13,14 @@ public class PackageName {
     return new PackageName(pkg);
   }
 
+  public static PackageName javaLang() {
+    return fromString("java.lang");
+  }
+
+  public static PackageName javaUtil() {
+    return fromString("java.util");
+  }
+
   public String asString() {
     return pkg;
   }

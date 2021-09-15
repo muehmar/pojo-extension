@@ -11,7 +11,7 @@ public class Name {
     this.value = val;
   }
 
-  public static Name of(String val) {
+  public static Name fromString(String val) {
     if (val == null || val.trim().isEmpty()) {
       throw new IllegalArgumentException("A name must no be null or empty");
     }
@@ -28,7 +28,7 @@ public class Name {
   }
 
   public Name map(UnaryOperator<String> f) {
-    return Name.of(f.apply(value));
+    return Name.fromString(f.apply(value));
   }
 
   public Name append(String append) {

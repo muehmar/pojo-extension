@@ -61,7 +61,7 @@ public class JavaResolver implements Resolver {
   public static Name snakeCaseToPascalCase(String name) {
     return PList.fromArray(name.split("_"))
         .map(String::toLowerCase)
-        .map(Name::of)
+        .map(Name::fromString)
         .map(JavaResolver::toPascalCase)
         .reduce(Name::append)
         .orElseThrow(() -> new IllegalArgumentException("No names supplied"));
@@ -70,7 +70,7 @@ public class JavaResolver implements Resolver {
   /** Converts camelCase and PascalCase to uppercase SNAKE_CASE. */
   public static Name toUppercaseSnakeCase(String name) {
     if (name.toUpperCase().equals(name)) {
-      return Name.of(name);
+      return Name.fromString(name);
     }
 
     final String converted =
@@ -79,7 +79,7 @@ public class JavaResolver implements Resolver {
             .toUpperCase()
             .replaceFirst("^_", "")
             .replaceAll("_+", "_");
-    return Name.of(converted);
+    return Name.fromString(converted);
   }
 
   public static Name toAsciiJavaName(Name fieldName) {
