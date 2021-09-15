@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.data;
 
 import ch.bluecare.commons.data.PList;
+import java.util.Objects;
 
 public class Pojo {
   private final Name name;
@@ -29,5 +30,35 @@ public class Pojo {
 
   public PList<PojoMember> getMembers() {
     return members;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Pojo pojo = (Pojo) o;
+    return Objects.equals(name, pojo.name)
+        && Objects.equals(pojoName, pojo.pojoName)
+        && Objects.equals(pkg, pojo.pkg)
+        && Objects.equals(members, pojo.members);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, pojoName, pkg, members);
+  }
+
+  @Override
+  public String toString() {
+    return "Pojo{"
+        + "name="
+        + name
+        + ", pojoName="
+        + pojoName
+        + ", pkg="
+        + pkg
+        + ", members="
+        + members
+        + '}';
   }
 }

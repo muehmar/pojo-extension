@@ -8,14 +8,15 @@ import io.github.muehmar.pojoextension.data.PackageName;
 import io.github.muehmar.pojoextension.data.Pojo;
 import io.github.muehmar.pojoextension.data.PojoMember;
 import io.github.muehmar.pojoextension.data.Type;
-import io.github.muehmar.pojoextension.generator.JavaGenerator;
-import io.github.muehmar.pojoextension.generator.JavaResolver;
+import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.GeneratorFactory;
 import io.github.muehmar.pojoextension.generator.PojoSettings;
-import io.github.muehmar.pojoextension.generator.WriterImpl;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
@@ -33,6 +34,21 @@ import javax.tools.JavaFileObject;
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 @AutoService(Processor.class)
 public class PojoExtensionProcessor extends AbstractProcessor {
+
+  private final Optional<BiConsumer<Pojo, PojoSettings>> redirectPojo;
+  private final Generator generator = GeneratorFactory.create();
+
+  public PojoExtensionProcessor() {
+    redirectPojo = Optional.empty();
+  }
+
+  /**
+   * Creates an annotation processor which does not actually produce output but redirects the
+   * created {@link Pojo} and {@link PojoSettings} instances to the given consumer.
+   */
+  public PojoExtensionProcessor(BiConsumer<Pojo, PojoSettings> redirectPojo) {
+    this.redirectPojo = Optional.of(redirectPojo);
+  }
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
@@ -71,29 +87,32 @@ public class PojoExtensionProcessor extends AbstractProcessor {
                 });
 
     final Pojo pojoExtension = new Pojo(extensionClassName, className, classPackage, members);
+    final PojoSettings settings = new PojoSettings(false);
 
-    final JavaGenerator javaGenerator = new JavaGenerator(new JavaResolver());
-    final WriterImpl writer = new WriterImpl();
-    javaGenerator.generate(writer, pojoExtension, new PojoSettings(false));
-
-    try {
-      JavaFileObject builderFile =
-          processingEnv.getFiler().createSourceFile(extensionClassName.asString());
-      try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
-        out.println(writer.asString());
-      }
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    redirectPojo.ifPresentOrElse(
+        output -> output.accept(pojoExtension, settings),
+        () -> {
+          final String generatedPojoExtension = generator.generate(pojoExtension, settings);
+          try {
+            JavaFileObject builderFile =
+                processingEnv.getFiler().createSourceFile(pojoExtension.getName().asString());
+            try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
+              out.println(generatedPojoExtension);
+            }
+          } catch (IOException e) {
+            throw new UncheckedIOException(e);
+          }
+        });
   }
 
   private Type mapTypeMirrorToType(TypeMirror typeMirror) {
     if (typeMirror instanceof DeclaredType) {
       DeclaredType declaredType = ((DeclaredType) typeMirror);
-      final PList<Type> generics =
+      final PList<Type> typeParameters =
           PList.fromIter(declaredType.getTypeArguments()).map(this::mapTypeMirrorToType);
 
-      return Type.fromQualifiedClassName(typeMirror.toString()).withGenerics(generics);
+      return Type.fromQualifiedClassName(declaredType.toString())
+          .withTypeParameters(typeParameters);
     }
     throw new IllegalArgumentException("TypeMirror is not a declared-type " + typeMirror.getKind());
   }

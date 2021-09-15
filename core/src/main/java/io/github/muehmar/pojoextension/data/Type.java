@@ -8,19 +8,23 @@ import java.util.regex.Pattern;
 public class Type {
   private final Name name;
   private final PackageName pkg;
-  private final PList<Type> generics;
+  private final PList<Type> typeParameters;
 
   private static final Pattern QUALIFIED_CLASS_NAME_PATTERN =
-      Pattern.compile("([.A-Za-z_$0-9]*)\\.([A-Za-z_$0-9]*)$");
+      Pattern.compile("([.A-Za-z_$0-9]*)\\.([A-Za-z_$0-9]*)");
 
-  public Type(Name name, PackageName pkg, PList<Type> generics) {
+  public Type(Name name, PackageName pkg, PList<Type> typeParameters) {
     this.name = name;
     this.pkg = pkg;
-    this.generics = generics;
+    this.typeParameters = typeParameters;
   }
 
   public static Type string() {
     return new Type(Name.fromString("String"), PackageName.javaLang(), PList.empty());
+  }
+
+  public static Type optional(Type value) {
+    return new Type(Name.fromString("Optional"), PackageName.javaUtil(), PList.single(value));
   }
 
   public static Type fromQualifiedClassName(String qualifiedClassName) {
@@ -37,8 +41,8 @@ public class Type {
     return new Type(name, pkg, PList.empty());
   }
 
-  public Type withGenerics(PList<Type> generics) {
-    return new Type(name, pkg, generics);
+  public Type withTypeParameters(PList<Type> typeParameters) {
+    return new Type(name, pkg, typeParameters);
   }
 
   public Name getName() {
@@ -53,8 +57,8 @@ public class Type {
     return pkg;
   }
 
-  public PList<Type> getGenerics() {
-    return generics;
+  public PList<Type> getTypeParameters() {
+    return typeParameters;
   }
 
   @Override
@@ -64,16 +68,16 @@ public class Type {
     Type type = (Type) o;
     return Objects.equals(name, type.name)
         && Objects.equals(pkg, type.pkg)
-        && Objects.equals(generics, type.generics);
+        && Objects.equals(typeParameters, type.typeParameters);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, pkg, generics);
+    return Objects.hash(name, pkg, typeParameters);
   }
 
   @Override
   public String toString() {
-    return "Type{" + "name=" + name + ", pkg=" + pkg + ", generics=" + generics + '}';
+    return "Type{" + "name=" + name + ", pkg=" + pkg + ", typeParameters=" + typeParameters + '}';
   }
 }

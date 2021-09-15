@@ -1,5 +1,7 @@
 package io.github.muehmar.pojoextension.data;
 
+import java.util.Objects;
+
 public class PojoMember {
   private final Type type;
   private final Name name;
@@ -25,5 +27,25 @@ public class PojoMember {
 
   public boolean isOptional() {
     return !isRequired();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    PojoMember that = (PojoMember) o;
+    return required == that.required
+        && Objects.equals(type, that.type)
+        && Objects.equals(name, that.name);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(type, name, required);
+  }
+
+  @Override
+  public String toString() {
+    return "PojoMember{" + "type=" + type + ", name=" + name + ", required=" + required + '}';
   }
 }
