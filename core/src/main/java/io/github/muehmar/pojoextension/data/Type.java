@@ -2,6 +2,7 @@ package io.github.muehmar.pojoextension.data;
 
 import ch.bluecare.commons.data.PList;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,8 +24,16 @@ public class Type {
     return new Type(Name.fromString("String"), PackageName.javaLang(), PList.empty());
   }
 
+  public static Type integer() {
+    return new Type(Name.fromString("Integer"), PackageName.javaLang(), PList.empty());
+  }
+
   public static Type optional(Type value) {
     return new Type(Name.fromString("Optional"), PackageName.javaUtil(), PList.single(value));
+  }
+
+  public static Type map(Type key, Type value) {
+    return new Type(Name.fromString("Map"), PackageName.javaUtil(), PList.of(key, value));
   }
 
   public static Type fromQualifiedClassName(String qualifiedClassName) {
@@ -47,6 +56,16 @@ public class Type {
 
   public Name getName() {
     return name;
+  }
+
+  /** Returns the class name of this type including type parameters. */
+  public Name getClassName() {
+    final Optional<Name> formattedTypeParameters =
+        typeParameters
+            .map(Type::getClassName)
+            .reduce((s1, s2) -> s1.append(",").append(s2))
+            .map(s -> s.prefix("<").append(">"));
+    return getName().append(formattedTypeParameters.map(Name::asString).orElse(""));
   }
 
   public Name getQualifiedName() {

@@ -80,7 +80,7 @@ public class JavaGenerator {
     pojo.getMembers()
         .forEach(
             member -> {
-              final String type = resolver.className(member.getType().getName()).asString();
+              final String type = resolver.className(member.getType().getClassName()).asString();
               final String fieldName = resolver.memberName(member.getName()).asString();
               writer.tab(2).println("private %s %s;", type, fieldName);
             });
@@ -88,7 +88,7 @@ public class JavaGenerator {
     pojo.getMembers()
         .forEach(
             member -> {
-              final String type = resolver.className(member.getType().getName()).asString();
+              final String type = resolver.className(member.getType().getClassName()).asString();
               final String fieldName = resolver.memberName(member.getName()).asString();
               final String setterModifier =
                   settings.isEnableSafeBuilder() && member.isRequired() ? "private" : "public";
@@ -151,7 +151,8 @@ public class JavaGenerator {
             idx -> {
               final PojoMember member = requiredMembers.apply(idx);
               final String memberName = resolver.memberName(member.getName()).asString();
-              final String memberType = resolver.className(member.getType().getName()).asString();
+              final String memberType =
+                  resolver.className(member.getType().getClassName()).asString();
               writer.println();
               writer.tab(1).println("public static final class Builder%d {", idx);
 
@@ -202,7 +203,8 @@ public class JavaGenerator {
             idx -> {
               final PojoMember member = optionalMembers.apply(idx);
               final String memberName = resolver.memberName(member.getName()).asString();
-              final String memberType = resolver.className(member.getType().getName()).asString();
+              final String memberType =
+                  resolver.className(member.getType().getClassName()).asString();
               writer.println();
               writer.tab(1).println("public static final class OptBuilder%d {", idx);
 
