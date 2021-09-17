@@ -31,7 +31,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.tools.JavaFileObject;
 
 @SupportedAnnotationTypes("*")
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor.class)
 public class PojoExtensionProcessor extends AbstractProcessor {
 
@@ -89,20 +89,19 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     final Pojo pojoExtension = new Pojo(extensionClassName, className, classPackage, members);
     final PojoSettings settings = new PojoSettings(false);
 
-    redirectPojo.ifPresentOrElse(
-        output -> output.accept(pojoExtension, settings),
-        () -> {
-          final String generatedPojoExtension = generator.generate(pojoExtension, settings);
-          try {
-            JavaFileObject builderFile =
-                processingEnv.getFiler().createSourceFile(pojoExtension.getName().asString());
-            try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
-              out.println(generatedPojoExtension);
-            }
-          } catch (IOException e) {
-            throw new UncheckedIOException(e);
-          }
-        });
+    redirectPojo.ifPresent(output -> output.accept(pojoExtension, settings));
+    if (!redirectPojo.isPresent()) {
+      final String generatedPojoExtension = generator.generate(pojoExtension, settings);
+      try {
+        JavaFileObject builderFile =
+            processingEnv.getFiler().createSourceFile(pojoExtension.getName().asString());
+        try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
+          out.println(generatedPojoExtension);
+        }
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
+    }
   }
 
   private Type mapTypeMirrorToType(TypeMirror typeMirror) {
