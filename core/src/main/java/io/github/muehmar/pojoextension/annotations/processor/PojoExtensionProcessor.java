@@ -78,13 +78,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     final PList<PojoMember> members =
         PList.fromIter(element.getEnclosedElements())
             .filter(e -> e.getKind().equals(ElementKind.FIELD))
-            .map(
-                e -> {
-                  final Name memberName = Name.fromString(e.getSimpleName().toString());
-                  final Type memberType = mapTypeMirrorToType(e.asType());
-
-                  return new PojoMember(memberType, memberName, true);
-                });
+            .map(this::convertToPojoMember);
 
     final Pojo pojoExtension = new Pojo(extensionClassName, className, classPackage, members);
     final PojoSettings settings = new PojoSettings(false);
@@ -102,6 +96,17 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         throw new UncheckedIOException(e);
       }
     }
+  }
+
+  private PojoMember convertToPojoMember(Element e) {
+    final Name memberName = Name.fromString(e.getSimpleName().toString());
+    final Type memberType = mapTypeMirrorToType(e.asType());
+
+    return convertToPojoMember(memberName, memberType);
+  }
+
+  private PojoMember convertToPojoMember(Name name, Type type) {
+    return new PojoMember(type, name, true);
   }
 
   private Type mapTypeMirrorToType(TypeMirror typeMirror) {
