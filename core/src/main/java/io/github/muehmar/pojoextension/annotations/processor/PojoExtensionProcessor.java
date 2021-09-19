@@ -3,6 +3,7 @@ package io.github.muehmar.pojoextension.annotations.processor;
 import ch.bluecare.commons.data.PList;
 import com.google.auto.service.AutoService;
 import io.github.muehmar.pojoextension.annotations.Nullable;
+import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.data.Name;
 import io.github.muehmar.pojoextension.data.PackageName;
@@ -68,17 +69,21 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     final Name extensionClassName = className.append("Extension");
     final PackageName classPackage = pojoType.getPackage();
 
+    final PojoExtension annotation = element.getAnnotation(PojoExtension.class);
+    final DetectionSettings detectionSettings =
+        new DetectionSettings(PList.fromArray(annotation.optionalDetection()));
+
     final PList<PojoMember> members =
         PList.fromIter(element.getEnclosedElements())
             .filter(e -> e.getKind().equals(ElementKind.FIELD))
-            .map(this::convertToPojoMember);
+            .map(e -> convertToPojoMember(e, detectionSettings));
 
     final Pojo pojoExtension = new Pojo(extensionClassName, className, classPackage, members);
-    final PojoSettings settings = new PojoSettings(false);
+    final PojoSettings pojoSettings = new PojoSettings(false);
 
-    redirectPojo.ifPresent(output -> output.accept(pojoExtension, settings));
+    redirectPojo.ifPresent(output -> output.accept(pojoExtension, pojoSettings));
     if (!redirectPojo.isPresent()) {
-      final String generatedPojoExtension = generator.generate(pojoExtension, settings);
+      final String generatedPojoExtension = generator.generate(pojoExtension, pojoSettings);
       try {
         JavaFileObject builderFile =
             processingEnv.getFiler().createSourceFile(pojoExtension.getName().asString());
@@ -91,38 +96,42 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     }
   }
 
-  private PojoMember convertToPojoMember(Element element) {
+  private PojoMember convertToPojoMember(Element element, DetectionSettings settings) {
     final Name memberName = Name.fromString(element.getSimpleName().toString());
     final Type memberType = mapTypeMirrorToType(element.asType());
 
-    return convertToPojoMember(element, memberName, memberType);
+    return convertToPojoMember(element, memberName, memberType, settings);
   }
 
-  private PojoMember convertToPojoMember(Element element, Name name, Type type) {
+  private PojoMember convertToPojoMember(
+      Element element, Name name, Type type, DetectionSettings settings) {
     return PojoMemberMapper.initial()
         .or(this::mapOptionalPojoMember)
         .or(this::mapNullablePojoMember)
-        .mapWithDefault(element, name, type, () -> new PojoMember(type, name, true));
+        .mapWithDefault(element, name, type, settings, () -> new PojoMember(type, name, true));
   }
 
-  private Optional<PojoMember> mapOptionalPojoMember(Element element, Name name, Type type) {
-    if (type.equalsIgnoreTypeParameters(Type.optional(Type.string()))) {
-      final PList<Type> typeParameters = type.getTypeParameters();
-      if (typeParameters.size() != 1) {
-        throw new IllegalStateException(
-            "Optional must have exactly one type parameter but current type has '"
-                + typeParameters.map(Type::getClassName).mkString(",")
-                + "'");
-      }
-      final Type typeParameter = typeParameters.apply(0);
-      return Optional.of(new PojoMember(typeParameter, name, false));
-    } else {
-      return Optional.empty();
-    }
+  private Optional<PojoMember> mapOptionalPojoMember(
+      Element element, Name name, Type type, DetectionSettings settings) {
+    return Optional.of(type)
+        .filter(
+            ignore ->
+                settings.getOptionalDetections().exists(OptionalDetection.OPTIONAL_CLASS::equals))
+        .filter(t -> t.equalsIgnoreTypeParameters(Type.optional(Type.string())))
+        .map(Type::getTypeParameters)
+        .filter(p -> p.size() == 1)
+        .map(p -> p.apply(0))
+        .map(typeParameter -> new PojoMember(typeParameter, name, false));
   }
 
-  private Optional<PojoMember> mapNullablePojoMember(Element element, Name name, Type type) {
+  private Optional<PojoMember> mapNullablePojoMember(
+      Element element, Name name, Type type, DetectionSettings settings) {
     return Optional.ofNullable(element.getAnnotation(Nullable.class))
+        .filter(
+            ignore ->
+                settings
+                    .getOptionalDetections()
+                    .exists(OptionalDetection.NULLABLE_ANNOTATION::equals))
         .map(ignore -> new PojoMember(type, name, false));
   }
 
@@ -140,23 +149,24 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
   @FunctionalInterface
   private interface PojoMemberMapper {
-    Optional<PojoMember> map(Element element, Name name, Type type);
+    Optional<PojoMember> map(
+        Element element, Name name, Type type, DetectionSettings detectionSettings);
 
     default PojoMemberMapper or(PojoMemberMapper next) {
       final PojoMemberMapper self = this;
-      return (element, name, type) -> {
-        final Optional<PojoMember> result = self.map(element, name, type);
-        return result.isPresent() ? result : next.map(element, name, type);
+      return (element, name, type, settings) -> {
+        final Optional<PojoMember> result = self.map(element, name, type, settings);
+        return result.isPresent() ? result : next.map(element, name, type, settings);
       };
     }
 
     default PojoMember mapWithDefault(
-        Element element, Name name, Type type, Supplier<PojoMember> s) {
-      return this.map(element, name, type).orElseGet(s);
+        Element element, Name name, Type type, DetectionSettings settings, Supplier<PojoMember> s) {
+      return this.map(element, name, type, settings).orElseGet(s);
     }
 
     static PojoMemberMapper initial() {
-      return ((element, name, type) -> Optional.empty());
+      return ((element, name, type, settings) -> Optional.empty());
     }
   }
 }

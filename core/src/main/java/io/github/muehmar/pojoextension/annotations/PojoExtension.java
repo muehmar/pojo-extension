@@ -7,4 +7,9 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
-public @interface PojoExtension {}
+public @interface PojoExtension {
+
+  OptionalDetection[] optionalDetection() default {
+    OptionalDetection.OPTIONAL_CLASS, OptionalDetection.NULLABLE_ANNOTATION
+  };
+}
