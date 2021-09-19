@@ -2,6 +2,7 @@ package io.github.muehmar.pojoextension.annotations.processor;
 
 import ch.bluecare.commons.data.PList;
 import com.google.auto.service.AutoService;
+import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.data.Name;
 import io.github.muehmar.pojoextension.data.PackageName;
@@ -90,20 +91,21 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     }
   }
 
-  private PojoMember convertToPojoMember(Element e) {
-    final Name memberName = Name.fromString(e.getSimpleName().toString());
-    final Type memberType = mapTypeMirrorToType(e.asType());
+  private PojoMember convertToPojoMember(Element element) {
+    final Name memberName = Name.fromString(element.getSimpleName().toString());
+    final Type memberType = mapTypeMirrorToType(element.asType());
 
-    return convertToPojoMember(memberName, memberType);
+    return convertToPojoMember(element, memberName, memberType);
   }
 
-  private PojoMember convertToPojoMember(Name name, Type type) {
+  private PojoMember convertToPojoMember(Element element, Name name, Type type) {
     return PojoMemberMapper.initial()
         .or(this::mapOptionalPojoMember)
-        .mapWithDefault(name, type, () -> new PojoMember(type, name, true));
+        .or(this::mapNullablePojoMember)
+        .mapWithDefault(element, name, type, () -> new PojoMember(type, name, true));
   }
 
-  private Optional<PojoMember> mapOptionalPojoMember(Name name, Type type) {
+  private Optional<PojoMember> mapOptionalPojoMember(Element element, Name name, Type type) {
     if (type.equalsIgnoreTypeParameters(Type.optional(Type.string()))) {
       final PList<Type> typeParameters = type.getTypeParameters();
       if (typeParameters.size() != 1) {
@@ -117,6 +119,11 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     } else {
       return Optional.empty();
     }
+  }
+
+  private Optional<PojoMember> mapNullablePojoMember(Element element, Name name, Type type) {
+    return Optional.ofNullable(element.getAnnotation(Nullable.class))
+        .map(ignore -> new PojoMember(type, name, false));
   }
 
   private Type mapTypeMirrorToType(TypeMirror typeMirror) {
@@ -133,22 +140,23 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
   @FunctionalInterface
   private interface PojoMemberMapper {
-    Optional<PojoMember> map(Name name, Type type);
+    Optional<PojoMember> map(Element element, Name name, Type type);
 
     default PojoMemberMapper or(PojoMemberMapper next) {
       final PojoMemberMapper self = this;
-      return (name, type) -> {
-        final Optional<PojoMember> result = self.map(name, type);
-        return result.isPresent() ? result : next.map(name, type);
+      return (element, name, type) -> {
+        final Optional<PojoMember> result = self.map(element, name, type);
+        return result.isPresent() ? result : next.map(element, name, type);
       };
     }
 
-    default PojoMember mapWithDefault(Name name, Type type, Supplier<PojoMember> s) {
-      return this.map(name, type).orElseGet(s);
+    default PojoMember mapWithDefault(
+        Element element, Name name, Type type, Supplier<PojoMember> s) {
+      return this.map(element, name, type).orElseGet(s);
     }
 
     static PojoMemberMapper initial() {
-      return ((name, type) -> Optional.empty());
+      return ((element, name, type) -> Optional.empty());
     }
   }
 }

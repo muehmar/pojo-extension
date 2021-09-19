@@ -71,6 +71,35 @@ class PojoExtensionProcessorTest {
     assertEquals(expected, pojoAndSettings.pojo);
   }
 
+  @Test
+  void run_when_memberAnnotatedWithNullable_then_pojoMemberIsOptional() {
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(
+            "io.github.muehmar.CustomerC",
+            "package io.github.muehmar;\n"
+                + "import io.github.muehmar.pojoextension.annotations.PojoExtension;"
+                + "import io.github.muehmar.pojoextension.annotations.Nullable;"
+                + "import java.util.Optional;"
+                + "@PojoExtension\n"
+                + "public class CustomerC {\n"
+                + "  @Nullable\n"
+                + "  private final String id;\n"
+                + "  public CustomerC(String id){\n"
+                + "    this.id = id;\n"
+                + "  }\n"
+                + "}");
+
+    final PojoMember m1 = new PojoMember(Type.string(), Name.fromString("id"), false);
+    final Pojo expected =
+        new Pojo(
+            Name.fromString("CustomerCExtension"),
+            Name.fromString("CustomerC"),
+            PackageName.fromString("io.github.muehmar"),
+            PList.single(m1));
+
+    assertEquals(expected, pojoAndSettings.pojo);
+  }
+
   private static PojoAndSettings runAnnotationProcessor(String name, String content) {
     final AtomicReference<PojoAndSettings> ref = new AtomicReference<>();
     final PojoExtensionProcessor pojoExtensionProcessor =
