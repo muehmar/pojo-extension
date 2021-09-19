@@ -17,6 +17,7 @@ import java.io.UncheckedIOException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
@@ -52,15 +53,6 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    try {
-      return processThrowing(annotations, roundEnv);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
-
-  private boolean processThrowing(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
-      throws IOException {
     final Set<? extends Element> elementsAnnotatedWith =
         roundEnv.getElementsAnnotatedWith(PojoExtension.class);
 
@@ -106,7 +98,25 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   }
 
   private PojoMember convertToPojoMember(Name name, Type type) {
-    return new PojoMember(type, name, true);
+    return PojoMemberMapper.initial()
+        .or(this::mapOptionalPojoMember)
+        .mapWithDefault(name, type, () -> new PojoMember(type, name, true));
+  }
+
+  private Optional<PojoMember> mapOptionalPojoMember(Name name, Type type) {
+    if (type.equalsIgnoreTypeParameters(Type.optional(Type.string()))) {
+      final PList<Type> typeParameters = type.getTypeParameters();
+      if (typeParameters.size() != 1) {
+        throw new IllegalStateException(
+            "Optional must have exactly one type parameter but current type has '"
+                + typeParameters.map(Type::getClassName).mkString(",")
+                + "'");
+      }
+      final Type typeParameter = typeParameters.apply(0);
+      return Optional.of(new PojoMember(typeParameter, name, false));
+    } else {
+      return Optional.empty();
+    }
   }
 
   private Type mapTypeMirrorToType(TypeMirror typeMirror) {
@@ -119,5 +129,26 @@ public class PojoExtensionProcessor extends AbstractProcessor {
           .withTypeParameters(typeParameters);
     }
     throw new IllegalArgumentException("TypeMirror is not a declared-type " + typeMirror.getKind());
+  }
+
+  @FunctionalInterface
+  private interface PojoMemberMapper {
+    Optional<PojoMember> map(Name name, Type type);
+
+    default PojoMemberMapper or(PojoMemberMapper next) {
+      final PojoMemberMapper self = this;
+      return (name, type) -> {
+        final Optional<PojoMember> result = self.map(name, type);
+        return result.isPresent() ? result : next.map(name, type);
+      };
+    }
+
+    default PojoMember mapWithDefault(Name name, Type type, Supplier<PojoMember> s) {
+      return this.map(name, type).orElseGet(s);
+    }
+
+    static PojoMemberMapper initial() {
+      return ((name, type) -> Optional.empty());
+    }
   }
 }

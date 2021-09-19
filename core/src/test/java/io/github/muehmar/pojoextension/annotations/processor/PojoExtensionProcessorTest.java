@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.annotations.processor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.data.Name;
@@ -16,17 +17,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class PojoExtensionProcessorTest {
+
   @Test
   void run_when_simplePojo_then_correctPojoCreated() {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(
-            "io.github.muehmar.Customer",
+            "io.github.muehmar.CustomerA",
             "package io.github.muehmar;\n"
                 + "import io.github.muehmar.pojoextension.annotations.PojoExtension;"
                 + "@PojoExtension\n"
-                + "public class Customer {\n"
+                + "public class CustomerA {\n"
                 + "  private final String id;\n"
-                + "  public Customer(String id){\n"
+                + "  public CustomerA(String id){\n"
                 + "    this.id = id;\n"
                 + "  }\n"
                 + "}");
@@ -34,8 +36,35 @@ class PojoExtensionProcessorTest {
     final PojoMember m1 = new PojoMember(Type.string(), Name.fromString("id"), true);
     final Pojo expected =
         new Pojo(
-            Name.fromString("CustomerExtension"),
-            Name.fromString("Customer"),
+            Name.fromString("CustomerAExtension"),
+            Name.fromString("CustomerA"),
+            PackageName.fromString("io.github.muehmar"),
+            PList.single(m1));
+
+    assertEquals(expected, pojoAndSettings.pojo);
+  }
+
+  @Test
+  void run_when_oneOptionalMember_then_pojoMemberIsOptionalAndTypeParameterUsedAsType() {
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(
+            "io.github.muehmar.CustomerB",
+            "package io.github.muehmar;\n"
+                + "import io.github.muehmar.pojoextension.annotations.PojoExtension;"
+                + "import java.util.Optional;"
+                + "@PojoExtension\n"
+                + "public class CustomerB {\n"
+                + "  private final Optional<String> id;\n"
+                + "  public CustomerB(String id){\n"
+                + "    this.id = Optional.ofNullable(id);\n"
+                + "  }\n"
+                + "}");
+
+    final PojoMember m1 = new PojoMember(Type.string(), Name.fromString("id"), false);
+    final Pojo expected =
+        new Pojo(
+            Name.fromString("CustomerBExtension"),
+            Name.fromString("CustomerB"),
             PackageName.fromString("io.github.muehmar"),
             PList.single(m1));
 
@@ -53,7 +82,10 @@ class PojoExtensionProcessorTest {
     } catch (Exception e) {
       Assertions.fail("Compilation failed: " + e.getMessage());
     }
-    return ref.get();
+    final PojoAndSettings pojoAndSettings = ref.get();
+    assertNotNull(pojoAndSettings, "Output not redirected");
+
+    return pojoAndSettings;
   }
 
   private static class PojoAndSettings {
