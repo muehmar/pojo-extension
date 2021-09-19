@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
+import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.data.Name;
 import io.github.muehmar.pojoextension.data.PackageName;
 import io.github.muehmar.pojoextension.data.Pojo;
@@ -22,28 +24,28 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 class PojoExtensionProcessorTest {
 
+  private static final PackageName PACKAGE = PackageName.fromString("io.github.muehmar");
+
   @Test
   void run_when_simplePojo_then_correctPojoCreated() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotation(PojoExtension.class)
+            .className(className)
+            .withField("String", "id")
+            .constructor()
+            .create();
+
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(
-            "io.github.muehmar.CustomerA",
-            "package io.github.muehmar;\n"
-                + "import io.github.muehmar.pojoextension.annotations.PojoExtension;\n"
-                + "@PojoExtension\n"
-                + "public class CustomerA {\n"
-                + "  private final String id;\n"
-                + "  public CustomerA(String id){\n"
-                + "    this.id = id;\n"
-                + "  }\n"
-                + "}");
+            className.prefix(".").prefix(PACKAGE.asString()).asString(), classString);
 
     final PojoMember m1 = new PojoMember(Type.string(), Name.fromString("id"), true);
     final Pojo expected =
-        new Pojo(
-            Name.fromString("CustomerAExtension"),
-            Name.fromString("CustomerA"),
-            PackageName.fromString("io.github.muehmar"),
-            PList.single(m1));
+        new Pojo(className.append("Extension"), className, PACKAGE, PList.single(m1));
 
     assertEquals(expected, pojoAndSettings.pojo);
   }
@@ -77,29 +79,26 @@ class PojoExtensionProcessorTest {
 
   @Test
   void run_when_memberAnnotatedWithNullable_then_pojoMemberIsOptional() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .withImport(Nullable.class)
+            .annotation(PojoExtension.class)
+            .className(className)
+            .withField("String", "id", Nullable.class)
+            .constructor()
+            .create();
+    System.out.println(classString);
+
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(
-            "io.github.muehmar.CustomerC",
-            "package io.github.muehmar;\n"
-                + "import io.github.muehmar.pojoextension.annotations.PojoExtension;\n"
-                + "import io.github.muehmar.pojoextension.annotations.Nullable;\n"
-                + "import java.util.Optional;\n"
-                + "@PojoExtension\n"
-                + "public class CustomerC {\n"
-                + "  @Nullable\n"
-                + "  private final String id;\n"
-                + "  public CustomerC(String id){\n"
-                + "    this.id = id;\n"
-                + "  }\n"
-                + "}");
+            className.prefix(".").prefix(PACKAGE.asString()).asString(), classString);
 
     final PojoMember m1 = new PojoMember(Type.string(), Name.fromString("id"), false);
     final Pojo expected =
-        new Pojo(
-            Name.fromString("CustomerCExtension"),
-            Name.fromString("CustomerC"),
-            PackageName.fromString("io.github.muehmar"),
-            PList.single(m1));
+        new Pojo(className.append("Extension"), className, PACKAGE, PList.single(m1));
 
     assertEquals(expected, pojoAndSettings.pojo);
   }
@@ -109,30 +108,25 @@ class PojoExtensionProcessorTest {
   void
       run_when_memberAnnotatedWithNullableAndDifferentDetection_then_pojoMemberIsOptionalOnlyIfNullableAnnotationDetection(
           OptionalDetection optionalDetection) {
-    final Name className =
-        Name.fromString("Customer").append(UUID.randomUUID().toString().replaceAll("-", ""));
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .withImport(Nullable.class)
+            .annotation(
+                PojoExtension.class,
+                "optionalDetection",
+                OptionalDetection.class,
+                optionalDetection)
+            .className(className)
+            .withField("String", "id", Nullable.class)
+            .constructor()
+            .create();
+
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(
-            "io.github.muehmar." + className.asString(),
-            "package io.github.muehmar;\n"
-                + "import io.github.muehmar.pojoextension.annotations.PojoExtension;\n"
-                + "import io.github.muehmar.pojoextension.annotations.Nullable;\n"
-                + "import io.github.muehmar.pojoextension.annotations.OptionalDetection;\n"
-                + "import java.util.Optional;\n"
-                + "@PojoExtension(optionalDetection = OptionalDetection."
-                + optionalDetection.name()
-                + ")\n"
-                + "public class "
-                + className.asString()
-                + " {\n"
-                + "  @Nullable\n"
-                + "  private final String id;\n"
-                + "  public "
-                + className.asString()
-                + "(String id){\n"
-                + "    this.id = id;\n"
-                + "  }\n"
-                + "}");
+            className.prefix(".").prefix(PACKAGE.asString()).asString(), classString);
 
     final boolean required = !optionalDetection.equals(OptionalDetection.NULLABLE_ANNOTATION);
     final PojoMember m1 = new PojoMember(Type.string(), Name.fromString("id"), required);
@@ -187,6 +181,11 @@ class PojoExtensionProcessorTest {
             PList.single(m1));
 
     assertEquals(expected, pojoAndSettings.pojo);
+  }
+
+  private static Name randomClassName() {
+    return Name.fromString("Customer")
+        .append(UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10));
   }
 
   private static PojoAndSettings runAnnotationProcessor(String name, String content) {
