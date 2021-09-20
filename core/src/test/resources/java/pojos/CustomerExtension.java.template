@@ -1,0 +1,97 @@
+package io.github.muehmar;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.lang.String;
+
+
+public class CustomerExtension {
+
+  private CustomerExtension() {}
+
+  public static final class Builder {
+
+    private Builder() {
+    }
+
+    private String id;
+    private String name;
+
+    private Builder setId(String id) {
+      this.id = id;
+      return this;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder setName(Optional<String> name) {
+      this.name = name.orElse(null);
+      return this;
+    }
+
+    @SuppressWarnings("deprecation")
+    public Customer build() {
+      return new Customer(id, name);
+    }
+  }
+
+  public static Builder0 newBuilder() {
+    return new Builder0(new Builder());
+  }
+
+  public static final class Builder0 {
+    private final Builder builder;
+    private Builder0(Builder builder) {
+      this.builder = builder;
+    }
+
+    public Builder1 setId(String id){
+      return new Builder1(builder.setId(id));
+    }
+  }
+
+  public static final class Builder1 {
+    private final Builder builder;
+    private Builder1(Builder builder) {
+      this.builder = builder;
+    }
+    public OptBuilder0 andAllOptionals(){
+      return new OptBuilder0(builder);
+    }
+    public Builder andOptionals(){
+      return builder;
+    }
+    public Customer build(){
+      return builder.build();
+    }
+  }
+
+  public static final class OptBuilder0 {
+    private final Builder builder;
+    private OptBuilder0(Builder builder) {
+      this.builder = builder;
+    }
+
+    public OptBuilder1 setName(String name){
+      return new OptBuilder1(builder.setName(name));
+    }
+
+    public OptBuilder1 setName(Optional<String> name){
+      return new OptBuilder1(name.map(builder::setName).orElse(builder));
+    }
+  }
+
+  public static final class OptBuilder1 {
+    private final Builder builder;
+    private OptBuilder1(Builder builder) {
+      this.builder = builder;
+    }
+    public Customer build(){
+      return builder.build();
+    }
+  }
+}
+
