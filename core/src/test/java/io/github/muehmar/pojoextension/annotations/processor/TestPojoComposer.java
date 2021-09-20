@@ -128,10 +128,20 @@ public class TestPojoComposer {
 
     public PojoConstructor constructor() {
       final String args =
-          fields.map(tan -> String.format("%s %s", tan.type, tan.name)).mkString(",");
+          fields
+              .map(TypeAndName::unwrapOptionalClass)
+              .map(tan -> String.format("%s %s", tan.type, tan.name))
+              .mkString(",");
       builder.append(String.format("  public %s(%s) {\n", className, args));
       fields.forEach(
-          tan -> builder.append(String.format("    this.%s = %s;\n", tan.name, tan.name)));
+          tan -> {
+            if (tan.isOptionalClass()) {
+              builder.append(
+                  String.format("    this.%s = Optional.ofNullable(%s);\n", tan.name, tan.name));
+            } else {
+              builder.append(String.format("    this.%s = %s;\n", tan.name, tan.name));
+            }
+          });
       builder.append("  }\n");
       return new PojoConstructor(builder);
     }
@@ -143,6 +153,18 @@ public class TestPojoComposer {
       public TypeAndName(String type, String name) {
         this.type = type;
         this.name = name;
+      }
+
+      public boolean isOptionalClass() {
+        return type.startsWith("Optional<") && type.endsWith(">");
+      }
+
+      public TypeAndName unwrapOptionalClass() {
+        if (isOptionalClass()) {
+          return new TypeAndName(type.substring("Optional<".length(), type.length() - 1), name);
+        } else {
+          return this;
+        }
       }
     }
   }
