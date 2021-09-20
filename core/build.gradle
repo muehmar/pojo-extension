@@ -6,14 +6,12 @@ plugins {
 }
 
 dependencies {
-    implementation 'com.google.auto.service:auto-service:1.0'
-    annotationProcessor 'com.google.auto.service:auto-service:1.0'
+    implementation libs.google.autoservice
+    annotationProcessor libs.google.autoservice
 
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.2'
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.2'
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.7.2'
+    testImplementation libs.bundles.junit
 
-    testImplementation group: 'org.jooq', name: 'joor-java-8', version: '0.9.14'
+    testImplementation libs.joor
 
 }
 
