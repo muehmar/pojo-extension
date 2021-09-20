@@ -2,6 +2,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'signing'
+    id 'pojo-extension.java-conventions'
 }
 
 dependencies {
@@ -14,10 +15,6 @@ dependencies {
 
     testImplementation group: 'org.jooq', name: 'joor-java-8', version: '0.9.14'
 
-}
-
-test {
-    useJUnitPlatform()
 }
 
 java {

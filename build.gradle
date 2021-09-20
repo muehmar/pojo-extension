@@ -1,6 +1,7 @@
-plugins {
-    id 'java'
-    id 'com.github.sherter.google-java-format' version '0.8'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
 }
 
 ext {
@@ -10,20 +11,6 @@ ext {
 }
 
 allprojects {
-    apply plugin: 'com.github.sherter.google-java-format'
-
     version = rootProject.ext.version
     group = rootProject.ext.group
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-
-    repositories {
-        mavenCentral()
-    }
-
-    afterEvaluate { Project project ->
-        if (project.tasks.findByName('compileJava')) {
-            project.tasks.compileJava.dependsOn(project.tasks.googleJavaFormat)
-        }
-    }
 }

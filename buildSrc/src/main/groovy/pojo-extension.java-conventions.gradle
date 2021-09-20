@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+    id "com.diffplug.spotless"
+}
+
+repositories {
+    mavenCentral()
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+    }
+}
+
+project.tasks.compileJava.dependsOn(project.tasks.spotlessJavaApply)
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+test {
+    useJUnitPlatform()
+}
