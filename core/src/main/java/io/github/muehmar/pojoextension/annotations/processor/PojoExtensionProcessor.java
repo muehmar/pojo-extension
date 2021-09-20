@@ -8,7 +8,7 @@ import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.data.Name;
 import io.github.muehmar.pojoextension.data.PackageName;
 import io.github.muehmar.pojoextension.data.Pojo;
-import io.github.muehmar.pojoextension.data.PojoMember;
+import io.github.muehmar.pojoextension.data.PojoField;
 import io.github.muehmar.pojoextension.data.Type;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.GeneratorFactory;
@@ -73,12 +73,12 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     final DetectionSettings detectionSettings =
         new DetectionSettings(PList.fromArray(annotation.optionalDetection()));
 
-    final PList<PojoMember> members =
+    final PList<PojoField> fields =
         PList.fromIter(element.getEnclosedElements())
             .filter(e -> e.getKind().equals(ElementKind.FIELD))
-            .map(e -> convertToPojoMember(e, detectionSettings));
+            .map(e -> convertToPojoField(e, detectionSettings));
 
-    final Pojo pojoExtension = new Pojo(extensionClassName, className, classPackage, members);
+    final Pojo pojoExtension = new Pojo(extensionClassName, className, classPackage, fields);
     final PojoSettings pojoSettings = new PojoSettings(false);
 
     redirectPojo.ifPresent(output -> output.accept(pojoExtension, pojoSettings));
@@ -86,7 +86,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
       final String generatedPojoExtension = generator.generate(pojoExtension, pojoSettings);
       try {
         JavaFileObject builderFile =
-            processingEnv.getFiler().createSourceFile(pojoExtension.getName().asString());
+            processingEnv.getFiler().createSourceFile(pojoExtension.getExtensionName().asString());
         try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
           out.println(generatedPojoExtension);
         }
@@ -96,22 +96,22 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     }
   }
 
-  private PojoMember convertToPojoMember(Element element, DetectionSettings settings) {
-    final Name memberName = Name.fromString(element.getSimpleName().toString());
-    final Type memberType = mapTypeMirrorToType(element.asType());
+  private PojoField convertToPojoField(Element element, DetectionSettings settings) {
+    final Name fieldName = Name.fromString(element.getSimpleName().toString());
+    final Type fieldType = mapTypeMirrorToType(element.asType());
 
-    return convertToPojoMember(element, memberName, memberType, settings);
+    return convertToPojoField(element, fieldName, fieldType, settings);
   }
 
-  private PojoMember convertToPojoMember(
+  private PojoField convertToPojoField(
       Element element, Name name, Type type, DetectionSettings settings) {
-    return PojoMemberMapper.initial()
-        .or(this::mapOptionalPojoMember)
-        .or(this::mapNullablePojoMember)
-        .mapWithDefault(element, name, type, settings, () -> new PojoMember(type, name, true));
+    return PojoFieldMapper.initial()
+        .or(this::mapOptionalPojoField)
+        .or(this::mapNullablePojoField)
+        .mapWithDefault(element, name, type, settings, () -> new PojoField(type, name, true));
   }
 
-  private Optional<PojoMember> mapOptionalPojoMember(
+  private Optional<PojoField> mapOptionalPojoField(
       Element element, Name name, Type type, DetectionSettings settings) {
     return Optional.of(type)
         .filter(
@@ -121,10 +121,10 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .map(Type::getTypeParameters)
         .filter(p -> p.size() == 1)
         .map(p -> p.apply(0))
-        .map(typeParameter -> new PojoMember(typeParameter, name, false));
+        .map(typeParameter -> new PojoField(typeParameter, name, false));
   }
 
-  private Optional<PojoMember> mapNullablePojoMember(
+  private Optional<PojoField> mapNullablePojoField(
       Element element, Name name, Type type, DetectionSettings settings) {
     return Optional.ofNullable(element.getAnnotation(Nullable.class))
         .filter(
@@ -132,7 +132,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
                 settings
                     .getOptionalDetections()
                     .exists(OptionalDetection.NULLABLE_ANNOTATION::equals))
-        .map(ignore -> new PojoMember(type, name, false));
+        .map(ignore -> new PojoField(type, name, false));
   }
 
   private Type mapTypeMirrorToType(TypeMirror typeMirror) {
@@ -148,24 +148,24 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   }
 
   @FunctionalInterface
-  private interface PojoMemberMapper {
-    Optional<PojoMember> map(
+  private interface PojoFieldMapper {
+    Optional<PojoField> map(
         Element element, Name name, Type type, DetectionSettings detectionSettings);
 
-    default PojoMemberMapper or(PojoMemberMapper next) {
-      final PojoMemberMapper self = this;
+    default PojoFieldMapper or(PojoFieldMapper next) {
+      final PojoFieldMapper self = this;
       return (element, name, type, settings) -> {
-        final Optional<PojoMember> result = self.map(element, name, type, settings);
+        final Optional<PojoField> result = self.map(element, name, type, settings);
         return result.isPresent() ? result : next.map(element, name, type, settings);
       };
     }
 
-    default PojoMember mapWithDefault(
-        Element element, Name name, Type type, DetectionSettings settings, Supplier<PojoMember> s) {
+    default PojoField mapWithDefault(
+        Element element, Name name, Type type, DetectionSettings settings, Supplier<PojoField> s) {
       return this.map(element, name, type, settings).orElseGet(s);
     }
 
-    static PojoMemberMapper initial() {
+    static PojoFieldMapper initial() {
       return ((element, name, type, settings) -> Optional.empty());
     }
   }

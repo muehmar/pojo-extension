@@ -2,12 +2,12 @@ package io.github.muehmar.pojoextension.data;
 
 import java.util.Objects;
 
-public class PojoMember {
+public class PojoField {
   private final Type type;
   private final Name name;
   private final boolean required;
 
-  public PojoMember(Type type, Name name, boolean required) {
+  public PojoField(Type type, Name name, boolean required) {
     this.type = type;
     this.name = name;
     this.required = required;
@@ -33,7 +33,7 @@ public class PojoMember {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    PojoMember that = (PojoMember) o;
+    PojoField that = (PojoField) o;
     return required == that.required
         && Objects.equals(type, that.type)
         && Objects.equals(name, that.name);
@@ -46,6 +46,6 @@ public class PojoMember {
 
   @Override
   public String toString() {
-    return "PojoMember{" + "type=" + type + ", name=" + name + ", required=" + required + '}';
+    return "PojoField{" + "type=" + type + ", name=" + name + ", required=" + required + '}';
   }
 }

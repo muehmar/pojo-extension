@@ -4,20 +4,20 @@ import ch.bluecare.commons.data.PList;
 import java.util.Objects;
 
 public class Pojo {
-  private final Name name;
+  private final Name extensionName;
   private final Name pojoName;
   private final PackageName pkg;
-  private final PList<PojoMember> members;
+  private final PList<PojoField> fields;
 
-  public Pojo(Name name, Name pojoName, PackageName pkg, PList<PojoMember> members) {
-    this.name = name;
+  public Pojo(Name extensionName, Name pojoName, PackageName pkg, PList<PojoField> fields) {
+    this.extensionName = extensionName;
     this.pojoName = pojoName;
     this.pkg = pkg;
-    this.members = members;
+    this.fields = fields;
   }
 
-  public Name getName() {
-    return name;
+  public Name getExtensionName() {
+    return extensionName;
   }
 
   public Name getPojoName() {
@@ -28,8 +28,8 @@ public class Pojo {
     return pkg;
   }
 
-  public PList<PojoMember> getMembers() {
-    return members;
+  public PList<PojoField> getFields() {
+    return fields;
   }
 
   @Override
@@ -37,28 +37,28 @@ public class Pojo {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Pojo pojo = (Pojo) o;
-    return Objects.equals(name, pojo.name)
+    return Objects.equals(extensionName, pojo.extensionName)
         && Objects.equals(pojoName, pojo.pojoName)
         && Objects.equals(pkg, pojo.pkg)
-        && Objects.equals(members, pojo.members);
+        && Objects.equals(fields, pojo.fields);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, pojoName, pkg, members);
+    return Objects.hash(extensionName, pojoName, pkg, fields);
   }
 
   @Override
   public String toString() {
     return "Pojo{"
-        + "name="
-        + name
+        + "extensionName="
+        + extensionName
         + ", pojoName="
         + pojoName
         + ", pkg="
         + pkg
-        + ", members="
-        + members
+        + ", fields="
+        + fields
         + '}';
   }
 }

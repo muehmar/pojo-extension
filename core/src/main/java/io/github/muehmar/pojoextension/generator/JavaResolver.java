@@ -24,7 +24,7 @@ public class JavaResolver implements Resolver {
   }
 
   @Override
-  public Name memberName(Name name) {
+  public Name fieldName(Name name) {
     return toCamelCase(name);
   }
 
@@ -39,7 +39,7 @@ public class JavaResolver implements Resolver {
   }
 
   @Override
-  public Name enumMemberName(Name name) {
+  public Name enumFieldName(Name name) {
     return toAsciiJavaName(toUppercaseSnakeCase(name.asString()));
   }
 

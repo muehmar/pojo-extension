@@ -9,11 +9,11 @@ public interface Resolver {
 
   Name witherName(Name name);
 
-  Name memberName(Name name);
+  Name fieldName(Name name);
 
   Name className(Name name);
 
   Name enumName(Name name);
 
-  Name enumMemberName(Name name);
+  Name enumFieldName(Name name);
 }

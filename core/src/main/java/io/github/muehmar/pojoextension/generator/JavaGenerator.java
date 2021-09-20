@@ -3,7 +3,7 @@ package io.github.muehmar.pojoextension.generator;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.data.PackageName;
 import io.github.muehmar.pojoextension.data.Pojo;
-import io.github.muehmar.pojoextension.data.PojoMember;
+import io.github.muehmar.pojoextension.data.PojoField;
 import io.github.muehmar.pojoextension.data.Type;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -34,8 +34,8 @@ public class JavaGenerator {
   private void printImports(Writer writer, Pojo pojo) {
     printJavaUtilImports(writer);
 
-    pojo.getMembers()
-        .map(PojoMember::getType)
+    pojo.getFields()
+        .map(PojoField::getType)
         .map(Type::getQualifiedName)
         .distinct(Function.identity())
         .forEach(classImport -> writer.println("import %s;", classImport.asString()));
@@ -51,12 +51,16 @@ public class JavaGenerator {
 
   private void printClassStart(Writer writer, Pojo pojo) {
     writer.println();
-    writer.tab(0).println("public class %s {", resolver.className(pojo.getName()).asString());
+    writer
+        .tab(0)
+        .println("public class %s {", resolver.className(pojo.getExtensionName()).asString());
   }
 
   private void printConstructor(Writer writer, Pojo pojo) {
     writer.println();
-    writer.tab(1).println("private %s() {}", resolver.className(pojo.getName()).asString());
+    writer
+        .tab(1)
+        .println("private %s() {}", resolver.className(pojo.getExtensionName()).asString());
   }
 
   protected void printBuilder(Writer writer, Pojo pojo, PojoSettings settings) {
@@ -77,21 +81,21 @@ public class JavaGenerator {
     }
 
     writer.println();
-    pojo.getMembers()
+    pojo.getFields()
         .forEach(
-            member -> {
-              final String type = resolver.className(member.getType().getClassName()).asString();
-              final String fieldName = resolver.memberName(member.getName()).asString();
+            field -> {
+              final String type = resolver.className(field.getType().getClassName()).asString();
+              final String fieldName = resolver.fieldName(field.getName()).asString();
               writer.tab(2).println("private %s %s;", type, fieldName);
             });
 
-    pojo.getMembers()
+    pojo.getFields()
         .forEach(
-            member -> {
-              final String type = resolver.className(member.getType().getClassName()).asString();
-              final String fieldName = resolver.memberName(member.getName()).asString();
+            field -> {
+              final String type = resolver.className(field.getType().getClassName()).asString();
+              final String fieldName = resolver.fieldName(field.getName()).asString();
               final String setterModifier =
-                  settings.isEnableSafeBuilder() && member.isRequired() ? "private" : "public";
+                  settings.isEnableSafeBuilder() && field.isRequired() ? "private" : "public";
 
               // Normal setter
               writer.println();
@@ -100,7 +104,7 @@ public class JavaGenerator {
                   .println(
                       "%s Builder %s(%s %s) {",
                       setterModifier,
-                      resolver.setterName(member.getName()).asString(),
+                      resolver.setterName(field.getName()).asString(),
                       type,
                       fieldName);
               writer.tab(3).println("this.%s = %s;", fieldName, fieldName);
@@ -108,14 +112,14 @@ public class JavaGenerator {
               writer.tab(2).println("}");
 
               // Optional setter
-              if (member.isOptional()) {
+              if (field.isOptional()) {
                 writer.println();
                 writer
                     .tab(2)
                     .println(
                         "%s Builder %s(Optional<%s> %s) {",
                         setterModifier,
-                        resolver.setterName(member.getName()).asString(),
+                        resolver.setterName(field.getName()).asString(),
                         type,
                         fieldName);
                 writer.tab(3).println("this.%s = %s.orElse(null);", fieldName, fieldName);
@@ -143,16 +147,16 @@ public class JavaGenerator {
     writer.tab(2).println("return new Builder0(new Builder());");
     writer.tab(1).println("}");
 
-    final PList<PojoMember> optionalMembers = pojo.getMembers().filter(PojoMember::isOptional);
-    final PList<PojoMember> requiredMembers = pojo.getMembers().filter(PojoMember::isRequired);
+    final PList<PojoField> optionalFields = pojo.getFields().filter(PojoField::isOptional);
+    final PList<PojoField> requiredFields = pojo.getFields().filter(PojoField::isRequired);
 
-    IntStream.range(0, requiredMembers.size())
+    IntStream.range(0, requiredFields.size())
         .forEach(
             idx -> {
-              final PojoMember member = requiredMembers.apply(idx);
-              final String memberName = resolver.memberName(member.getName()).asString();
-              final String memberType =
-                  resolver.className(member.getType().getClassName()).asString();
+              final PojoField field = requiredFields.apply(idx);
+              final String fieldName = resolver.fieldName(field.getName()).asString();
+              final String fieldType =
+                  resolver.className(field.getType().getClassName()).asString();
               writer.println();
               writer.tab(1).println("public static final class Builder%d {", idx);
 
@@ -167,24 +171,24 @@ public class JavaGenerator {
                   .println(
                       "public Builder%d %s(%s %s){",
                       idx + 1,
-                      resolver.setterName(member.getName()).asString(),
-                      memberType,
-                      memberName);
+                      resolver.setterName(field.getName()).asString(),
+                      fieldType,
+                      fieldName);
               writer
                   .tab(3)
                   .println(
                       "return new Builder%d(builder.%s(%s));",
-                      idx + 1, resolver.setterName(member.getName()).asString(), memberName);
+                      idx + 1, resolver.setterName(field.getName()).asString(), fieldName);
               writer.tab(2).println("}");
 
               writer.tab(1).println("}");
             });
 
-    // Builder after all required members have been set
+    // Builder after all required fields have been set
     writer.println();
-    writer.tab(1).println("public static final class Builder%d {", requiredMembers.size());
+    writer.tab(1).println("public static final class Builder%d {", requiredFields.size());
     writer.tab(2).println("private final Builder builder;");
-    writer.tab(2).println("private Builder%d(Builder builder) {", requiredMembers.size());
+    writer.tab(2).println("private Builder%d(Builder builder) {", requiredFields.size());
     writer.tab(3).println("this.builder = builder;");
     writer.tab(2).println("}");
     writer.tab(2).println("public OptBuilder0 andAllOptionals(){");
@@ -198,13 +202,13 @@ public class JavaGenerator {
     writer.tab(2).println("}");
     writer.tab(1).println("}");
 
-    IntStream.range(0, optionalMembers.size())
+    IntStream.range(0, optionalFields.size())
         .forEach(
             idx -> {
-              final PojoMember member = optionalMembers.apply(idx);
-              final String memberName = resolver.memberName(member.getName()).asString();
-              final String memberType =
-                  resolver.className(member.getType().getClassName()).asString();
+              final PojoField field = optionalFields.apply(idx);
+              final String fieldName = resolver.fieldName(field.getName()).asString();
+              final String fieldType =
+                  resolver.className(field.getType().getClassName()).asString();
               writer.println();
               writer.tab(1).println("public static final class OptBuilder%d {", idx);
 
@@ -219,14 +223,14 @@ public class JavaGenerator {
                   .println(
                       "public OptBuilder%d %s(%s %s){",
                       idx + 1,
-                      resolver.setterName(member.getName()).asString(),
-                      memberType,
-                      memberName);
+                      resolver.setterName(field.getName()).asString(),
+                      fieldType,
+                      fieldName);
               writer
                   .tab(3)
                   .println(
                       "return new OptBuilder%d(builder.%s(%s));",
-                      idx + 1, resolver.setterName(member.getName()).asString(), memberName);
+                      idx + 1, resolver.setterName(field.getName()).asString(), fieldName);
               writer.tab(2).println("}");
 
               writer.println();
@@ -235,14 +239,14 @@ public class JavaGenerator {
                   .println(
                       "public OptBuilder%d %s(Optional<%s> %s){",
                       idx + 1,
-                      resolver.setterName(member.getName()).asString(),
-                      memberType,
-                      memberName);
+                      resolver.setterName(field.getName()).asString(),
+                      fieldType,
+                      fieldName);
               writer
                   .tab(3)
                   .println(
                       "return new OptBuilder%d(%s.map(builder::%s).orElse(builder));",
-                      idx + 1, memberName, resolver.setterName(member.getName()).asString());
+                      idx + 1, fieldName, resolver.setterName(field.getName()).asString());
               writer.tab(2).println("}");
 
               writer.tab(1).println("}");
@@ -250,9 +254,9 @@ public class JavaGenerator {
 
     // Final Builder
     writer.println();
-    writer.tab(1).println("public static final class OptBuilder%d {", optionalMembers.size());
+    writer.tab(1).println("public static final class OptBuilder%d {", optionalFields.size());
     writer.tab(2).println("private final Builder builder;");
-    writer.tab(2).println("private OptBuilder%d(Builder builder) {", optionalMembers.size());
+    writer.tab(2).println("private OptBuilder%d(Builder builder) {", optionalFields.size());
     writer.tab(3).println("this.builder = builder;");
     writer.tab(2).println("}");
     writer.tab(2).println("public %s build(){", resolver.className(pojo.getPojoName()).asString());
@@ -263,8 +267,8 @@ public class JavaGenerator {
 
   private String createNamesCommaSeparated(Pojo pojo) {
     final PList<String> formattedPairs =
-        pojo.getMembers()
-            .map(member -> String.format("%s", resolver.memberName(member.getName()).asString()));
+        pojo.getFields()
+            .map(field -> String.format("%s", resolver.fieldName(field.getName()).asString()));
 
     return String.join(", ", formattedPairs);
   }

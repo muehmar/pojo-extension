@@ -10,7 +10,7 @@ import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.data.Name;
 import io.github.muehmar.pojoextension.data.PackageName;
 import io.github.muehmar.pojoextension.data.Pojo;
-import io.github.muehmar.pojoextension.data.PojoMember;
+import io.github.muehmar.pojoextension.data.PojoField;
 import io.github.muehmar.pojoextension.data.Type;
 import io.github.muehmar.pojoextension.generator.PojoSettings;
 import java.util.Optional;
@@ -43,7 +43,7 @@ class PojoExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
-    final PojoMember m1 = new PojoMember(Type.string(), Name.fromString("id"), true);
+    final PojoField m1 = new PojoField(Type.string(), Name.fromString("id"), true);
     final Pojo expected =
         new Pojo(className.append("Extension"), className, PACKAGE, PList.single(m1));
 
@@ -51,7 +51,7 @@ class PojoExtensionProcessorTest {
   }
 
   @Test
-  void run_when_oneOptionalMember_then_pojoMemberIsOptionalAndTypeParameterUsedAsType() {
+  void run_when_oneOptionalField_then_pojoFieldIsOptionalAndTypeParameterUsedAsType() {
     final Name className = randomClassName();
 
     final String classString =
@@ -67,7 +67,7 @@ class PojoExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
-    final PojoMember m1 = new PojoMember(Type.string(), Name.fromString("id"), false);
+    final PojoField m1 = new PojoField(Type.string(), Name.fromString("id"), false);
     final Pojo expected =
         new Pojo(className.append("Extension"), className, PACKAGE, PList.single(m1));
 
@@ -75,7 +75,7 @@ class PojoExtensionProcessorTest {
   }
 
   @Test
-  void run_when_memberAnnotatedWithNullable_then_pojoMemberIsOptional() {
+  void run_when_fieldAnnotatedWithNullable_then_pojoFieldIsOptional() {
     final Name className = randomClassName();
 
     final String classString =
@@ -91,7 +91,7 @@ class PojoExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
-    final PojoMember m1 = new PojoMember(Type.string(), Name.fromString("id"), false);
+    final PojoField m1 = new PojoField(Type.string(), Name.fromString("id"), false);
     final Pojo expected =
         new Pojo(className.append("Extension"), className, PACKAGE, PList.single(m1));
 
@@ -101,7 +101,7 @@ class PojoExtensionProcessorTest {
   @ParameterizedTest
   @EnumSource(OptionalDetection.class)
   void
-      run_when_memberAnnotatedWithNullableAndDifferentDetection_then_pojoMemberIsOptionalOnlyIfNullableAnnotationDetection(
+      run_when_fieldAnnotatedWithNullableAndDifferentDetection_then_pojoFieldIsOptionalOnlyIfNullableAnnotationDetection(
           OptionalDetection optionalDetection) {
     final Name className = randomClassName();
 
@@ -123,7 +123,7 @@ class PojoExtensionProcessorTest {
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
     final boolean required = !optionalDetection.equals(OptionalDetection.NULLABLE_ANNOTATION);
-    final PojoMember m1 = new PojoMember(Type.string(), Name.fromString("id"), required);
+    final PojoField m1 = new PojoField(Type.string(), Name.fromString("id"), required);
     final Pojo expected =
         new Pojo(
             className.append("Extension"),
@@ -137,7 +137,7 @@ class PojoExtensionProcessorTest {
   @ParameterizedTest
   @EnumSource(OptionalDetection.class)
   void
-      run_when_optionalFieldAndDifferentDetection_then_pojoMemberIsOptionalOnlyIfOptionalClassDetection(
+      run_when_optionalFieldAndDifferentDetection_then_pojoFieldIsOptionalOnlyIfOptionalClassDetection(
           OptionalDetection optionalDetection) {
     final Name className = randomClassName();
 
@@ -161,7 +161,7 @@ class PojoExtensionProcessorTest {
     final boolean required = !optionalDetection.equals(OptionalDetection.OPTIONAL_CLASS);
     final Type type = required ? Type.optional(Type.string()) : Type.string();
 
-    final PojoMember m1 = new PojoMember(type, Name.fromString("id"), required);
+    final PojoField m1 = new PojoField(type, Name.fromString("id"), required);
     final Pojo expected =
         new Pojo(className.append("Extension"), className, PACKAGE, PList.single(m1));
 

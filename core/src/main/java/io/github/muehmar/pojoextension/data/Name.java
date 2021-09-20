@@ -3,7 +3,7 @@ package io.github.muehmar.pojoextension.data;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
-/** Name of a pojo or a pojo member. */
+/** Name of a pojo or a pojo field. */
 public class Name {
   private final String value;
 
