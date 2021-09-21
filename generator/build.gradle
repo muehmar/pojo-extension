@@ -2,3 +2,7 @@ plugins {
     id 'java-library'
     id 'pojo-extension.java-conventions'
 }
+
+dependencies {
+    testImplementation libs.bundles.junit
+}
