@@ -1,5 +1,6 @@
 rootProject.name = "pojo-extension"
 
+include 'generator'
 include 'core'
 
 enableFeaturePreview('VERSION_CATALOGS')
