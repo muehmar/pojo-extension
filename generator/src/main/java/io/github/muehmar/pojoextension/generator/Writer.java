@@ -1,9 +1,19 @@
 package io.github.muehmar.pojoextension.generator;
 
+import ch.bluecare.commons.data.PList;
+import java.util.function.UnaryOperator;
+
+/** Instances of this writer are immutable. */
 public interface Writer {
+  Writer empty();
+
   Writer ref(String ref);
 
+  PList<String> getRefs();
+
   Writer printRefs();
+
+  int getRefsLineNumber();
 
   default Writer print(char value) {
     return print("" + value);
@@ -22,23 +32,19 @@ public interface Writer {
   Writer println();
 
   default Writer println(char value) {
-    print(value);
-    return println();
+    return print(value).println();
   }
 
   default Writer println(int value) {
-    print(value);
-    return println();
+    return print(value).println();
   }
 
   default Writer println(String string) {
-    print(string);
-    return println();
+    return print(string).println();
   }
 
   default Writer println(String string, Object... args) {
-    print(string, args);
-    return println();
+    return print(string, args).println();
   }
 
   Writer tab(int tabs);
@@ -48,4 +54,8 @@ public interface Writer {
   }
 
   Writer append(int tabs, Writer other);
+
+  PList<UnaryOperator<StringBuilder>> getLines();
+
+  String asString();
 }
