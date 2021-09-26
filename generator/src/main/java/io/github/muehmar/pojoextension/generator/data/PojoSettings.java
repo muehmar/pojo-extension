@@ -9,6 +9,10 @@ public class PojoSettings {
     this.disableSafeBuilder = disableSafeBuilder;
   }
 
+  public static PojoSettings defaultSettings() {
+    return new PojoSettings(false);
+  }
+
   public boolean isDisableSafeBuilder() {
     return disableSafeBuilder;
   }
