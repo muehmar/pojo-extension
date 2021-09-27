@@ -2,24 +2,39 @@ package io.github.muehmar.pojoextension.generator.impl.gen;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Writer;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.data.Type;
+import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.impl.WriterImpl;
-import org.junit.jupiter.api.Test;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class FieldDeclarationGeneratorTest {
-  @Test
-  void test() {
-    final FieldDeclarationGenerator generator = new FieldDeclarationGenerator();
+
+  @ParameterizedTest
+  @MethodSource("privateAndFinalModifierUnordered")
+  void generate_when_privateAndFinalModifierUnordered_then_correctOutputWithOrderedModifiers(
+      PList<JavaModifier> modifiers) {
+    final FieldDeclarationGenerator generator =
+        FieldDeclarationGenerator.ofModifiers(modifiers.toArray(JavaModifier.class));
     final Writer writer =
         generator.generate(
             new PojoField(Type.string(), Name.fromString("id"), true),
-            new PojoSettings(false),
+            PojoSettings.defaultSettings(),
             WriterImpl.createDefault());
 
     assertEquals("private final String id;\n", writer.asString());
+  }
+
+  private static Stream<Arguments> privateAndFinalModifierUnordered() {
+    return Stream.of(
+        Arguments.of(PList.of(JavaModifier.FINAL, JavaModifier.PRIVATE)),
+        Arguments.of(PList.of(JavaModifier.PRIVATE, JavaModifier.FINAL)));
   }
 }
