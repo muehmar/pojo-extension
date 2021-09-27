@@ -3,6 +3,8 @@ package io.github.muehmar.pojoextension.generator;
 import static io.github.muehmar.pojoextension.generator.Generator.ofWriterFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import io.github.muehmar.pojoextension.generator.data.Pojo;
+import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.impl.WriterImpl;
 import org.junit.jupiter.api.Test;
 
@@ -35,5 +37,19 @@ class GeneratorTest {
     final Generator<Void, Void> gen = genA.append(w -> w.println("appended"));
     final Writer writer = gen.generate(null, null, WriterImpl.createDefault());
     assertEquals("genA\nappended\n", writer.asString());
+  }
+
+  @Test
+  void appendList_when_called_then_contentCreatedForEveryElementInTheList() {
+    final Generator<Pojo, Void> genA = ofWriterFunction(w -> w.println("genA"));
+    final Generator<PojoField, Void> fieldGen =
+        (field, settings, writer) -> writer.println("%s", field.getName().asString());
+
+    final Pojo pojo = Pojos.sample();
+
+    final Generator<Pojo, Void> generator = genA.appendList(fieldGen, Pojo::getFields);
+    final Writer writer = generator.generate(pojo, null, WriterImpl.createDefault());
+
+    assertEquals("genA\nid\nusername\n", writer.asString());
   }
 }
