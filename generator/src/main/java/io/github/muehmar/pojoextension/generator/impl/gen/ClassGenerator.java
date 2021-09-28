@@ -8,15 +8,15 @@ import io.github.muehmar.pojoextension.generator.Writer;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
-import java.util.Comparator;
+import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 
 public class ClassGenerator implements Generator<Pojo, PojoSettings> {
   private final ClassType type;
-  private final PList<JavaModifier> modifiers;
+  private final JavaModifiers modifiers;
   private final PList<Generator<Pojo, PojoSettings>> content;
 
   private ClassGenerator(
-      ClassType type, PList<JavaModifier> modifiers, PList<Generator<Pojo, PojoSettings>> content) {
+      ClassType type, JavaModifiers modifiers, PList<Generator<Pojo, PojoSettings>> content) {
     this.type = type;
     this.modifiers = modifiers;
     this.content = content;
@@ -47,12 +47,7 @@ public class ClassGenerator implements Generator<Pojo, PojoSettings> {
 
   private Writer classStart(Pojo pojo, PojoSettings settings, Writer writer) {
     return writer.println(
-        "%sclass %s {",
-        modifiers
-            .sort(Comparator.comparingInt(JavaModifier::getOrder))
-            .map(m -> String.format("%s ", m.asString()))
-            .mkString(""),
-        pojo.getExtensionName().asString());
+        "%sclass %s {", modifiers.asStringTrailingWhitespace(), pojo.getExtensionName().asString());
   }
 
   private Writer classEnd(Pojo pojo, PojoSettings settings, Writer writer) {
@@ -75,15 +70,15 @@ public class ClassGenerator implements Generator<Pojo, PojoSettings> {
     }
 
     public ClassGeneratorCreator2 modifiers(JavaModifier... modifiers) {
-      return new ClassGeneratorCreator2(type, PList.fromArray(modifiers));
+      return new ClassGeneratorCreator2(type, JavaModifiers.of(modifiers));
     }
   }
 
   public static final class ClassGeneratorCreator2 {
     private final ClassType type;
-    private final PList<JavaModifier> modifiers;
+    private final JavaModifiers modifiers;
 
-    private ClassGeneratorCreator2(ClassType type, PList<JavaModifier> modifiers) {
+    private ClassGeneratorCreator2(ClassType type, JavaModifiers modifiers) {
       this.type = type;
       this.modifiers = modifiers;
     }
