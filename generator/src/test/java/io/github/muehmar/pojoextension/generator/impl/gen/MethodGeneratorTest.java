@@ -13,7 +13,7 @@ class MethodGeneratorTest {
   void generate_when_minimalGeneratorCreated_then_outputCorrect() {
     final MethodGenerator<PList<String>, Void> generator =
         new MethodGenerator<>(
-            JavaModifiers.of(JavaModifier.PUBLIC, JavaModifier.FINAL),
+            (l, ignore) -> JavaModifiers.of(JavaModifier.PUBLIC, JavaModifier.FINAL),
             (l, ignore) -> l.apply(0),
             (l, ignore) -> l.apply(1),
             (l, ignore) -> l.drop(2),
