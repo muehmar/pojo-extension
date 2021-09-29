@@ -47,6 +47,10 @@ public class Name {
     return value.equalsIgnoreCase(other.value);
   }
 
+  public Name toPascalCase() {
+    return map(n -> n.substring(0, 1).toUpperCase() + n.substring(1));
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

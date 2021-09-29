@@ -29,6 +29,10 @@ public class PojoField {
     return !isRequired();
   }
 
+  public PojoField withRequired(boolean required) {
+    return new PojoField(type, name, required);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
