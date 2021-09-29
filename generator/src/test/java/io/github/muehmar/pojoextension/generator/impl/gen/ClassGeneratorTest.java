@@ -8,7 +8,7 @@ import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.Writer;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
-import io.github.muehmar.pojoextension.generator.impl.WriterImpl;
+import io.github.muehmar.pojoextension.generator.impl.WriterFactory;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,7 +26,7 @@ class ClassGeneratorTest {
 
     final Writer writer =
         generator.generate(
-            Pojos.sample(), PojoSettings.defaultSettings(), WriterImpl.createDefault());
+            Pojos.sample(), PojoSettings.defaultSettings(), WriterFactory.createDefault());
     assertEquals(
         "package io.github.muehmar;\n"
             + "\n"
@@ -46,7 +46,7 @@ class ClassGeneratorTest {
 
     final Writer writer =
         generator.generate(
-            Pojos.sample(), PojoSettings.defaultSettings(), WriterImpl.createDefault());
+            Pojos.sample(), PojoSettings.defaultSettings(), WriterFactory.createDefault());
     assertEquals(
         "package io.github.muehmar;\n"
             + "\n"
@@ -66,7 +66,7 @@ class ClassGeneratorTest {
 
     final Writer writer =
         generator.generate(
-            Pojos.sample(), PojoSettings.defaultSettings(), WriterImpl.createDefault());
+            Pojos.sample(), PojoSettings.defaultSettings(), WriterFactory.createDefault());
     assertEquals(
         "package io.github.muehmar;\n" + "\n" + "public class CustomerExtension {\n" + "}\n",
         writer.asString());
@@ -83,7 +83,7 @@ class ClassGeneratorTest {
 
     final Writer writer =
         generator.generate(
-            Pojos.sample(), PojoSettings.defaultSettings(), WriterImpl.createDefault());
+            Pojos.sample(), PojoSettings.defaultSettings(), WriterFactory.createDefault());
     assertEquals(
         "package io.github.muehmar;\n" + "\n" + "public final class CustomerExtension {\n" + "}\n",
         writer.asString());

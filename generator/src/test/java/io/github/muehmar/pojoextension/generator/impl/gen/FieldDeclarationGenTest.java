@@ -9,7 +9,7 @@ import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
-import io.github.muehmar.pojoextension.generator.impl.WriterImpl;
+import io.github.muehmar.pojoextension.generator.impl.WriterFactory;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -27,7 +27,7 @@ class FieldDeclarationGenTest {
         generator.generate(
             new PojoField(Type.string(), Name.fromString("id"), true),
             PojoSettings.defaultSettings(),
-            WriterImpl.createDefault());
+            WriterFactory.createDefault());
 
     assertEquals("private final String id;\n", writer.asString());
   }

@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.WriterImpl;
+import io.github.muehmar.pojoextension.generator.impl.WriterFactory;
 import org.junit.jupiter.api.Test;
 
 class SetMethodGenTest {
@@ -18,7 +18,9 @@ class SetMethodGenTest {
     final String output =
         generator
             .generate(
-                PojoFields.requiredId(), PojoSettings.defaultSettings(), WriterImpl.createDefault())
+                PojoFields.requiredId(),
+                PojoSettings.defaultSettings(),
+                WriterFactory.createDefault())
             .asString();
 
     assertEquals(
@@ -39,7 +41,7 @@ class SetMethodGenTest {
             .generate(
                 PojoFields.requiredId().withRequired(false),
                 PojoSettings.defaultSettings(),
-                WriterImpl.createDefault())
+                WriterFactory.createDefault())
             .asString();
 
     assertEquals(

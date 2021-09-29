@@ -8,21 +8,21 @@ import org.junit.jupiter.api.Test;
 class WriterImplTest {
   @Test
   void print_when_formatStringWithArgs_then_formattedCorrectly() {
-    final Writer writer = WriterImpl.createDefault().print("Format %s and %s!", "this", "that");
+    final Writer writer = WriterFactory.createDefault().print("Format %s and %s!", "this", "that");
     assertEquals("Format this and that!\n", writer.asString());
   }
 
   @Test
   void tabAndPrint_when_tabAndFormatStringWithArgs_then_formattedCorrectly() {
     final Writer writer =
-        WriterImpl.createDefault().tab(1).print("Format %s and %s!", "this", "that");
+        WriterFactory.createDefault().tab(1).print("Format %s and %s!", "this", "that");
     assertEquals("  Format this and that!\n", writer.asString());
   }
 
   @Test
   void print_when_calledMultipleTimes_then_everythingOnOneLine() {
     final Writer writer =
-        WriterImpl.createDefault()
+        WriterFactory.createDefault()
             .print("Format %s and %s!", "this", "that")
             .print(" And put")
             .print(" everything on the same")
@@ -33,21 +33,21 @@ class WriterImplTest {
   @Test
   void println_when_calledTwoTimes_then_twoLinesCreated() {
     final Writer writer =
-        WriterImpl.createDefault().println("Line number %d", 1).println("Line number %d", 2);
+        WriterFactory.createDefault().println("Line number %d", 1).println("Line number %d", 2);
     assertEquals("Line number 1\nLine number 2\n", writer.asString());
   }
 
   @Test
   void tabAndPrintln_when_tabCalledBeforePrintLn_then_tabResettedAfterPrintLnCalled() {
     final Writer writer =
-        WriterImpl.createDefault().tab(2).println("First line").println("Second line");
+        WriterFactory.createDefault().tab(2).println("First line").println("Second line");
     assertEquals("    First line\n" + "Second line\n", writer.asString());
   }
 
   @Test
   void refAndPrintRefs_when_bothCalled_then_refsPrintedAndOrderedCorrectly() {
     final Writer writer =
-        WriterImpl.createDefault()
+        WriterFactory.createDefault()
             .println("First line")
             .printRefs()
             .println("Second line")
@@ -62,11 +62,11 @@ class WriterImplTest {
 
   @Test
   void append_when_calledForDifferentWriters_then_allLinesAppendedOnNewLines() {
-    final Writer writerA = WriterImpl.createDefault().println("Something with a newline");
-    final Writer writerB = WriterImpl.createDefault().print("Something without a newline");
+    final Writer writerA = WriterFactory.createDefault().println("Something with a newline");
+    final Writer writerB = WriterFactory.createDefault().print("Something without a newline");
 
     final Writer writer =
-        WriterImpl.createDefault()
+        WriterFactory.createDefault()
             .println("First line of main writer")
             .append(writerA)
             .print("Line after writer A")
@@ -83,10 +83,10 @@ class WriterImplTest {
 
   @Test
   void append_when_calledWithTabs_then_correctIndentionForAppendedContent() {
-    final Writer writerA = WriterImpl.createDefault().println("Content writer A");
+    final Writer writerA = WriterFactory.createDefault().println("Content writer A");
 
     final Writer writer =
-        WriterImpl.createDefault()
+        WriterFactory.createDefault()
             .println("First line of main writer")
             .append(2, writerA)
             .println("Some other line");
@@ -98,10 +98,10 @@ class WriterImplTest {
   @Test
   void append_when_writersPrintAndAddRefs_then_allRefsPrinted() {
     final Writer writerA =
-        WriterImpl.createDefault().println("Something of writer A").ref("Writer A ref");
+        WriterFactory.createDefault().println("Something of writer A").ref("Writer A ref");
 
     final Writer writer =
-        WriterImpl.createDefault()
+        WriterFactory.createDefault()
             .println("First line of main writer")
             .printRefs()
             .append(writerA)

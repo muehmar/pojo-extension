@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.impl.WriterImpl;
+import io.github.muehmar.pojoextension.generator.impl.WriterFactory;
 import org.junit.jupiter.api.Test;
 
 class GeneratorTest {
@@ -16,7 +16,7 @@ class GeneratorTest {
     final Generator<Void, Void> genB = ofWriterFunction(w -> w.println("genB"));
 
     final Generator<Void, Void> gen = genA.append(genB);
-    final Writer writer = gen.generate(null, null, WriterImpl.createDefault());
+    final Writer writer = gen.generate(null, null, WriterFactory.createDefault());
     assertEquals("genA\ngenB\n", writer.asString());
   }
 
@@ -26,7 +26,7 @@ class GeneratorTest {
     final Generator<Void, Void> genB = ofWriterFunction(w -> w.println("genB"));
 
     final Generator<Void, Void> gen = genA.append(2, genB);
-    final Writer writer = gen.generate(null, null, WriterImpl.createDefault());
+    final Writer writer = gen.generate(null, null, WriterFactory.createDefault());
     assertEquals("genA\n    genB\n", writer.asString());
   }
 
@@ -35,7 +35,7 @@ class GeneratorTest {
     final Generator<Void, Void> genA = ofWriterFunction(w -> w.println("genA"));
 
     final Generator<Void, Void> gen = genA.append(w -> w.println("appended"));
-    final Writer writer = gen.generate(null, null, WriterImpl.createDefault());
+    final Writer writer = gen.generate(null, null, WriterFactory.createDefault());
     assertEquals("genA\nappended\n", writer.asString());
   }
 
@@ -48,7 +48,7 @@ class GeneratorTest {
     final Pojo pojo = Pojos.sample();
 
     final Generator<Pojo, Void> generator = genA.appendList(fieldGen, Pojo::getFields);
-    final Writer writer = generator.generate(pojo, null, WriterImpl.createDefault());
+    final Writer writer = generator.generate(pojo, null, WriterFactory.createDefault());
 
     assertEquals("genA\nid\nusername\n", writer.asString());
   }
