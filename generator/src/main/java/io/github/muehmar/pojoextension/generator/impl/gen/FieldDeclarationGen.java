@@ -7,15 +7,15 @@ import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 
-public class FieldDeclarationGenerator implements Generator<PojoField, PojoSettings> {
+public class FieldDeclarationGen implements Generator<PojoField, PojoSettings> {
   private final JavaModifiers modifiers;
 
-  private FieldDeclarationGenerator(JavaModifiers modifiers) {
+  private FieldDeclarationGen(JavaModifiers modifiers) {
     this.modifiers = modifiers;
   }
 
-  public static FieldDeclarationGenerator ofModifiers(JavaModifier... modifiers) {
-    return new FieldDeclarationGenerator(JavaModifiers.of(modifiers));
+  public static FieldDeclarationGen ofModifiers(JavaModifier... modifiers) {
+    return new FieldDeclarationGen(JavaModifiers.of(modifiers));
   }
 
   @Override

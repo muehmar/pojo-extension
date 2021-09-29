@@ -6,14 +6,14 @@ import io.github.muehmar.pojoextension.generator.Writer;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import java.util.function.BiFunction;
 
-public class MethodGenerator<A, B> implements Generator<A, B> {
+public class MethodGen<A, B> implements Generator<A, B> {
   private final BiFunction<A, B, JavaModifiers> createModifiers;
   private final BiFunction<A, B, String> createReturnType;
   private final BiFunction<A, B, String> createMethodName;
   private final BiFunction<A, B, PList<String>> createArguments;
   private final Generator<A, B> contentGenerator;
 
-  public MethodGenerator(
+  public MethodGen(
       BiFunction<A, B, JavaModifiers> createModifiers,
       BiFunction<A, B, String> createReturnType,
       BiFunction<A, B, String> createMethodName,

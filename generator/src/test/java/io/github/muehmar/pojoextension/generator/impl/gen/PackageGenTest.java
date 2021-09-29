@@ -8,11 +8,11 @@ import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.WriterImpl;
 import org.junit.jupiter.api.Test;
 
-class PackageGeneratorTest {
+class PackageGenTest {
 
   @Test
   void generate_when_called_then_correctPackageStatementCreated() {
-    final PackageGenerator generator = new PackageGenerator();
+    final PackageGen generator = new PackageGen();
     final Writer writer =
         generator.generate(Pojos.sample(), new PojoSettings(false), WriterImpl.createDefault());
 

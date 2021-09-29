@@ -19,8 +19,8 @@ class ClassGeneratorTest {
 
   @Test
   void generate_when_simplePojoAndSingleContent_then_correctGeneratedString() {
-    final ClassGenerator generator =
-        ClassGenerator.topLevel()
+    final ClassGen generator =
+        ClassGen.topLevel()
             .modifiers(JavaModifier.PUBLIC)
             .content(Generator.ofWriterFunction(w -> w.println("Content")));
 
@@ -39,8 +39,8 @@ class ClassGeneratorTest {
 
   @Test
   void generate_when_refAddedInContent_then_refPrinted() {
-    final ClassGenerator generator =
-        ClassGenerator.topLevel()
+    final ClassGen generator =
+        ClassGen.topLevel()
             .modifiers(JavaModifier.PUBLIC)
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
 
@@ -59,8 +59,8 @@ class ClassGeneratorTest {
 
   @Test
   void generate_when_nestedClass_then_noRefsPrinted() {
-    final ClassGenerator generator =
-        ClassGenerator.nested()
+    final ClassGen generator =
+        ClassGen.nested()
             .modifiers(JavaModifier.PUBLIC)
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
 
@@ -76,8 +76,8 @@ class ClassGeneratorTest {
   @MethodSource("publicAndFinalModifierUnordered")
   void generate_when_privateAndFinalModifierUnordered_then_correctOutputWithOrderedModifiers(
       PList<JavaModifier> modifiers) {
-    final ClassGenerator generator =
-        ClassGenerator.nested()
+    final ClassGen generator =
+        ClassGen.nested()
             .modifiers(modifiers.toArray(JavaModifier.class))
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
 

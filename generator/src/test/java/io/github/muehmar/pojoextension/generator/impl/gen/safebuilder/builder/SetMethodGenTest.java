@@ -8,11 +8,11 @@ import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.WriterImpl;
 import org.junit.jupiter.api.Test;
 
-class SetMethodGeneratorTest {
+class SetMethodGenTest {
   @Test
   void generate_when_requiredField_then_correctPrivateMethodGenerated() {
-    final SetMethodGenerator generator =
-        new SetMethodGenerator(
+    final SetMethodGen generator =
+        new SetMethodGen(
             Generator.ofWriterFunction(w -> w.println("System.out.println(\"Hello World!\");")));
 
     final String output =
@@ -30,8 +30,8 @@ class SetMethodGeneratorTest {
 
   @Test
   void generate_when_optionalField_then_correctPublicMethodGenerated() {
-    final SetMethodGenerator generator =
-        new SetMethodGenerator(
+    final SetMethodGen generator =
+        new SetMethodGen(
             Generator.ofWriterFunction(w -> w.println("System.out.println(\"Hello World!\");")));
 
     final String output =

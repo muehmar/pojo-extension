@@ -15,14 +15,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class FieldDeclarationGeneratorTest {
+class FieldDeclarationGenTest {
 
   @ParameterizedTest
   @MethodSource("privateAndFinalModifierUnordered")
   void generate_when_privateAndFinalModifierUnordered_then_correctOutputWithOrderedModifiers(
       PList<JavaModifier> modifiers) {
-    final FieldDeclarationGenerator generator =
-        FieldDeclarationGenerator.ofModifiers(modifiers.toArray(JavaModifier.class));
+    final FieldDeclarationGen generator =
+        FieldDeclarationGen.ofModifiers(modifiers.toArray(JavaModifier.class));
     final Writer writer =
         generator.generate(
             new PojoField(Type.string(), Name.fromString("id"), true),

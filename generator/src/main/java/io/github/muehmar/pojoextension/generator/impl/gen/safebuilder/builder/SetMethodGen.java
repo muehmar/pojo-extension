@@ -6,10 +6,10 @@ import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenerator;
+import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 
-public class SetMethodGenerator extends MethodGenerator<PojoField, PojoSettings> {
-  public SetMethodGenerator(Generator<PojoField, PojoSettings> contentGenerator) {
+public class SetMethodGen extends MethodGen<PojoField, PojoSettings> {
+  public SetMethodGen(Generator<PojoField, PojoSettings> contentGenerator) {
     super(
         (field, settings) ->
             JavaModifiers.of(field.isRequired() ? JavaModifier.PRIVATE : JavaModifier.PUBLIC),

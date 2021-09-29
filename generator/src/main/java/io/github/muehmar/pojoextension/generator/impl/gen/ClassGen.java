@@ -10,12 +10,12 @@ import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 
-public class ClassGenerator implements Generator<Pojo, PojoSettings> {
+public class ClassGen implements Generator<Pojo, PojoSettings> {
   private final ClassType type;
   private final JavaModifiers modifiers;
   private final PList<Generator<Pojo, PojoSettings>> content;
 
-  private ClassGenerator(
+  private ClassGen(
       ClassType type, JavaModifiers modifiers, PList<Generator<Pojo, PojoSettings>> content) {
     this.type = type;
     this.modifiers = modifiers;
@@ -28,7 +28,7 @@ public class ClassGenerator implements Generator<Pojo, PojoSettings> {
     final Generator<Pojo, PojoSettings> contentGenerator =
         content.reduce(Generator::append).orElse((p, s, w) -> w);
 
-    return new PackageGenerator()
+    return new PackageGen()
         .append(newLine())
         .append(this::refs)
         .append(this::classStart)
@@ -84,8 +84,8 @@ public class ClassGenerator implements Generator<Pojo, PojoSettings> {
     }
 
     @SafeVarargs
-    public final ClassGenerator content(Generator<Pojo, PojoSettings>... generators) {
-      return new ClassGenerator(type, modifiers, PList.fromArray(generators));
+    public final ClassGen content(Generator<Pojo, PojoSettings>... generators) {
+      return new ClassGen(type, modifiers, PList.fromArray(generators));
     }
   }
 

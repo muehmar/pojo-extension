@@ -8,10 +8,10 @@ import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.WriterImpl;
 import org.junit.jupiter.api.Test;
 
-class SetMethodContentGeneratorTest {
+class SetMethodContentGenTest {
   @Test
   void generate_when_fieldAsInput_then_correctOutput() {
-    final SetMethodContentGenerator generator = new SetMethodContentGenerator();
+    final SetMethodContentGen generator = new SetMethodContentGen();
     final PojoField field = Pojos.sample().getFields().apply(0);
     final String content =
         generator

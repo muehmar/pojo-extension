@@ -5,7 +5,7 @@ import io.github.muehmar.pojoextension.generator.Writer;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 
-public class SetMethodContentGenerator implements Generator<PojoField, PojoSettings> {
+public class SetMethodContentGen implements Generator<PojoField, PojoSettings> {
   @Override
   public Writer generate(PojoField field, PojoSettings settings, Writer writer) {
     return writer

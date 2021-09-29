@@ -8,24 +8,21 @@ import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.WriterImpl;
 import org.junit.jupiter.api.Test;
 
-class MethodGeneratorTest {
+class ConstructorGenTest {
   @Test
   void generate_when_minimalGeneratorCreated_then_outputCorrect() {
-    final MethodGenerator<PList<String>, Void> generator =
-        new MethodGenerator<>(
-            (l, ignore) -> JavaModifiers.of(JavaModifier.PUBLIC, JavaModifier.FINAL),
+    final ConstructorGen<PList<String>, Void> generator =
+        new ConstructorGen<>(
+            JavaModifiers.of(JavaModifier.PUBLIC),
             (l, ignore) -> l.apply(0),
-            (l, ignore) -> l.apply(1),
-            (l, ignore) -> l.drop(2),
+            (l, ignore) -> l.drop(1),
             (l, ignore, w) -> w.println("System.out.println(\"Hello World\");"));
 
-    final PList<String> data = PList.of("void", "getXY", "String a", "int b");
+    final PList<String> data = PList.of("Customer", "String a", "int b");
 
     final String output = generator.generate(data, null, WriterImpl.createDefault()).asString();
     assertEquals(
-        "public final void getXY(String a, int b) {\n"
-            + "  System.out.println(\"Hello World\");\n"
-            + "}\n",
+        "public Customer(String a, int b) {\n" + "  System.out.println(\"Hello World\");\n" + "}\n",
         output);
   }
 }
