@@ -50,6 +50,6 @@ class GeneratorTest {
     final Generator<Pojo, Void> generator = genA.appendList(fieldGen, Pojo::getFields);
     final Writer writer = generator.generate(pojo, null, WriterFactory.createDefault());
 
-    assertEquals("genA\nid\nusername\n", writer.asString());
+    assertEquals("genA\nid\nusername\nnickname\n", writer.asString());
   }
 }

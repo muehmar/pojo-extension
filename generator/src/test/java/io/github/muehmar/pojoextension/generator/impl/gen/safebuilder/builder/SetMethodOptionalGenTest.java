@@ -10,26 +10,6 @@ import org.junit.jupiter.api.Test;
 class SetMethodOptionalGenTest {
 
   @Test
-  void generate_when_requiredField_then_correctPrivateMethodGenerated() {
-    final SetMethodOptionalGen generator = new SetMethodOptionalGen();
-
-    final String output =
-        generator
-            .generate(
-                PojoFields.requiredId(),
-                PojoSettings.defaultSettings(),
-                WriterFactory.createDefault())
-            .asString();
-
-    assertEquals(
-        "private Builder setId(Optional<Integer> id) {\n"
-            + "  this.id = id.orElse(null);\n"
-            + "  return this;\n"
-            + "}\n",
-        output);
-  }
-
-  @Test
   void generate_when_optionalField_then_correctPublicMethodGenerated() {
     final SetMethodOptionalGen generator = new SetMethodOptionalGen();
 

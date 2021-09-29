@@ -11,6 +11,10 @@ public interface Generator<A, B> {
     return (data, settings, writer) -> f.apply(writer);
   }
 
+  static <A, B> Generator<A, B> emptyGen() {
+    return (data, settings, writer) -> writer;
+  }
+
   default Generator<A, B> append(Generator<A, B> next) {
     final Generator<A, B> self = this;
     return (data, settings, writer) ->

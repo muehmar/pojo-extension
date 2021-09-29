@@ -17,6 +17,7 @@ class BuildMethodGenTest {
             .asString();
 
     assertEquals(
-        "public Customer build() {\n" + "  return new Customer(id, username);\n" + "}\n", output);
+        "public Customer build() {\n" + "  return new Customer(id, username, nickname);\n" + "}\n",
+        output);
   }
 }

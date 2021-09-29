@@ -16,7 +16,8 @@ public class Pojos {
     final PList<PojoField> fields =
         PList.of(
             new PojoField(Type.integer(), Name.fromString("id"), true),
-            new PojoField(Type.string(), Name.fromString("username"), true));
+            new PojoField(Type.string(), Name.fromString("username"), true),
+            new PojoField(Type.string(), Name.fromString("nickname"), false));
     return new Pojo(
         Name.fromString("CustomerExtension"), Name.fromString("Customer"), PACKAGE_NAME, fields);
   }

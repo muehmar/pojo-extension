@@ -10,8 +10,7 @@ import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 public class SetMethodOptionalGen extends MethodGen<PojoField, PojoSettings> {
   public SetMethodOptionalGen() {
     super(
-        (field, settings) ->
-            JavaModifiers.of(field.isRequired() ? JavaModifier.PRIVATE : JavaModifier.PUBLIC),
+        (field, settings) -> JavaModifiers.of(JavaModifier.PUBLIC),
         (field, settings) -> "Builder",
         (field, settings) -> String.format("set%s", field.getName().toPascalCase().asString()),
         (field, settings) ->

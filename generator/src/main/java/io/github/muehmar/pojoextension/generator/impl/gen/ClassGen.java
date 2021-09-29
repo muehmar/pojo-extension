@@ -5,39 +5,53 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newL
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.Writer;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
+import java.util.function.BiFunction;
 
-public class ClassGen implements Generator<Pojo, PojoSettings> {
+public class ClassGen<A, B> implements Generator<A, B> {
   private final ClassType type;
+  private final Generator<A, B> packageGen;
   private final JavaModifiers modifiers;
-  private final PList<Generator<Pojo, PojoSettings>> content;
+  private final BiFunction<A, B, String> createClassName;
+  private final PList<Generator<A, B>> content;
 
   private ClassGen(
-      ClassType type, JavaModifiers modifiers, PList<Generator<Pojo, PojoSettings>> content) {
+      ClassType type,
+      Generator<A, B> packageGen,
+      JavaModifiers modifiers,
+      BiFunction<A, B, String> createClassName,
+      PList<Generator<A, B>> content) {
     this.type = type;
+    this.packageGen = packageGen;
     this.modifiers = modifiers;
+    this.createClassName = createClassName;
     this.content = content;
   }
 
   @Override
-  public Writer generate(Pojo pojo, PojoSettings settings, Writer writer) {
+  public Writer generate(A data, B settings, Writer writer) {
 
-    final Generator<Pojo, PojoSettings> contentGenerator =
-        content.reduce(Generator::append).orElse((p, s, w) -> w);
+    final Generator<A, B> contentGenerator =
+        content.reduce(Generator::append).orElse((d, s, w) -> w);
 
-    return new PackageGen()
-        .append(newLine())
+    return packageGen()
         .append(this::refs)
         .append(this::classStart)
         .append(1, contentGenerator)
         .append(this::classEnd)
-        .generate(pojo, settings, writer);
+        .generate(data, settings, writer);
   }
 
-  private Writer refs(Pojo pojo, PojoSettings settings, Writer writer) {
+  private Generator<A, B> packageGen() {
+    if (type.equals(ClassType.NESTED)) {
+      return Generator.emptyGen();
+    }
+
+    return packageGen.append(newLine());
+  }
+
+  private Writer refs(A data, B settings, Writer writer) {
     if (type.equals(ClassType.NESTED)) {
       return writer;
     }
@@ -45,47 +59,88 @@ public class ClassGen implements Generator<Pojo, PojoSettings> {
     return writer.printRefs().println();
   }
 
-  private Writer classStart(Pojo pojo, PojoSettings settings, Writer writer) {
+  private Writer classStart(A data, B settings, Writer writer) {
     return writer.println(
-        "%sclass %s {", modifiers.asStringTrailingWhitespace(), pojo.getExtensionName().asString());
+        "%sclass %s {",
+        modifiers.asStringTrailingWhitespace(), createClassName.apply(data, settings));
   }
 
-  private Writer classEnd(Pojo pojo, PojoSettings settings, Writer writer) {
-    return writer.println("}", pojo.getExtensionName().asString());
+  private Writer classEnd(A data, B settings, Writer writer) {
+    return writer.println("}");
   }
 
-  public static ClassGeneratorCreator1 topLevel() {
-    return new ClassGeneratorCreator1(ClassType.TOP_LEVEL);
+  public static <A, B> ClassGeneratorCreator1<A, B> topLevel() {
+    return new ClassGeneratorCreator1<>(ClassType.TOP_LEVEL);
   }
 
-  public static ClassGeneratorCreator1 nested() {
-    return new ClassGeneratorCreator1(ClassType.NESTED);
+  public static <A, B> ClassGeneratorCreator2<A, B> nested() {
+    return new ClassGeneratorCreator2<>(ClassType.NESTED, Generator.emptyGen());
   }
 
-  public static final class ClassGeneratorCreator1 {
+  public static final class ClassGeneratorCreator1<A, B> {
     private final ClassType type;
 
     private ClassGeneratorCreator1(ClassType type) {
       this.type = type;
     }
 
-    public ClassGeneratorCreator2 modifiers(JavaModifier... modifiers) {
-      return new ClassGeneratorCreator2(type, JavaModifiers.of(modifiers));
+    public ClassGeneratorCreator2<A, B> packageGen(Generator<A, B> packageGen) {
+      return new ClassGeneratorCreator2<>(type, packageGen);
     }
   }
 
-  public static final class ClassGeneratorCreator2 {
+  public static final class ClassGeneratorCreator2<A, B> {
     private final ClassType type;
+    private final Generator<A, B> packageGen;
+
+    public ClassGeneratorCreator2(ClassType type, Generator<A, B> packageGen) {
+      this.type = type;
+      this.packageGen = packageGen;
+    }
+
+    public ClassGeneratorCreator3<A, B> modifiers(JavaModifier... modifiers) {
+      return new ClassGeneratorCreator3<>(type, packageGen, JavaModifiers.of(modifiers));
+    }
+  }
+
+  public static final class ClassGeneratorCreator3<A, B> {
+    private final ClassType type;
+    private final Generator<A, B> packageGen;
     private final JavaModifiers modifiers;
 
-    private ClassGeneratorCreator2(ClassType type, JavaModifiers modifiers) {
+    public ClassGeneratorCreator3(
+        ClassType type, Generator<A, B> packageGen, JavaModifiers modifiers) {
       this.type = type;
+      this.packageGen = packageGen;
       this.modifiers = modifiers;
     }
 
+    public ClassGeneratorCreator4<A, B> createClassName(BiFunction<A, B, String> createClassName) {
+      return new ClassGeneratorCreator4<>(type, packageGen, modifiers, createClassName);
+    }
+  }
+
+  public static final class ClassGeneratorCreator4<A, B> {
+    private final ClassType type;
+    private final Generator<A, B> packageGen;
+    private final JavaModifiers modifiers;
+    private final BiFunction<A, B, String> createClassName;
+
+    public ClassGeneratorCreator4(
+        ClassType type,
+        Generator<A, B> packageGen,
+        JavaModifiers modifiers,
+        BiFunction<A, B, String> createClassName) {
+      this.type = type;
+      this.packageGen = packageGen;
+      this.modifiers = modifiers;
+      this.createClassName = createClassName;
+    }
+
     @SafeVarargs
-    public final ClassGen content(Generator<Pojo, PojoSettings>... generators) {
-      return new ClassGen(type, modifiers, PList.fromArray(generators));
+    public final ClassGen<A, B> content(Generator<A, B>... generators) {
+      return new ClassGen<>(
+          type, packageGen, modifiers, createClassName, PList.fromArray(generators));
     }
   }
 
