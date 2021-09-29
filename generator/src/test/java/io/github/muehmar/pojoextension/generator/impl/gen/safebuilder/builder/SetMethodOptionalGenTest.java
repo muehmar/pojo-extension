@@ -7,10 +7,11 @@ import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.WriterFactory;
 import org.junit.jupiter.api.Test;
 
-class SetMethodGenTest {
+class SetMethodOptionalGenTest {
+
   @Test
   void generate_when_requiredField_then_correctPrivateMethodGenerated() {
-    final SetMethodGen generator = new SetMethodGen();
+    final SetMethodOptionalGen generator = new SetMethodOptionalGen();
 
     final String output =
         generator
@@ -21,13 +22,16 @@ class SetMethodGenTest {
             .asString();
 
     assertEquals(
-        "private Builder setId(Integer id) {\n" + "  this.id = id;\n" + "  return this;\n" + "}\n",
+        "private Builder setId(Optional<Integer> id) {\n"
+            + "  this.id = id.orElse(null);\n"
+            + "  return this;\n"
+            + "}\n",
         output);
   }
 
   @Test
   void generate_when_optionalField_then_correctPublicMethodGenerated() {
-    final SetMethodGen generator = new SetMethodGen();
+    final SetMethodOptionalGen generator = new SetMethodOptionalGen();
 
     final String output =
         generator
@@ -38,7 +42,10 @@ class SetMethodGenTest {
             .asString();
 
     assertEquals(
-        "public Builder setId(Integer id) {\n" + "  this.id = id;\n" + "  return this;\n" + "}\n",
+        "public Builder setId(Optional<Integer> id) {\n"
+            + "  this.id = id.orElse(null);\n"
+            + "  return this;\n"
+            + "}\n",
         output);
   }
 }

@@ -7,8 +7,8 @@ import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 
-public class SetMethodGen extends MethodGen<PojoField, PojoSettings> {
-  public SetMethodGen() {
+public class SetMethodOptionalGen extends MethodGen<PojoField, PojoSettings> {
+  public SetMethodOptionalGen() {
     super(
         (field, settings) ->
             JavaModifiers.of(field.isRequired() ? JavaModifier.PRIVATE : JavaModifier.PUBLIC),
@@ -17,11 +17,13 @@ public class SetMethodGen extends MethodGen<PojoField, PojoSettings> {
         (field, settings) ->
             PList.single(
                 String.format(
-                    "%s %s",
+                    "Optional<%s> %s",
                     field.getType().getClassName().asString(), field.getName().asString())),
         (field, settings, writer) ->
             writer
-                .println("this.%s = %s;", field.getName().asString(), field.getName().asString())
+                .println(
+                    "this.%s = %s.orElse(null);",
+                    field.getName().asString(), field.getName().asString())
                 .println("return this;"));
   }
 }
