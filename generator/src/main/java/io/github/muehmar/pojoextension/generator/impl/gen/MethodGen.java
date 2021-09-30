@@ -118,16 +118,15 @@ public class MethodGen<A, B> implements Generator<A, B> {
     }
 
     public Builder4<A, B> arguments(Function<A, PList<String>> createArguments) {
-      return new Builder4<>(
-          createModifiers,
-          createReturnType,
-          createMethodName,
-          (data, settings) -> createArguments.apply(data));
+      return arguments((data, settings) -> createArguments.apply(data));
+    }
+
+    public Builder4<A, B> singleArgument(Function<A, String> createArgument) {
+      return arguments((data, settings) -> PList.single(createArgument.apply(data)));
     }
 
     public Builder4<A, B> noArguments() {
-      return new Builder4<>(
-          createModifiers, createReturnType, createMethodName, (data, settings) -> PList.empty());
+      return arguments((data, settings) -> PList.empty());
     }
   }
 
@@ -146,6 +145,15 @@ public class MethodGen<A, B> implements Generator<A, B> {
       this.createReturnType = createReturnType;
       this.createMethodName = createMethodName;
       this.createArguments = createArguments;
+    }
+
+    public MethodGen<A, B> content(String content) {
+      return new MethodGen<>(
+          createModifiers,
+          createReturnType,
+          createMethodName,
+          createArguments,
+          (data, settings, writer) -> writer.println(content));
     }
 
     public MethodGen<A, B> content(Generator<A, B> content) {

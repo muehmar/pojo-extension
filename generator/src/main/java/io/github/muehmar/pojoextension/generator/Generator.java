@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.generator;
 
 import ch.bluecare.commons.data.PList;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
@@ -45,5 +46,15 @@ public interface Generator<A, B> {
         f.apply(data)
             .foldLeft(self, (g, e) -> g.append(gen, ignore -> e))
             .generate(data, settings, writer);
+  }
+
+  default Generator<A, B> appendConditionally(BiPredicate<A, B> predicate, Generator<A, B> append) {
+    final Generator<A, B> self = this;
+    return (data, settings, writer) -> {
+      if (predicate.negate().test(data, settings)) {
+        return self.generate(data, settings, writer);
+      }
+      return append(append).generate(data, settings, writer);
+    };
   }
 }
