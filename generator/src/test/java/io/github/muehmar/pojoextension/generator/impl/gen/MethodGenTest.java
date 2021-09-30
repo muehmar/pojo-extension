@@ -1,10 +1,10 @@
 package io.github.muehmar.pojoextension.generator.impl.gen;
 
+import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.FINAL;
+import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
-import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.WriterFactory;
 import org.junit.jupiter.api.Test;
 
@@ -12,12 +12,11 @@ class MethodGenTest {
   @Test
   void generate_when_minimalGeneratorCreated_then_outputCorrect() {
     final MethodGen<PList<String>, Void> generator =
-        new MethodGen<>(
-            (l, ignore) -> JavaModifiers.of(JavaModifier.PUBLIC, JavaModifier.FINAL),
-            (l, ignore) -> l.apply(0),
-            (l, ignore) -> l.apply(1),
-            (l, ignore) -> l.drop(2),
-            (l, ignore, w) -> w.println("System.out.println(\"Hello World\");"));
+        MethodGen.<PList<String>, Void>modifiers(PUBLIC, FINAL)
+            .returnType(l -> l.apply(0))
+            .methodName(l -> l.apply(1))
+            .arguments(l -> l.drop(2))
+            .content(w -> w.println("System.out.println(\"Hello World\");"));
 
     final PList<String> data = PList.of("void", "getXY", "String a", "int b");
 
