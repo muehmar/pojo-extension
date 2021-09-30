@@ -7,13 +7,11 @@ import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newLine;
 
-import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.Writer;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.FieldDeclarationGen;
@@ -22,8 +20,10 @@ public class BuilderGen implements Generator<Pojo, PojoSettings> {
   @Override
   public Writer generate(Pojo pojo, PojoSettings settings, Writer writer) {
     final Generator<Pojo, PojoSettings> contentGen =
-        new ConstructorGen<Pojo, PojoSettings>(
-                JavaModifiers.of(PRIVATE), (p, s) -> "Builder", (p, s) -> PList.empty(), emptyGen())
+        ConstructorGen.<Pojo, PojoSettings>modifiers(PRIVATE)
+            .className("Builder")
+            .noArguments()
+            .content(emptyGen())
             .append(newLine())
             .appendList(FieldDeclarationGen.ofModifiers(PRIVATE), Pojo::getFields)
             .append(newLine())

@@ -6,12 +6,10 @@ import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newLine;
 
-import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.Generators;
@@ -44,11 +42,10 @@ public class SafeBuilderFactory {
 
   public static Generator<SafeBuilderPojoField, PojoSettings> builderClassContent() {
     final Generator<SafeBuilderPojoField, PojoSettings> constructor =
-        new ConstructorGen<>(
-            JavaModifiers.of(PRIVATE),
-            SafeBuilderFactory::createClassName,
-            (f, s) -> PList.single(BUILDER_ARGUMENT),
-            (f, s, w) -> w.println(BUILDER_ASSIGNMENT));
+        ConstructorGen.<SafeBuilderPojoField, PojoSettings>modifiers(PRIVATE)
+            .className(SafeBuilderFactory::createClassName)
+            .singleArgument(BUILDER_ARGUMENT)
+            .content(BUILDER_ASSIGNMENT);
 
     return SafeBuilderFactory.<SafeBuilderPojoField, PojoSettings>fieldDeclaration()
         .append(newLine())
@@ -65,11 +62,10 @@ public class SafeBuilderFactory {
   }
 
   public static Generator<SafeBuilderPojoField, PojoSettings> constructor() {
-    return new ConstructorGen<>(
-        JavaModifiers.of(PRIVATE),
-        SafeBuilderFactory::createClassName,
-        (s, f) -> PList.single(BUILDER_ARGUMENT),
-        (s, f, w) -> w.println(BUILDER_ASSIGNMENT));
+    return ConstructorGen.<SafeBuilderPojoField, PojoSettings>modifiers(PRIVATE)
+        .className(SafeBuilderFactory::createClassName)
+        .singleArgument(BUILDER_ARGUMENT)
+        .content(BUILDER_ASSIGNMENT);
   }
 
   public static <A, B> Generator<A, B> andAllOptionalsMethod() {
@@ -143,11 +139,10 @@ public class SafeBuilderFactory {
         pojo -> pojo.getFields().filter(PojoField::isRequired).size();
 
     final Generator<Pojo, PojoSettings> constructor =
-        new ConstructorGen<>(
-            JavaModifiers.of(PRIVATE),
-            (p, s) -> String.format("Builder%d", builderNumber.applyAsInt(p)),
-            (p, s) -> PList.single(BUILDER_ARGUMENT),
-            (p, s, w) -> w.println(BUILDER_ASSIGNMENT));
+        ConstructorGen.<Pojo, PojoSettings>modifiers(PRIVATE)
+            .className(p -> String.format("Builder%d", builderNumber.applyAsInt(p)))
+            .singleArgument(BUILDER_ARGUMENT)
+            .content(BUILDER_ASSIGNMENT);
 
     final Generator<Pojo, PojoSettings> content =
         SafeBuilderFactory.<Pojo, PojoSettings>fieldDeclaration()
@@ -171,11 +166,10 @@ public class SafeBuilderFactory {
         pojo -> pojo.getFields().filter(PojoField::isOptional).size();
 
     final Generator<Pojo, PojoSettings> constructor =
-        new ConstructorGen<>(
-            JavaModifiers.of(PRIVATE),
-            (p, s) -> String.format("OptBuilder%d", builderNumber.applyAsInt(p)),
-            (p, s) -> PList.single(BUILDER_ARGUMENT),
-            (p, s, w) -> w.println(BUILDER_ASSIGNMENT));
+        ConstructorGen.<Pojo, PojoSettings>modifiers(PRIVATE)
+            .className(p -> String.format("OptBuilder%d", builderNumber.applyAsInt(p)))
+            .singleArgument(BUILDER_ARGUMENT)
+            .content(BUILDER_ASSIGNMENT);
 
     final Generator<Pojo, PojoSettings> content =
         SafeBuilderFactory.<Pojo, PojoSettings>fieldDeclaration()

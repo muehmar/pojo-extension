@@ -47,7 +47,7 @@ public class MethodGen<A, B> implements Generator<A, B> {
   }
 
   public static <A, B> Builder1<A, B> modifiers(JavaModifier... modifiers) {
-    return new Builder1<>((d, s) -> JavaModifiers.of(modifiers));
+    return modifiers((d, s) -> JavaModifiers.of(modifiers));
   }
 
   public static <A, B> Builder1<A, B> modifiers(BiFunction<A, B, JavaModifiers> createModifiers) {
@@ -57,7 +57,7 @@ public class MethodGen<A, B> implements Generator<A, B> {
   public static class Builder1<A, B> {
     private final BiFunction<A, B, JavaModifiers> createModifiers;
 
-    public Builder1(BiFunction<A, B, JavaModifiers> createModifiers) {
+    private Builder1(BiFunction<A, B, JavaModifiers> createModifiers) {
       this.createModifiers = createModifiers;
     }
 
@@ -66,11 +66,11 @@ public class MethodGen<A, B> implements Generator<A, B> {
     }
 
     public Builder2<A, B> returnType(Function<A, String> createReturnType) {
-      return new Builder2<>(createModifiers, (data, settings) -> createReturnType.apply(data));
+      return returnType((data, settings) -> createReturnType.apply(data));
     }
 
     public Builder2<A, B> returnType(String returnType) {
-      return new Builder2<>(createModifiers, (data, settings) -> returnType);
+      return returnType((data, settings) -> returnType);
     }
   }
 
@@ -78,7 +78,7 @@ public class MethodGen<A, B> implements Generator<A, B> {
     private final BiFunction<A, B, JavaModifiers> createModifiers;
     private final BiFunction<A, B, String> createReturnType;
 
-    public Builder2(
+    private Builder2(
         BiFunction<A, B, JavaModifiers> createModifiers,
         BiFunction<A, B, String> createReturnType) {
       this.createModifiers = createModifiers;
@@ -90,12 +90,11 @@ public class MethodGen<A, B> implements Generator<A, B> {
     }
 
     public Builder3<A, B> methodName(Function<A, String> createMethodName) {
-      return new Builder3<>(
-          createModifiers, createReturnType, (data, settings) -> createMethodName.apply(data));
+      return methodName((data, settings) -> createMethodName.apply(data));
     }
 
     public Builder3<A, B> methodName(String methodName) {
-      return new Builder3<>(createModifiers, createReturnType, (data, settings) -> methodName);
+      return methodName((data, settings) -> methodName);
     }
   }
 
@@ -104,7 +103,7 @@ public class MethodGen<A, B> implements Generator<A, B> {
     private final BiFunction<A, B, String> createReturnType;
     private final BiFunction<A, B, String> createMethodName;
 
-    public Builder3(
+    private Builder3(
         BiFunction<A, B, JavaModifiers> createModifiers,
         BiFunction<A, B, String> createReturnType,
         BiFunction<A, B, String> createMethodName) {
@@ -136,7 +135,7 @@ public class MethodGen<A, B> implements Generator<A, B> {
     private final BiFunction<A, B, String> createMethodName;
     private final BiFunction<A, B, PList<String>> createArguments;
 
-    public Builder4(
+    private Builder4(
         BiFunction<A, B, JavaModifiers> createModifiers,
         BiFunction<A, B, String> createReturnType,
         BiFunction<A, B, String> createMethodName,
@@ -148,12 +147,7 @@ public class MethodGen<A, B> implements Generator<A, B> {
     }
 
     public MethodGen<A, B> content(String content) {
-      return new MethodGen<>(
-          createModifiers,
-          createReturnType,
-          createMethodName,
-          createArguments,
-          (data, settings, writer) -> writer.println(content));
+      return content((data, settings, writer) -> writer.println(content));
     }
 
     public MethodGen<A, B> content(Generator<A, B> content) {
@@ -162,12 +156,7 @@ public class MethodGen<A, B> implements Generator<A, B> {
     }
 
     public MethodGen<A, B> content(UnaryOperator<Writer> content) {
-      return new MethodGen<>(
-          createModifiers,
-          createReturnType,
-          createMethodName,
-          createArguments,
-          (data, settings, writer) -> content.apply(writer));
+      return content((data, settings, writer) -> content.apply(writer));
     }
   }
 }
