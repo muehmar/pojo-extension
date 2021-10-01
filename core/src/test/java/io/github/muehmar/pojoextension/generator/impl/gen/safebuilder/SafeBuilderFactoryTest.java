@@ -247,7 +247,7 @@ class SafeBuilderFactoryTest {
         generator.generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault());
     final String output = writer.asString();
 
-    assertTrue(writer.getRefs().exists("import java.util.Optional;"::equals));
+    assertTrue(writer.getRefs().exists("java.util.Optional"::equals));
     assertEquals(
         "public OptBuilder3 setId(Optional<Integer> id) {\n"
             + "  return new OptBuilder3(id.map(builder::setId).orElse(builder));\n"

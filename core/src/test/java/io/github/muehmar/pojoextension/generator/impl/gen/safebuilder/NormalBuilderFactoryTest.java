@@ -73,7 +73,7 @@ class NormalBuilderFactoryTest {
 
     final String output = writer.asString();
 
-    assertTrue(writer.getRefs().exists("import java.util.Optional;"::equals));
+    assertTrue(writer.getRefs().exists("java.util.Optional"::equals));
     assertEquals(
         "public Builder setId(Optional<Integer> id) {\n"
             + "  this.id = id.orElse(null);\n"

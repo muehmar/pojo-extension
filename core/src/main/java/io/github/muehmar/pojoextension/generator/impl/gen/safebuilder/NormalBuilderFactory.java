@@ -100,6 +100,6 @@ public class NormalBuilderFactory {
                     "Optional<%s> %s",
                     f.getType().getClassName().asString(), f.getName().asString()))
         .content(content)
-        .append(w -> w.ref("import java.util.Optional;"));
+        .append(w -> w.ref("java.util.Optional"));
   }
 }

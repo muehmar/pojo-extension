@@ -156,6 +156,7 @@ public final class WriterImpl implements Writer {
     if (refsLineNumber >= 0) {
       refs.distinct(Function.identity())
           .sort(Comparator.comparing(Function.identity()))
+          .map(ref -> String.format("import %s;", ref))
           .forEach(ref -> sb.append(ref).append(NEWLINE_STRING));
     }
 

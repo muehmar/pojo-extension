@@ -56,7 +56,12 @@ class WriterImplTest {
             .ref("Ref C")
             .ref("Ref A");
     assertEquals(
-        "First line\n" + "Ref A\n" + "Ref B\n" + "Ref C\n" + "Second line\n" + "Third line\n",
+        "First line\n"
+            + "import Ref A;\n"
+            + "import Ref B;\n"
+            + "import Ref C;\n"
+            + "Second line\n"
+            + "Third line\n",
         writer.asString());
   }
 
@@ -109,8 +114,8 @@ class WriterImplTest {
             .ref("Main writer ref");
     assertEquals(
         "First line of main writer\n"
-            + "Main writer ref\n"
-            + "Writer A ref\n"
+            + "import Main writer ref;\n"
+            + "import Writer A ref;\n"
             + "Something of writer A\n"
             + "Line after writer A\n",
         writer.asString());

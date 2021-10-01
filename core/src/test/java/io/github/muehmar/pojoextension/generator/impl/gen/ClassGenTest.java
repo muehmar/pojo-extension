@@ -47,7 +47,7 @@ class ClassGenTest {
             .packageGen(new PackageGen())
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> p.getExtensionName().asString())
-            .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
+            .content(Generator.ofWriterFunction(w -> w.ref("java.util.Optional")));
 
     final Writer writer =
         generator.generate(
