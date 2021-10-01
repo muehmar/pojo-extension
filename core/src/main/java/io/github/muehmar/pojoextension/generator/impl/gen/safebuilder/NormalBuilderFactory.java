@@ -79,7 +79,8 @@ public class NormalBuilderFactory {
             f ->
                 String.format(
                     "%s %s", f.getType().getClassName().asString(), f.getName().asString()))
-        .content(content);
+        .content(content)
+        .append((f, s, w) -> w.ref(f.getType().getQualifiedName().asString()));
   }
 
   public static Generator<PojoField, PojoSettings> setMethodOptional() {
@@ -100,6 +101,7 @@ public class NormalBuilderFactory {
                     "Optional<%s> %s",
                     f.getType().getClassName().asString(), f.getName().asString()))
         .content(content)
-        .append(w -> w.ref("java.util.Optional"));
+        .append(w -> w.ref("java.util.Optional"))
+        .append((f, s, w) -> w.ref(f.getType().getQualifiedName().asString()));
   }
 }

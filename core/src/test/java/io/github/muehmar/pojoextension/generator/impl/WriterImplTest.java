@@ -135,4 +135,16 @@ class WriterImplTest {
 
     assertEquals("  First line\n" + "\n" + "  Third line\n", output);
   }
+
+  @Test
+  void asString_when_refsPrinted_then_javaLangImportsDropped() {
+    final String output =
+        WriterFactory.createDefault()
+            .printRefs()
+            .ref("java.lang.Integer")
+            .ref("java.util.Optional")
+            .asString();
+
+    assertEquals("import java.util.Optional;\n", output);
+  }
 }

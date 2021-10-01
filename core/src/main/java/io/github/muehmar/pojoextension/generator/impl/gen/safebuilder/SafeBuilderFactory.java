@@ -111,7 +111,8 @@ public class SafeBuilderFactory {
                     "%s %s",
                     f.getField().getType().getClassName().asString(),
                     f.getField().getName().asString()))
-        .content(content);
+        .content(content)
+        .append((f, s, w) -> w.ref(f.getField().getType().getQualifiedName().asString()));
   }
 
   public static Generator<SafeBuilderPojoField, PojoSettings> setMethodOptional() {
@@ -133,7 +134,8 @@ public class SafeBuilderFactory {
                     f.getField().getType().getClassName().asString(),
                     f.getField().getName().asString()))
         .content(content)
-        .append(w -> w.ref("java.util.Optional"));
+        .append(w -> w.ref("java.util.Optional"))
+        .append((f, s, w) -> w.ref(f.getField().getType().getQualifiedName().asString()));
   }
 
   public static Generator<Pojo, PojoSettings> finalRequiredBuilder() {

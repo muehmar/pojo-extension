@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.generator.impl.gen;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Writer;
@@ -28,6 +29,8 @@ class FieldDeclarationGenTest {
             new PojoField(Type.string(), Name.fromString("id"), true),
             PojoSettings.defaultSettings(),
             WriterFactory.createDefault());
+
+    assertTrue(writer.getRefs().exists("java.lang.String"::equals));
 
     assertEquals("private final String id;\n", writer.asString());
   }

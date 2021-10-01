@@ -31,14 +31,12 @@ class NormalBuilderFactoryTest {
   void setMethod_when_generatorUsedWithRequiredField_then_correctPrivateMethodGenerated() {
     final Generator<PojoField, PojoSettings> generator = NormalBuilderFactory.setMethod();
 
-    final String output =
-        generator
-            .generate(
-                PojoFields.requiredId(),
-                PojoSettings.defaultSettings(),
-                WriterFactory.createDefault())
-            .asString();
+    final Writer writer =
+        generator.generate(
+            PojoFields.requiredId(), PojoSettings.defaultSettings(), WriterFactory.createDefault());
+    final String output = writer.asString();
 
+    assertTrue(writer.getRefs().exists("java.lang.Integer"::equals));
     assertEquals(
         "private Builder setId(Integer id) {\n" + "  this.id = id;\n" + "  return this;\n" + "}\n",
         output);
@@ -48,14 +46,14 @@ class NormalBuilderFactoryTest {
   void setMethod_when_generatorUsedWithOptionalField_then_correctPublicMethodGenerated() {
     final Generator<PojoField, PojoSettings> generator = NormalBuilderFactory.setMethod();
 
-    final String output =
-        generator
-            .generate(
-                PojoFields.requiredId().withRequired(false),
-                PojoSettings.defaultSettings(),
-                WriterFactory.createDefault())
-            .asString();
+    final Writer writer =
+        generator.generate(
+            PojoFields.requiredId().withRequired(false),
+            PojoSettings.defaultSettings(),
+            WriterFactory.createDefault());
+    final String output = writer.asString();
 
+    assertTrue(writer.getRefs().exists("java.lang.Integer"::equals));
     assertEquals(
         "public Builder setId(Integer id) {\n" + "  this.id = id;\n" + "  return this;\n" + "}\n",
         output);
@@ -74,6 +72,7 @@ class NormalBuilderFactoryTest {
     final String output = writer.asString();
 
     assertTrue(writer.getRefs().exists("java.util.Optional"::equals));
+    assertTrue(writer.getRefs().exists("java.lang.Integer"::equals));
     assertEquals(
         "public Builder setId(Optional<Integer> id) {\n"
             + "  this.id = id.orElse(null);\n"

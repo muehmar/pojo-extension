@@ -209,11 +209,11 @@ class SafeBuilderFactoryTest {
     final Generator<SafeBuilderPojoField, PojoSettings> generator = SafeBuilderFactory.setMethod();
     final SafeBuilderPojoField field =
         new SafeBuilderPojoField(PojoFields.requiredId().withRequired(false), 2);
-    final String output =
-        generator
-            .generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault())
-            .asString();
+    final Writer writer =
+        generator.generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault());
+    final String output = writer.asString();
 
+    assertTrue(writer.getRefs().exists("java.lang.Integer"::equals));
     assertEquals(
         "public OptBuilder3 setId(Integer id) {\n"
             + "  return new OptBuilder3(builder.setId(id));\n"
@@ -225,11 +225,11 @@ class SafeBuilderFactoryTest {
   void setMethod_when_generatorUsedWithRequiredField_then_correctClassOutput() {
     final Generator<SafeBuilderPojoField, PojoSettings> generator = SafeBuilderFactory.setMethod();
     final SafeBuilderPojoField field = new SafeBuilderPojoField(PojoFields.requiredId(), 2);
-    final String output =
-        generator
-            .generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault())
-            .asString();
+    final Writer writer =
+        generator.generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault());
+    final String output = writer.asString();
 
+    assertTrue(writer.getRefs().exists("java.lang.Integer"::equals));
     assertEquals(
         "public Builder3 setId(Integer id) {\n"
             + "  return new Builder3(builder.setId(id));\n"
@@ -248,6 +248,7 @@ class SafeBuilderFactoryTest {
     final String output = writer.asString();
 
     assertTrue(writer.getRefs().exists("java.util.Optional"::equals));
+    assertTrue(writer.getRefs().exists("java.lang.Integer"::equals));
     assertEquals(
         "public OptBuilder3 setId(Optional<Integer> id) {\n"
             + "  return new OptBuilder3(id.map(builder::setId).orElse(builder));\n"

@@ -20,10 +20,12 @@ public class FieldDeclarationGen implements Generator<PojoField, PojoSettings> {
 
   @Override
   public Writer generate(PojoField field, PojoSettings settings, Writer writer) {
-    return writer.println(
-        "%s%s %s;",
-        modifiers.asStringTrailingWhitespace(),
-        field.getType().getClassName().asString(),
-        field.getName().asString());
+    return writer
+        .println(
+            "%s%s %s;",
+            modifiers.asStringTrailingWhitespace(),
+            field.getType().getClassName().asString(),
+            field.getName().asString())
+        .ref(field.getType().getQualifiedName().asString());
   }
 }
