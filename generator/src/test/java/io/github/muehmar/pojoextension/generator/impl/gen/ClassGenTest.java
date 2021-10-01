@@ -24,7 +24,7 @@ class ClassGenTest {
         ClassGen.<Pojo, PojoSettings>topLevel()
             .packageGen(new PackageGen())
             .modifiers(JavaModifier.PUBLIC)
-            .createClassName((p, s) -> p.getExtensionName().asString())
+            .className((p, s) -> p.getExtensionName().asString())
             .content(Generator.ofWriterFunction(w -> w.println("Content")));
 
     final Writer writer =
@@ -46,7 +46,7 @@ class ClassGenTest {
         ClassGen.<Pojo, PojoSettings>topLevel()
             .packageGen(new PackageGen())
             .modifiers(JavaModifier.PUBLIC)
-            .createClassName((p, s) -> p.getExtensionName().asString())
+            .className((p, s) -> p.getExtensionName().asString())
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
 
     final Writer writer =
@@ -67,7 +67,7 @@ class ClassGenTest {
     final ClassGen<Pojo, PojoSettings> generator =
         ClassGen.<Pojo, PojoSettings>nested()
             .modifiers(JavaModifier.PUBLIC)
-            .createClassName((p, s) -> p.getExtensionName().asString())
+            .className((p, s) -> p.getExtensionName().asString())
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
 
     final Writer writer =
@@ -83,7 +83,7 @@ class ClassGenTest {
     final ClassGen<Pojo, PojoSettings> generator =
         ClassGen.<Pojo, PojoSettings>nested()
             .modifiers(modifiers.toArray(JavaModifier.class))
-            .createClassName((p, s) -> p.getExtensionName().asString())
+            .className((p, s) -> p.getExtensionName().asString())
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
 
     final Writer writer =

@@ -14,9 +14,9 @@ import org.junit.jupiter.api.Test;
 class SafeBuilderFactoryTest {
 
   @Test
-  void builderClass_when_generatorUsedWithRequiredField_then_correctOutput() {
+  void fieldBuilderClass_when_generatorUsedWithRequiredField_then_correctOutput() {
     final Generator<SafeBuilderPojoField, PojoSettings> generator =
-        SafeBuilderFactory.builderClass();
+        SafeBuilderFactory.fieldBuilderClass();
     final SafeBuilderPojoField field = new SafeBuilderPojoField(PojoFields.requiredId(), 2);
     final String output =
         generator
@@ -39,9 +39,9 @@ class SafeBuilderFactoryTest {
   }
 
   @Test
-  void builderClass_when_generatorUsedWithOptionalField_then_correctOutput() {
+  void fieldBuilderClass_when_generatorUsedWithOptionalField_then_correctOutput() {
     final Generator<SafeBuilderPojoField, PojoSettings> generator =
-        SafeBuilderFactory.builderClass();
+        SafeBuilderFactory.fieldBuilderClass();
     final SafeBuilderPojoField field =
         new SafeBuilderPojoField(PojoFields.requiredId().withRequired(false), 2);
     final String output =

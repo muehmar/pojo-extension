@@ -17,6 +17,7 @@ import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.SafeBuilderPojoField;
 import java.util.function.ToIntFunction;
 
+/** Factory which creates the classes which forms the SafeBuilder. */
 public class SafeBuilderFactory {
 
   private static final String BUILDER_ARGUMENT = "Builder builder";
@@ -24,10 +25,10 @@ public class SafeBuilderFactory {
 
   private SafeBuilderFactory() {}
 
-  public static Generator<SafeBuilderPojoField, PojoSettings> builderClass() {
+  public static Generator<SafeBuilderPojoField, PojoSettings> fieldBuilderClass() {
     return ClassGen.<SafeBuilderPojoField, PojoSettings>nested()
         .modifiers(PUBLIC, STATIC, FINAL)
-        .createClassName(SafeBuilderFactory::createClassName)
+        .className(SafeBuilderFactory::createClassName)
         .content(builderClassContent());
   }
 
@@ -157,7 +158,7 @@ public class SafeBuilderFactory {
 
     return ClassGen.<Pojo, PojoSettings>nested()
         .modifiers(PUBLIC, STATIC, FINAL)
-        .createClassName((p, s) -> String.format("Builder%d", builderNumber.applyAsInt(p)))
+        .className((p, s) -> String.format("Builder%d", builderNumber.applyAsInt(p)))
         .content(content);
   }
 
@@ -180,7 +181,7 @@ public class SafeBuilderFactory {
 
     return ClassGen.<Pojo, PojoSettings>nested()
         .modifiers(PUBLIC, STATIC, FINAL)
-        .createClassName((p, s) -> String.format("OptBuilder%d", builderNumber.applyAsInt(p)))
+        .className((p, s) -> String.format("OptBuilder%d", builderNumber.applyAsInt(p)))
         .content(content);
   }
 }
