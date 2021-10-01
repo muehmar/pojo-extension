@@ -141,7 +141,14 @@ public final class WriterImpl implements Writer {
   public String asString() {
     final StringBuilder sb = new StringBuilder();
     final Consumer<UnaryOperator<StringBuilder>> applyStringBuilder =
-        line -> line.apply(sb).append(NEWLINE_STRING);
+        line -> {
+          final StringBuilder tempSb = new StringBuilder();
+          final String lineOutput = line.apply(tempSb).toString();
+          if (lineOutput.trim().length() > 0) {
+            sb.append(lineOutput);
+          }
+          sb.append(NEWLINE_STRING);
+        };
 
     final PList<UnaryOperator<StringBuilder>> reversedLines = getLines().reverse();
     reversedLines.take(Math.max(refsLineNumber, 0)).forEach(applyStringBuilder);

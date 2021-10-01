@@ -1,0 +1,118 @@
+package io.github.muehmar;
+
+import java.util.Optional;
+
+public class CustomerExtension {
+  private CustomerExtension() {
+
+  }
+  public static final class Builder {
+    private Builder() {
+    }
+
+    private Integer id;
+    private String username;
+    private String nickname;
+
+    private Builder setId(Integer id) {
+      this.id = id;
+      return this;
+    }
+
+    private Builder setUsername(String username) {
+      this.username = username;
+      return this;
+    }
+
+    public Builder setNickname(String nickname) {
+      this.nickname = nickname;
+      return this;
+    }
+
+    public Builder setNickname(Optional<String> nickname) {
+      this.nickname = nickname.orElse(null);
+      return this;
+    }
+
+    public Customer build() {
+      return new Customer(id, username, nickname);
+    }
+  }
+
+  public Builder0 newBuilder() {
+    return new Builder0(new Builder());
+  }
+
+  public static final class Builder0 {
+    private final Builder builder;
+
+    private Builder0(Builder builder) {
+      this.builder = builder;
+    }
+
+    public Builder1 setId(Integer id) {
+      return new Builder1(builder.setId(id));
+    }
+  }
+
+  public static final class Builder1 {
+    private final Builder builder;
+
+    private Builder1(Builder builder) {
+      this.builder = builder;
+    }
+
+    public Builder2 setUsername(String username) {
+      return new Builder2(builder.setUsername(username));
+    }
+  }
+
+  public static final class Builder2 {
+    private final Builder builder;
+
+    private Builder2(Builder builder) {
+      this.builder = builder;
+    }
+
+    public OptBuilder0 andAllOptionals() {
+      return new OptBuilder0(builder);
+    }
+
+    public Builder andOptionals() {
+      return builder;
+    }
+
+    public Customer build() {
+      return builder.build();
+    }
+  }
+
+  public static final class OptBuilder0 {
+    private final Builder builder;
+
+    private OptBuilder0(Builder builder) {
+      this.builder = builder;
+    }
+
+    public OptBuilder1 setNickname(String nickname) {
+      return new OptBuilder1(builder.setNickname(nickname));
+    }
+
+    public OptBuilder1 setNickname(Optional<String> nickname) {
+      return new OptBuilder1(nickname.map(builder::setNickname).orElse(builder));
+    }
+  }
+
+  public static final class OptBuilder1 {
+    private final Builder builder;
+
+    private OptBuilder1(Builder builder) {
+      this.builder = builder;
+    }
+
+    public Customer build() {
+      return builder.build();
+    }
+  }
+}
+

@@ -1,10 +1,12 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.Pojos;
+import io.github.muehmar.pojoextension.generator.Writer;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.WriterFactory;
@@ -26,11 +28,11 @@ class SafeBuilderFactoryTest {
     assertEquals(
         "public static final class Builder2 {\n"
             + "  private final Builder builder;\n"
-            + "  \n"
+            + "\n"
             + "  private Builder2(Builder builder) {\n"
             + "    this.builder = builder;\n"
             + "  }\n"
-            + "  \n"
+            + "\n"
             + "  public Builder3 setId(Integer id) {\n"
             + "    return new Builder3(builder.setId(id));\n"
             + "  }\n"
@@ -52,15 +54,15 @@ class SafeBuilderFactoryTest {
     assertEquals(
         "public static final class OptBuilder2 {\n"
             + "  private final Builder builder;\n"
-            + "  \n"
+            + "\n"
             + "  private OptBuilder2(Builder builder) {\n"
             + "    this.builder = builder;\n"
             + "  }\n"
-            + "  \n"
+            + "\n"
             + "  public OptBuilder3 setId(Integer id) {\n"
             + "    return new OptBuilder3(builder.setId(id));\n"
             + "  }\n"
-            + "  \n"
+            + "\n"
             + "  public OptBuilder3 setId(Optional<Integer> id) {\n"
             + "    return new OptBuilder3(id.map(builder::setId).orElse(builder));\n"
             + "  }\n"
@@ -159,19 +161,19 @@ class SafeBuilderFactoryTest {
     assertEquals(
         "public static final class Builder2 {\n"
             + "  private final Builder builder;\n"
-            + "  \n"
+            + "\n"
             + "  private Builder2(Builder builder) {\n"
             + "    this.builder = builder;\n"
             + "  }\n"
-            + "  \n"
+            + "\n"
             + "  public OptBuilder0 andAllOptionals() {\n"
             + "    return new OptBuilder0(builder);\n"
             + "  }\n"
-            + "  \n"
+            + "\n"
             + "  public Builder andOptionals() {\n"
             + "    return builder;\n"
             + "  }\n"
-            + "  \n"
+            + "\n"
             + "  public Customer build() {\n"
             + "    return builder.build();\n"
             + "  }\n"
@@ -190,11 +192,11 @@ class SafeBuilderFactoryTest {
     assertEquals(
         "public static final class OptBuilder1 {\n"
             + "  private final Builder builder;\n"
-            + "  \n"
+            + "\n"
             + "  private OptBuilder1(Builder builder) {\n"
             + "    this.builder = builder;\n"
             + "  }\n"
-            + "  \n"
+            + "\n"
             + "  public Customer build() {\n"
             + "    return builder.build();\n"
             + "  }\n"
@@ -241,11 +243,11 @@ class SafeBuilderFactoryTest {
         SafeBuilderFactory.setMethodOptional();
     final SafeBuilderPojoField field =
         new SafeBuilderPojoField(PojoFields.requiredId().withRequired(false), 2);
-    final String output =
-        generator
-            .generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault())
-            .asString();
+    final Writer writer =
+        generator.generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault());
+    final String output = writer.asString();
 
+    assertTrue(writer.getRefs().exists("import java.util.Optional;"::equals));
     assertEquals(
         "public OptBuilder3 setId(Optional<Integer> id) {\n"
             + "  return new OptBuilder3(id.map(builder::setId).orElse(builder));\n"

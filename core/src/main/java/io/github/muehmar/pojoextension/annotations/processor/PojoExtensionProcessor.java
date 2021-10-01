@@ -5,14 +5,15 @@ import com.google.auto.service.AutoService;
 import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import io.github.muehmar.pojoextension.data.Name;
-import io.github.muehmar.pojoextension.data.PackageName;
-import io.github.muehmar.pojoextension.data.Pojo;
-import io.github.muehmar.pojoextension.data.PojoField;
-import io.github.muehmar.pojoextension.data.Type;
 import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.GeneratorFactory;
-import io.github.muehmar.pojoextension.generator.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.Name;
+import io.github.muehmar.pojoextension.generator.data.PackageName;
+import io.github.muehmar.pojoextension.generator.data.Pojo;
+import io.github.muehmar.pojoextension.generator.data.PojoField;
+import io.github.muehmar.pojoextension.generator.data.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.Type;
+import io.github.muehmar.pojoextension.generator.impl.WriterFactory;
+import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionFactory;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
@@ -39,7 +40,7 @@ import javax.tools.JavaFileObject;
 public class PojoExtensionProcessor extends AbstractProcessor {
 
   private final Optional<BiConsumer<Pojo, PojoSettings>> redirectPojo;
-  private final Generator generator = GeneratorFactory.create();
+  private final Generator<Pojo, PojoSettings> generator = ExtensionFactory.extensionClass();
 
   public PojoExtensionProcessor() {
     redirectPojo = Optional.empty();
@@ -83,7 +84,8 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
     redirectPojo.ifPresent(output -> output.accept(pojoExtension, pojoSettings));
     if (!redirectPojo.isPresent()) {
-      final String generatedPojoExtension = generator.generate(pojoExtension, pojoSettings);
+      final String generatedPojoExtension =
+          generator.generate(pojoExtension, pojoSettings, WriterFactory.createDefault()).asString();
       try {
         JavaFileObject builderFile =
             processingEnv.getFiler().createSourceFile(pojoExtension.getExtensionName().asString());

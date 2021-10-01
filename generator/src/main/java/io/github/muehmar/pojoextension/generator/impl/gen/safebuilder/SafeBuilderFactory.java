@@ -132,7 +132,8 @@ public class SafeBuilderFactory {
                     "Optional<%s> %s",
                     f.getField().getType().getClassName().asString(),
                     f.getField().getName().asString()))
-        .content(content);
+        .content(content)
+        .append(w -> w.ref("import java.util.Optional;"));
   }
 
   public static Generator<Pojo, PojoSettings> finalRequiredBuilder() {

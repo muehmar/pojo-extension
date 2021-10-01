@@ -99,6 +99,7 @@ public class NormalBuilderFactory {
                 String.format(
                     "Optional<%s> %s",
                     f.getType().getClassName().asString(), f.getName().asString()))
-        .content(content);
+        .content(content)
+        .append(w -> w.ref("import java.util.Optional;"));
   }
 }

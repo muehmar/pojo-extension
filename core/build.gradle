@@ -6,6 +6,8 @@ plugins {
 }
 
 dependencies {
+    implementation project(":generator")
+
     implementation libs.google.autoservice
     annotationProcessor libs.google.autoservice
 

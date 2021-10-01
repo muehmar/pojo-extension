@@ -8,6 +8,7 @@ import io.github.muehmar.pojoextension.generator.Writer;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class ClassGen<A, B> implements Generator<A, B> {
   private final ClassType type;
@@ -116,6 +117,10 @@ public class ClassGen<A, B> implements Generator<A, B> {
 
     public Builder4<A, B> className(BiFunction<A, B, String> createClassName) {
       return new Builder4<>(type, packageGen, modifiers, createClassName);
+    }
+
+    public Builder4<A, B> className(Function<A, String> className) {
+      return className((data, settings) -> className.apply(data));
     }
 
     public Builder4<A, B> className(String className) {

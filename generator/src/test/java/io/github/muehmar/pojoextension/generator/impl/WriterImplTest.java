@@ -115,4 +115,19 @@ class WriterImplTest {
             + "Line after writer A\n",
         writer.asString());
   }
+
+  @Test
+  void asString_when_blankLineAppended_then_tabsRemovedOfBlankLine() {
+    final String output =
+        WriterFactory.createDefault()
+            .tab(1)
+            .println("First line")
+            .tab(1)
+            .println("  ")
+            .tab(1)
+            .println("Third line")
+            .asString();
+
+    assertEquals("  First line\n" + "\n" + "  Third line\n", output);
+  }
 }

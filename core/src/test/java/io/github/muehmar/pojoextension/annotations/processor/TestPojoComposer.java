@@ -1,8 +1,8 @@
 package io.github.muehmar.pojoextension.annotations.processor;
 
 import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.data.Name;
-import io.github.muehmar.pojoextension.data.PackageName;
+import io.github.muehmar.pojoextension.generator.data.Name;
+import io.github.muehmar.pojoextension.generator.data.PackageName;
 
 public class TestPojoComposer {
   private TestPojoComposer() {}
