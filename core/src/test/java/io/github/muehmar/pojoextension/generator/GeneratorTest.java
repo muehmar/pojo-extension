@@ -25,7 +25,7 @@ class GeneratorTest {
     final Generator<Void, Void> genA = ofWriterFunction(w -> w.println("genA"));
     final Generator<Void, Void> genB = ofWriterFunction(w -> w.println("genB"));
 
-    final Generator<Void, Void> gen = genA.append(2, genB);
+    final Generator<Void, Void> gen = genA.append(genB, 2);
     final Writer writer = gen.generate(null, null, WriterFactory.createDefault());
     assertEquals("genA\n    genB\n", writer.asString());
   }
@@ -51,5 +51,31 @@ class GeneratorTest {
     final Writer writer = generator.generate(pojo, null, WriterFactory.createDefault());
 
     assertEquals("genA\nid\nusername\nnickname\n", writer.asString());
+  }
+
+  @Test
+  void appendConditionally_when_conditionEvaluatedToTrue_then_generatorAppended() {
+    final Generator<PojoField, Void> genA = ofWriterFunction(w -> w.println("genA"));
+    final Generator<PojoField, Void> genB = ofWriterFunction(w -> w.println("genB"));
+
+    final Generator<PojoField, Void> generator =
+        genA.appendConditionally(PojoField::isRequired, genB);
+    final Writer writer =
+        generator.generate(PojoFields.requiredId(), null, WriterFactory.createDefault());
+
+    assertEquals("genA\ngenB\n", writer.asString());
+  }
+
+  @Test
+  void appendConditionally_when_conditionEvaluatedToFalse_then_generatorNotAppended() {
+    final Generator<PojoField, Void> genA = ofWriterFunction(w -> w.println("genA"));
+    final Generator<PojoField, Void> genB = ofWriterFunction(w -> w.println("genB"));
+
+    final Generator<PojoField, Void> generator =
+        genA.appendConditionally(PojoField::isRequired, genB);
+    final Writer writer =
+        generator.generate(PojoFields.requiredId().withRequired(false), null, WriterFactory.createDefault());
+
+    assertEquals("genA\n", writer.asString());
   }
 }

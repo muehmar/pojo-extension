@@ -3,6 +3,7 @@ package io.github.muehmar.pojoextension.generator;
 import ch.bluecare.commons.data.PList;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 public interface Generator<A, B> {
@@ -22,16 +23,15 @@ public interface Generator<A, B> {
         next.generate(data, settings, self.generate(data, settings, writer));
   }
 
-  default Generator<A, B> append(int tabs, Generator<A, B> next) {
+  default Generator<A, B> append(Generator<A, B> next, int tabs) {
     final Generator<A, B> self = this;
     return (data, settings, writer) ->
         self.generate(data, settings, writer)
             .append(tabs, next.generate(data, settings, writer.empty()));
   }
 
-  default Generator<A, B> append(UnaryOperator<Writer> append) {
-    final Generator<A, B> self = this;
-    return (data, settings, writer) -> append.apply(self.generate(data, settings, writer));
+  default Generator<A, B> append(UnaryOperator<Writer> next) {
+    return append((data, settings, writer) -> next.apply(writer));
   }
 
   default <C> Generator<A, B> append(Generator<C, B> gen, Function<A, C> f) {
@@ -56,5 +56,9 @@ public interface Generator<A, B> {
       }
       return append(append).generate(data, settings, writer);
     };
+  }
+
+  default Generator<A, B> appendConditionally(Predicate<A> predicate, Generator<A, B> append) {
+    return appendConditionally((data, settings) -> predicate.test(data), append);
   }
 }

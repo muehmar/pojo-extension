@@ -36,7 +36,7 @@ public class ConstructorGen<A, B> implements Generator<A, B> {
               return w.print(
                   "%s%s(%s) {", modifiers.asStringTrailingWhitespace(), className, arguments);
             })
-        .append(1, contentGenerator)
+        .append(contentGenerator, 1)
         .append(w -> w.println("}"))
         .generate(data, settings, writer);
   }

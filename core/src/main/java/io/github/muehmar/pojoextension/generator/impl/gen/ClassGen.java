@@ -39,7 +39,7 @@ public class ClassGen<A, B> implements Generator<A, B> {
     return packageGen()
         .append(this::refs)
         .append(this::classStart)
-        .append(1, contentGenerator)
+        .append(contentGenerator, 1)
         .append(this::classEnd)
         .generate(data, settings, writer);
   }
