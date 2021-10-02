@@ -1,6 +1,4 @@
-package io.github.muehmar.pojoextension.generator.impl;
-
-import io.github.muehmar.pojoextension.generator.Writer;
+package io.github.muehmar.pojoextension.generator.writer;
 
 public class WriterFactory {
   private WriterFactory() {}

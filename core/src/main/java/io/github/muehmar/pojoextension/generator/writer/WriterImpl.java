@@ -1,8 +1,7 @@
-package io.github.muehmar.pojoextension.generator.impl;
+package io.github.muehmar.pojoextension.generator.writer;
 
 import ch.bluecare.commons.data.NonEmptyList;
 import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.generator.Writer;
 import java.util.Comparator;
 import java.util.function.Consumer;
 import java.util.function.Function;

@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.generator;
 
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;

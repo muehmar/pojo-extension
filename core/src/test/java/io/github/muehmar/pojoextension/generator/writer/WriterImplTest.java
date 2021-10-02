@@ -1,8 +1,7 @@
-package io.github.muehmar.pojoextension.generator.impl;
+package io.github.muehmar.pojoextension.generator.writer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.github.muehmar.pojoextension.generator.Writer;
 import org.junit.jupiter.api.Test;
 
 class WriterImplTest {

@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
-import io.github.muehmar.pojoextension.generator.impl.WriterFactory;
+import io.github.muehmar.pojoextension.generator.writer.WriterFactory;
 import org.junit.jupiter.api.Test;
 
 class ConstructorGenTest {

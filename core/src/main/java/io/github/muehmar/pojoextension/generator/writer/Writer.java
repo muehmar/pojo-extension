@@ -1,4 +1,4 @@
-package io.github.muehmar.pojoextension.generator;
+package io.github.muehmar.pojoextension.generator.writer;
 
 import ch.bluecare.commons.data.PList;
 import java.util.function.UnaryOperator;

@@ -5,7 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.impl.WriterFactory;
+import io.github.muehmar.pojoextension.generator.writer.Writer;
+import io.github.muehmar.pojoextension.generator.writer.WriterFactory;
 import org.junit.jupiter.api.Test;
 
 class GeneratorTest {
@@ -74,7 +75,8 @@ class GeneratorTest {
     final Generator<PojoField, Void> generator =
         genA.appendConditionally(PojoField::isRequired, genB);
     final Writer writer =
-        generator.generate(PojoFields.requiredId().withRequired(false), null, WriterFactory.createDefault());
+        generator.generate(
+            PojoFields.requiredId().withRequired(false), null, WriterFactory.createDefault());
 
     assertEquals("genA\n", writer.asString());
   }
