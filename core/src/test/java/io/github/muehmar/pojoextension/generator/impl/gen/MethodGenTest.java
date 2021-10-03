@@ -5,7 +5,7 @@ import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.generator.writer.WriterFactory;
+import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
 class MethodGenTest {
@@ -20,7 +20,7 @@ class MethodGenTest {
 
     final PList<String> data = PList.of("void", "getXY", "String a", "int b");
 
-    final String output = generator.generate(data, null, WriterFactory.createDefault()).asString();
+    final String output = generator.generate(data, null, Writer.createDefault()).asString();
     assertEquals(
         "public final void getXY(String a, int b) {\n"
             + "  System.out.println(\"Hello World\");\n"

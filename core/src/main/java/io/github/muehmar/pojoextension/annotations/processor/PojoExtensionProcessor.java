@@ -13,7 +13,7 @@ import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionFactory;
-import io.github.muehmar.pojoextension.generator.writer.WriterFactory;
+import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
@@ -85,7 +85,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     redirectPojo.ifPresent(output -> output.accept(pojoExtension, pojoSettings));
     if (!redirectPojo.isPresent()) {
       final String generatedPojoExtension =
-          generator.generate(pojoExtension, pojoSettings, WriterFactory.createDefault()).asString();
+          generator.generate(pojoExtension, pojoSettings, Writer.createDefault()).asString();
       try {
         JavaFileObject builderFile =
             processingEnv.getFiler().createSourceFile(pojoExtension.getExtensionName().asString());

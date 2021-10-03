@@ -10,7 +10,6 @@ import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.SafeBuilderPojoField;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
-import io.github.muehmar.pojoextension.generator.writer.WriterFactory;
 import org.junit.jupiter.api.Test;
 
 class SafeBuilderFactoryTest {
@@ -22,7 +21,7 @@ class SafeBuilderFactoryTest {
     final SafeBuilderPojoField field = new SafeBuilderPojoField(PojoFields.requiredId(), 2);
     final String output =
         generator
-            .generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault())
+            .generate(field, PojoSettings.defaultSettings(), Writer.createDefault())
             .asString();
 
     assertEquals(
@@ -48,7 +47,7 @@ class SafeBuilderFactoryTest {
         new SafeBuilderPojoField(PojoFields.requiredId().withRequired(false), 2);
     final String output =
         generator
-            .generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault())
+            .generate(field, PojoSettings.defaultSettings(), Writer.createDefault())
             .asString();
 
     assertEquals(
@@ -77,7 +76,7 @@ class SafeBuilderFactoryTest {
     final SafeBuilderPojoField field = new SafeBuilderPojoField(PojoFields.requiredId(), 2);
     final String output =
         generator
-            .generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault())
+            .generate(field, PojoSettings.defaultSettings(), Writer.createDefault())
             .asString();
 
     assertEquals(
@@ -101,7 +100,7 @@ class SafeBuilderFactoryTest {
         new SafeBuilderPojoField(PojoFields.requiredId().withRequired(false), 2);
     final String output =
         generator
-            .generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault())
+            .generate(field, PojoSettings.defaultSettings(), Writer.createDefault())
             .asString();
 
     assertEquals(
@@ -128,7 +127,7 @@ class SafeBuilderFactoryTest {
     final SafeBuilderPojoField field = new SafeBuilderPojoField(PojoFields.requiredId(), 2);
     final String output =
         generator
-            .generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault())
+            .generate(field, PojoSettings.defaultSettings(), Writer.createDefault())
             .asString();
 
     assertEquals(
@@ -143,7 +142,7 @@ class SafeBuilderFactoryTest {
         new SafeBuilderPojoField(PojoFields.requiredId().withRequired(false), 2);
     final String output =
         generator
-            .generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault())
+            .generate(field, PojoSettings.defaultSettings(), Writer.createDefault())
             .asString();
 
     assertEquals(
@@ -155,7 +154,7 @@ class SafeBuilderFactoryTest {
     final Generator<Pojo, PojoSettings> generator = SafeBuilderFactory.finalRequiredBuilder();
     final String output =
         generator
-            .generate(Pojos.sample(), PojoSettings.defaultSettings(), WriterFactory.createDefault())
+            .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault())
             .asString();
 
     assertEquals(
@@ -186,7 +185,7 @@ class SafeBuilderFactoryTest {
     final Generator<Pojo, PojoSettings> generator = SafeBuilderFactory.finalOptionalBuilder();
     final String output =
         generator
-            .generate(Pojos.sample(), PojoSettings.defaultSettings(), WriterFactory.createDefault())
+            .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault())
             .asString();
 
     assertEquals(
@@ -210,7 +209,7 @@ class SafeBuilderFactoryTest {
     final SafeBuilderPojoField field =
         new SafeBuilderPojoField(PojoFields.requiredId().withRequired(false), 2);
     final Writer writer =
-        generator.generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault());
+        generator.generate(field, PojoSettings.defaultSettings(), Writer.createDefault());
     final String output = writer.asString();
 
     assertTrue(writer.getRefs().exists("java.lang.Integer"::equals));
@@ -226,7 +225,7 @@ class SafeBuilderFactoryTest {
     final Generator<SafeBuilderPojoField, PojoSettings> generator = SafeBuilderFactory.setMethod();
     final SafeBuilderPojoField field = new SafeBuilderPojoField(PojoFields.requiredId(), 2);
     final Writer writer =
-        generator.generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault());
+        generator.generate(field, PojoSettings.defaultSettings(), Writer.createDefault());
     final String output = writer.asString();
 
     assertTrue(writer.getRefs().exists("java.lang.Integer"::equals));
@@ -244,7 +243,7 @@ class SafeBuilderFactoryTest {
     final SafeBuilderPojoField field =
         new SafeBuilderPojoField(PojoFields.requiredId().withRequired(false), 2);
     final Writer writer =
-        generator.generate(field, PojoSettings.defaultSettings(), WriterFactory.createDefault());
+        generator.generate(field, PojoSettings.defaultSettings(), Writer.createDefault());
     final String output = writer.asString();
 
     assertTrue(writer.getRefs().exists("java.util.Optional"::equals));

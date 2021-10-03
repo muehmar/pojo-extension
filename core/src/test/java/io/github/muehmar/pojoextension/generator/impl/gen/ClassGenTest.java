@@ -9,7 +9,6 @@ import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
-import io.github.muehmar.pojoextension.generator.writer.WriterFactory;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,8 +27,7 @@ class ClassGenTest {
             .content(Generator.ofWriterFunction(w -> w.println("Content")));
 
     final Writer writer =
-        generator.generate(
-            Pojos.sample(), PojoSettings.defaultSettings(), WriterFactory.createDefault());
+        generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
         "package io.github.muehmar;\n"
             + "\n"
@@ -50,8 +48,7 @@ class ClassGenTest {
             .content(Generator.ofWriterFunction(w -> w.ref("java.util.Optional")));
 
     final Writer writer =
-        generator.generate(
-            Pojos.sample(), PojoSettings.defaultSettings(), WriterFactory.createDefault());
+        generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
         "package io.github.muehmar;\n"
             + "\n"
@@ -71,8 +68,7 @@ class ClassGenTest {
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
 
     final Writer writer =
-        generator.generate(
-            Pojos.sample(), PojoSettings.defaultSettings(), WriterFactory.createDefault());
+        generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals("public class CustomerExtension {\n" + "}\n", writer.asString());
   }
 
@@ -87,8 +83,7 @@ class ClassGenTest {
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
 
     final Writer writer =
-        generator.generate(
-            Pojos.sample(), PojoSettings.defaultSettings(), WriterFactory.createDefault());
+        generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals("public final class CustomerExtension {\n" + "}\n", writer.asString());
   }
 

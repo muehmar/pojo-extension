@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
-import io.github.muehmar.pojoextension.generator.writer.WriterFactory;
+import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
 class ConstructorGenTest {
@@ -18,7 +18,7 @@ class ConstructorGenTest {
 
     final PList<String> data = PList.of("Customer", "String a", "int b");
 
-    final String output = generator.generate(data, null, WriterFactory.createDefault()).asString();
+    final String output = generator.generate(data, null, Writer.createDefault()).asString();
     assertEquals(
         "public Customer(String a, int b) {\n" + "  System.out.println(\"Hello World\");\n" + "}\n",
         output);

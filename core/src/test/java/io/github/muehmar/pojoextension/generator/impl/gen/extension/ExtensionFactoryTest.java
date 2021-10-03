@@ -7,7 +7,7 @@ import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.Resources;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
-import io.github.muehmar.pojoextension.generator.writer.WriterFactory;
+import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
 class ExtensionFactoryTest {
@@ -17,7 +17,7 @@ class ExtensionFactoryTest {
 
     final String output =
         generator
-            .generate(Pojos.sample(), PojoSettings.defaultSettings(), WriterFactory.createDefault())
+            .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault())
             .asString();
 
     assertEquals(readResourcePojoTemplate("SamplePojo"), output);

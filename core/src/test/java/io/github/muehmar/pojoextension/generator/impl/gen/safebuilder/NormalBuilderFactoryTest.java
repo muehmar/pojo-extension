@@ -10,7 +10,6 @@ import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
-import io.github.muehmar.pojoextension.generator.writer.WriterFactory;
 import org.junit.jupiter.api.Test;
 
 class NormalBuilderFactoryTest {
@@ -19,7 +18,7 @@ class NormalBuilderFactoryTest {
     final Generator<Pojo, PojoSettings> generator = NormalBuilderFactory.buildMethod();
     final String output =
         generator
-            .generate(Pojos.sample(), PojoSettings.defaultSettings(), WriterFactory.createDefault())
+            .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault())
             .asString();
 
     assertEquals(
@@ -33,7 +32,7 @@ class NormalBuilderFactoryTest {
 
     final Writer writer =
         generator.generate(
-            PojoFields.requiredId(), PojoSettings.defaultSettings(), WriterFactory.createDefault());
+            PojoFields.requiredId(), PojoSettings.defaultSettings(), Writer.createDefault());
     final String output = writer.asString();
 
     assertTrue(writer.getRefs().exists("java.lang.Integer"::equals));
@@ -50,7 +49,7 @@ class NormalBuilderFactoryTest {
         generator.generate(
             PojoFields.requiredId().withRequired(false),
             PojoSettings.defaultSettings(),
-            WriterFactory.createDefault());
+            Writer.createDefault());
     final String output = writer.asString();
 
     assertTrue(writer.getRefs().exists("java.lang.Integer"::equals));
@@ -67,7 +66,7 @@ class NormalBuilderFactoryTest {
         generator.generate(
             PojoFields.requiredId().withRequired(false),
             PojoSettings.defaultSettings(),
-            WriterFactory.createDefault());
+            Writer.createDefault());
 
     final String output = writer.asString();
 
@@ -86,7 +85,7 @@ class NormalBuilderFactoryTest {
     final Generator<Pojo, PojoSettings> generator = NormalBuilderFactory.builderClass();
     final String output =
         generator
-            .generate(Pojos.sample(), PojoSettings.defaultSettings(), WriterFactory.createDefault())
+            .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault())
             .asString();
 
     assertEquals(
