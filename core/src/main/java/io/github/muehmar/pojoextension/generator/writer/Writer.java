@@ -1,7 +1,6 @@
 package io.github.muehmar.pojoextension.generator.writer;
 
 import ch.bluecare.commons.data.PList;
-import java.util.function.UnaryOperator;
 
 /** Instances of this writer are immutable. */
 public interface Writer {
@@ -55,7 +54,7 @@ public interface Writer {
 
   Writer append(int tabs, Writer other);
 
-  PList<UnaryOperator<StringBuilder>> getLines();
+  PList<Line> getLines();
 
   String asString();
 }

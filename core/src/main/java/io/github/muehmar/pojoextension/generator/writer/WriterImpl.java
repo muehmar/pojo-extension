@@ -1,12 +1,10 @@
 package io.github.muehmar.pojoextension.generator.writer;
 
-import ch.bluecare.commons.data.NonEmptyList;
 import ch.bluecare.commons.data.PList;
 import java.util.Comparator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import java.util.stream.IntStream;
 
 public final class WriterImpl implements Writer {
   private static final int DEFAULT_SPACES_PER_TAB = 2;
@@ -14,7 +12,7 @@ public final class WriterImpl implements Writer {
 
   private final PList<String> refs;
   private final int refsLineNumber;
-  private final NonEmptyList<UnaryOperator<StringBuilder>> lines;
+  private final PList<Line> lines;
 
   private final String tab;
 
@@ -24,7 +22,7 @@ public final class WriterImpl implements Writer {
   private WriterImpl(
       PList<String> refs,
       int refsLineNumber,
-      NonEmptyList<UnaryOperator<StringBuilder>> lines,
+      PList<Line> lines,
       String tab,
       int tabs,
       boolean newline) {
@@ -42,33 +40,28 @@ public final class WriterImpl implements Writer {
 
   public static WriterImpl ofSpacesPerIndent(int spacesPerIndent) {
     final String tab = new String(new char[spacesPerIndent]).replace("\0", " ");
-    return new WriterImpl(
-        PList.empty(), -1, NonEmptyList.single(UnaryOperator.identity()), tab, 0, true);
+    return new WriterImpl(PList.empty(), -1, PList.single(Line.empty()), tab, 0, true);
   }
 
-  private WriterImpl appendToLastLine(Consumer<StringBuilder> c) {
-    final UnaryOperator<StringBuilder> newLastLine =
-        sb -> {
-          lines.head().apply(sb);
-          if (newline) {
-            printTabs(tabs, sb);
-          }
-          c.accept(sb);
-          return sb;
-        };
-    final NonEmptyList<UnaryOperator<StringBuilder>> newLines =
-        new NonEmptyList<>(newLastLine, this.lines.tail());
+  private WriterImpl appendToLastLine(String fragment) {
+    final PList<Line> newLines =
+        this.lines
+            .headOption()
+            .map(l -> l.append(fragment))
+            .map(l -> newline ? l.prepend(createTabs(tabs)) : l)
+            .map(l -> this.lines.tail().cons(l))
+            .orElse(this.lines);
     return new WriterImpl(refs, refsLineNumber, newLines, tab, tabs, false);
   }
 
   @Override
   public Writer print(String string, Object... args) {
-    return appendToLastLine(sb -> sb.append(String.format(string, args)));
+    return appendToLastLine(String.format(string, args));
   }
 
   @Override
   public Writer println() {
-    return new WriterImpl(refs, refsLineNumber, lines.cons(UnaryOperator.identity()), tab, 0, true);
+    return new WriterImpl(refs, refsLineNumber, lines.cons(Line.empty()), tab, 0, true);
   }
 
   @Override
@@ -81,39 +74,31 @@ public final class WriterImpl implements Writer {
     final int usedRefsLineNumber =
         this.refsLineNumber > 0 ? this.refsLineNumber : other.getRefsLineNumber();
 
-    final UnaryOperator<UnaryOperator<StringBuilder>> indentLines =
-        uo ->
-            sb -> {
-              printTabs(tabs, sb);
-              return uo.apply(sb);
-            };
+    final UnaryOperator<Line> indentLine = line -> line.prepend(createTabs(tabs));
 
-    final NonEmptyList<UnaryOperator<StringBuilder>> newLines =
-        NonEmptyList.fromIter(other.getLines().map(indentLines).concat(getLines()))
-            .orElse(NonEmptyList.single(UnaryOperator.identity()));
+    final PList<Line> newLines = other.getLines().map(indentLine).concat(getLines());
 
     return new WriterImpl(
         this.refs.concat(other.getRefs()),
         usedRefsLineNumber,
-        newLines.cons(UnaryOperator.identity()),
+        newLines.cons(Line.empty()),
         tab,
         0,
         true);
   }
 
-  private void printTabs(int tabs, StringBuilder sb) {
-    IntStream.range(0, tabs).forEach(i -> sb.append(tab));
+  private PList<String> createTabs(int tabs) {
+    return PList.range(0, tabs).map(ignore -> tab);
   }
 
   @Override
-  public PList<UnaryOperator<StringBuilder>> getLines() {
-    return newline ? lines.toPList().drop(1) : lines.toPList();
+  public PList<Line> getLines() {
+    return newline ? lines.drop(1) : lines;
   }
 
   @Override
   public Writer empty() {
-    return new WriterImpl(
-        PList.empty(), -1, NonEmptyList.single(UnaryOperator.identity()), tab, 0, true);
+    return new WriterImpl(PList.empty(), -1, PList.single(Line.empty()), tab, 0, true);
   }
 
   @Override
@@ -139,17 +124,13 @@ public final class WriterImpl implements Writer {
   @Override
   public String asString() {
     final StringBuilder sb = new StringBuilder();
-    final Consumer<UnaryOperator<StringBuilder>> applyStringBuilder =
+    final Consumer<Line> applyStringBuilder =
         line -> {
-          final StringBuilder tempSb = new StringBuilder();
-          final String lineOutput = line.apply(tempSb).toString();
-          if (lineOutput.trim().length() > 0) {
-            sb.append(lineOutput);
-          }
+          sb.append(line.removeTrailingBlankFragments().asStringBuilder());
           sb.append(NEWLINE_STRING);
         };
 
-    final PList<UnaryOperator<StringBuilder>> reversedLines = getLines().reverse();
+    final PList<Line> reversedLines = getLines().reverse();
     reversedLines.take(Math.max(refsLineNumber, 0)).forEach(applyStringBuilder);
 
     if (refsLineNumber >= 0) {
