@@ -53,7 +53,7 @@ class CompleteSafeBuilderFactoryTest {
             + "  }\n"
             + "}\n"
             + "\n"
-            + "public Builder0 newBuilder() {\n"
+            + "public static Builder0 newBuilder() {\n"
             + "  return new Builder0(new Builder());\n"
             + "}\n"
             + "\n"

@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder;
 
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
+import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newLine;
 
 import ch.bluecare.commons.data.PList;
@@ -45,7 +46,7 @@ public class CompleteSafeBuilderFactory {
   }
 
   private static Generator<Pojo, PojoSettings> newBuilderMethod() {
-    return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+    return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC, STATIC)
         .returnType("Builder0")
         .methodName("newBuilder")
         .noArguments()

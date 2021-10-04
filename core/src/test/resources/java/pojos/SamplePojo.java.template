@@ -39,7 +39,7 @@ public class CustomerExtension {
     }
   }
 
-  public Builder0 newBuilder() {
+  public static Builder0 newBuilder() {
     return new Builder0(new Builder());
   }
 
