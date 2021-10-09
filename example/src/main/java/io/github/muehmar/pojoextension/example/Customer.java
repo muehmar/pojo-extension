@@ -12,13 +12,15 @@ public class Customer {
   private final String name;
   private final Optional<String> nickname;
   @Nullable private final Integer age;
+  private final double random;
 
   // This constructor is used to allow instance creation for the safe builder
-  Customer(String id, String name, String nickname, Integer age) {
+  Customer(String id, String name, String nickname, Integer age, double random) {
     this.id = id;
     this.name = name;
     this.nickname = Optional.ofNullable(nickname);
     this.age = age;
+    this.random = random;
   }
 
   public String getId() {
@@ -27,6 +29,10 @@ public class Customer {
 
   public String getName() {
     return name;
+  }
+
+  public double getRandom() {
+    return random;
   }
 
   public Optional<String> getNickname() {
@@ -46,7 +52,8 @@ public class Customer {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Customer customer = (Customer) o;
-    return Objects.equals(id, customer.id)
+    return Double.compare(customer.random, random) == 0
+        && Objects.equals(id, customer.id)
         && Objects.equals(name, customer.name)
         && Objects.equals(nickname, customer.nickname)
         && Objects.equals(age, customer.age);
@@ -54,6 +61,6 @@ public class Customer {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, nickname, age);
+    return Objects.hash(id, name, nickname, age, random);
   }
 }

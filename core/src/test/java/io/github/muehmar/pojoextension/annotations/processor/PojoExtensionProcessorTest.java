@@ -168,6 +168,31 @@ class PojoExtensionProcessorTest {
     assertEquals(expected, pojoAndSettings.pojo);
   }
 
+  @Test
+  void run_when_fieldWithPrimitiveType_then_() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotation(PojoExtension.class)
+            .className(className)
+            .withField("boolean", "flag")
+            .withField("int", "count")
+            .constructor()
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+
+    final PojoField f1 = new PojoField(Type.primitive("boolean"), Name.fromString("flag"), true);
+    final PojoField f2 = new PojoField(Type.primitive("int"), Name.fromString("count"), true);
+    final Pojo expected =
+        new Pojo(className.append("Extension"), className, PACKAGE, PList.of(f1, f2));
+
+    assertEquals(expected, pojoAndSettings.pojo);
+  }
+
   private static Name randomClassName() {
     return Name.fromString("Customer")
         .append(UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10));

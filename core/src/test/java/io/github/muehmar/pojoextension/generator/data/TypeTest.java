@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.bluecare.commons.data.PList;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class TypeTest {
 
@@ -19,6 +21,16 @@ class TypeTest {
   void fromQualifiedClassName_when_genericClass_then_parsedCorrectlyWithoutTypeParameter() {
     final Type type = Type.fromQualifiedClassName("java.util.Optional<java.lang.String>");
     assertEquals(Type.optional(Type.string()).withTypeParameters(PList.empty()), type);
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"int", "byte", "short", "long", "float", "double", "boolean", "char"})
+  void fromQualifiedClassName_when_genericClass_then_parsedCorrectlyWithoutTypeParameter(
+      String primitiveType) {
+    final Type type = Type.fromQualifiedClassName(primitiveType);
+    assertEquals(0, type.getTypeParameters().size());
+    assertEquals(PackageName.javaLang(), type.getPackage());
+    assertEquals(primitiveType, type.getClassName().asString());
   }
 
   @Test

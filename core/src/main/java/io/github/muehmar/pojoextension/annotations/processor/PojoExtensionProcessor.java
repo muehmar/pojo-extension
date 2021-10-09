@@ -145,8 +145,10 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
       return Type.fromQualifiedClassName(declaredType.toString())
           .withTypeParameters(typeParameters);
+    } else {
+      final String qualifiedClassName = typeMirror.toString();
+      return Type.fromQualifiedClassName(qualifiedClassName);
     }
-    throw new IllegalArgumentException("TypeMirror is not a declared-type " + typeMirror.getKind());
   }
 
   @FunctionalInterface

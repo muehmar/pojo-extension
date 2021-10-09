@@ -14,10 +14,17 @@ public class Type {
   private static final Pattern QUALIFIED_CLASS_NAME_PATTERN =
       Pattern.compile("([.A-Za-z_$0-9]*)\\.([A-Za-z_$0-9]*)");
 
+  private static final PList<String> primitiveTypes =
+      PList.of("int", "byte", "short", "long", "float", "double", "boolean", "char");
+
   public Type(Name name, PackageName pkg, PList<Type> typeParameters) {
     this.name = name;
     this.pkg = pkg;
     this.typeParameters = typeParameters;
+  }
+
+  public static Type primitive(String primitive) {
+    return new Type(Name.fromString(primitive), PackageName.javaLang(), PList.empty());
   }
 
   public static Type string() {
@@ -42,6 +49,9 @@ public class Type {
       final PackageName packageName = PackageName.fromString(matcher.group(1));
       final Name name = Name.fromString(matcher.group(2));
       return new Type(name, packageName, PList.empty());
+    }
+    if (primitiveTypes.exists(qualifiedClassName::equals)) {
+      return Type.primitive(qualifiedClassName);
     }
     throw new IllegalArgumentException("Not a valid qualified classname: " + qualifiedClassName);
   }

@@ -12,6 +12,7 @@ class CustomerTest {
         Customer.newBuilder()
             .setId("123456")
             .setName("Dexter")
+            .setRandom(12.5d)
             .andAllOptionals()
             .setNickname("Dex")
             .setAge(Optional.empty())
@@ -19,6 +20,7 @@ class CustomerTest {
 
     assertEquals("123456", customer.getId());
     assertEquals("Dexter", customer.getName());
+    assertEquals(12.5d, customer.getRandom());
     assertEquals(Optional.of("Dex"), customer.getNickname());
     assertEquals(Optional.empty(), customer.getAge());
   }
