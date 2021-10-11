@@ -24,8 +24,8 @@ Add the dependency and register it as annotation processor. In gradle this would
 
 ```
 dependencies {
-    implementation "io.github.muehmar:pojo-extension:0.2.0"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.2.0"
+    implementation "io.github.muehmar:pojo-extension:0.2.1"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.2.1"
 }
 ```
 
@@ -186,7 +186,12 @@ example above, the builder provides methods with the following signature:
   public Builder setNickname(Optional<String> nickname);
 ```
 
+## Known Issues
+
+* Wildcard types are not yet supported
+
 ## Change Log
 
+* 0.2.1 - Add support for primitives and arrays
 * 0.2.0 - Add SafeBuilder to the extension class
 * 0.1.0 - Initial release, creates empty extension class

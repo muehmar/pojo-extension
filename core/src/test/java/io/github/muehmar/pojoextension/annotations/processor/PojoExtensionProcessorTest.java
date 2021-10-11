@@ -1,5 +1,7 @@
 package io.github.muehmar.pojoextension.annotations.processor;
 
+import static io.github.muehmar.pojoextension.generator.data.Type.integer;
+import static io.github.muehmar.pojoextension.generator.data.Type.string;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -13,6 +15,7 @@ import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.data.Type;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -43,7 +46,7 @@ class PojoExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
-    final PojoField m1 = new PojoField(Type.string(), Name.fromString("id"), true);
+    final PojoField m1 = new PojoField(string(), Name.fromString("id"), true);
     final Pojo expected =
         new Pojo(className.append("Extension"), className, PACKAGE, PList.single(m1));
 
@@ -67,7 +70,7 @@ class PojoExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
-    final PojoField m1 = new PojoField(Type.string(), Name.fromString("id"), false);
+    final PojoField m1 = new PojoField(string(), Name.fromString("id"), false);
     final Pojo expected =
         new Pojo(className.append("Extension"), className, PACKAGE, PList.single(m1));
 
@@ -91,7 +94,7 @@ class PojoExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
-    final PojoField m1 = new PojoField(Type.string(), Name.fromString("id"), false);
+    final PojoField m1 = new PojoField(string(), Name.fromString("id"), false);
     final Pojo expected =
         new Pojo(className.append("Extension"), className, PACKAGE, PList.single(m1));
 
@@ -123,7 +126,7 @@ class PojoExtensionProcessorTest {
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
     final boolean required = !optionalDetection.equals(OptionalDetection.NULLABLE_ANNOTATION);
-    final PojoField m1 = new PojoField(Type.string(), Name.fromString("id"), required);
+    final PojoField m1 = new PojoField(string(), Name.fromString("id"), required);
     final Pojo expected =
         new Pojo(
             className.append("Extension"),
@@ -159,11 +162,81 @@ class PojoExtensionProcessorTest {
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
     final boolean required = !optionalDetection.equals(OptionalDetection.OPTIONAL_CLASS);
-    final Type type = required ? Type.optional(Type.string()) : Type.string();
+    final Type type = required ? Type.optional(string()) : string();
 
     final PojoField m1 = new PojoField(type, Name.fromString("id"), required);
     final Pojo expected =
         new Pojo(className.append("Extension"), className, PACKAGE, PList.single(m1));
+
+    assertEquals(expected, pojoAndSettings.pojo);
+  }
+
+  @Test
+  void run_when_primitiveFields_then_fieldsCorrectCreated() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotation(PojoExtension.class)
+            .className(className)
+            .withField("boolean", "b")
+            .withField("int", "i")
+            .withField("short", "s")
+            .withField("long", "l")
+            .withField("float", "f")
+            .withField("double", "d")
+            .withField("byte", "by")
+            .withField("char", "c")
+            .constructor()
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+
+    final PojoField f1 = new PojoField(Type.primitive("boolean"), Name.fromString("b"), true);
+    final PojoField f2 = new PojoField(Type.primitive("int"), Name.fromString("i"), true);
+    final PojoField f3 = new PojoField(Type.primitive("short"), Name.fromString("s"), true);
+    final PojoField f4 = new PojoField(Type.primitive("long"), Name.fromString("l"), true);
+    final PojoField f5 = new PojoField(Type.primitive("float"), Name.fromString("f"), true);
+    final PojoField f6 = new PojoField(Type.primitive("double"), Name.fromString("d"), true);
+    final PojoField f7 = new PojoField(Type.primitive("byte"), Name.fromString("by"), true);
+    final PojoField f8 = new PojoField(Type.primitive("char"), Name.fromString("c"), true);
+    final Pojo expected =
+        new Pojo(
+            className.append("Extension"),
+            className,
+            PACKAGE,
+            PList.of(f1, f2, f3, f4, f5, f6, f7, f8));
+
+    assertEquals(expected, pojoAndSettings.pojo);
+  }
+
+  @Test
+  void run_when_arrays_then_fieldsCorrectCreated() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .withImport(Map.class)
+            .annotation(PojoExtension.class)
+            .className(className)
+            .withField("Map<String, Integer>[]", "data")
+            .withField("byte[]", "key")
+            .constructor()
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+
+    final PojoField f1 =
+        new PojoField(
+            Type.map(string(), integer()).withIsArray(true), Name.fromString("data"), true);
+    final PojoField f2 =
+        new PojoField(Type.primitive("byte").withIsArray(true), Name.fromString("key"), true);
+    final Pojo expected =
+        new Pojo(className.append("Extension"), className, PACKAGE, PList.of(f1, f2));
 
     assertEquals(expected, pojoAndSettings.pojo);
   }

@@ -10,48 +10,61 @@ public class Type {
   private final Name name;
   private final PackageName pkg;
   private final PList<Type> typeParameters;
+  private final boolean isArray;
 
   private static final Pattern QUALIFIED_CLASS_NAME_PATTERN =
       Pattern.compile("([.A-Za-z_$0-9]*)\\.([A-Za-z_$0-9]*)");
 
-  public Type(Name name, PackageName pkg, PList<Type> typeParameters) {
+  private static final PList<String> primitiveTypes =
+      PList.of("int", "byte", "short", "long", "float", "double", "boolean", "char");
+
+  public Type(Name name, PackageName pkg, PList<Type> typeParameters, boolean isArray) {
     this.name = name;
     this.pkg = pkg;
     this.typeParameters = typeParameters;
+    this.isArray = isArray;
+  }
+
+  public static Type primitive(String primitive) {
+    return new Type(Name.fromString(primitive), PackageName.javaLang(), PList.empty(), false);
   }
 
   public static Type string() {
-    return new Type(Name.fromString("String"), PackageName.javaLang(), PList.empty());
+    return new Type(Name.fromString("String"), PackageName.javaLang(), PList.empty(), false);
   }
 
   public static Type integer() {
-    return new Type(Name.fromString("Integer"), PackageName.javaLang(), PList.empty());
+    return new Type(Name.fromString("Integer"), PackageName.javaLang(), PList.empty(), false);
   }
 
   public static Type optional(Type value) {
-    return new Type(Name.fromString("Optional"), PackageName.javaUtil(), PList.single(value));
+    return new Type(
+        Name.fromString("Optional"), PackageName.javaUtil(), PList.single(value), false);
   }
 
   public static Type map(Type key, Type value) {
-    return new Type(Name.fromString("Map"), PackageName.javaUtil(), PList.of(key, value));
+    return new Type(Name.fromString("Map"), PackageName.javaUtil(), PList.of(key, value), false);
   }
 
-  public static Type fromQualifiedClassName(String qualifiedClassName) {
-    final Matcher matcher = QUALIFIED_CLASS_NAME_PATTERN.matcher(qualifiedClassName);
+  public static Type fromClassName(String className) {
+    final Matcher matcher = QUALIFIED_CLASS_NAME_PATTERN.matcher(className);
     if (matcher.find()) {
       final PackageName packageName = PackageName.fromString(matcher.group(1));
       final Name name = Name.fromString(matcher.group(2));
-      return new Type(name, packageName, PList.empty());
+      return new Type(name, packageName, PList.empty(), false);
     }
-    throw new IllegalArgumentException("Not a valid qualified classname: " + qualifiedClassName);
+    return primitiveTypes
+        .find(className::equals)
+        .map(Type::primitive)
+        .orElseThrow(() -> new IllegalArgumentException("Not a valid classname: " + className));
   }
 
   public static Type from(Name name, PackageName pkg) {
-    return new Type(name, pkg, PList.empty());
+    return new Type(name, pkg, PList.empty(), false);
   }
 
   public Type withTypeParameters(PList<Type> typeParameters) {
-    return new Type(name, pkg, typeParameters);
+    return new Type(name, pkg, typeParameters, isArray);
   }
 
   public Name getName() {
@@ -65,7 +78,9 @@ public class Type {
             .map(Type::getClassName)
             .reduce((s1, s2) -> s1.append(",").append(s2))
             .map(s -> s.prefix("<").append(">"));
-    return getName().append(formattedTypeParameters.map(Name::asString).orElse(""));
+    return getName()
+        .append(formattedTypeParameters.map(Name::asString).orElse(""))
+        .append(isArray ? "[]" : "");
   }
 
   public Name getQualifiedName() {
@@ -80,11 +95,21 @@ public class Type {
     return typeParameters;
   }
 
+  public boolean isArray() {
+    return isArray;
+  }
+
+  public Type withIsArray(boolean isArray) {
+    return new Type(name, pkg, typeParameters, isArray);
+  }
+
   public boolean equalsIgnoreTypeParameters(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Type type = (Type) o;
-    return Objects.equals(name, type.name) && Objects.equals(pkg, type.pkg);
+    return Objects.equals(name, type.name)
+        && Objects.equals(pkg, type.pkg)
+        && Objects.equals(isArray, type.isArray);
   }
 
   @Override
@@ -92,18 +117,28 @@ public class Type {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Type type = (Type) o;
-    return Objects.equals(name, type.name)
+    return isArray == type.isArray
+        && Objects.equals(name, type.name)
         && Objects.equals(pkg, type.pkg)
         && Objects.equals(typeParameters, type.typeParameters);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, pkg, typeParameters);
+    return Objects.hash(name, pkg, typeParameters, isArray);
   }
 
   @Override
   public String toString() {
-    return "Type{" + "name=" + name + ", pkg=" + pkg + ", typeParameters=" + typeParameters + '}';
+    return "Type{"
+        + "name="
+        + name
+        + ", pkg="
+        + pkg
+        + ", typeParameters="
+        + typeParameters
+        + ", isArray="
+        + isArray
+        + '}';
   }
 }
