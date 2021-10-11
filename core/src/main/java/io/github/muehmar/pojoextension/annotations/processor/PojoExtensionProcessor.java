@@ -30,8 +30,6 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
 import javax.tools.JavaFileObject;
 
 @SupportedAnnotationTypes("*")
@@ -42,8 +40,12 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   private final Optional<BiConsumer<Pojo, PojoSettings>> redirectPojo;
   private final Generator<Pojo, PojoSettings> generator = ExtensionFactory.extensionClass();
 
+  private PojoExtensionProcessor(Optional<BiConsumer<Pojo, PojoSettings>> redirectPojo) {
+    this.redirectPojo = redirectPojo;
+  }
+
   public PojoExtensionProcessor() {
-    redirectPojo = Optional.empty();
+    this(Optional.empty());
   }
 
   /**
@@ -51,7 +53,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
    * created {@link Pojo} and {@link PojoSettings} instances to the given consumer.
    */
   public PojoExtensionProcessor(BiConsumer<Pojo, PojoSettings> redirectPojo) {
-    this.redirectPojo = Optional.of(redirectPojo);
+    this(Optional.of(redirectPojo));
   }
 
   @Override
@@ -65,7 +67,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   }
 
   private void processElement(Element element) {
-    final Type pojoType = Type.fromQualifiedClassName(element.toString());
+    final Type pojoType = Type.fromClassName(element.toString());
     final Name className = pojoType.getName();
     final Name extensionClassName = className.append("Extension");
     final PackageName classPackage = pojoType.getPackage();
@@ -100,7 +102,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
   private PojoField convertToPojoField(Element element, DetectionSettings settings) {
     final Name fieldName = Name.fromString(element.getSimpleName().toString());
-    final Type fieldType = mapTypeMirrorToType(element.asType());
+    final Type fieldType = TypeMirrorMapper.map(element.asType());
 
     return convertToPojoField(element, fieldName, fieldType, settings);
   }
@@ -135,20 +137,6 @@ public class PojoExtensionProcessor extends AbstractProcessor {
                     .getOptionalDetections()
                     .exists(OptionalDetection.NULLABLE_ANNOTATION::equals))
         .map(ignore -> new PojoField(type, name, false));
-  }
-
-  private Type mapTypeMirrorToType(TypeMirror typeMirror) {
-    if (typeMirror instanceof DeclaredType) {
-      DeclaredType declaredType = ((DeclaredType) typeMirror);
-      final PList<Type> typeParameters =
-          PList.fromIter(declaredType.getTypeArguments()).map(this::mapTypeMirrorToType);
-
-      return Type.fromQualifiedClassName(declaredType.toString())
-          .withTypeParameters(typeParameters);
-    } else {
-      final String qualifiedClassName = typeMirror.toString();
-      return Type.fromQualifiedClassName(qualifiedClassName);
-    }
   }
 
   @FunctionalInterface
