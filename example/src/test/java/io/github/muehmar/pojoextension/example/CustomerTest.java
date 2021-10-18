@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.example;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Optional;
@@ -22,7 +23,7 @@ class CustomerTest {
     assertEquals("123456", customer.getId());
     assertEquals("Dexter", customer.getName());
     assertEquals(12.5d, customer.getRandom());
-    assertEquals(new byte[] {0x15}, customer.getKey());
+    assertArrayEquals(new byte[] {0x15}, customer.getKey());
     assertEquals(Optional.of("Dex"), customer.getNickname());
     assertEquals(Optional.empty(), customer.getAge());
   }
