@@ -9,6 +9,9 @@ import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import io.github.muehmar.pojoextension.generator.PojoFields;
+import io.github.muehmar.pojoextension.generator.data.Argument;
+import io.github.muehmar.pojoextension.generator.data.Constructor;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
@@ -47,8 +50,14 @@ class PojoExtensionProcessorTest {
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
     final PojoField m1 = new PojoField(string(), Name.fromString("id"), true);
+    final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
-        new Pojo(className.append("Extension"), className, PACKAGE, PList.single(m1));
+        new Pojo(
+            className.append("Extension"),
+            className,
+            PACKAGE,
+            fields,
+            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))));
 
     assertEquals(expected, pojoAndSettings.pojo);
   }
@@ -71,8 +80,14 @@ class PojoExtensionProcessorTest {
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
     final PojoField m1 = new PojoField(string(), Name.fromString("id"), false);
+    final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
-        new Pojo(className.append("Extension"), className, PACKAGE, PList.single(m1));
+        new Pojo(
+            className.append("Extension"),
+            className,
+            PACKAGE,
+            fields,
+            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))));
 
     assertEquals(expected, pojoAndSettings.pojo);
   }
@@ -95,8 +110,14 @@ class PojoExtensionProcessorTest {
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
     final PojoField m1 = new PojoField(string(), Name.fromString("id"), false);
+    final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
-        new Pojo(className.append("Extension"), className, PACKAGE, PList.single(m1));
+        new Pojo(
+            className.append("Extension"),
+            className,
+            PACKAGE,
+            fields,
+            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))));
 
     assertEquals(expected, pojoAndSettings.pojo);
   }
@@ -127,12 +148,14 @@ class PojoExtensionProcessorTest {
 
     final boolean required = !optionalDetection.equals(OptionalDetection.NULLABLE_ANNOTATION);
     final PojoField m1 = new PojoField(string(), Name.fromString("id"), required);
+    final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         new Pojo(
             className.append("Extension"),
             className,
             PackageName.fromString("io.github.muehmar"),
-            PList.single(m1));
+            fields,
+            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))));
 
     assertEquals(expected, pojoAndSettings.pojo);
   }
@@ -165,8 +188,16 @@ class PojoExtensionProcessorTest {
     final Type type = required ? Type.optional(string()) : string();
 
     final PojoField m1 = new PojoField(type, Name.fromString("id"), required);
+    final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
-        new Pojo(className.append("Extension"), className, PACKAGE, PList.single(m1));
+        new Pojo(
+            className.append("Extension"),
+            className,
+            PACKAGE,
+            fields,
+            PList.single(
+                new Constructor(
+                    className, PList.single(new Argument(Name.fromString("id"), Type.string())))));
 
     assertEquals(expected, pojoAndSettings.pojo);
   }
@@ -202,12 +233,14 @@ class PojoExtensionProcessorTest {
     final PojoField f6 = new PojoField(Type.primitive("double"), Name.fromString("d"), true);
     final PojoField f7 = new PojoField(Type.primitive("byte"), Name.fromString("by"), true);
     final PojoField f8 = new PojoField(Type.primitive("char"), Name.fromString("c"), true);
+    final PList<PojoField> fields = PList.of(f1, f2, f3, f4, f5, f6, f7, f8);
     final Pojo expected =
         new Pojo(
             className.append("Extension"),
             className,
             PACKAGE,
-            PList.of(f1, f2, f3, f4, f5, f6, f7, f8));
+            fields,
+            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))));
 
     assertEquals(expected, pojoAndSettings.pojo);
   }
@@ -235,8 +268,14 @@ class PojoExtensionProcessorTest {
             Type.map(string(), integer()).withIsArray(true), Name.fromString("data"), true);
     final PojoField f2 =
         new PojoField(Type.primitive("byte").withIsArray(true), Name.fromString("key"), true);
+    final PList<PojoField> fields = PList.of(f1, f2);
     final Pojo expected =
-        new Pojo(className.append("Extension"), className, PACKAGE, PList.of(f1, f2));
+        new Pojo(
+            className.append("Extension"),
+            className,
+            PACKAGE,
+            fields,
+            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))));
 
     assertEquals(expected, pojoAndSettings.pojo);
   }

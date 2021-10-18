@@ -6,6 +6,7 @@ import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.data.Constructor;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
@@ -76,12 +77,22 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     final DetectionSettings detectionSettings =
         new DetectionSettings(PList.fromArray(annotation.optionalDetection()));
 
+    final PList<Constructor> constructors = ConstructorProcessor.process(element);
+
     final PList<PojoField> fields =
         PList.fromIter(element.getEnclosedElements())
             .filter(e -> e.getKind().equals(ElementKind.FIELD))
             .map(e -> convertToPojoField(e, detectionSettings));
 
-    final Pojo pojoExtension = new Pojo(extensionClassName, className, classPackage, fields);
+    final Pojo pojoExtension =
+        Pojo.newBuilder()
+            .setExtensionName(extensionClassName)
+            .setPojoName(className)
+            .setPkg(classPackage)
+            .setFields(fields)
+            .setConstructors(constructors)
+            .andAllOptionals()
+            .build();
     final PojoSettings pojoSettings = new PojoSettings(false);
 
     redirectPojo.ifPresent(output -> output.accept(pojoExtension, pojoSettings));

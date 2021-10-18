@@ -6,6 +6,9 @@ plugins {
 }
 
 dependencies {
+    implementation libs.pojoextension
+    annotationProcessor libs.pojoextension
+
     implementation libs.google.autoservice
     annotationProcessor libs.google.autoservice
 
