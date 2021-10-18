@@ -3,6 +3,7 @@ package io.github.muehmar.pojoextension.generator.data;
 import ch.bluecare.commons.data.PList;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -101,6 +102,15 @@ public class Type {
 
   public Type withIsArray(boolean isArray) {
     return new Type(name, pkg, typeParameters, isArray);
+  }
+
+  /**
+   * Runs the given function in case this type is an {@link Optional} with the single type parameter
+   * of the optional.
+   */
+  public <T> Optional<T> onOptional(Function<Type, T> f) {
+    final Type self = this;
+    return typeParameters.headOption().filter(type -> optional(type).equals(self)).map(f);
   }
 
   public boolean equalsIgnoreTypeParameters(Object o) {

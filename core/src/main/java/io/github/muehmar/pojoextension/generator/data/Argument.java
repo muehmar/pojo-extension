@@ -19,6 +19,13 @@ public class Argument {
     return type;
   }
 
+  public boolean matchesType(PojoField field) {
+    return type.equals(field.getType())
+        || type.onOptional(field.getType()::equals)
+            .filter(ignore -> field.isOptional())
+            .orElse(false);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

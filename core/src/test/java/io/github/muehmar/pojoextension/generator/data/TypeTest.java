@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.bluecare.commons.data.PList;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,6 +47,18 @@ class TypeTest {
     final Type optionalInteger = Type.optional(Type.integer());
     assertNotEquals(optionalInteger, optionalString);
     assertTrue(optionalString.equalsIgnoreTypeParameters(optionalInteger));
+  }
+
+  @Test
+  void onOptional_when_typeIsOptional_then_functionAppliedWithTypeParameter() {
+    final Type type = Type.optional(Type.string());
+    assertEquals(Optional.of("String"), type.onOptional(Type::getClassName).map(Name::asString));
+  }
+
+  @Test
+  void onOptional_when_typeIsNotOptional_then_emptyReturned() {
+    final Type type = Type.map(Type.string(), Type.integer());
+    assertEquals(Optional.empty(), type.onOptional(Type::getClassName).map(Name::asString));
   }
 
   private static Stream<Arguments> primitiveTypes() {

@@ -2,6 +2,7 @@ package io.github.muehmar.pojoextension.generator.data;
 
 import ch.bluecare.commons.data.PList;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Constructor {
   private final Name name;
@@ -18,6 +19,20 @@ public class Constructor {
 
   public PList<Argument> getArguments() {
     return arguments;
+  }
+
+  /**
+   * Return the list of fields in the order of the match of the arguments for this constructor or
+   * empty if they do not match.
+   */
+  public Optional<PList<PojoField>> matchFields(PList<PojoField> fields) {
+    if (fields.size() != arguments.size()) {
+      return Optional.empty();
+    }
+
+    return fields.zip(arguments).forall(p -> p.second().matchesType(p.first()))
+        ? Optional.of(fields)
+        : Optional.empty();
   }
 
   @Override
