@@ -4,6 +4,7 @@ import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.data.PojoExtension.Builder0;
 import java.util.Objects;
+import java.util.Optional;
 
 @PojoExtension
 public class Pojo {
@@ -44,6 +45,16 @@ public class Pojo {
 
   public PList<Constructor> getConstructors() {
     return constructors;
+  }
+
+  public Optional<MatchingConstructor> findMatchingConstructor() {
+    return constructors
+        .flatMapOptional(c -> c.matchFields(fields).map(f -> new MatchingConstructor(c, f)))
+        .headOption();
+  }
+
+  public Pojo withFields(PList<PojoField> fields) {
+    return new Pojo(extensionName, pojoName, pkg, fields, constructors);
   }
 
   public Pojo withConstructors(PList<Constructor> constructors) {

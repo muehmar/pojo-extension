@@ -11,6 +11,10 @@ public class Argument {
     this.type = type;
   }
 
+  public static Argument of(Name name, Type type) {
+    return new Argument(name, type);
+  }
+
   public Name getName() {
     return name;
   }

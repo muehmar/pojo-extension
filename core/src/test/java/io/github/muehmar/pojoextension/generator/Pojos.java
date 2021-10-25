@@ -33,6 +33,20 @@ public class Pojos {
     return pojo.withConstructors(PList.single(deviateStandardConstructor(pojo)));
   }
 
+  public static Pojo sampleWithConstructorWithOptionalArgument() {
+    final Pojo pojo = sample();
+    final PList<Argument> arguments =
+        pojo.getFields()
+            .map(
+                f ->
+                    f.isOptional()
+                        ? new Argument(f.getName(), Type.optional(f.getType()))
+                        : PojoFields.toArgument(f));
+
+    return pojo.withConstructors(
+        PList.single(new Constructor(Name.fromString("Customer"), arguments)));
+  }
+
   public static Constructor deviateStandardConstructor(Pojo pojo) {
     return new Constructor(
         pojo.getPojoName(), pojo.getFields().map(f -> new Argument(f.getName(), f.getType())));
