@@ -24,8 +24,8 @@ Add the dependency and register it as annotation processor. In gradle this would
 
 ```
 dependencies {
-    implementation "io.github.muehmar:pojo-extension:0.2.1"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.2.1"
+    implementation "io.github.muehmar:pojo-extension:0.2.2"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.2.2"
 }
 ```
 
@@ -82,9 +82,9 @@ There are some requirements for the pojo depending on the used feature.
 ### Safe Builder
 
 The safe builder needs to create instances of the pojo. Therefore, a constructor is required which accepts all fields in
-the same order of declaration. Any optional field which is wrapped in an `Optional` should be the generic type parameter
-and allow to be `null` (see the following example). As the extension class is generated in the same package, the
-constructor can be package private:
+the same order of declaration. The arguments for optional fields can either be wrapped into an Optional or allow to pass
+`null`, the extension will create a proper constructor call according to the types of the arguments. As the extension
+class is generated in the same package, the constructor can be package private:
 
 ```
 @PojoExtension
@@ -192,6 +192,7 @@ example above, the builder provides methods with the following signature:
 
 ## Change Log
 
+* 0.2.2 - Support constructors with optional fields wrapped into `java.util.Optional`
 * 0.2.1 - Add support for primitives and arrays
 * 0.2.0 - Add SafeBuilder to the extension class
 * 0.1.0 - Initial release, creates empty extension class

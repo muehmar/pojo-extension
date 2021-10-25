@@ -27,6 +27,25 @@ class NormalBuilderFactoryTest {
   }
 
   @Test
+  void
+      buildMethod_when_generatorUsedWithSamplePojoAndConstructorWithOptionalArgument_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = NormalBuilderFactory.buildMethod();
+    final Writer writer =
+        generator.generate(
+            Pojos.sampleWithConstructorWithOptionalArgument(),
+            PojoSettings.defaultSettings(),
+            Writer.createDefault());
+    final String output = writer.asString();
+
+    assertTrue(writer.getRefs().exists("java.util.Optional"::equals));
+    assertEquals(
+        "public Customer build() {\n"
+            + "  return new Customer(id, username, Optional.ofNullable(nickname));\n"
+            + "}\n",
+        output);
+  }
+
+  @Test
   void setMethod_when_generatorUsedWithRequiredField_then_correctPrivateMethodGenerated() {
     final Generator<PojoField, PojoSettings> generator = NormalBuilderFactory.setMethod();
 

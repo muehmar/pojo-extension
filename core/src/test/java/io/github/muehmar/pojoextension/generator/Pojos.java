@@ -1,6 +1,8 @@
 package io.github.muehmar.pojoextension.generator;
 
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.generator.data.Argument;
+import io.github.muehmar.pojoextension.generator.data.Constructor;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
@@ -18,7 +20,35 @@ public class Pojos {
             new PojoField(Type.integer(), Name.fromString("id"), true),
             new PojoField(Type.string(), Name.fromString("username"), true),
             new PojoField(Type.string(), Name.fromString("nickname"), false));
-    return new Pojo(
-        Name.fromString("CustomerExtension"), Name.fromString("Customer"), PACKAGE_NAME, fields);
+    final Name extensionName = Name.fromString("CustomerExtension");
+    final Pojo pojo =
+        Pojo.newBuilder()
+            .setExtensionName(extensionName)
+            .setPojoName(Name.fromString("Customer"))
+            .setPkg(PACKAGE_NAME)
+            .setFields(fields)
+            .setConstructors(PList.empty())
+            .andAllOptionals()
+            .build();
+    return pojo.withConstructors(PList.single(deviateStandardConstructor(pojo)));
+  }
+
+  public static Pojo sampleWithConstructorWithOptionalArgument() {
+    final Pojo pojo = sample();
+    final PList<Argument> arguments =
+        pojo.getFields()
+            .map(
+                f ->
+                    f.isOptional()
+                        ? new Argument(f.getName(), Type.optional(f.getType()))
+                        : PojoFields.toArgument(f));
+
+    return pojo.withConstructors(
+        PList.single(new Constructor(Name.fromString("Customer"), arguments)));
+  }
+
+  public static Constructor deviateStandardConstructor(Pojo pojo) {
+    return new Constructor(
+        pojo.getPojoName(), pojo.getFields().map(f -> new Argument(f.getName(), f.getType())));
   }
 }

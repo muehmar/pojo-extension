@@ -17,6 +17,7 @@ import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.FieldDeclarationGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGen;
 
 /**
  * Factory which creates more or less the well-known standard builder pattern used for the
@@ -56,12 +57,7 @@ public class NormalBuilderFactory {
         .returnType(p -> p.getPojoName().asString())
         .methodName("build")
         .noArguments()
-        .content(
-            (pojo, settings, writer) ->
-                writer.println(
-                    "return new %s(%s);",
-                    pojo.getPojoName().asString(),
-                    pojo.getFields().map(f -> f.getName().asString()).mkString(", ")));
+        .content(ConstructorCallGen.constructorCall());
   }
 
   public static Generator<PojoField, PojoSettings> setMethod() {
