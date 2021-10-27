@@ -2,13 +2,12 @@ package io.github.muehmar.pojoextension.example;
 
 import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import io.github.muehmar.pojoextension.example.CustomerExtension.Builder0;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
 @PojoExtension
-public class Customer {
+public class Customer extends io.github.muehmar.pojoextension.example.CustomerExtension {
   private final String id;
   private final String name;
   private final Optional<String> nickname;
@@ -48,10 +47,6 @@ public class Customer {
 
   public byte[] getKey() {
     return key;
-  }
-
-  public static Builder0 newBuilder() {
-    return io.github.muehmar.pojoextension.example.CustomerExtension.newBuilder();
   }
 
   @Override

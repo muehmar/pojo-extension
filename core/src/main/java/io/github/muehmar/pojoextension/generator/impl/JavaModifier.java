@@ -5,6 +5,7 @@ public enum JavaModifier {
   PROTECTED("protected", 0),
   PUBLIC("public", 0),
   STATIC("static", 1),
+  ABSTRACT("abstract", 1),
   FINAL("final", 2);
 
   private final String value;
