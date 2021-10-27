@@ -99,18 +99,16 @@ public class SafeBuilderFactory {
             w.println(
                 "return new %s(builder.set%s(%s));",
                 createNextClassName(f, s),
-                f.getField().getName().toPascalCase().asString(),
-                f.getField().getName().asString());
+                f.getField().getName().toPascalCase(),
+                f.getField().getName());
 
     return MethodGen.<SafeBuilderPojoField, PojoSettings>modifiers(PUBLIC)
         .returnType(SafeBuilderFactory::createNextClassName)
-        .methodName(f -> String.format("set%s", f.getField().getName().toPascalCase().asString()))
+        .methodName(f -> String.format("set%s", f.getField().getName().toPascalCase()))
         .singleArgument(
             f ->
                 String.format(
-                    "%s %s",
-                    f.getField().getType().getClassName().asString(),
-                    f.getField().getName().asString()))
+                    "%s %s", f.getField().getType().getClassName(), f.getField().getName()))
         .content(content)
         .append((f, s, w) -> w.ref(f.getField().getType().getQualifiedName().asString()));
   }
@@ -121,18 +119,17 @@ public class SafeBuilderFactory {
             w.println(
                 "return new %s(%s.map(builder::set%s).orElse(builder));",
                 createNextClassName(f, s),
-                f.getField().getName().asString(),
-                f.getField().getName().toPascalCase().asString());
+                f.getField().getName(),
+                f.getField().getName().toPascalCase());
 
     return MethodGen.<SafeBuilderPojoField, PojoSettings>modifiers(PUBLIC)
         .returnType(SafeBuilderFactory::createNextClassName)
-        .methodName(f -> String.format("set%s", f.getField().getName().toPascalCase().asString()))
+        .methodName(f -> String.format("set%s", f.getField().getName().toPascalCase()))
         .singleArgument(
             f ->
                 String.format(
                     "Optional<%s> %s",
-                    f.getField().getType().getClassName().asString(),
-                    f.getField().getName().asString()))
+                    f.getField().getType().getClassName(), f.getField().getName()))
         .content(content)
         .append(w -> w.ref("java.util.Optional"))
         .append((f, s, w) -> w.ref(f.getField().getType().getQualifiedName().asString()));

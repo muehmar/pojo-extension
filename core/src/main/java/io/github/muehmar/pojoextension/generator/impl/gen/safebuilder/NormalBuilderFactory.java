@@ -64,17 +64,14 @@ public class NormalBuilderFactory {
     final Generator<PojoField, PojoSettings> content =
         (field, settings, writer) ->
             writer
-                .println("this.%s = %s;", field.getName().asString(), field.getName().asString())
+                .println("this.%s = %s;", field.getName(), field.getName())
                 .println("return this;");
 
     return MethodGen.<PojoField, PojoSettings>modifiers(
             (f, s) -> JavaModifiers.of(f.isRequired() ? JavaModifier.PRIVATE : JavaModifier.PUBLIC))
         .returnType(BUILDER_CLASSNAME)
-        .methodName(f -> String.format("set%s", f.getName().toPascalCase().asString()))
-        .singleArgument(
-            f ->
-                String.format(
-                    "%s %s", f.getType().getClassName().asString(), f.getName().asString()))
+        .methodName(f -> String.format("set%s", f.getName().toPascalCase()))
+        .singleArgument(f -> String.format("%s %s", f.getType().getClassName(), f.getName()))
         .content(content)
         .append((f, s, w) -> w.ref(f.getType().getQualifiedName().asString()));
   }
@@ -83,19 +80,14 @@ public class NormalBuilderFactory {
     final Generator<PojoField, PojoSettings> content =
         (field, settings, writer) ->
             writer
-                .println(
-                    "this.%s = %s.orElse(null);",
-                    field.getName().asString(), field.getName().asString())
+                .println("this.%s = %s.orElse(null);", field.getName(), field.getName())
                 .println("return this;");
 
     return MethodGen.<PojoField, PojoSettings>modifiers(PUBLIC)
         .returnType(BUILDER_CLASSNAME)
-        .methodName(f -> String.format("set%s", f.getName().toPascalCase().asString()))
+        .methodName(f -> String.format("set%s", f.getName().toPascalCase()))
         .singleArgument(
-            f ->
-                String.format(
-                    "Optional<%s> %s",
-                    f.getType().getClassName().asString(), f.getName().asString()))
+            f -> String.format("Optional<%s> %s", f.getType().getClassName(), f.getName()))
         .content(content)
         .append(w -> w.ref("java.util.Optional"))
         .append((f, s, w) -> w.ref(f.getType().getQualifiedName().asString()));

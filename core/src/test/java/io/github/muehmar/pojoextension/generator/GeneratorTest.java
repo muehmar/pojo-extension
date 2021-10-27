@@ -43,7 +43,7 @@ class GeneratorTest {
   void appendList_when_called_then_contentCreatedForEveryElementInTheList() {
     final Generator<Pojo, Void> genA = ofWriterFunction(w -> w.println("genA"));
     final Generator<PojoField, Void> fieldGen =
-        (field, settings, writer) -> writer.println("%s", field.getName().asString());
+        (field, settings, writer) -> writer.println("%s", field.getName());
 
     final Pojo pojo = Pojos.sample();
 

@@ -23,9 +23,7 @@ public class FieldDeclarationGen implements Generator<PojoField, PojoSettings> {
     return writer
         .println(
             "%s%s %s;",
-            modifiers.asStringTrailingWhitespace(),
-            field.getType().getClassName().asString(),
-            field.getName().asString())
+            modifiers.asStringTrailingWhitespace(), field.getType().getClassName(), field.getName())
         .ref(field.getType().getQualifiedName().asString());
   }
 }

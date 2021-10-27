@@ -44,7 +44,7 @@ public class ConstructorCallGen {
                     final PojoField.OnOptionalMatch<String> onOptionalMatch =
                         (f, a) -> {
                           addRef.set(w -> w.ref("java.util.Optional"));
-                          return String.format("Optional.ofNullable(%s)", f.getName().asString());
+                          return String.format("Optional.ofNullable(%s)", f.getName());
                         };
                     final PojoField.OnNoMatch<String> onNoMatch =
                         (f, a) -> {
@@ -59,7 +59,7 @@ public class ConstructorCallGen {
           .apply(writer)
           .println(
               "return new %s(%s);",
-              match.getConstructor().getName().asString(), constructorParameters.mkString(", "));
+              match.getConstructor().getName(), constructorParameters.mkString(", "));
     };
   }
 }
