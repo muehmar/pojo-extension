@@ -3,15 +3,14 @@
 
 # Pojo Extension
 
-Generate useful boilerplate code for pojos. This annotation processor creates an extension class with some useful
-features to extend the pojos like the SafeBuilder.
+Generate useful boilerplate code for immutable pojos. This annotation processor creates an extension class with some
+useful features to extend the pojos like the SafeBuilder.
 
-This annotation processor does intentionally not modify the AST of the pojo like Lombok. The features are used by
-delegating method calls in the pojo to the extension class. This needs to be done once, any update in the pojo is
-automatically updated in the extension class by the processor.
+This annotation processor does intentionally not modify the AST of the pojo like Lombok. The features are automatically
+added to the pojo by extending the generated extension class.
 
-This annotation processor is designed for simple immutable pojos, whose attributes are either required or optional. Some
-features may also be used for more complex data structures.
+This annotation processor is designed for simple immutable pojos, whose attributes are either required or optional, but
+the processor may also be used for more complex data structures.
 
 Currently the extension class contains the following features:
 
@@ -24,8 +23,8 @@ Add the dependency and register it as annotation processor. In gradle this would
 
 ```
 dependencies {
-    implementation "io.github.muehmar:pojo-extension:0.2.2"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.2.2"
+    implementation "io.github.muehmar:pojo-extension:0.2.4"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.2.4"
 }
 ```
 
@@ -33,7 +32,7 @@ Annotate a simple pojo class:
 
 ```
 @PojoExtension
-public class Customer {
+public class Customer extends CustomerExtension {
 private final String name;
 private final String email;
 private final Optional<String> nickname;
@@ -48,9 +47,11 @@ private final Optional<String> nickname;
 }
 ```
 
-This will create a class `CustomerExtension` which provides the utilities for the `Customer` class. In case of the
-SafeBuilder one could either use the static method `CustomerExtension.newBuilder()` or delegate the call in
-the `Customer` class:
+This will create the class `CustomerExtension` which provides the utilities for the `Customer` class. In case of the
+SafeBuilder one could now use the static method `Customer.newBuilder()` which is provided by the extension class.
+
+In case one could not extend the extension class, some of the features like the SafeBuilder could be used by delegating
+the call of the `newBuilder` method:
 
 ```
 @PojoExtension
@@ -88,7 +89,7 @@ class is generated in the same package, the constructor can be package private:
 
 ```
 @PojoExtension
-public class Customer {
+public class Customer extends CustomerExtension {
 private final String name;
 private final String email;
 private final Optional<String> nickname;
@@ -132,7 +133,7 @@ For example, given the following class:
 
 ```
 @PojoExtension
-public class Customer {
+public class Customer extends CustomerExtension {
 private final String name;
 private final String email;
 private final Optional<String> nickname;
@@ -151,7 +152,7 @@ private final Optional<String> nickname;
 will lead to a builder which can be used like the following:
 
 ```
-  CustomerExtension.newBuilder()
+  Customer.newBuilder()
     .setName("Dexter")
     .setEmail("dexter@miami-metro.us")
     .andAllOptionals()
@@ -192,6 +193,8 @@ example above, the builder provides methods with the following signature:
 
 ## Change Log
 
+* 0.2.4 - Fix generated package structure for the extension
+* 0.2.3 - Make the extension be extendable by the pojo itself
 * 0.2.2 - Support constructors with optional fields wrapped into `java.util.Optional`
 * 0.2.1 - Add support for primitives and arrays
 * 0.2.0 - Add SafeBuilder to the extension class
