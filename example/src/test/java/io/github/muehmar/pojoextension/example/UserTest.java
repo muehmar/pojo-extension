@@ -9,11 +9,7 @@ class UserTest {
   @Test
   void newBuilder_when_usedToCreateInstanceEmptyOptional_then_allAttributesSetAccordingly() {
     final User user =
-        UserExtension.newBuilder()
-            .setName("Joe")
-            .andAllOptionals()
-            .setAge(Optional.empty())
-            .build();
+        User.newBuilder().setName("Joe").andAllOptionals().setAge(Optional.empty()).build();
 
     assertEquals("Joe", user.getName());
     assertEquals(Optional.empty(), user.getAge());
@@ -21,8 +17,7 @@ class UserTest {
 
   @Test
   void newBuilder_when_usedToCreateInstanceSetOptional_then_allAttributesSetAccordingly() {
-    final User user =
-        UserExtension.newBuilder().setName("Joe").andAllOptionals().setAge(50).build();
+    final User user = User.newBuilder().setName("Joe").andAllOptionals().setAge(50).build();
 
     assertEquals("Joe", user.getName());
     assertEquals(Optional.of(50), user.getAge());
