@@ -100,10 +100,9 @@ public class PojoExtensionProcessor extends AbstractProcessor {
       final String generatedPojoExtension =
           generator.generate(pojoExtension, pojoSettings, Writer.createDefault()).asString();
       try {
+        final Name qualifiedExtensionName = pojoExtension.qualifiedName().append(extensionSuffix());
         JavaFileObject builderFile =
-            processingEnv
-                .getFiler()
-                .createSourceFile(pojoExtension.getName().append(extensionSuffix()).asString());
+            processingEnv.getFiler().createSourceFile(qualifiedExtensionName.asString());
         try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
           out.println(generatedPojoExtension);
         }

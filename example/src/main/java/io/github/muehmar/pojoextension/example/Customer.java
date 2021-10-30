@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @PojoExtension
-public class Customer extends io.github.muehmar.pojoextension.example.CustomerExtension {
+public class Customer extends CustomerExtension {
   private final String id;
   private final String name;
   private final Optional<String> nickname;
