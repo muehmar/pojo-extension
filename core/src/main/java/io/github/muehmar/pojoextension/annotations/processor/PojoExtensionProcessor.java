@@ -1,5 +1,7 @@
 package io.github.muehmar.pojoextension.annotations.processor;
 
+import static io.github.muehmar.pojoextension.Names.extensionSuffix;
+
 import ch.bluecare.commons.data.PList;
 import com.google.auto.service.AutoService;
 import io.github.muehmar.pojoextension.annotations.Nullable;
@@ -70,7 +72,6 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   private void processElement(Element element) {
     final Type pojoType = Type.fromClassName(element.toString());
     final Name className = pojoType.getName();
-    final Name extensionClassName = className.append("Extension");
     final PackageName classPackage = pojoType.getPackage();
 
     final PojoExtension annotation = element.getAnnotation(PojoExtension.class);
@@ -86,8 +87,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
     final Pojo pojoExtension =
         Pojo.newBuilder()
-            .setExtensionName(extensionClassName)
-            .setPojoName(className)
+            .setName(className)
             .setPkg(classPackage)
             .setFields(fields)
             .setConstructors(constructors)
@@ -101,7 +101,9 @@ public class PojoExtensionProcessor extends AbstractProcessor {
           generator.generate(pojoExtension, pojoSettings, Writer.createDefault()).asString();
       try {
         JavaFileObject builderFile =
-            processingEnv.getFiler().createSourceFile(pojoExtension.getExtensionName().asString());
+            processingEnv
+                .getFiler()
+                .createSourceFile(pojoExtension.getName().append(extensionSuffix()).asString());
         try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
           out.println(generatedPojoExtension);
         }

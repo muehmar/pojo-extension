@@ -20,11 +20,9 @@ public class Pojos {
             new PojoField(Type.integer(), Name.fromString("id"), true),
             new PojoField(Type.string(), Name.fromString("username"), true),
             new PojoField(Type.string(), Name.fromString("nickname"), false));
-    final Name extensionName = Name.fromString("CustomerExtension");
     final Pojo pojo =
         Pojo.newBuilder()
-            .setExtensionName(extensionName)
-            .setPojoName(Name.fromString("Customer"))
+            .setName(Name.fromString("Customer"))
             .setPkg(PACKAGE_NAME)
             .setFields(fields)
             .setConstructors(PList.empty())
@@ -49,6 +47,6 @@ public class Pojos {
 
   public static Constructor deviateStandardConstructor(Pojo pojo) {
     return new Constructor(
-        pojo.getPojoName(), pojo.getFields().map(f -> new Argument(f.getName(), f.getType())));
+        pojo.getName(), pojo.getFields().map(f -> new Argument(f.getName(), f.getType())));
   }
 }

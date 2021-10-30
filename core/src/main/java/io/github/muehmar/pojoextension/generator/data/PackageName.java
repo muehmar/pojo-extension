@@ -21,6 +21,10 @@ public class PackageName {
     return fromString("java.util");
   }
 
+  public Name qualifiedName(Name className) {
+    return className.prefix(".").prefix(pkg);
+  }
+
   public String asString() {
     return pkg;
   }

@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.extension;
 
+import static io.github.muehmar.pojoextension.Names.extensionSuffix;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.ABSTRACT;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PROTECTED;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
@@ -18,16 +19,16 @@ public class ExtensionFactory {
   public static Generator<Pojo, PojoSettings> extensionClass() {
     final ConstructorGen<Pojo, PojoSettings> constructor =
         ConstructorGen.<Pojo, PojoSettings>modifiers(PROTECTED)
-            .className(p -> p.getExtensionName().asString())
+            .className(p -> p.getName().append(extensionSuffix()).asString())
             .noArguments()
             .content(
                 (p, s, w) ->
                     w.println("final Object o = this;")
-                        .println("if(!(o instanceof %s))", p.getPojoName())
+                        .println("if(!(o instanceof %s))", p.getName())
                         .tab(1)
                         .println(
                             "throw new IllegalArgumentException(\"Only class %s can extend %s.\");",
-                            p.getPojoName(), p.getExtensionName()));
+                            p.getName(), p.getName().append(extensionSuffix())));
 
     final Generator<Pojo, PojoSettings> content =
         constructor.append(CompleteSafeBuilderFactory.completeSafeBuilder());
@@ -35,7 +36,7 @@ public class ExtensionFactory {
     return ClassGen.<Pojo, PojoSettings>topLevel()
         .packageGen(new PackageGen())
         .modifiers(PUBLIC, ABSTRACT)
-        .className(p -> p.getExtensionName().asString())
+        .className(p -> p.getName().append(extensionSuffix()).asString())
         .content(content);
   }
 }

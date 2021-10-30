@@ -54,7 +54,7 @@ public class NormalBuilderFactory {
 
   public static Generator<Pojo, PojoSettings> buildMethod() {
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
-        .returnType(p -> p.getPojoName().asString())
+        .returnType(p -> p.getName().asString())
         .methodName("build")
         .noArguments()
         .content(ConstructorCallGen.constructorCall());

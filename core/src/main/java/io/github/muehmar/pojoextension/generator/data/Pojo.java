@@ -8,31 +8,25 @@ import java.util.Optional;
 
 @PojoExtension
 public class Pojo {
-  private final Name extensionName;
-  private final Name pojoName;
+  private final Name name;
   private final PackageName pkg;
   private final PList<PojoField> fields;
   private final PList<Constructor> constructors;
 
   public Pojo(
-      Name extensionName,
-      Name pojoName,
-      PackageName pkg,
-      PList<PojoField> fields,
-      PList<Constructor> constructors) {
-    this.extensionName = extensionName;
-    this.pojoName = pojoName;
+      Name name, PackageName pkg, PList<PojoField> fields, PList<Constructor> constructors) {
+    this.name = name;
     this.pkg = pkg;
     this.fields = fields;
     this.constructors = constructors;
   }
 
-  public Name getExtensionName() {
-    return extensionName;
+  public Name getName() {
+    return name;
   }
 
-  public Name getPojoName() {
-    return pojoName;
+  public Name qualifiedName() {
+    return pkg.qualifiedName(name);
   }
 
   public PackageName getPackage() {
@@ -54,11 +48,11 @@ public class Pojo {
   }
 
   public Pojo withFields(PList<PojoField> fields) {
-    return new Pojo(extensionName, pojoName, pkg, fields, constructors);
+    return new Pojo(name, pkg, fields, constructors);
   }
 
   public Pojo withConstructors(PList<Constructor> constructors) {
-    return new Pojo(extensionName, pojoName, pkg, fields, constructors);
+    return new Pojo(name, pkg, fields, constructors);
   }
 
   public static Builder0 newBuilder() {
@@ -70,8 +64,7 @@ public class Pojo {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Pojo pojo = (Pojo) o;
-    return Objects.equals(extensionName, pojo.extensionName)
-        && Objects.equals(pojoName, pojo.pojoName)
+    return Objects.equals(name, pojo.name)
         && Objects.equals(pkg, pojo.pkg)
         && Objects.equals(fields, pojo.fields)
         && Objects.equals(constructors, pojo.constructors);
@@ -79,16 +72,14 @@ public class Pojo {
 
   @Override
   public int hashCode() {
-    return Objects.hash(extensionName, pojoName, pkg, fields, constructors);
+    return Objects.hash(name, pkg, fields, constructors);
   }
 
   @Override
   public String toString() {
     return "Pojo{"
-        + "extensionName="
-        + extensionName
-        + ", pojoName="
-        + pojoName
+        + "name="
+        + name
         + ", pkg="
         + pkg
         + ", fields="

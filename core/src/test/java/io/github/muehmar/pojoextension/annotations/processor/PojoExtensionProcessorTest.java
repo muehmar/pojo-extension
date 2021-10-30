@@ -53,7 +53,6 @@ class PojoExtensionProcessorTest {
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         new Pojo(
-            className.append("Extension"),
             className,
             PACKAGE,
             fields,
@@ -83,7 +82,6 @@ class PojoExtensionProcessorTest {
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         new Pojo(
-            className.append("Extension"),
             className,
             PACKAGE,
             fields,
@@ -113,7 +111,6 @@ class PojoExtensionProcessorTest {
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         new Pojo(
-            className.append("Extension"),
             className,
             PACKAGE,
             fields,
@@ -151,7 +148,6 @@ class PojoExtensionProcessorTest {
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         new Pojo(
-            className.append("Extension"),
             className,
             PackageName.fromString("io.github.muehmar"),
             fields,
@@ -191,7 +187,6 @@ class PojoExtensionProcessorTest {
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         new Pojo(
-            className.append("Extension"),
             className,
             PACKAGE,
             fields,
@@ -236,7 +231,6 @@ class PojoExtensionProcessorTest {
     final PList<PojoField> fields = PList.of(f1, f2, f3, f4, f5, f6, f7, f8);
     final Pojo expected =
         new Pojo(
-            className.append("Extension"),
             className,
             PACKAGE,
             fields,
@@ -271,7 +265,6 @@ class PojoExtensionProcessorTest {
     final PList<PojoField> fields = PList.of(f1, f2);
     final Pojo expected =
         new Pojo(
-            className.append("Extension"),
             className,
             PACKAGE,
             fields,

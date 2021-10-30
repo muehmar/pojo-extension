@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen;
 
+import static io.github.muehmar.pojoextension.Names.extensionSuffix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.bluecare.commons.data.PList;
@@ -23,7 +24,7 @@ class ClassGenTest {
         ClassGen.<Pojo, PojoSettings>topLevel()
             .packageGen(new PackageGen())
             .modifiers(JavaModifier.PUBLIC)
-            .className((p, s) -> p.getExtensionName().asString())
+            .className((p, s) -> p.getName().append(extensionSuffix()).asString())
             .content(Generator.ofWriterFunction(w -> w.println("Content")));
 
     final Writer writer =
@@ -44,7 +45,7 @@ class ClassGenTest {
         ClassGen.<Pojo, PojoSettings>topLevel()
             .packageGen(new PackageGen())
             .modifiers(JavaModifier.PUBLIC)
-            .className((p, s) -> p.getExtensionName().asString())
+            .className((p, s) -> p.getName().append(extensionSuffix()).asString())
             .content(Generator.ofWriterFunction(w -> w.ref("java.util.Optional")));
 
     final Writer writer =
@@ -64,7 +65,7 @@ class ClassGenTest {
     final ClassGen<Pojo, PojoSettings> generator =
         ClassGen.<Pojo, PojoSettings>nested()
             .modifiers(JavaModifier.PUBLIC)
-            .className((p, s) -> p.getExtensionName().asString())
+            .className((p, s) -> p.getName().append(extensionSuffix()).asString())
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
 
     final Writer writer =
@@ -79,7 +80,7 @@ class ClassGenTest {
     final ClassGen<Pojo, PojoSettings> generator =
         ClassGen.<Pojo, PojoSettings>nested()
             .modifiers(modifiers.toArray(JavaModifier.class))
-            .className((p, s) -> p.getExtensionName().asString())
+            .className((p, s) -> p.getName().append(extensionSuffix()).asString())
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
 
     final Writer writer =
