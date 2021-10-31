@@ -193,6 +193,7 @@ example above, the builder provides methods with the following signature:
 
 ## Change Log
 
+* 0.2.5 - Remove newline character from writer output
 * 0.2.4 - Fix generated package structure for the extension
 * 0.2.3 - Make the extension be extendable by the pojo itself
 * 0.2.2 - Support constructors with optional fields wrapped into `java.util.Optional`
