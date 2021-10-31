@@ -24,7 +24,7 @@ class MethodGenTest {
     assertEquals(
         "public final void getXY(String a, int b) {\n"
             + "  System.out.println(\"Hello World\");\n"
-            + "}\n",
+            + "}",
         output);
   }
 }

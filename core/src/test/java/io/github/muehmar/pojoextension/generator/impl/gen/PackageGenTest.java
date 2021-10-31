@@ -15,6 +15,6 @@ class PackageGenTest {
     final Writer writer =
         generator.generate(Pojos.sample(), new PojoSettings(false), Writer.createDefault());
 
-    assertEquals("package io.github.muehmar;\n", writer.asString());
+    assertEquals("package io.github.muehmar;", writer.asString());
   }
 }

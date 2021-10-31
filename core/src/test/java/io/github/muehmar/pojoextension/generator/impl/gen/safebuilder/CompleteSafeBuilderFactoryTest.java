@@ -127,7 +127,7 @@ class CompleteSafeBuilderFactoryTest {
             + "  public Customer build() {\n"
             + "    return builder.build();\n"
             + "  }\n"
-            + "}\n",
+            + "}",
         output);
   }
 }

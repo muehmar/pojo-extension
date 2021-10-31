@@ -20,7 +20,7 @@ class ConstructorGenTest {
 
     final String output = generator.generate(data, null, Writer.createDefault()).asString();
     assertEquals(
-        "public Customer(String a, int b) {\n" + "  System.out.println(\"Hello World\");\n" + "}\n",
+        "public Customer(String a, int b) {\n" + "  System.out.println(\"Hello World\");\n" + "}",
         output);
   }
 }

@@ -35,7 +35,7 @@ class SafeBuilderFactoryTest {
             + "  public Builder3 setId(Integer id) {\n"
             + "    return new Builder3(builder.setId(id));\n"
             + "  }\n"
-            + "}\n",
+            + "}",
         output);
   }
 
@@ -65,7 +65,7 @@ class SafeBuilderFactoryTest {
             + "  public OptBuilder3 setId(Optional<Integer> id) {\n"
             + "    return new OptBuilder3(id.map(builder::setId).orElse(builder));\n"
             + "  }\n"
-            + "}\n",
+            + "}",
         output);
   }
 
@@ -88,7 +88,7 @@ class SafeBuilderFactoryTest {
             + "\n"
             + "public Builder3 setId(Integer id) {\n"
             + "  return new Builder3(builder.setId(id));\n"
-            + "}\n",
+            + "}",
         output);
   }
 
@@ -116,7 +116,7 @@ class SafeBuilderFactoryTest {
             + "\n"
             + "public OptBuilder3 setId(Optional<Integer> id) {\n"
             + "  return new OptBuilder3(id.map(builder::setId).orElse(builder));\n"
-            + "}\n",
+            + "}",
         output);
   }
 
@@ -131,7 +131,7 @@ class SafeBuilderFactoryTest {
             .asString();
 
     assertEquals(
-        "private Builder2(Builder builder) {\n" + "  this.builder = builder;\n" + "}\n", output);
+        "private Builder2(Builder builder) {\n" + "  this.builder = builder;\n" + "}", output);
   }
 
   @Test
@@ -146,7 +146,7 @@ class SafeBuilderFactoryTest {
             .asString();
 
     assertEquals(
-        "private OptBuilder2(Builder builder) {\n" + "  this.builder = builder;\n" + "}\n", output);
+        "private OptBuilder2(Builder builder) {\n" + "  this.builder = builder;\n" + "}", output);
   }
 
   @Test
@@ -176,7 +176,7 @@ class SafeBuilderFactoryTest {
             + "  public Customer build() {\n"
             + "    return builder.build();\n"
             + "  }\n"
-            + "}\n",
+            + "}",
         output);
   }
 
@@ -199,7 +199,7 @@ class SafeBuilderFactoryTest {
             + "  public Customer build() {\n"
             + "    return builder.build();\n"
             + "  }\n"
-            + "}\n",
+            + "}",
         output);
   }
 
@@ -216,7 +216,7 @@ class SafeBuilderFactoryTest {
     assertEquals(
         "public OptBuilder3 setId(Integer id) {\n"
             + "  return new OptBuilder3(builder.setId(id));\n"
-            + "}\n",
+            + "}",
         output);
   }
 
@@ -232,7 +232,7 @@ class SafeBuilderFactoryTest {
     assertEquals(
         "public Builder3 setId(Integer id) {\n"
             + "  return new Builder3(builder.setId(id));\n"
-            + "}\n",
+            + "}",
         output);
   }
 
@@ -251,7 +251,7 @@ class SafeBuilderFactoryTest {
     assertEquals(
         "public OptBuilder3 setId(Optional<Integer> id) {\n"
             + "  return new OptBuilder3(id.map(builder::setId).orElse(builder));\n"
-            + "}\n",
+            + "}",
         output);
   }
 }

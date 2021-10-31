@@ -31,7 +31,7 @@ class FieldDeclarationGenTest {
 
     assertTrue(writer.getRefs().exists("java.lang.String"::equals));
 
-    assertEquals("private final String id;\n", writer.asString());
+    assertEquals("private final String id;", writer.asString());
   }
 
   private static Stream<Arguments> privateAndFinalModifierUnordered() {

@@ -8,13 +8,13 @@ class WriterTest {
   @Test
   void print_when_formatStringWithArgs_then_formattedCorrectly() {
     final Writer writer = Writer.createDefault().print("Format %s and %s!", "this", "that");
-    assertEquals("Format this and that!\n", writer.asString());
+    assertEquals("Format this and that!", writer.asString());
   }
 
   @Test
   void tabAndPrint_when_tabAndFormatStringWithArgs_then_formattedCorrectly() {
     final Writer writer = Writer.createDefault().tab(1).print("Format %s and %s!", "this", "that");
-    assertEquals("  Format this and that!\n", writer.asString());
+    assertEquals("  Format this and that!", writer.asString());
   }
 
   @Test
@@ -25,21 +25,21 @@ class WriterTest {
             .print(" And put")
             .print(" everything on the same")
             .print(" line.");
-    assertEquals("Format this and that! And put everything on the same line.\n", writer.asString());
+    assertEquals("Format this and that! And put everything on the same line.", writer.asString());
   }
 
   @Test
   void println_when_calledTwoTimes_then_twoLinesCreated() {
     final Writer writer =
         Writer.createDefault().println("Line number %d", 1).println("Line number %d", 2);
-    assertEquals("Line number 1\nLine number 2\n", writer.asString());
+    assertEquals("Line number 1\nLine number 2", writer.asString());
   }
 
   @Test
   void tabAndPrintln_when_tabCalledBeforePrintLn_then_tabResettedAfterPrintLnCalled() {
     final Writer writer =
         Writer.createDefault().tab(2).println("First line").println("Second line");
-    assertEquals("    First line\n" + "Second line\n", writer.asString());
+    assertEquals("    First line\n" + "Second line", writer.asString());
   }
 
   @Test
@@ -59,7 +59,7 @@ class WriterTest {
             + "import Ref B;\n"
             + "import Ref C;\n"
             + "Second line\n"
-            + "Third line\n",
+            + "Third line",
         writer.asString());
   }
 
@@ -80,7 +80,7 @@ class WriterTest {
             + "Something with a newline\n"
             + "Line after writer A\n"
             + "Something without a newline\n"
-            + "Line after writer B\n",
+            + "Line after writer B",
         writer.asString());
   }
 
@@ -94,8 +94,7 @@ class WriterTest {
             .append(2, writerA)
             .println("Some other line");
     assertEquals(
-        "First line of main writer\n" + "    Content writer A\nSome other line\n",
-        writer.asString());
+        "First line of main writer\n" + "    Content writer A\nSome other line", writer.asString());
   }
 
   @Test
@@ -115,7 +114,7 @@ class WriterTest {
             + "import Main writer ref;\n"
             + "import Writer A ref;\n"
             + "Something of writer A\n"
-            + "Line after writer A\n",
+            + "Line after writer A",
         writer.asString());
   }
 
@@ -131,7 +130,7 @@ class WriterTest {
             .println("Third line")
             .asString();
 
-    assertEquals("  First line\n" + "\n" + "  Third line\n", output);
+    assertEquals("  First line\n" + "\n" + "  Third line", output);
   }
 
   @Test
@@ -143,6 +142,6 @@ class WriterTest {
             .ref("java.util.Optional")
             .asString();
 
-    assertEquals("import java.util.Optional;\n", output);
+    assertEquals("import java.util.Optional;", output);
   }
 }

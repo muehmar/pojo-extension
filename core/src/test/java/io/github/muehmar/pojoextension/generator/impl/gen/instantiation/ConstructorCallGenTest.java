@@ -18,7 +18,7 @@ class ConstructorCallGenTest {
             .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(PList.empty(), writer.getRefs());
-    assertEquals("return new Customer(id, username, nickname);\n", writer.asString());
+    assertEquals("return new Customer(id, username, nickname);", writer.asString());
   }
 
   @Test
@@ -32,6 +32,6 @@ class ConstructorCallGenTest {
 
     assertEquals(PList.single("java.util.Optional"), pojo.getRefs());
     assertEquals(
-        "return new Customer(id, username, Optional.ofNullable(nickname));\n", pojo.asString());
+        "return new Customer(id, username, Optional.ofNullable(nickname));", pojo.asString());
   }
 }

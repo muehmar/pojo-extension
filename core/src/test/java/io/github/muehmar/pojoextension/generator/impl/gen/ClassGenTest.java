@@ -35,7 +35,7 @@ class ClassGenTest {
             + "\n"
             + "public class CustomerExtension {\n"
             + "  Content\n"
-            + "}\n",
+            + "}",
         writer.asString());
   }
 
@@ -56,7 +56,7 @@ class ClassGenTest {
             + "import java.util.Optional;\n"
             + "\n"
             + "public class CustomerExtension {\n"
-            + "}\n",
+            + "}",
         writer.asString());
   }
 
@@ -70,7 +70,7 @@ class ClassGenTest {
 
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
-    assertEquals("public class CustomerExtension {\n" + "}\n", writer.asString());
+    assertEquals("public class CustomerExtension {\n" + "}", writer.asString());
   }
 
   @ParameterizedTest
@@ -85,7 +85,7 @@ class ClassGenTest {
 
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
-    assertEquals("public final class CustomerExtension {\n" + "}\n", writer.asString());
+    assertEquals("public final class CustomerExtension {\n" + "}", writer.asString());
   }
 
   private static Stream<Arguments> publicAndFinalModifierUnordered() {

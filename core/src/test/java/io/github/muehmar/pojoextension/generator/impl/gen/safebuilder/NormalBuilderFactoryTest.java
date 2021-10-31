@@ -22,7 +22,7 @@ class NormalBuilderFactoryTest {
             .asString();
 
     assertEquals(
-        "public Customer build() {\n" + "  return new Customer(id, username, nickname);\n" + "}\n",
+        "public Customer build() {\n" + "  return new Customer(id, username, nickname);\n" + "}",
         output);
   }
 
@@ -41,7 +41,7 @@ class NormalBuilderFactoryTest {
     assertEquals(
         "public Customer build() {\n"
             + "  return new Customer(id, username, Optional.ofNullable(nickname));\n"
-            + "}\n",
+            + "}",
         output);
   }
 
@@ -56,7 +56,7 @@ class NormalBuilderFactoryTest {
 
     assertTrue(writer.getRefs().exists("java.lang.Integer"::equals));
     assertEquals(
-        "private Builder setId(Integer id) {\n" + "  this.id = id;\n" + "  return this;\n" + "}\n",
+        "private Builder setId(Integer id) {\n" + "  this.id = id;\n" + "  return this;\n" + "}",
         output);
   }
 
@@ -73,7 +73,7 @@ class NormalBuilderFactoryTest {
 
     assertTrue(writer.getRefs().exists("java.lang.Integer"::equals));
     assertEquals(
-        "public Builder setId(Integer id) {\n" + "  this.id = id;\n" + "  return this;\n" + "}\n",
+        "public Builder setId(Integer id) {\n" + "  this.id = id;\n" + "  return this;\n" + "}",
         output);
   }
 
@@ -95,7 +95,7 @@ class NormalBuilderFactoryTest {
         "public Builder setId(Optional<Integer> id) {\n"
             + "  this.id = id.orElse(null);\n"
             + "  return this;\n"
-            + "}\n",
+            + "}",
         output);
   }
 
@@ -139,7 +139,7 @@ class NormalBuilderFactoryTest {
             + "  public Customer build() {\n"
             + "    return new Customer(id, username, nickname);\n"
             + "  }\n"
-            + "}\n",
+            + "}",
         output);
   }
 }

@@ -128,7 +128,15 @@ public final class Writer {
     }
 
     reversedLines.drop(Math.max(refsLineNumber, 0)).forEach(applyStringBuilder);
-    return sb.toString();
+    return removeTrailingNewlineCharacter(sb.toString());
+  }
+
+  private static String removeTrailingNewlineCharacter(String str) {
+    final int length = str.length();
+    if (str.substring(length - 1).equals(NEWLINE_STRING)) {
+      return str.substring(0, length - 1);
+    }
+    return str;
   }
 
   public Writer print(char value) {

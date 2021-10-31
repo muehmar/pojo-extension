@@ -17,7 +17,7 @@ class GeneratorTest {
 
     final Generator<Void, Void> gen = genA.append(genB);
     final Writer writer = gen.generate(null, null, Writer.createDefault());
-    assertEquals("genA\ngenB\n", writer.asString());
+    assertEquals("genA\ngenB", writer.asString());
   }
 
   @Test
@@ -27,7 +27,7 @@ class GeneratorTest {
 
     final Generator<Void, Void> gen = genA.append(genB, 2);
     final Writer writer = gen.generate(null, null, Writer.createDefault());
-    assertEquals("genA\n    genB\n", writer.asString());
+    assertEquals("genA\n    genB", writer.asString());
   }
 
   @Test
@@ -36,7 +36,7 @@ class GeneratorTest {
 
     final Generator<Void, Void> gen = genA.append(w -> w.println("appended"));
     final Writer writer = gen.generate(null, null, Writer.createDefault());
-    assertEquals("genA\nappended\n", writer.asString());
+    assertEquals("genA\nappended", writer.asString());
   }
 
   @Test
@@ -50,7 +50,7 @@ class GeneratorTest {
     final Generator<Pojo, Void> generator = genA.appendList(fieldGen, Pojo::getFields);
     final Writer writer = generator.generate(pojo, null, Writer.createDefault());
 
-    assertEquals("genA\nid\nusername\nnickname\n", writer.asString());
+    assertEquals("genA\nid\nusername\nnickname", writer.asString());
   }
 
   @Test
@@ -62,7 +62,7 @@ class GeneratorTest {
         genA.appendConditionally(PojoField::isRequired, genB);
     final Writer writer = generator.generate(PojoFields.requiredId(), null, Writer.createDefault());
 
-    assertEquals("genA\ngenB\n", writer.asString());
+    assertEquals("genA\ngenB", writer.asString());
   }
 
   @Test
@@ -76,6 +76,6 @@ class GeneratorTest {
         generator.generate(
             PojoFields.requiredId().withRequired(false), null, Writer.createDefault());
 
-    assertEquals("genA\n", writer.asString());
+    assertEquals("genA", writer.asString());
   }
 }
