@@ -5,6 +5,7 @@ import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PRIVAT
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newLine;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
@@ -131,7 +132,7 @@ public class SafeBuilderFactory {
                     "Optional<%s> %s",
                     f.getField().getType().getClassName(), f.getField().getName()))
         .content(content)
-        .append(w -> w.ref("java.util.Optional"))
+        .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
         .append((f, s, w) -> w.ref(f.getField().getType().getQualifiedName().asString()));
   }
 

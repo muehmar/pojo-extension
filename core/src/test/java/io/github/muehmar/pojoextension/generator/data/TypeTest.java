@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.generator.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -13,8 +14,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class TypeTest {
-  private static final PList<String> primitiveTypes =
-      PList.of("int", "byte", "short", "long", "float", "double", "boolean", "char");
 
   @Test
   void fromClassName_when_javaLangString_then_parsedCorrectly() {
@@ -61,7 +60,23 @@ class TypeTest {
     assertEquals(Optional.empty(), type.onOptional(Type::getClassName).map(Name::asString));
   }
 
+  @Test
+  void isPrimitive_when_calledForEachPrimitive_then_trueForAll() {
+    final PList<Type> primitives = Type.allPrimitives();
+    primitives.forEach(primitive -> assertTrue(primitive.isPrimitive()));
+  }
+
+  @Test
+  void isPrimitive_when_calledForNonPrimitives_then_falseForAll() {
+    assertFalse(Type.string().isPrimitive());
+    assertFalse(Type.integer().isPrimitive());
+  }
+
   private static Stream<Arguments> primitiveTypes() {
-    return primitiveTypes.toStream().map(Arguments::of);
+    return Type.allPrimitives()
+        .toStream()
+        .map(Type::getName)
+        .map(Name::asString)
+        .map(Arguments::of);
   }
 }

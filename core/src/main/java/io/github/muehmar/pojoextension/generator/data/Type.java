@@ -16,14 +16,19 @@ public class Type {
   private static final Pattern QUALIFIED_CLASS_NAME_PATTERN =
       Pattern.compile("([.A-Za-z_$0-9]*)\\.([A-Za-z_$0-9]*)");
 
-  private static final PList<String> primitiveTypes =
-      PList.of("int", "byte", "short", "long", "float", "double", "boolean", "char");
+  private static final PList<Type> primitiveTypes =
+      PList.of("int", "byte", "short", "long", "float", "double", "boolean", "char")
+          .map(Type::primitive);
 
   public Type(Name name, PackageName pkg, PList<Type> typeParameters, boolean isArray) {
     this.name = name;
     this.pkg = pkg;
     this.typeParameters = typeParameters;
     this.isArray = isArray;
+  }
+
+  public static PList<Type> allPrimitives() {
+    return primitiveTypes;
   }
 
   public static Type primitive(String primitive) {
@@ -36,6 +41,10 @@ public class Type {
 
   public static Type integer() {
     return new Type(Name.fromString("Integer"), PackageName.javaLang(), PList.empty(), false);
+  }
+
+  public static Type primitiveDouble() {
+    return primitive("double");
   }
 
   public static Type optional(Type value) {
@@ -55,8 +64,7 @@ public class Type {
       return new Type(name, packageName, PList.empty(), false);
     }
     return primitiveTypes
-        .find(className::equals)
-        .map(Type::primitive)
+        .find(t -> t.getName().asString().equals(className))
         .orElseThrow(() -> new IllegalArgumentException("Not a valid classname: " + className));
   }
 
@@ -100,8 +108,16 @@ public class Type {
     return isArray;
   }
 
+  public boolean isNotArray() {
+    return !isArray();
+  }
+
   public Type withIsArray(boolean isArray) {
     return new Type(name, pkg, typeParameters, isArray);
+  }
+
+  public boolean isPrimitive() {
+    return primitiveTypes.find(this::equals).isPresent();
   }
 
   /**

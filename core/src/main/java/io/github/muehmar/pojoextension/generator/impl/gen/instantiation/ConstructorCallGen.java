@@ -1,5 +1,7 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.instantiation;
 
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
+
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Argument;
@@ -43,7 +45,7 @@ public class ConstructorCallGen {
                         (f, a) -> f.getName().asString();
                     final PojoField.OnOptionalMatch<String> onOptionalMatch =
                         (f, a) -> {
-                          addRef.set(w -> w.ref("java.util.Optional"));
+                          addRef.set(w -> w.ref(JAVA_UTIL_OPTIONAL));
                           return String.format("Optional.ofNullable(%s)", f.getName());
                         };
                     final PojoField.OnNoMatch<String> onNoMatch =

@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder;
 
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -246,7 +247,7 @@ class SafeBuilderFactoryTest {
         generator.generate(field, PojoSettings.defaultSettings(), Writer.createDefault());
     final String output = writer.asString();
 
-    assertTrue(writer.getRefs().exists("java.util.Optional"::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
     assertTrue(writer.getRefs().exists("java.lang.Integer"::equals));
     assertEquals(
         "public OptBuilder3 setId(Optional<Integer> id) {\n"
