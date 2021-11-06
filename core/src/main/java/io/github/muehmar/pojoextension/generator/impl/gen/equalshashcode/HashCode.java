@@ -33,48 +33,60 @@ public class HashCode {
 
   public static Generator<Pojo, PojoSettings> staticHashCodeMethod() {
     final Function<Pojo, String> argument = p -> String.format("%s o", p.getName());
-    final BiFunction<Writer, PojoField, Writer> arrayHashCode =
-        (w, field) ->
-            w.print("Arrays.hashCode(o.get%s())", field.getName().toPascalCase())
-                .ref(JAVA_UTIL_ARRAYS);
-    final BiFunction<Writer, PojoField, Writer> arrayHashCodeAdd =
-        (w, field) -> arrayHashCode.apply(w.print("result = 31 * result + "), field).println(";");
-    final BiFunction<Writer, PList<PojoField>, Writer> objectsHashCode =
-        (w, fields) ->
-            w.print(
-                    "Objects.hash(%s)",
-                    fields
-                        .map(f -> String.format("o.get%s()", f.getName().toPascalCase()))
-                        .mkString(", "))
-                .ref(JAVA_UTIL_OBJECTS);
-    final Generator<Pojo, PojoSettings> content =
-        (p, s, w) -> {
-          if (p.getFields().isEmpty()) {
-            return w.println("return 0;");
-          }
-
-          final PList<PojoField> nonArrayFields =
-              p.getFields().filter(f -> f.getType().isNotArray());
-          final PList<PojoField> arrayFields = p.getFields().filter(f -> f.getType().isArray());
-
-          final PList<PojoField> remainingArrayFields =
-              nonArrayFields.nonEmpty() ? arrayFields : arrayFields.drop(1);
-
-          return Updater.initial(w)
-              .update(wr -> wr.print("int result = "))
-              .updateConditionally(
-                  nonArrayFields.nonEmpty(), wr -> objectsHashCode.apply(wr, nonArrayFields))
-              .updateConditionally(
-                  nonArrayFields.isEmpty(), wr -> arrayHashCode.apply(wr, arrayFields.head()))
-              .update(wr -> wr.println(";"))
-              .update(wr -> remainingArrayFields.foldLeft(wr, arrayHashCodeAdd))
-              .update(wr -> wr.println("return result;"))
-              .get();
-        };
+    final Generator<Pojo, PojoSettings> content = staticHashCodeMethodContent();
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC, STATIC)
         .returnType("int")
         .methodName("hashCode")
         .singleArgument(argument)
         .content(content);
+  }
+
+  private static Generator<Pojo, PojoSettings> staticHashCodeMethodContent() {
+    final BiFunction<Writer, PojoField, Writer> arrayHashCode = arrayHashCodeFragment();
+    final BiFunction<Writer, PojoField, Writer> arrayHashCodeAdd = arrayHashCodeAddFragment();
+    final BiFunction<Writer, PList<PojoField>, Writer> objectsHashCode = objectsHashCodeFragment();
+
+    return (p, s, w) -> {
+      if (p.getFields().isEmpty()) {
+        return w.println("return 0;");
+      }
+
+      final PList<PojoField> nonArrayFields = p.getFields().filter(f -> f.getType().isNotArray());
+      final PList<PojoField> arrayFields = p.getFields().filter(f -> f.getType().isArray());
+
+      final PList<PojoField> remainingArrayFields =
+          nonArrayFields.nonEmpty() ? arrayFields : arrayFields.drop(1);
+
+      return Updater.initial(w)
+          .update(wr -> wr.print("int result = "))
+          .updateConditionally(
+              nonArrayFields.nonEmpty(), wr -> objectsHashCode.apply(wr, nonArrayFields))
+          .updateConditionally(
+              nonArrayFields.isEmpty(), wr -> arrayHashCode.apply(wr, arrayFields.head()))
+          .update(wr -> wr.println(";"))
+          .update(wr -> remainingArrayFields.foldLeft(wr, arrayHashCodeAdd))
+          .update(wr -> wr.println("return result;"))
+          .get();
+    };
+  }
+
+  private static BiFunction<Writer, PList<PojoField>, Writer> objectsHashCodeFragment() {
+    return (w, fields) ->
+        w.print(
+                "Objects.hash(%s)",
+                fields
+                    .map(f -> String.format("o.get%s()", f.getName().toPascalCase()))
+                    .mkString(", "))
+            .ref(JAVA_UTIL_OBJECTS);
+  }
+
+  private static BiFunction<Writer, PojoField, Writer> arrayHashCodeFragment() {
+    return (w, field) ->
+        w.print("Arrays.hashCode(o.get%s())", field.getName().toPascalCase()).ref(JAVA_UTIL_ARRAYS);
+  }
+
+  private static BiFunction<Writer, PojoField, Writer> arrayHashCodeAddFragment() {
+    return (w, field) ->
+        arrayHashCodeFragment().apply(w.print("result = 31 * result + "), field).println(";");
   }
 }
