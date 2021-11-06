@@ -16,7 +16,7 @@ class MethodGenTest {
             .returnType(l -> l.apply(0))
             .methodName(l -> l.apply(1))
             .arguments(l -> l.drop(2))
-            .content(w -> w.println("System.out.println(\"Hello World\");"));
+            .contentWriter(w -> w.println("System.out.println(\"Hello World\");"));
 
     final PList<String> data = PList.of("void", "getXY", "String a", "int b");
 

@@ -150,12 +150,16 @@ public class MethodGen<A, B> implements Generator<A, B> {
       return content((data, settings, writer) -> writer.println(content));
     }
 
+    public MethodGen<A, B> content(Function<A, String> content) {
+      return content((data, settings, writer) -> writer.println(content.apply(data)));
+    }
+
     public MethodGen<A, B> content(Generator<A, B> content) {
       return new MethodGen<>(
           createModifiers, createReturnType, createMethodName, createArguments, content);
     }
 
-    public MethodGen<A, B> content(UnaryOperator<Writer> content) {
+    public MethodGen<A, B> contentWriter(UnaryOperator<Writer> content) {
       return content((data, settings, writer) -> content.apply(writer));
     }
   }

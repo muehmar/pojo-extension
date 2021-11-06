@@ -27,7 +27,7 @@ public class HashCode {
             .returnType("int")
             .methodName("hashCode")
             .noArguments()
-            .content(w -> w.println("return hashCode(self());"));
+            .contentWriter(w -> w.println("return hashCode(self());"));
     return Annotations.<Pojo, PojoSettings>overrideAnnotation().append(method);
   }
 
