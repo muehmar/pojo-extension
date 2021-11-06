@@ -3,6 +3,7 @@ package io.github.muehmar.pojoextension.generator;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.data.Argument;
 import io.github.muehmar.pojoextension.generator.data.Constructor;
+import io.github.muehmar.pojoextension.generator.data.Getter;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
@@ -20,12 +21,27 @@ public class Pojos {
             new PojoField(Type.integer(), Name.fromString("id"), true),
             new PojoField(Type.string(), Name.fromString("username"), true),
             new PojoField(Type.string(), Name.fromString("nickname"), false));
+
+    final PList<Getter> getters =
+        fields.map(
+            f -> {
+              final Type returnType =
+                  f.isOptional() && !f.getType().isOptional()
+                      ? Type.optional(f.getType())
+                      : f.getType();
+              return Getter.newBuilder()
+                  .setName(f.getName().toPascalCase().prefix("get"))
+                  .setReturnType(returnType)
+                  .build();
+            });
+
     final Pojo pojo =
         Pojo.newBuilder()
             .setName(Name.fromString("Customer"))
             .setPkg(PACKAGE_NAME)
             .setFields(fields)
             .setConstructors(PList.empty())
+            .setGetters(getters)
             .andAllOptionals()
             .build();
     return pojo.withConstructors(PList.single(deviateStandardConstructor(pojo)));

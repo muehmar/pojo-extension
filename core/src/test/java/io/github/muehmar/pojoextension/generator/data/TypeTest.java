@@ -72,6 +72,11 @@ class TypeTest {
     assertFalse(Type.integer().isPrimitive());
   }
 
+  @Test
+  void isVoid_when_calledForVoidType_then_true() {
+    assertTrue(Type.voidType().isVoid());
+  }
+
   private static Stream<Arguments> primitiveTypes() {
     return Type.allPrimitives()
         .toStream()

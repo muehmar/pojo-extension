@@ -1,11 +1,10 @@
 package io.github.muehmar.pojoextension.generator.data;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import io.github.muehmar.pojoextension.generator.data.PojoFieldExtension.Builder0;
 import java.util.Objects;
 
 @PojoExtension
-public class PojoField {
+public class PojoField extends PojoFieldExtension {
   private final Type type;
   private final Name name;
   private final boolean required;
@@ -14,10 +13,6 @@ public class PojoField {
     this.type = type;
     this.name = name;
     this.required = required;
-  }
-
-  public static Builder0 newBuilder() {
-    return io.github.muehmar.pojoextension.generator.data.PojoFieldExtension.newBuilder();
   }
 
   public Type getType() {

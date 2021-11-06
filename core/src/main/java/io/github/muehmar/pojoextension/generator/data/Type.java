@@ -31,6 +31,10 @@ public class Type {
     return primitiveTypes;
   }
 
+  public static Type voidType() {
+    return new Type(Name.fromString("Void"), PackageName.javaLang(), PList.empty(), false);
+  }
+
   public static Type primitive(String primitive) {
     return new Type(Name.fromString(primitive), PackageName.javaLang(), PList.empty(), false);
   }
@@ -118,6 +122,14 @@ public class Type {
 
   public boolean isPrimitive() {
     return primitiveTypes.find(this::equals).isPresent();
+  }
+
+  public boolean isVoid() {
+    return voidType().equals(this);
+  }
+
+  public boolean isOptional() {
+    return onOptional(ignore -> true).orElse(false);
   }
 
   /**

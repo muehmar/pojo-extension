@@ -2,11 +2,10 @@ package io.github.muehmar.pojoextension.generator.data;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import io.github.muehmar.pojoextension.generator.data.MatchingConstructorExtension.Builder0;
 import java.util.Objects;
 
 @PojoExtension
-public class MatchingConstructor {
+public class MatchingConstructor extends MatchingConstructorExtension {
   private final Constructor constructor;
   private final PList<PojoField> fields;
 
@@ -21,10 +20,6 @@ public class MatchingConstructor {
 
   public PList<PojoField> getFields() {
     return fields;
-  }
-
-  public static Builder0 newBuilder() {
-    return io.github.muehmar.pojoextension.generator.data.MatchingConstructorExtension.newBuilder();
   }
 
   @Override

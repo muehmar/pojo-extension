@@ -176,6 +176,36 @@ public class TestPojoComposer {
       this.builder = builder;
     }
 
+    public PojoMethod getter(String returnType, String fieldName) {
+      return new PojoMethod(builder).getter(returnType, fieldName);
+    }
+
+    public String create() {
+      return new PojoMethod(builder).create();
+    }
+  }
+
+  public static class PojoMethod {
+    private final StringBuilder builder;
+
+    private PojoMethod(StringBuilder builder) {
+      this.builder = builder;
+    }
+
+    public PojoMethod getter(String returnType, String fieldName) {
+      return method(
+          returnType,
+          Name.fromString(fieldName).toPascalCase().prefix("get").asString(),
+          "return null");
+    }
+
+    public PojoMethod method(String returnType, String methodName, String content) {
+      builder.append(String.format("  public %s %s() {\n", returnType, methodName));
+      builder.append(String.format("    %s;\n", content));
+      builder.append("  }\n");
+      return new PojoMethod(builder);
+    }
+
     public String create() {
       builder.append("}\n");
       return builder.toString();
