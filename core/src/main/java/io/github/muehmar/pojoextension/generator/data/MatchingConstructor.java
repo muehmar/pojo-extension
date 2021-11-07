@@ -7,19 +7,19 @@ import java.util.Objects;
 @PojoExtension
 public class MatchingConstructor extends MatchingConstructorExtension {
   private final Constructor constructor;
-  private final PList<PojoField> fields;
+  private final PList<FieldArgument> fieldArguments;
 
-  public MatchingConstructor(Constructor constructor, PList<PojoField> fields) {
+  public MatchingConstructor(Constructor constructor, PList<FieldArgument> fieldArguments) {
     this.constructor = constructor;
-    this.fields = fields;
+    this.fieldArguments = fieldArguments;
   }
 
   public Constructor getConstructor() {
     return constructor;
   }
 
-  public PList<PojoField> getFields() {
-    return fields;
+  public PList<FieldArgument> getFieldArguments() {
+    return fieldArguments;
   }
 
   @Override
@@ -27,16 +27,22 @@ public class MatchingConstructor extends MatchingConstructorExtension {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     MatchingConstructor that = (MatchingConstructor) o;
-    return Objects.equals(constructor, that.constructor) && Objects.equals(fields, that.fields);
+    return Objects.equals(constructor, that.constructor)
+        && Objects.equals(fieldArguments, that.fieldArguments);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(constructor, fields);
+    return Objects.hash(constructor, fieldArguments);
   }
 
   @Override
   public String toString() {
-    return "MatchingConstructor{" + "constructor=" + constructor + ", fields=" + fields + '}';
+    return "MatchingConstructor{"
+        + "constructor="
+        + constructor
+        + ", fieldArguments="
+        + fieldArguments
+        + '}';
   }
 }

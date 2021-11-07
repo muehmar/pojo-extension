@@ -1,18 +1,17 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.instantiation;
 
+import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.WRAP_INTO_OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.Updater;
 import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.data.Argument;
 import io.github.muehmar.pojoextension.generator.data.MatchingConstructor;
+import io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
-import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.UnaryOperator;
 
 public class ConstructorCallGen {
   private ConstructorCallGen() {}
@@ -24,44 +23,49 @@ public class ConstructorCallGen {
    */
   public static Generator<Pojo, PojoSettings> constructorCall() {
     return (pojo, settings, writer) -> {
-      final MatchingConstructor match =
+      final MatchingConstructor matchingConstructor =
           pojo.findMatchingConstructor()
               .orElseThrow(
-                  () -> new IllegalStateException("No matching constructor found for pojo"));
-
-      final AtomicReference<UnaryOperator<Writer>> addRef =
-          new AtomicReference<>(UnaryOperator.identity());
+                  () ->
+                      new IllegalStateException(
+                          "No matching constructor found for pojo " + pojo.getName()));
 
       final PList<String> constructorParameters =
-          match
-              .getConstructor()
-              .getArguments()
-              .zip(match.getFields())
+          matchingConstructor
+              .getFieldArguments()
               .map(
-                  p -> {
-                    final Argument argument = p.first();
-                    final PojoField field = p.second();
-                    final PojoField.OnExactMatch<String> onExactMatch =
-                        (f, a) -> f.getName().asString();
-                    final PojoField.OnOptionalMatch<String> onOptionalMatch =
-                        (f, a) -> {
-                          addRef.set(w -> w.ref(JAVA_UTIL_OPTIONAL));
-                          return String.format("Optional.ofNullable(%s)", f.getName());
-                        };
-                    final PojoField.OnNoMatch<String> onNoMatch =
-                        (f, a) -> {
-                          throw new IllegalStateException(
-                              "Field " + f + " does not match argument " + a);
-                        };
-                    return field.forArgument(argument, onExactMatch, onOptionalMatch, onNoMatch);
-                  });
+                  fieldArgument ->
+                      fieldArgument
+                          .getRelation()
+                          .apply(
+                              fieldArgument.getField(),
+                              onUnwrapOptional(),
+                              onSameType(),
+                              onWrapOptional()));
 
-      return addRef
+      final boolean hasWrapIntoOptional =
+          matchingConstructor
+              .getFieldArguments()
+              .exists(fa -> fa.getRelation().equals(WRAP_INTO_OPTIONAL));
+
+      return Updater.initial(writer)
+          .updateConditionally(hasWrapIntoOptional, w -> w.ref(JAVA_UTIL_OPTIONAL))
           .get()
-          .apply(writer)
           .println(
               "return new %s(%s);",
-              match.getConstructor().getName(), constructorParameters.mkString(", "));
+              matchingConstructor.getConstructor().getName(), constructorParameters.mkString(", "));
     };
+  }
+
+  private static OptionalFieldRelation.OnUnwrapOptional<PojoField, String> onUnwrapOptional() {
+    return field -> String.format("%s.orElse(null)", field.getName());
+  }
+
+  private static OptionalFieldRelation.OnSameType<PojoField, String> onSameType() {
+    return field -> field.getName().asString();
+  }
+
+  private static OptionalFieldRelation.OnWrapOptional<PojoField, String> onWrapOptional() {
+    return field -> String.format("Optional.ofNullable(%s)", field.getName());
   }
 }

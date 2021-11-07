@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.instantiation;
 
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.bluecare.commons.data.PList;
@@ -30,7 +31,7 @@ class ConstructorCallGenTest {
         ConstructorCallGen.constructorCall()
             .generate(sample, PojoSettings.defaultSettings(), Writer.createDefault());
 
-    assertEquals(PList.single("java.util.Optional"), pojo.getRefs());
+    assertEquals(PList.single(JAVA_UTIL_OPTIONAL), pojo.getRefs());
     assertEquals(
         "return new Customer(id, username, Optional.ofNullable(nickname));", pojo.asString());
   }

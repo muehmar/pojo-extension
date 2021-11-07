@@ -77,6 +77,32 @@ class TypeTest {
     assertTrue(Type.voidType().isVoid());
   }
 
+  @Test
+  void getRelation_when_unrelatedTypes_then_noRelationReturned() {
+    final Optional<OptionalFieldRelation> relation = Type.string().getRelation(Type.integer());
+    assertFalse(relation.isPresent());
+  }
+
+  @Test
+  void getRelation_when_stringAndOptionalString_then_relationIsWrapIntoOptional() {
+    final Optional<OptionalFieldRelation> relation =
+        Type.string().getRelation(Type.optional(Type.string()));
+    assertEquals(Optional.of(OptionalFieldRelation.WRAP_INTO_OPTIONAL), relation);
+  }
+
+  @Test
+  void getRelation_when_optionalStringAndString_then_relationIsUnwrapOptional() {
+    final Optional<OptionalFieldRelation> relation =
+        Type.optional(Type.string()).getRelation(Type.string());
+    assertEquals(Optional.of(OptionalFieldRelation.UNWRAP_OPTIONAL), relation);
+  }
+
+  @Test
+  void getRelation_when_bothAreStrings_then_relationIsSameType() {
+    final Optional<OptionalFieldRelation> relation = Type.string().getRelation(Type.string());
+    assertEquals(Optional.of(OptionalFieldRelation.SAME_TYPE), relation);
+  }
+
   private static Stream<Arguments> primitiveTypes() {
     return Type.allPrimitives()
         .toStream()

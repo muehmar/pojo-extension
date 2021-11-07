@@ -1,5 +1,9 @@
 package io.github.muehmar.pojoextension.generator.data;
 
+import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
+import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.UNWRAP_OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.WRAP_INTO_OPTIONAL;
+
 import ch.bluecare.commons.data.PList;
 import java.util.Objects;
 import java.util.Optional;
@@ -139,6 +143,18 @@ public class Type {
   public <T> Optional<T> onOptional(Function<Type, T> f) {
     final Type self = this;
     return typeParameters.headOption().filter(type -> optional(type).equals(self)).map(f);
+  }
+
+  public Optional<OptionalFieldRelation> getRelation(Type other) {
+    if (this.equals(other)) {
+      return Optional.of(SAME_TYPE);
+    } else if (this.onOptional(other::equals).orElse(false)) {
+      return Optional.of(UNWRAP_OPTIONAL);
+    } else if (other.onOptional(this::equals).orElse(false)) {
+      return Optional.of(WRAP_INTO_OPTIONAL);
+    } else {
+      return Optional.empty();
+    }
   }
 
   public boolean equalsIgnoreTypeParameters(Object o) {

@@ -6,4 +6,5 @@ public class Refs {
   public static final String JAVA_UTIL_OBJECTS = "java.util.Objects";
   public static final String JAVA_UTIL_ARRAYS = "java.util.Arrays";
   public static final String JAVA_UTIL_OPTIONAL = "java.util.Optional";
+  public static final String JAVA_LANG_INTEGER = "java.lang.Integer";
 }
