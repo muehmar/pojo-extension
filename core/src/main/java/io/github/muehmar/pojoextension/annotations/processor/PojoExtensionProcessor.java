@@ -24,6 +24,7 @@ import java.io.UncheckedIOException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -136,10 +137,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .filter(
             ignore ->
                 settings.getOptionalDetections().exists(OptionalDetection.OPTIONAL_CLASS::equals))
-        .filter(t -> t.equalsIgnoreTypeParameters(Type.optional(Type.string())))
-        .map(Type::getTypeParameters)
-        .filter(p -> p.size() == 1)
-        .map(p -> p.apply(0))
+        .flatMap(t -> t.onOptional(Function.identity()))
         .map(typeParameter -> new PojoField(typeParameter, name, false));
   }
 

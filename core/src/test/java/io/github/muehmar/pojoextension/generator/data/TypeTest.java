@@ -2,7 +2,6 @@ package io.github.muehmar.pojoextension.generator.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.bluecare.commons.data.PList;
@@ -38,14 +37,6 @@ class TypeTest {
   void getClassName_when_javaMap_then_correctNameReturned() {
     final Type type = Type.map(Type.string(), Type.integer());
     assertEquals("Map<String,Integer>", type.getClassName().asString());
-  }
-
-  @Test
-  void equalsIgnoreTypeParameter_when_twoOptionalsWithDifferentTypeParameter_then_areEquals() {
-    final Type optionalString = Type.optional(Type.string());
-    final Type optionalInteger = Type.optional(Type.integer());
-    assertNotEquals(optionalInteger, optionalString);
-    assertTrue(optionalString.equalsIgnoreTypeParameters(optionalInteger));
   }
 
   @Test

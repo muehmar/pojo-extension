@@ -157,15 +157,6 @@ public class Type {
     }
   }
 
-  public boolean equalsIgnoreTypeParameters(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Type type = (Type) o;
-    return Objects.equals(name, type.name)
-        && Objects.equals(pkg, type.pkg)
-        && Objects.equals(isArray, type.isArray);
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
