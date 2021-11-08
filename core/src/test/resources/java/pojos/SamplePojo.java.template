@@ -26,7 +26,6 @@ public abstract class CustomerExtension {
     return withNickname(self(), nickname);
   }
 
-
   public static Customer withId(Customer self, Integer id) {
     return new Customer(id, self.getUsername(), self.getNickname().orElse(null));
   }
@@ -39,6 +38,13 @@ public abstract class CustomerExtension {
     return new Customer(self.getId(), self.getUsername(), nickname);
   }
 
+  public Customer withNickname(Optional<String> nickname) {
+    return withNickname(self(), nickname);
+  }
+
+  public static Customer withNickname(Customer self, Optional<String> nickname) {
+    return new Customer(self.getId(), self.getUsername(), nickname.orElse(null));
+  }
 
   public static final class Builder {
     private Builder() {

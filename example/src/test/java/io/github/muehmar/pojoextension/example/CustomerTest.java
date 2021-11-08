@@ -59,13 +59,22 @@ class CustomerTest {
   }
 
   @Test
-  void with_when_whenCalledWithTheSameValue_then_stillEquals() {
+  void with_when_calledWithTheSameValue_then_stillEquals() {
     final Customer c = sampleCustomer();
     assertEquals(c, c.withId(c.getId()));
     assertEquals(c, c.withName(c.getName()));
     assertEquals(c, c.withNickname(c.getNickname().orElseThrow(IllegalStateException::new)));
     assertEquals(c, c.withRandom(c.getRandom()));
     assertEquals(c, c.withKey(c.getKey()));
+  }
+
+  @Test
+  void with_when_calledWithOverloadedOptional_then_stillEquals() {
+    final Customer c = sampleCustomer();
+    assertEquals(c, c.withNickname(c.getNickname()));
+    assertEquals(c, c.withAge(c.getAge()));
+    assertEquals(c.withAge(15), c.withAge(Optional.of(15)));
+    assertEquals(c.withNickname("nick"), c.withNickname(Optional.of("nick")));
   }
 
   private static Customer sampleCustomer() {

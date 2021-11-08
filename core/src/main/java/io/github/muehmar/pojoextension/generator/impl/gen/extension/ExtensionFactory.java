@@ -29,15 +29,20 @@ public class ExtensionFactory {
     final Function<Pojo, PList<WithField>> toWithFields =
         pojo -> pojo.getFields().map(field -> WithField.of(pojo, field));
 
+    final Generator<WithField, PojoSettings> optionalNewLine =
+        Generator.<WithField, PojoSettings>emptyGen()
+            .appendConditionally(
+                wf -> wf.getField().isOptional(), ((data, settings, writer) -> writer.println()));
+
     final Generator<Pojo, PojoSettings> content =
         constructor()
             .appendNewLine()
             .append(selfMethod())
             .appendNewLine()
             .appendList(With.withMethod().appendNewLine(), toWithFields)
-            .appendNewLine()
             .appendList(With.staticWithMethod().appendNewLine(), toWithFields)
-            .appendNewLine()
+            .appendList(With.optionalWithMethod().append(optionalNewLine), toWithFields)
+            .appendList(With.staticOptionalWithMethod().append(optionalNewLine), toWithFields)
             .append(CompleteSafeBuilderFactory.completeSafeBuilder())
             .appendNewLine()
             .append(Equals.equalsMethod())
