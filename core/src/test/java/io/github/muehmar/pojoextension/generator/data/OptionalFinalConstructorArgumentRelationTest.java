@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-class OptionalFieldRelationTest {
+class OptionalFinalConstructorArgumentRelationTest {
   @ParameterizedTest
   @EnumSource(OptionalFieldRelation.class)
   void getTransitionMap_when_calledWithEachEnum_then_shouldReturnATransitionForEeachEnum(

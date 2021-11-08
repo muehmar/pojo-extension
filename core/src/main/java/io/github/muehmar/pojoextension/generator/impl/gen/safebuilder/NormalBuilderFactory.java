@@ -58,7 +58,7 @@ public class NormalBuilderFactory {
         .returnType(p -> p.getName().asString())
         .methodName("build")
         .noArguments()
-        .content(ConstructorCallGen.constructorCall());
+        .content(ConstructorCallGen.callWithAllLocalVariables());
   }
 
   public static Generator<PojoField, PojoSettings> setMethod() {

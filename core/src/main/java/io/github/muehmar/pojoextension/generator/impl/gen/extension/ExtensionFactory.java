@@ -6,6 +6,7 @@ import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PRIVAT
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PROTECTED;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
 
+import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
@@ -16,16 +17,26 @@ import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.Equals;
 import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.HashCode;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.CompleteSafeBuilderFactory;
+import io.github.muehmar.pojoextension.generator.impl.gen.withers.With;
+import io.github.muehmar.pojoextension.generator.impl.gen.withers.data.WithField;
+import java.util.function.Function;
 
 public class ExtensionFactory {
   private ExtensionFactory() {}
 
   public static Generator<Pojo, PojoSettings> extensionClass() {
 
+    final Function<Pojo, PList<WithField>> toWithFields =
+        pojo -> pojo.getFields().map(field -> WithField.of(pojo, field));
+
     final Generator<Pojo, PojoSettings> content =
         constructor()
             .appendNewLine()
             .append(selfMethod())
+            .appendNewLine()
+            .appendList(With.withMethod().appendNewLine(), toWithFields)
+            .appendNewLine()
+            .appendList(With.staticWithMethod().appendNewLine(), toWithFields)
             .appendNewLine()
             .append(CompleteSafeBuilderFactory.completeSafeBuilder())
             .appendNewLine()

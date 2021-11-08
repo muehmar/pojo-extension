@@ -1,16 +1,19 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.instantiation;
 
+import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.WRAP_INTO_OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.Updater;
 import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.MatchingConstructor;
 import io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ConstructorCallGen {
@@ -21,51 +24,133 @@ public class ConstructorCallGen {
    * while wrapping optional fields into an {@link Optional} depending on the argument of the
    * constructor.
    */
-  public static Generator<Pojo, PojoSettings> constructorCall() {
-    return (pojo, settings, writer) -> {
-      final MatchingConstructor matchingConstructor =
-          pojo.findMatchingConstructor()
-              .orElseThrow(
-                  () ->
-                      new IllegalStateException(
-                          "No matching constructor found for pojo " + pojo.getName()));
+  public static Generator<Pojo, PojoSettings> callWithAllLocalVariables() {
+    return Generator.<Pojo, PojoSettings>emptyGen()
+        .append(
+            constructorCallForFields(),
+            pojo -> {
+              final MatchingConstructor matchingConstructor = pojo.getMatchingConstructorOrThrow();
 
+              final PList<FinalConstructorArgument> fields =
+                  matchingConstructor
+                      .getFieldArguments()
+                      .map(
+                          fa ->
+                              FinalConstructorArgument.ofFieldVariable(
+                                  new FieldVariable(pojo, fa.getField(), SAME_TYPE), fa));
+
+              return new ConstructorCall(fields, matchingConstructor);
+            });
+  }
+
+  public static Generator<FieldVariable, PojoSettings> callWithSingleFieldVariable() {
+    return Generator.<FieldVariable, PojoSettings>emptyGen()
+        .append(
+            constructorCallForFields(),
+            fieldVariable -> {
+              final Pojo pojo = fieldVariable.getPojo();
+              final MatchingConstructor matchingConstructor = pojo.getMatchingConstructorOrThrow();
+
+              final PList<FinalConstructorArgument> fields =
+                  matchingConstructor
+                      .getFieldArguments()
+                      .map(
+                          fa -> {
+                            final PojoField pojoField = fa.getField();
+                            if (pojoField.equals(fieldVariable.getField())) {
+                              return FinalConstructorArgument.ofFieldVariable(fieldVariable, fa);
+                            } else {
+                              final FieldGetter fieldGetter =
+                                  pojo.getMatchingGetterOrThrow(pojoField);
+                              return FinalConstructorArgument.ofGetter(fieldGetter, fa);
+                            }
+                          });
+
+              return new ConstructorCall(fields, matchingConstructor);
+            });
+  }
+
+  private static Generator<ConstructorCall, PojoSettings> constructorCallForFields() {
+    return (constructorCall, settings, writer) -> {
       final PList<String> constructorParameters =
-          matchingConstructor
-              .getFieldArguments()
+          constructorCall
+              .getFields()
               .map(
-                  fieldArgument ->
-                      fieldArgument
+                  finalConstructorArgument ->
+                      finalConstructorArgument
                           .getRelation()
                           .apply(
-                              fieldArgument.getField(),
+                              finalConstructorArgument,
                               onUnwrapOptional(),
                               onSameType(),
                               onWrapOptional()));
 
       final boolean hasWrapIntoOptional =
-          matchingConstructor
-              .getFieldArguments()
-              .exists(fa -> fa.getRelation().equals(WRAP_INTO_OPTIONAL));
+          constructorCall
+              .getFields()
+              .map(FinalConstructorArgument::getRelation)
+              .exists(relation -> relation.equals(WRAP_INTO_OPTIONAL));
 
       return Updater.initial(writer)
           .updateConditionally(hasWrapIntoOptional, w -> w.ref(JAVA_UTIL_OPTIONAL))
           .get()
           .println(
               "return new %s(%s);",
-              matchingConstructor.getConstructor().getName(), constructorParameters.mkString(", "));
+              constructorCall.getMatchingConstructor().getConstructor().getName(),
+              constructorParameters.mkString(", "));
     };
   }
 
-  private static OptionalFieldRelation.OnUnwrapOptional<PojoField, String> onUnwrapOptional() {
-    return field -> String.format("%s.orElse(null)", field.getName());
+  private static OptionalFieldRelation.OnUnwrapOptional<FinalConstructorArgument, String>
+      onUnwrapOptional() {
+    return finalConstructorArgument ->
+        String.format("%s.orElse(null)", finalConstructorArgument.getFieldString());
   }
 
-  private static OptionalFieldRelation.OnSameType<PojoField, String> onSameType() {
-    return field -> field.getName().asString();
+  private static OptionalFieldRelation.OnSameType<FinalConstructorArgument, String> onSameType() {
+    return FinalConstructorArgument::getFieldString;
   }
 
-  private static OptionalFieldRelation.OnWrapOptional<PojoField, String> onWrapOptional() {
-    return field -> String.format("Optional.ofNullable(%s)", field.getName());
+  private static OptionalFieldRelation.OnWrapOptional<FinalConstructorArgument, String>
+      onWrapOptional() {
+    return finalConstructorArgument ->
+        String.format("Optional.ofNullable(%s)", finalConstructorArgument.getFieldString());
+  }
+
+  private static class ConstructorCall {
+    private final PList<FinalConstructorArgument> fields;
+    private final MatchingConstructor constructor;
+
+    public ConstructorCall(
+        PList<FinalConstructorArgument> fields, MatchingConstructor constructor) {
+      this.fields = fields;
+      this.constructor = constructor;
+    }
+
+    public PList<FinalConstructorArgument> getFields() {
+      return fields;
+    }
+
+    public MatchingConstructor getMatchingConstructor() {
+      return constructor;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      ConstructorCall that = (ConstructorCall) o;
+      return Objects.equals(fields, that.fields) && Objects.equals(constructor, that.constructor);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(fields, constructor);
+    }
+
+    @Override
+    public String toString() {
+      return "ConstructorCall{" + "fields=" + fields + ", constructor=" + constructor + '}';
+    }
   }
 }

@@ -1,7 +1,11 @@
 package io.github.muehmar.pojoextension.generator.data;
 
+import static io.github.muehmar.pojoextension.Booleans.not;
+import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
+
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.Objects;
+import java.util.Optional;
 
 @PojoExtension
 public class Getter extends GetterExtension {
@@ -13,12 +17,33 @@ public class Getter extends GetterExtension {
     this.returnType = returnType;
   }
 
+  public static Name getterName(Name name) {
+    return name.toPascalCase().prefix("get");
+  }
+
   public Name getName() {
     return name;
   }
 
   public Type getReturnType() {
     return returnType;
+  }
+
+  public Optional<FieldGetter> getFieldGetter(PojoField field) {
+    if (not(name.equals(getterName(field.getName())))) {
+      return Optional.empty();
+    }
+
+    final Getter self = this;
+    if (field.isRequired()) {
+      return returnType.equals(field.getType())
+          ? Optional.of(FieldGetter.of(this, field, SAME_TYPE))
+          : Optional.empty();
+    }
+
+    return returnType
+        .getRelation(field.getType())
+        .map(relation -> FieldGetter.of(self, field, relation));
   }
 
   @Override

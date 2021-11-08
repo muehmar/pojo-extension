@@ -30,7 +30,7 @@ public class Pojos {
                       ? Type.optional(f.getType())
                       : f.getType();
               return Getter.newBuilder()
-                  .setName(f.getName().toPascalCase().prefix("get"))
+                  .setName(Getter.getterName(f.getName()))
                   .setReturnType(returnType)
                   .build();
             });

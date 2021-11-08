@@ -14,6 +14,32 @@ public abstract class CustomerExtension {
     return (Customer)this;
   }
 
+  public Customer withId(Integer id) {
+    return withId(self(), id);
+  }
+
+  public Customer withUsername(String username) {
+    return withUsername(self(), username);
+  }
+
+  public Customer withNickname(String nickname) {
+    return withNickname(self(), nickname);
+  }
+
+
+  public static Customer withId(Customer self, Integer id) {
+    return new Customer(id, self.getUsername(), self.getNickname().orElse(null));
+  }
+
+  public static Customer withUsername(Customer self, String username) {
+    return new Customer(self.getId(), username, self.getNickname().orElse(null));
+  }
+
+  public static Customer withNickname(Customer self, String nickname) {
+    return new Customer(self.getId(), self.getUsername(), nickname);
+  }
+
+
   public static final class Builder {
     private Builder() {
     }

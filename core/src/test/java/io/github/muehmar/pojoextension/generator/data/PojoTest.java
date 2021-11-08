@@ -58,4 +58,24 @@ class PojoTest {
 
     assertFalse(matchingConstructor.isPresent());
   }
+
+  @Test
+  void findMatchingGetter_when_calledForFieldInPojo_then_returnsFieldGetter() {
+    final Pojo pojo = Pojos.sample();
+    final Optional<FieldGetter> fieldGetter = pojo.findMatchingGetter(pojo.getFields().head());
+
+    final FieldGetter expected =
+        new FieldGetter(pojo.getGetters().head(), pojo.getFields().head(), SAME_TYPE);
+    assertEquals(Optional.of(expected), fieldGetter);
+  }
+
+  @Test
+  void findMatchingGetter_when_calledForOtherField_then_returnsEmpty() {
+    final Pojo pojo = Pojos.sample();
+    final Optional<FieldGetter> fieldGetter =
+        pojo.findMatchingGetter(
+            new PojoField(Type.string(), Name.fromString("notAFieldInTheSamplePojo"), true));
+
+    assertEquals(Optional.empty(), fieldGetter);
+  }
 }

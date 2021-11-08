@@ -35,24 +35,6 @@ public class PojoField extends PojoFieldExtension {
     return new PojoField(type, name, required);
   }
 
-  /**
-   * Executes one of the given functions depending on how the type matches the type of the argument.
-   */
-  public <T> T forArgument(
-      Argument arg,
-      OnExactMatch<T> exactMatch,
-      OnOptionalMatch<T> optionalMatch,
-      OnNoMatch<T> noMatch) {
-    final PojoField self = this;
-    if (arg.getType().equals(type)) {
-      return exactMatch.apply(self, arg);
-    } else if (arg.getType().onOptional(t -> t.equals(self.type)).orElse(false)) {
-      return optionalMatch.apply(self, arg);
-    } else {
-      return noMatch.apply(self, arg);
-    }
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

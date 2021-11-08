@@ -56,6 +56,44 @@ public class Pojo extends io.github.muehmar.pojoextension.generator.data.PojoExt
         .headOption();
   }
 
+  public MatchingConstructor getMatchingConstructorOrThrow() {
+    return constructors
+        .flatMapOptional(c -> c.matchFields(fields).map(f -> new MatchingConstructor(c, f)))
+        .headOption()
+        .orElseThrow(() -> new IllegalArgumentException(noMatchingConstructorMessage()));
+  }
+
+  private String noMatchingConstructorMessage() {
+    return String.format(
+        "No matching constructor found for class %s."
+            + " A constructor should have all the fields as arguments in the order of declaration and matching type,"
+            + " where the actual type of a non-required field can be wrapped into an java.util.Optional",
+        getName());
+  }
+
+  public Optional<FieldGetter> findMatchingGetter(PojoField field) {
+    return getters.flatMapOptional(g -> g.getFieldGetter(field)).headOption();
+  }
+
+  public FieldGetter getMatchingGetterOrThrow(PojoField field) {
+    return getters
+        .flatMapOptional(g -> g.getFieldGetter(field))
+        .headOption()
+        .orElseThrow(() -> new IllegalArgumentException(noGetterFoundMessage(field)));
+  }
+
+  private String noGetterFoundMessage(PojoField field) {
+    final String optionalMessage =
+        field.isOptional()
+            ? "The the actual type of this non-required field can be wrapped into an java.util.Optional."
+            : "";
+    return String.format(
+        "Unable to find the getter for field '%s'."
+            + " The method name should be '%s' and the returnType should match the field type."
+            + " %s",
+        field.getName(), Getter.getterName(field.getName()), optionalMessage);
+  }
+
   public Pojo withFields(PList<PojoField> fields) {
     return new Pojo(name, pkg, fields, constructors, getters);
   }
