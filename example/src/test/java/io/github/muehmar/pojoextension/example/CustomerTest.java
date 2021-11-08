@@ -50,60 +50,12 @@ class CustomerTest {
   @Test
   void equals_when_oneFieldChanged_then_notEquals() {
     final Customer customer1 = sampleCustomer();
-    assertNotEquals(
-        customer1,
-        new Customer(
-            "id",
-            customer1.getName(),
-            customer1.getNickname().orElse(null),
-            customer1.getAge().orElse(null),
-            customer1.getRandom(),
-            customer1.getKey()));
-    assertNotEquals(
-        customer1,
-        new Customer(
-            customer1.getId(),
-            "name",
-            customer1.getNickname().orElse(null),
-            customer1.getAge().orElse(null),
-            customer1.getRandom(),
-            customer1.getKey()));
-    assertNotEquals(
-        customer1,
-        new Customer(
-            customer1.getId(),
-            customer1.getName(),
-            "nickname",
-            customer1.getAge().orElse(null),
-            customer1.getRandom(),
-            customer1.getKey()));
-    assertNotEquals(
-        customer1,
-        new Customer(
-            customer1.getId(),
-            customer1.getName(),
-            customer1.getNickname().orElse(null),
-            15,
-            customer1.getRandom(),
-            customer1.getKey()));
-    assertNotEquals(
-        customer1,
-        new Customer(
-            customer1.getId(),
-            customer1.getName(),
-            customer1.getNickname().orElse(null),
-            customer1.getAge().orElse(null),
-            987L,
-            customer1.getKey()));
-    assertNotEquals(
-        customer1,
-        new Customer(
-            customer1.getId(),
-            customer1.getName(),
-            customer1.getNickname().orElse(null),
-            customer1.getAge().orElse(null),
-            customer1.getRandom(),
-            new byte[] {0x7E}));
+    assertNotEquals(customer1, customer1.withId("id"));
+    assertNotEquals(customer1, customer1.withName("name"));
+    assertNotEquals(customer1, customer1.withNickname("nickname"));
+    assertNotEquals(customer1, customer1.withAge(15));
+    assertNotEquals(customer1, customer1.withRandom(987L));
+    assertNotEquals(customer1, customer1.withKey(new byte[] {0x7E}));
   }
 
   private static Customer sampleCustomer() {
