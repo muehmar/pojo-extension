@@ -58,6 +58,16 @@ class CustomerTest {
     assertNotEquals(customer1, customer1.withKey(new byte[] {0x7E}));
   }
 
+  @Test
+  void with_when_whenCalledWithTheSameValue_then_stillEquals() {
+    final Customer c = sampleCustomer();
+    assertEquals(c, c.withId(c.getId()));
+    assertEquals(c, c.withName(c.getName()));
+    assertEquals(c, c.withNickname(c.getNickname().orElseThrow(IllegalStateException::new)));
+    assertEquals(c, c.withRandom(c.getRandom()));
+    assertEquals(c, c.withKey(c.getKey()));
+  }
+
   private static Customer sampleCustomer() {
     return Customer.newBuilder()
         .setId("123456")
