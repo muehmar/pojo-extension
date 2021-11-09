@@ -26,6 +26,9 @@ public class GetterProcessor {
                   .andAllOptionals()
                   .build();
             })
-        .filter(g -> g.getName().asString().startsWith("get"));
+        .filter(
+            g ->
+                g.getName().asString().startsWith("get")
+                    || g.getName().asString().startsWith("is"));
   }
 }

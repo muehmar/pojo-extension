@@ -12,9 +12,15 @@ import org.junit.jupiter.params.provider.ValueSource;
 class GetterTest {
 
   @Test
-  void getterName_when_calledWithName_then_correctGetterName() {
-    final Name getterName = Getter.getterName(Name.fromString("id"));
-    assertEquals("getId", getterName.asString());
+  void getterName_when_calledWithField_then_correctJavaBeansName() {
+    final PojoField f1 = new PojoField(Type.string(), Name.fromString("id"), true);
+    assertEquals("getId", Getter.getterName(f1).asString());
+
+    final PojoField f2 = new PojoField(Type.primitive("boolean"), Name.fromString("flag"), true);
+    assertEquals("isFlag", Getter.getterName(f2).asString());
+
+    final PojoField f3 = new PojoField(Type.integer(), Name.fromString("xIndex"), true);
+    assertEquals("getxIndex", Getter.getterName(f3).asString());
   }
 
   @ParameterizedTest

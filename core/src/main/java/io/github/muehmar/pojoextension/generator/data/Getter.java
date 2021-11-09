@@ -17,8 +17,9 @@ public class Getter extends GetterExtension {
     this.returnType = returnType;
   }
 
-  public static Name getterName(Name name) {
-    return name.toPascalCase().prefix("get");
+  public static Name getterName(PojoField field) {
+    final String prefix = field.getType().equals(Type.primitiveBoolean()) ? "is" : "get";
+    return field.getName().javaBeansName().prefix(prefix);
   }
 
   public Name getName() {
@@ -30,7 +31,7 @@ public class Getter extends GetterExtension {
   }
 
   public Optional<FieldGetter> getFieldGetter(PojoField field) {
-    if (not(name.equals(getterName(field.getName())))) {
+    if (not(name.equals(getterName(field)))) {
       return Optional.empty();
     }
 

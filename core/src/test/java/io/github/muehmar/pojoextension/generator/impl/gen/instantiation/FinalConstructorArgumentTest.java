@@ -22,7 +22,8 @@ class FinalConstructorArgumentTest {
     final Name name = Name.fromString("id");
     final PojoField pojoField = new PojoField(Type.string(), name, false);
     final FieldGetter fieldGetter =
-        FieldGetter.of(new Getter(Getter.getterName(name), Type.string()), pojoField, SAME_TYPE);
+        FieldGetter.of(
+            new Getter(Getter.getterName(pojoField), Type.string()), pojoField, SAME_TYPE);
     final FieldArgument fieldArgument =
         new FieldArgument(
             pojoField, new Argument(name, Type.optional(Type.string())), WRAP_INTO_OPTIONAL);
@@ -42,7 +43,7 @@ class FinalConstructorArgumentTest {
     final PojoField pojoField = new PojoField(Type.string(), name, false);
     final FieldGetter fieldGetter =
         FieldGetter.of(
-            new Getter(Getter.getterName(name), Type.string()), pojoField, UNWRAP_OPTIONAL);
+            new Getter(Getter.getterName(pojoField), Type.string()), pojoField, UNWRAP_OPTIONAL);
     final FieldArgument fieldArgument =
         new FieldArgument(pojoField, new Argument(name, Type.optional(Type.string())), SAME_TYPE);
 
@@ -61,7 +62,7 @@ class FinalConstructorArgumentTest {
     final PojoField pojoField = new PojoField(Type.string(), name, false);
     final FieldGetter fieldGetter =
         FieldGetter.of(
-            new Getter(Getter.getterName(name), Type.string()), pojoField, UNWRAP_OPTIONAL);
+            new Getter(Getter.getterName(pojoField), Type.string()), pojoField, UNWRAP_OPTIONAL);
     final FieldArgument fieldArgument =
         new FieldArgument(
             pojoField, new Argument(name, Type.optional(Type.string())), WRAP_INTO_OPTIONAL);

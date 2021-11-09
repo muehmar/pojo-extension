@@ -13,15 +13,24 @@ public class Customer extends CustomerExtension {
   @Nullable private final Integer age;
   private final double random;
   private final byte[] key;
+  private final boolean flag;
 
   // This constructor is used to allow instance creation for the safe builder
-  Customer(String id, String name, String nickname, Integer age, double random, byte[] key) {
+  Customer(
+      String id,
+      String name,
+      String nickname,
+      Integer age,
+      double random,
+      byte[] key,
+      boolean flag) {
     this.id = id;
     this.name = name;
     this.nickname = Optional.ofNullable(nickname);
     this.age = age;
     this.random = random;
     this.key = key;
+    this.flag = flag;
   }
 
   public String getId() {
@@ -46,5 +55,9 @@ public class Customer extends CustomerExtension {
 
   public byte[] getKey() {
     return key;
+  }
+
+  public boolean isFlag() {
+    return flag;
   }
 }

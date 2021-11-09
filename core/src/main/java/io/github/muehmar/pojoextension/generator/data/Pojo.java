@@ -82,6 +82,11 @@ public class Pojo extends io.github.muehmar.pojoextension.generator.data.PojoExt
         .orElseThrow(() -> new IllegalArgumentException(noGetterFoundMessage(field)));
   }
 
+  public PList<FieldGetter> getAllGettersOrThrow() {
+    final Pojo self = this;
+    return fields.map(self::getMatchingGetterOrThrow);
+  }
+
   private String noGetterFoundMessage(PojoField field) {
     final String optionalMessage =
         field.isOptional()
@@ -89,12 +94,16 @@ public class Pojo extends io.github.muehmar.pojoextension.generator.data.PojoExt
             : "";
     return String.format(
         "Unable to find the getter for field '%s'."
-            + " The method name should be '%s' and the returnType should match the field type."
+            + " The method name should be '%s' and the returnType should match the field type %s."
             + " %s",
-        field.getName(), Getter.getterName(field.getName()), optionalMessage);
+        field.getName(), Getter.getterName(field), field.getType().getClassName(), optionalMessage);
   }
 
   public Pojo withFields(PList<PojoField> fields) {
+    return new Pojo(name, pkg, fields, constructors, getters);
+  }
+
+  public Pojo withGetters(PList<Getter> getters) {
     return new Pojo(name, pkg, fields, constructors, getters);
   }
 

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
@@ -30,7 +31,7 @@ class HashCodeTest {
 
     final Writer writer =
         generator.generate(
-            Pojos.sample().withFields(fields),
+            Pojos.sample().withFields(fields).withGetters(fields.map(PojoFields::toGetter)),
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
@@ -42,6 +43,28 @@ class HashCodeTest {
         writer.asString());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OBJECTS::equals));
     assertTrue(writer.getRefs().exists(JAVA_UTIL_ARRAYS::equals));
+  }
+
+  @Test
+  void staticHashCodeMethod_when_generatorUsedWithBooleanField_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = HashCode.staticHashCodeMethod();
+
+    final PList<PojoField> fields =
+        PList.of(new PojoField(Type.primitiveBoolean(), Name.fromString("flag"), true));
+
+    final Writer writer =
+        generator.generate(
+            Pojos.sample().withFields(fields).withGetters(fields.map(PojoFields::toGetter)),
+            PojoSettings.defaultSettings(),
+            Writer.createDefault());
+    assertEquals(
+        "public static int hashCode(Customer o) {\n"
+            + "  int result = Objects.hash(o.isFlag());\n"
+            + "  return result;\n"
+            + "}",
+        writer.asString());
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_OBJECTS::equals));
+    assertFalse(writer.getRefs().exists(JAVA_UTIL_ARRAYS::equals));
   }
 
   @Test
@@ -57,7 +80,7 @@ class HashCodeTest {
 
     final Writer writer =
         generator.generate(
-            Pojos.sample().withFields(fields),
+            Pojos.sample().withFields(fields).withGetters(fields.map(PojoFields::toGetter)),
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(

@@ -8,8 +8,8 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.Updater;
 import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.Annotations;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
@@ -42,19 +42,23 @@ public class HashCode {
   }
 
   private static Generator<Pojo, PojoSettings> staticHashCodeMethodContent() {
-    final BiFunction<Writer, PojoField, Writer> arrayHashCode = arrayHashCodeFragment();
-    final BiFunction<Writer, PojoField, Writer> arrayHashCodeAdd = arrayHashCodeAddFragment();
-    final BiFunction<Writer, PList<PojoField>, Writer> objectsHashCode = objectsHashCodeFragment();
+    final BiFunction<Writer, FieldGetter, Writer> arrayHashCode = arrayHashCodeFragment();
+    final BiFunction<Writer, FieldGetter, Writer> arrayHashCodeAdd = arrayHashCodeAddFragment();
+    final BiFunction<Writer, PList<FieldGetter>, Writer> objectsHashCode =
+        objectsHashCodeFragment();
 
     return (p, s, w) -> {
-      if (p.getFields().isEmpty()) {
+      final PList<FieldGetter> fieldGetters = p.getAllGettersOrThrow();
+      if (fieldGetters.isEmpty()) {
         return w.println("return 0;");
       }
 
-      final PList<PojoField> nonArrayFields = p.getFields().filter(f -> f.getType().isNotArray());
-      final PList<PojoField> arrayFields = p.getFields().filter(f -> f.getType().isArray());
+      final PList<FieldGetter> nonArrayFields =
+          fieldGetters.filter(fg -> fg.getField().getType().isNotArray());
+      final PList<FieldGetter> arrayFields =
+          fieldGetters.filter(fg -> fg.getField().getType().isArray());
 
-      final PList<PojoField> remainingArrayFields =
+      final PList<FieldGetter> remainingArrayFields =
           nonArrayFields.nonEmpty() ? arrayFields : arrayFields.drop(1);
 
       return Updater.initial(w)
@@ -70,23 +74,21 @@ public class HashCode {
     };
   }
 
-  private static BiFunction<Writer, PList<PojoField>, Writer> objectsHashCodeFragment() {
+  private static BiFunction<Writer, PList<FieldGetter>, Writer> objectsHashCodeFragment() {
     return (w, fields) ->
         w.print(
                 "Objects.hash(%s)",
-                fields
-                    .map(f -> String.format("o.get%s()", f.getName().toPascalCase()))
-                    .mkString(", "))
+                fields.map(fg -> String.format("o.%s()", fg.getGetter().getName())).mkString(", "))
             .ref(JAVA_UTIL_OBJECTS);
   }
 
-  private static BiFunction<Writer, PojoField, Writer> arrayHashCodeFragment() {
-    return (w, field) ->
-        w.print("Arrays.hashCode(o.get%s())", field.getName().toPascalCase()).ref(JAVA_UTIL_ARRAYS);
+  private static BiFunction<Writer, FieldGetter, Writer> arrayHashCodeFragment() {
+    return (w, fieldGetter) ->
+        w.print("Arrays.hashCode(o.%s())", fieldGetter.getGetter().getName()).ref(JAVA_UTIL_ARRAYS);
   }
 
-  private static BiFunction<Writer, PojoField, Writer> arrayHashCodeAddFragment() {
-    return (w, field) ->
-        arrayHashCodeFragment().apply(w.print("result = 31 * result + "), field).println(";");
+  private static BiFunction<Writer, FieldGetter, Writer> arrayHashCodeAddFragment() {
+    return (w, fieldGetter) ->
+        arrayHashCodeFragment().apply(w.print("result = 31 * result + "), fieldGetter).println(";");
   }
 }

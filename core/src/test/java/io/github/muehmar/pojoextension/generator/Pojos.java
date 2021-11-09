@@ -30,7 +30,7 @@ public class Pojos {
                       ? Type.optional(f.getType())
                       : f.getType();
               return Getter.newBuilder()
-                  .setName(Getter.getterName(f.getName()))
+                  .setName(Getter.getterName(f))
                   .setReturnType(returnType)
                   .build();
             });

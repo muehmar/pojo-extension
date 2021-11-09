@@ -16,6 +16,7 @@ class CustomerTest {
             .setName("Dexter")
             .setRandom(12.5d)
             .setKey(new byte[] {0x15})
+            .setFlag(true)
             .andAllOptionals()
             .setNickname("Dex")
             .setAge(Optional.empty())
@@ -44,7 +45,8 @@ class CustomerTest {
             customer1.getNickname().orElse(null),
             customer1.getAge().orElse(null),
             customer1.getRandom(),
-            customer1.getKey()));
+            customer1.getKey(),
+            customer1.isFlag()));
   }
 
   @Test
@@ -83,6 +85,7 @@ class CustomerTest {
         .setName("Dexter")
         .setRandom(12.5d)
         .setKey(new byte[] {0x15})
+        .setFlag(true)
         .andAllOptionals()
         .setNickname("Dex")
         .setAge(Optional.empty())

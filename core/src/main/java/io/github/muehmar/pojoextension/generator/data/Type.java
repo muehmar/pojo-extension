@@ -55,6 +55,10 @@ public class Type {
     return primitive("double");
   }
 
+  public static Type primitiveBoolean() {
+    return primitive("boolean");
+  }
+
   public static Type optional(Type value) {
     return new Type(
         Name.fromString("Optional"), PackageName.javaUtil(), PList.single(value), false);

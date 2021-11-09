@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
@@ -69,7 +70,9 @@ class EqualsTest {
 
     final Writer writer =
         generator.generate(
-            Pojos.sample().withFields(primitiveFields),
+            Pojos.sample()
+                .withFields(primitiveFields)
+                .withGetters(primitiveFields.map(PojoFields::toGetter)),
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
@@ -83,7 +86,7 @@ class EqualsTest {
             + "      && o1.getPlong() == o2.getPlong()\n"
             + "      && o1.getPfloat() == o2.getPfloat()\n"
             + "      && Double.compare(o1.getPdouble(), o2.getPdouble()) == 0\n"
-            + "      && o1.getPboolean() == o2.getPboolean()\n"
+            + "      && o1.isPboolean() == o2.isPboolean()\n"
             + "      && o1.getPchar() == o2.getPchar();\n"
             + "}",
         writer.asString());
@@ -104,7 +107,7 @@ class EqualsTest {
 
     final Writer writer =
         generator.generate(
-            Pojos.sample().withFields(fields),
+            Pojos.sample().withFields(fields).withGetters(fields.map(PojoFields::toGetter)),
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(

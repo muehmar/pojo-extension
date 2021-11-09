@@ -7,9 +7,9 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.impl.gen.Annotations;
@@ -46,7 +46,7 @@ public class Equals {
     return staticEqualsCheckIdentity()
         .append(staticEqualsCheckNullAndSameClass())
         .append(staticEqualsCastObjectToCompare())
-        .append(staticEqualsCompareFields(), Pojo::getFields);
+        .append(staticEqualsCompareFields(), Pojo::getAllGettersOrThrow);
   }
 
   private static Generator<Pojo, PojoSettings> staticEqualsCheckIdentity() {
@@ -61,7 +61,7 @@ public class Equals {
     return (p, s, w) -> w.println("final %s o2 = (%s) obj;", p.getName(), p.getName());
   }
 
-  private static Generator<PList<PojoField>, PojoSettings> staticEqualsCompareFields() {
+  private static Generator<PList<FieldGetter>, PojoSettings> staticEqualsCompareFields() {
     return (fields, s, w) -> {
       final Writer writerAfterFirstField =
           fields
@@ -79,19 +79,18 @@ public class Equals {
     };
   }
 
-  private static Generator<PojoField, PojoSettings> staticEqualsCompareField() {
-    return (f, s, w) -> {
-      final Name pascalCaseName = f.getName().toPascalCase();
-      if (f.getType().isArray()) {
-        return w.print("Arrays.equals(o1.get%s(), o2.get%s())", pascalCaseName, pascalCaseName)
+  private static Generator<FieldGetter, PojoSettings> staticEqualsCompareField() {
+    return (fg, s, w) -> {
+      final Name getterName = fg.getGetter().getName();
+      if (fg.getField().getType().isArray()) {
+        return w.print("Arrays.equals(o1.%s(), o2.%s())", getterName, getterName)
             .ref(JAVA_UTIL_ARRAYS);
-      } else if (f.getType().equals(Type.primitiveDouble())) {
-        return w.print(
-            "Double.compare(o1.get%s(), o2.get%s()) == 0", pascalCaseName, pascalCaseName);
-      } else if (f.getType().isPrimitive()) {
-        return w.print("o1.get%s() == o2.get%s()", pascalCaseName, pascalCaseName);
+      } else if (fg.getField().getType().equals(Type.primitiveDouble())) {
+        return w.print("Double.compare(o1.%s(), o2.%s()) == 0", getterName, getterName);
+      } else if (fg.getField().getType().isPrimitive()) {
+        return w.print("o1.%s() == o2.%s()", getterName, getterName);
       } else {
-        return w.print("Objects.equals(o1.get%s(), o2.get%s())", pascalCaseName, pascalCaseName)
+        return w.print("Objects.equals(o1.%s(), o2.%s())", getterName, getterName)
             .ref(JAVA_UTIL_OBJECTS);
       }
     };

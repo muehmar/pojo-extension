@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.annotations.processor;
 
 import static io.github.muehmar.pojoextension.generator.data.Type.integer;
+import static io.github.muehmar.pojoextension.generator.data.Type.primitiveBoolean;
 import static io.github.muehmar.pojoextension.generator.data.Type.string;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -297,6 +298,7 @@ class PojoExtensionProcessorTest {
             .getter("Optional<String>", "data")
             .getter("Integer", "key")
             .method("void", "doSomething", "")
+            .method("boolean", "isFlag", "return true")
             .create();
 
     final PojoAndSettings pojoAndSettings =
@@ -308,9 +310,10 @@ class PojoExtensionProcessorTest {
                 .setName(Name.fromString("getData"))
                 .setReturnType(Type.optional(string()))
                 .build(),
+            Getter.newBuilder().setName(Name.fromString("getKey")).setReturnType(integer()).build(),
             Getter.newBuilder()
-                .setName(Name.fromString("getKey"))
-                .setReturnType(integer())
+                .setName(Name.fromString("isFlag"))
+                .setReturnType(primitiveBoolean())
                 .build());
 
     assertEquals(expected, pojoAndSettings.pojo.getGetters());
