@@ -8,6 +8,6 @@ import io.github.muehmar.pojoextension.generator.writer.Writer;
 public class PackageGen implements Generator<Pojo, PojoSettings> {
   @Override
   public Writer generate(Pojo pojo, PojoSettings settings, Writer writer) {
-    return writer.println("package %s;", pojo.getPackage().asString());
+    return writer.println("package %s;", pojo.getPkg().asString());
   }
 }

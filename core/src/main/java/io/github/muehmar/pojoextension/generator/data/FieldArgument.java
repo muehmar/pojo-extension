@@ -1,8 +1,10 @@
 package io.github.muehmar.pojoextension.generator.data;
 
-import java.util.Objects;
+import io.github.muehmar.pojoextension.annotations.PojoExtension;
 
-public class FieldArgument {
+@PojoExtension
+@SuppressWarnings("java:S2160")
+public class FieldArgument extends FieldArgumentExtension {
   private final PojoField field;
   private final Argument argument;
   private final OptionalFieldRelation relation;
@@ -24,21 +26,6 @@ public class FieldArgument {
   /** Returns the relation from the field to the argument */
   public OptionalFieldRelation getRelation() {
     return relation;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    FieldArgument that = (FieldArgument) o;
-    return Objects.equals(field, that.field)
-        && Objects.equals(argument, that.argument)
-        && relation == that.relation;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(field, argument, relation);
   }
 
   @Override

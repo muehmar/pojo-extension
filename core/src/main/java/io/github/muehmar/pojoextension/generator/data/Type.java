@@ -108,7 +108,7 @@ public class Type {
     return name.prefix(pkg.asString() + ".");
   }
 
-  public PackageName getPackage() {
+  public PackageName getPkg() {
     return pkg;
   }
 

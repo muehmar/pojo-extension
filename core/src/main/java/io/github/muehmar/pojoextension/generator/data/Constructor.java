@@ -1,10 +1,12 @@
 package io.github.muehmar.pojoextension.generator.data;
 
 import ch.bluecare.commons.data.PList;
-import java.util.Objects;
+import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.Optional;
 
-public class Constructor {
+@PojoExtension
+@SuppressWarnings("java:S2160")
+public class Constructor extends ConstructorExtension {
   private final Name name;
   private final PList<Argument> arguments;
 
@@ -44,19 +46,6 @@ public class Constructor {
                 });
 
     return Optional.of(fieldArguments).filter(f -> f.size() == arguments.size());
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Constructor that = (Constructor) o;
-    return Objects.equals(name, that.name) && Objects.equals(arguments, that.arguments);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name, arguments);
   }
 
   @Override

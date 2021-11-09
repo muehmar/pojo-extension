@@ -1,9 +1,9 @@
 package io.github.muehmar.pojoextension.generator.data;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import java.util.Objects;
 
 @PojoExtension
+@SuppressWarnings("java:S2160")
 public class FieldGetter extends FieldGetterExtension {
   private final Getter getter;
   private final PojoField field;
@@ -29,21 +29,6 @@ public class FieldGetter extends FieldGetterExtension {
 
   public OptionalFieldRelation getRelation() {
     return relation;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    FieldGetter that = (FieldGetter) o;
-    return Objects.equals(getter, that.getter)
-        && Objects.equals(field, that.field)
-        && relation == that.relation;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(getter, field, relation);
   }
 
   @Override

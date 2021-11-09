@@ -1,9 +1,9 @@
 package io.github.muehmar.pojoextension.generator.data;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import java.util.Objects;
 
 @PojoExtension
+@SuppressWarnings("java:S2160")
 public class PojoField extends PojoFieldExtension {
   private final Name name;
   private final Type type;
@@ -29,25 +29,6 @@ public class PojoField extends PojoFieldExtension {
 
   public boolean isOptional() {
     return !isRequired();
-  }
-
-  public PojoField withRequired(boolean required) {
-    return new PojoField(name, type, required);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    PojoField that = (PojoField) o;
-    return required == that.required
-        && Objects.equals(type, that.type)
-        && Objects.equals(name, that.name);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(type, name, required);
   }
 
   @Override

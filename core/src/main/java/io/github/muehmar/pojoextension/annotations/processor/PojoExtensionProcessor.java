@@ -75,7 +75,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   private void processElement(Element element) {
     final Type pojoType = Type.fromClassName(element.toString());
     final Name className = pojoType.getName();
-    final PackageName classPackage = pojoType.getPackage();
+    final PackageName classPackage = pojoType.getPkg();
 
     final PojoExtension annotation = element.getAnnotation(PojoExtension.class);
     final DetectionSettings detectionSettings =

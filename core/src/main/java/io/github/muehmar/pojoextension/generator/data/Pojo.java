@@ -2,10 +2,10 @@ package io.github.muehmar.pojoextension.generator.data;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import java.util.Objects;
 import java.util.Optional;
 
 @PojoExtension
+@SuppressWarnings("java:S2160")
 public class Pojo extends io.github.muehmar.pojoextension.generator.data.PojoExtension {
   private final Name name;
   private final PackageName pkg;
@@ -34,7 +34,7 @@ public class Pojo extends io.github.muehmar.pojoextension.generator.data.PojoExt
     return pkg.qualifiedName(name);
   }
 
-  public PackageName getPackage() {
+  public PackageName getPkg() {
     return pkg;
   }
 
@@ -97,34 +97,6 @@ public class Pojo extends io.github.muehmar.pojoextension.generator.data.PojoExt
             + " The method name should be '%s' and the returnType should match the field type %s."
             + " %s",
         field.getName(), Getter.getterName(field), field.getType().getClassName(), optionalMessage);
-  }
-
-  public Pojo withFields(PList<PojoField> fields) {
-    return new Pojo(name, pkg, fields, constructors, getters);
-  }
-
-  public Pojo withGetters(PList<Getter> getters) {
-    return new Pojo(name, pkg, fields, constructors, getters);
-  }
-
-  public Pojo withConstructors(PList<Constructor> constructors) {
-    return new Pojo(name, pkg, fields, constructors, getters);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Pojo pojo = (Pojo) o;
-    return Objects.equals(name, pojo.name)
-        && Objects.equals(pkg, pojo.pkg)
-        && Objects.equals(fields, pojo.fields)
-        && Objects.equals(constructors, pojo.constructors);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name, pkg, fields, constructors);
   }
 
   @Override

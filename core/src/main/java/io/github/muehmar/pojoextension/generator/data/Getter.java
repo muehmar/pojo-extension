@@ -4,10 +4,10 @@ import static io.github.muehmar.pojoextension.Booleans.not;
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import java.util.Objects;
 import java.util.Optional;
 
 @PojoExtension
+@SuppressWarnings("java:S2160")
 public class Getter extends GetterExtension {
   private final Name name;
   private final Type returnType;
@@ -45,19 +45,6 @@ public class Getter extends GetterExtension {
     return returnType
         .getRelation(field.getType())
         .map(relation -> FieldGetter.of(self, field, relation));
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Getter getter = (Getter) o;
-    return Objects.equals(name, getter.name) && Objects.equals(returnType, getter.returnType);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name, returnType);
   }
 
   @Override
