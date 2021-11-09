@@ -18,6 +18,10 @@ public interface Generator<A, B> {
     return (data, settings, writer) -> writer;
   }
 
+  default Generator<A, B> appendNewLine() {
+    return append((UnaryOperator<Writer>) Writer::println);
+  }
+
   default Generator<A, B> append(Generator<A, B> next) {
     final Generator<A, B> self = this;
     return (data, settings, writer) ->

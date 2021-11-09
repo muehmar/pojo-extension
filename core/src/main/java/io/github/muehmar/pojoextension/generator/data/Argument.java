@@ -1,6 +1,9 @@
 package io.github.muehmar.pojoextension.generator.data;
 
+import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
+
 import java.util.Objects;
+import java.util.Optional;
 
 public class Argument {
   private final Name name;
@@ -23,11 +26,13 @@ public class Argument {
     return type;
   }
 
-  public boolean matchesType(PojoField field) {
-    return type.equals(field.getType())
-        || type.onOptional(field.getType()::equals)
-            .filter(ignore -> field.isOptional())
-            .orElse(false);
+  /** Returns the relation from the field to the argument */
+  public Optional<OptionalFieldRelation> getRelationFromField(PojoField field) {
+    if (field.isRequired()) {
+      return type.equals(field.getType()) ? Optional.of(SAME_TYPE) : Optional.empty();
+    }
+
+    return field.getType().getRelation(this.getType());
   }
 
   @Override

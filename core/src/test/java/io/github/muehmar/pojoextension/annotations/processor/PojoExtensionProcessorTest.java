@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.annotations.processor;
 
 import static io.github.muehmar.pojoextension.generator.data.Type.integer;
+import static io.github.muehmar.pojoextension.generator.data.Type.primitiveBoolean;
 import static io.github.muehmar.pojoextension.generator.data.Type.string;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -12,6 +13,7 @@ import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.data.Argument;
 import io.github.muehmar.pojoextension.generator.data.Constructor;
+import io.github.muehmar.pojoextension.generator.data.Getter;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
@@ -56,7 +58,8 @@ class PojoExtensionProcessorTest {
             className,
             PACKAGE,
             fields,
-            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))));
+            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))),
+            PList.empty());
 
     assertEquals(expected, pojoAndSettings.pojo);
   }
@@ -85,7 +88,8 @@ class PojoExtensionProcessorTest {
             className,
             PACKAGE,
             fields,
-            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))));
+            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))),
+            PList.empty());
 
     assertEquals(expected, pojoAndSettings.pojo);
   }
@@ -114,7 +118,8 @@ class PojoExtensionProcessorTest {
             className,
             PACKAGE,
             fields,
-            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))));
+            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))),
+            PList.empty());
 
     assertEquals(expected, pojoAndSettings.pojo);
   }
@@ -151,7 +156,8 @@ class PojoExtensionProcessorTest {
             className,
             PackageName.fromString("io.github.muehmar"),
             fields,
-            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))));
+            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))),
+            PList.empty());
 
     assertEquals(expected, pojoAndSettings.pojo);
   }
@@ -192,7 +198,8 @@ class PojoExtensionProcessorTest {
             fields,
             PList.single(
                 new Constructor(
-                    className, PList.single(new Argument(Name.fromString("id"), Type.string())))));
+                    className, PList.single(new Argument(Name.fromString("id"), Type.string())))),
+            PList.empty());
 
     assertEquals(expected, pojoAndSettings.pojo);
   }
@@ -234,7 +241,8 @@ class PojoExtensionProcessorTest {
             className,
             PACKAGE,
             fields,
-            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))));
+            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))),
+            PList.empty());
 
     assertEquals(expected, pojoAndSettings.pojo);
   }
@@ -268,9 +276,47 @@ class PojoExtensionProcessorTest {
             className,
             PACKAGE,
             fields,
-            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))));
+            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))),
+            PList.empty());
 
     assertEquals(expected, pojoAndSettings.pojo);
+  }
+
+  @Test
+  void run_when_gettersPresent_then_extractOnlyGettersCorrectly() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .withImport(Optional.class)
+            .annotation(PojoExtension.class)
+            .className(className)
+            .withField("Optional<String>", "data")
+            .withField("Integer", "key")
+            .constructor()
+            .getter("Optional<String>", "data")
+            .getter("Integer", "key")
+            .method("void", "doSomething", "")
+            .method("boolean", "isFlag", "return true")
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+
+    final PList<Getter> expected =
+        PList.of(
+            Getter.newBuilder()
+                .setName(Name.fromString("getData"))
+                .setReturnType(Type.optional(string()))
+                .build(),
+            Getter.newBuilder().setName(Name.fromString("getKey")).setReturnType(integer()).build(),
+            Getter.newBuilder()
+                .setName(Name.fromString("isFlag"))
+                .setReturnType(primitiveBoolean())
+                .build());
+
+    assertEquals(expected, pojoAndSettings.pojo.getGetters());
   }
 
   private static Name randomClassName() {

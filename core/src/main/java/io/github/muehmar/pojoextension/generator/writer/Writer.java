@@ -133,7 +133,7 @@ public final class Writer {
 
   private static String removeTrailingNewlineCharacter(String str) {
     final int length = str.length();
-    if (str.substring(length - 1).equals(NEWLINE_STRING)) {
+    if (length > 0 && str.substring(length - 1).equals(NEWLINE_STRING)) {
       return str.substring(0, length - 1);
     }
     return str;

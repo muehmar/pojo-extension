@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.data;
 
+import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,15 +15,21 @@ class PojoTest {
   @Test
   void findMatchingConstructor_when_samplePojo_then_matchForSingleConstructorAndFields() {
     final Pojo pojo = Pojos.sample();
+
+    final PList<FieldArgument> fieldArguments =
+        pojo.getFields()
+            .zip(pojo.getConstructors().head().getArguments())
+            .map(p -> new FieldArgument(p.first(), p.second(), SAME_TYPE));
+    final MatchingConstructor expected =
+        MatchingConstructor.newBuilder()
+            .setConstructor(pojo.getConstructors().head())
+            .setFieldArguments(fieldArguments)
+            .build();
+
     final Optional<MatchingConstructor> matchingConstructor = pojo.findMatchingConstructor();
 
     assertTrue(matchingConstructor.isPresent());
-    assertEquals(
-        MatchingConstructor.newBuilder()
-            .setConstructor(pojo.getConstructors().head())
-            .setFields(pojo.getFields())
-            .build(),
-        matchingConstructor.get());
+    assertEquals(expected, matchingConstructor.get());
   }
 
   @Test
@@ -50,5 +57,25 @@ class PojoTest {
     final Optional<MatchingConstructor> matchingConstructor = pojo.findMatchingConstructor();
 
     assertFalse(matchingConstructor.isPresent());
+  }
+
+  @Test
+  void findMatchingGetter_when_calledForFieldInPojo_then_returnsFieldGetter() {
+    final Pojo pojo = Pojos.sample();
+    final Optional<FieldGetter> fieldGetter = pojo.findMatchingGetter(pojo.getFields().head());
+
+    final FieldGetter expected =
+        new FieldGetter(pojo.getGetters().head(), pojo.getFields().head(), SAME_TYPE);
+    assertEquals(Optional.of(expected), fieldGetter);
+  }
+
+  @Test
+  void findMatchingGetter_when_calledForOtherField_then_returnsEmpty() {
+    final Pojo pojo = Pojos.sample();
+    final Optional<FieldGetter> fieldGetter =
+        pojo.findMatchingGetter(
+            new PojoField(Type.string(), Name.fromString("notAFieldInTheSamplePojo"), true));
+
+    assertEquals(Optional.empty(), fieldGetter);
   }
 }

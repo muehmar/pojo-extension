@@ -7,7 +7,7 @@ buildscript {
 ext {
     isSnapshot = false
     group = 'io.github.muehmar'
-    version = '0.2.5' + (project.ext.isSnapshot ? '-SNAPSHOT' : '')
+    version = '0.3.0' + (project.ext.isSnapshot ? '-SNAPSHOT' : '')
 }
 
 allprojects {

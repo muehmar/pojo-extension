@@ -8,6 +8,7 @@ import static javax.lang.model.type.TypeKind.FLOAT;
 import static javax.lang.model.type.TypeKind.INT;
 import static javax.lang.model.type.TypeKind.LONG;
 import static javax.lang.model.type.TypeKind.SHORT;
+import static javax.lang.model.type.TypeKind.VOID;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.data.Type;
@@ -46,7 +47,8 @@ public class TypeMirrorMapper {
         Mapper.forFixMapping(DOUBLE, Type.primitive("double")),
         Mapper.forFixMapping(LONG, Type.primitive("long")),
         Mapper.forFixMapping(SHORT, Type.primitive("short")),
-        Mapper.forFixMapping(BYTE, Type.primitive("byte")));
+        Mapper.forFixMapping(BYTE, Type.primitive("byte")),
+        Mapper.forFixMapping(VOID, Type.voidType()));
   }
 
   private static Mapper declaredTypeMapper() {

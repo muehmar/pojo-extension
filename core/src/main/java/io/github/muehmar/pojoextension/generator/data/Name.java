@@ -51,6 +51,14 @@ public class Name {
     return map(n -> n.substring(0, 1).toUpperCase() + n.substring(1));
   }
 
+  public Name javaBeansName() {
+    if (value.length() >= 2 && value.substring(1, 2).toUpperCase().equals(value.substring(1, 2))) {
+      return this;
+    } else {
+      return toPascalCase();
+    }
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

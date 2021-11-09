@@ -1,10 +1,10 @@
 package io.github.muehmar.pojoextension.example;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import java.util.Objects;
 import java.util.Optional;
 
 @PojoExtension
+@SuppressWarnings("java:S2160") // Not overriding equals and hashCode is fine
 public class User extends UserExtension {
   private final String name;
   private final Optional<Integer> age;
@@ -21,19 +21,6 @@ public class User extends UserExtension {
 
   public Optional<Integer> getAge() {
     return age;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    User user = (User) o;
-    return Objects.equals(name, user.name) && Objects.equals(age, user.age);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name, age);
   }
 
   @Override

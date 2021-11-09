@@ -1,7 +1,7 @@
 package io.github.muehmar.pojoextension.generator.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.bluecare.commons.data.PList;
@@ -13,8 +13,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class TypeTest {
-  private static final PList<String> primitiveTypes =
-      PList.of("int", "byte", "short", "long", "float", "double", "boolean", "char");
 
   @Test
   void fromClassName_when_javaLangString_then_parsedCorrectly() {
@@ -42,14 +40,6 @@ class TypeTest {
   }
 
   @Test
-  void equalsIgnoreTypeParameter_when_twoOptionalsWithDifferentTypeParameter_then_areEquals() {
-    final Type optionalString = Type.optional(Type.string());
-    final Type optionalInteger = Type.optional(Type.integer());
-    assertNotEquals(optionalInteger, optionalString);
-    assertTrue(optionalString.equalsIgnoreTypeParameters(optionalInteger));
-  }
-
-  @Test
   void onOptional_when_typeIsOptional_then_functionAppliedWithTypeParameter() {
     final Type type = Type.optional(Type.string());
     assertEquals(Optional.of("String"), type.onOptional(Type::getClassName).map(Name::asString));
@@ -61,7 +51,54 @@ class TypeTest {
     assertEquals(Optional.empty(), type.onOptional(Type::getClassName).map(Name::asString));
   }
 
+  @Test
+  void isPrimitive_when_calledForEachPrimitive_then_trueForAll() {
+    final PList<Type> primitives = Type.allPrimitives();
+    primitives.forEach(primitive -> assertTrue(primitive.isPrimitive()));
+  }
+
+  @Test
+  void isPrimitive_when_calledForNonPrimitives_then_falseForAll() {
+    assertFalse(Type.string().isPrimitive());
+    assertFalse(Type.integer().isPrimitive());
+  }
+
+  @Test
+  void isVoid_when_calledForVoidType_then_true() {
+    assertTrue(Type.voidType().isVoid());
+  }
+
+  @Test
+  void getRelation_when_unrelatedTypes_then_noRelationReturned() {
+    final Optional<OptionalFieldRelation> relation = Type.string().getRelation(Type.integer());
+    assertFalse(relation.isPresent());
+  }
+
+  @Test
+  void getRelation_when_stringAndOptionalString_then_relationIsWrapIntoOptional() {
+    final Optional<OptionalFieldRelation> relation =
+        Type.string().getRelation(Type.optional(Type.string()));
+    assertEquals(Optional.of(OptionalFieldRelation.WRAP_INTO_OPTIONAL), relation);
+  }
+
+  @Test
+  void getRelation_when_optionalStringAndString_then_relationIsUnwrapOptional() {
+    final Optional<OptionalFieldRelation> relation =
+        Type.optional(Type.string()).getRelation(Type.string());
+    assertEquals(Optional.of(OptionalFieldRelation.UNWRAP_OPTIONAL), relation);
+  }
+
+  @Test
+  void getRelation_when_bothAreStrings_then_relationIsSameType() {
+    final Optional<OptionalFieldRelation> relation = Type.string().getRelation(Type.string());
+    assertEquals(Optional.of(OptionalFieldRelation.SAME_TYPE), relation);
+  }
+
   private static Stream<Arguments> primitiveTypes() {
-    return primitiveTypes.toStream().map(Arguments::of);
+    return Type.allPrimitives()
+        .toStream()
+        .map(Type::getName)
+        .map(Name::asString)
+        .map(Arguments::of);
   }
 }

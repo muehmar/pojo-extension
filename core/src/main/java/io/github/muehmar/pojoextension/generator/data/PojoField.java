@@ -1,11 +1,10 @@
 package io.github.muehmar.pojoextension.generator.data;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import io.github.muehmar.pojoextension.generator.data.PojoFieldExtension.Builder0;
 import java.util.Objects;
 
 @PojoExtension
-public class PojoField {
+public class PojoField extends PojoFieldExtension {
   private final Type type;
   private final Name name;
   private final boolean required;
@@ -14,10 +13,6 @@ public class PojoField {
     this.type = type;
     this.name = name;
     this.required = required;
-  }
-
-  public static Builder0 newBuilder() {
-    return io.github.muehmar.pojoextension.generator.data.PojoFieldExtension.newBuilder();
   }
 
   public Type getType() {
@@ -38,24 +33,6 @@ public class PojoField {
 
   public PojoField withRequired(boolean required) {
     return new PojoField(type, name, required);
-  }
-
-  /**
-   * Executes one of the given functions depending on how the type matches the type of the argument.
-   */
-  public <T> T forArgument(
-      Argument arg,
-      OnExactMatch<T> exactMatch,
-      OnOptionalMatch<T> optionalMatch,
-      OnNoMatch<T> noMatch) {
-    final PojoField self = this;
-    if (arg.getType().equals(type)) {
-      return exactMatch.apply(self, arg);
-    } else if (arg.getType().onOptional(t -> t.equals(self.type)).orElse(false)) {
-      return optionalMatch.apply(self, arg);
-    } else {
-      return noMatch.apply(self, arg);
-    }
   }
 
   @Override

@@ -9,6 +9,7 @@ import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Constructor;
+import io.github.muehmar.pojoextension.generator.data.Getter;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
@@ -23,6 +24,7 @@ import java.io.UncheckedIOException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -79,6 +81,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         new DetectionSettings(PList.fromArray(annotation.optionalDetection()));
 
     final PList<Constructor> constructors = ConstructorProcessor.process(element);
+    final PList<Getter> getters = GetterProcessor.process(element);
 
     final PList<PojoField> fields =
         PList.fromIter(element.getEnclosedElements())
@@ -91,6 +94,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             .setPkg(classPackage)
             .setFields(fields)
             .setConstructors(constructors)
+            .setGetters(getters)
             .andAllOptionals()
             .build();
     final PojoSettings pojoSettings = new PojoSettings(false);
@@ -133,10 +137,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .filter(
             ignore ->
                 settings.getOptionalDetections().exists(OptionalDetection.OPTIONAL_CLASS::equals))
-        .filter(t -> t.equalsIgnoreTypeParameters(Type.optional(Type.string())))
-        .map(Type::getTypeParameters)
-        .filter(p -> p.size() == 1)
-        .map(p -> p.apply(0))
+        .flatMap(t -> t.onOptional(Function.identity()))
         .map(typeParameter -> new PojoField(typeParameter, name, false));
   }
 

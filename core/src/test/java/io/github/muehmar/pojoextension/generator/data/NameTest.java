@@ -10,4 +10,11 @@ class NameTest {
     final Name name = Name.fromString("name");
     assertEquals("Name", name.toPascalCase().asString());
   }
+
+  @Test
+  void javaBeansName_when_called_then_correctJavaBeansName() {
+    assertEquals("Name", Name.fromString("name").javaBeansName().asString());
+    assertEquals("xIndex", Name.fromString("xIndex").javaBeansName().asString());
+    assertEquals("XxIndex", Name.fromString("xxIndex").javaBeansName().asString());
+  }
 }
