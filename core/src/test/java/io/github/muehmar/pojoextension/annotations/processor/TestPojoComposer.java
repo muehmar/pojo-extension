@@ -115,6 +115,11 @@ public class TestPojoComposer {
       this.fields = PList.empty();
     }
 
+    public PojoFields withConstant(String type, String name) {
+      builder.append(String.format("  private static final %s %s;\n", type, name));
+      return new PojoFields(builder, className, fields);
+    }
+
     public PojoFields withField(String type, String name) {
       builder.append(String.format("  private final %s %s;\n", type, name));
       return new PojoFields(builder, className, fields.add(new TypeAndName(type, name)));

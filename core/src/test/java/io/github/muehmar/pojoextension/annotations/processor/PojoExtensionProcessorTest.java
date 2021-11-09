@@ -319,6 +319,36 @@ class PojoExtensionProcessorTest {
     assertEquals(expected, pojoAndSettings.pojo.getGetters());
   }
 
+  @Test
+  void run_when_constantDefined_then_constantIgnored() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotation(PojoExtension.class)
+            .className(className)
+            .withField("String", "id")
+            .withConstant("String", "CONSTANT_VAL=\"123456\"")
+            .constructor()
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+
+    final PojoField m1 = new PojoField(string(), Name.fromString("id"), true);
+    final PList<PojoField> fields = PList.single(m1);
+    final Pojo expected =
+        new Pojo(
+            className,
+            PACKAGE,
+            fields,
+            PList.single(new Constructor(className, fields.map(PojoFields::toArgument))),
+            PList.empty());
+
+    assertEquals(expected, pojoAndSettings.pojo);
+  }
+
   private static Name randomClassName() {
     return Name.fromString("Customer")
         .append(UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10));
