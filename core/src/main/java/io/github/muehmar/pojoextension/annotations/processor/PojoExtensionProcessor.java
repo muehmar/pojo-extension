@@ -34,6 +34,7 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.tools.JavaFileObject;
 
@@ -86,6 +87,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     final PList<PojoField> fields =
         PList.fromIter(element.getEnclosedElements())
             .filter(e -> e.getKind().equals(ElementKind.FIELD))
+            .filter(this::isNonConstantField)
             .map(e -> convertToPojoField(e, detectionSettings));
 
     final Pojo pojoExtension =
@@ -114,6 +116,11 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         throw new UncheckedIOException(e);
       }
     }
+  }
+
+  private boolean isNonConstantField(Element element) {
+    final Set<Modifier> modifiers = element.getModifiers();
+    return !modifiers.contains(Modifier.STATIC);
   }
 
   private PojoField convertToPojoField(Element element, DetectionSettings settings) {

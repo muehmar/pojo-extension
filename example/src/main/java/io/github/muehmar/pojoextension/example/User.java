@@ -6,6 +6,7 @@ import java.util.Optional;
 @PojoExtension
 @SuppressWarnings("java:S2160") // Not overriding equals and hashCode is fine
 public class User extends UserExtension {
+  public static final String USER_LABEL = "label";
   private final String name;
   private final Optional<Integer> age;
 

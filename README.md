@@ -31,8 +31,8 @@ Add the dependency and register it as annotation processor. In gradle this would
 
 ```
 dependencies {
-    implementation "io.github.muehmar:pojo-extension:0.3.0"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.3.0"
+    implementation "io.github.muehmar:pojo-extension:0.3.1"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.3.1"
 }
 ```
 
@@ -247,6 +247,8 @@ Both options are active as default.
 
 ## Change Log
 
+* 0.3.1 - Ignore constants in data classes
+* 0.3.0 - Add `equals`, `hashCode` and `withXX` methods
 * 0.2.5 - Remove newline character from writer output
 * 0.2.4 - Fix generated package structure for the extension
 * 0.2.3 - Make the extension be extendable by the pojo itself
