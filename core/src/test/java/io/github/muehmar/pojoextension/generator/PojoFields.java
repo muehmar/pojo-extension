@@ -10,7 +10,7 @@ public class PojoFields {
   private PojoFields() {}
 
   public static PojoField requiredId() {
-    return new PojoField(Type.integer(), Name.fromString("id"), true);
+    return new PojoField(Name.fromString("id"), Type.integer(), true);
   }
 
   public static Argument toArgument(PojoField f) {

@@ -66,7 +66,7 @@ class EqualsTest {
     final Generator<Pojo, PojoSettings> generator = Equals.staticEqualsMethod();
 
     final PList<PojoField> primitiveFields =
-        Type.allPrimitives().map(t -> new PojoField(t, t.getName().prefix("p"), true));
+        Type.allPrimitives().map(t -> new PojoField(t.getName().prefix("p"), t, true));
 
     final Writer writer =
         generator.generate(
@@ -103,7 +103,7 @@ class EqualsTest {
             .getFields()
             .cons(
                 new PojoField(
-                    Type.primitive("byte").withIsArray(true), Name.fromString("byteArray"), true));
+                    Name.fromString("byteArray"), Type.primitive("byte").withIsArray(true), true));
 
     final Writer writer =
         generator.generate(

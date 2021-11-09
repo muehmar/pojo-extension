@@ -18,9 +18,9 @@ public class Pojos {
   public static Pojo sample() {
     final PList<PojoField> fields =
         PList.of(
-            new PojoField(Type.integer(), Name.fromString("id"), true),
-            new PojoField(Type.string(), Name.fromString("username"), true),
-            new PojoField(Type.string(), Name.fromString("nickname"), false));
+            new PojoField(Name.fromString("id"), Type.integer(), true),
+            new PojoField(Name.fromString("username"), Type.string(), true),
+            new PojoField(Name.fromString("nickname"), Type.string(), false));
 
     final PList<Getter> getters =
         fields.map(

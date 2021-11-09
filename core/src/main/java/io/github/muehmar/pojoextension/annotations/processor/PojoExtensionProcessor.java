@@ -135,7 +135,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     return PojoFieldMapper.initial()
         .or(this::mapOptionalPojoField)
         .or(this::mapNullablePojoField)
-        .mapWithDefault(element, name, type, settings, () -> new PojoField(type, name, true));
+        .mapWithDefault(element, name, type, settings, () -> new PojoField(name, type, true));
   }
 
   private Optional<PojoField> mapOptionalPojoField(
@@ -145,7 +145,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             ignore ->
                 settings.getOptionalDetections().exists(OptionalDetection.OPTIONAL_CLASS::equals))
         .flatMap(t -> t.onOptional(Function.identity()))
-        .map(typeParameter -> new PojoField(typeParameter, name, false));
+        .map(typeParameter -> new PojoField(name, typeParameter, false));
   }
 
   private Optional<PojoField> mapNullablePojoField(
@@ -156,7 +156,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
                 settings
                     .getOptionalDetections()
                     .exists(OptionalDetection.NULLABLE_ANNOTATION::equals))
-        .map(ignore -> new PojoField(type, name, false));
+        .map(ignore -> new PojoField(name, type, false));
   }
 
   @FunctionalInterface

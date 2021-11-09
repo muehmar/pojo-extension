@@ -5,13 +5,13 @@ import java.util.Objects;
 
 @PojoExtension
 public class PojoField extends PojoFieldExtension {
-  private final Type type;
   private final Name name;
+  private final Type type;
   private final boolean required;
 
-  public PojoField(Type type, Name name, boolean required) {
-    this.type = type;
+  public PojoField(Name name, Type type, boolean required) {
     this.name = name;
+    this.type = type;
     this.required = required;
   }
 
@@ -32,7 +32,7 @@ public class PojoField extends PojoFieldExtension {
   }
 
   public PojoField withRequired(boolean required) {
-    return new PojoField(type, name, required);
+    return new PojoField(name, type, required);
   }
 
   @Override

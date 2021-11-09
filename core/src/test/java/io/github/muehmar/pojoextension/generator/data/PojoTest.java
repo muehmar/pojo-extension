@@ -74,7 +74,7 @@ class PojoTest {
     final Pojo pojo = Pojos.sample();
     final Optional<FieldGetter> fieldGetter =
         pojo.findMatchingGetter(
-            new PojoField(Type.string(), Name.fromString("notAFieldInTheSamplePojo"), true));
+            new PojoField(Name.fromString("notAFieldInTheSamplePojo"), Type.string(), true));
 
     assertEquals(Optional.empty(), fieldGetter);
   }

@@ -20,8 +20,8 @@ class ConstructorTest {
 
     final PList<PojoField> fields =
         PList.of(
-            new PojoField(Type.string(), Name.fromString("id"), true),
-            new PojoField(Type.integer(), Name.fromString("zip"), false));
+            new PojoField(Name.fromString("id"), Type.string(), true),
+            new PojoField(Name.fromString("zip"), Type.integer(), false));
 
     // method call
     final Optional<PList<FieldArgument>> result = constructor.matchFields(fields);
@@ -45,8 +45,8 @@ class ConstructorTest {
 
     final PList<PojoField> fields =
         PList.of(
-            new PojoField(Type.integer(), Name.fromString("zip"), false),
-            new PojoField(Type.string(), Name.fromString("id"), true));
+            new PojoField(Name.fromString("zip"), Type.integer(), false),
+            new PojoField(Name.fromString("id"), Type.string(), true));
 
     // method call
     final Optional<PList<FieldArgument>> result = constructor.matchFields(fields);
@@ -66,8 +66,8 @@ class ConstructorTest {
 
     final PList<PojoField> fields =
         PList.of(
-            new PojoField(Type.string(), Name.fromString("id"), true),
-            new PojoField(Type.integer(), Name.fromString("zip"), false));
+            new PojoField(Name.fromString("id"), Type.string(), true),
+            new PojoField(Name.fromString("zip"), Type.integer(), false));
 
     // method call
     final Optional<PList<FieldArgument>> result = constructor.matchFields(fields);
@@ -96,8 +96,8 @@ class ConstructorTest {
 
     final PList<PojoField> fields =
         PList.of(
-            new PojoField(Type.string(), Name.fromString("id"), true),
-            new PojoField(Type.integer(), Name.fromString("zip"), false));
+            new PojoField(Name.fromString("id"), Type.string(), true),
+            new PojoField(Name.fromString("zip"), Type.integer(), false));
 
     // method call
     final Optional<PList<FieldArgument>> result = constructor.matchFields(fields);
@@ -115,7 +115,7 @@ class ConstructorTest {
                 new Argument(Name.fromString("zip"), Type.optional(Type.integer()))));
 
     final PList<PojoField> fields =
-        PList.of(new PojoField(Type.string(), Name.fromString("id"), true));
+        PList.of(new PojoField(Name.fromString("id"), Type.string(), true));
 
     // method call
     final Optional<PList<FieldArgument>> result = constructor.matchFields(fields);

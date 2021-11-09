@@ -51,7 +51,7 @@ class PojoExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
-    final PojoField m1 = new PojoField(string(), Name.fromString("id"), true);
+    final PojoField m1 = new PojoField(Name.fromString("id"), string(), true);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         new Pojo(
@@ -81,7 +81,7 @@ class PojoExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
-    final PojoField m1 = new PojoField(string(), Name.fromString("id"), false);
+    final PojoField m1 = new PojoField(Name.fromString("id"), string(), false);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         new Pojo(
@@ -111,7 +111,7 @@ class PojoExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
-    final PojoField m1 = new PojoField(string(), Name.fromString("id"), false);
+    final PojoField m1 = new PojoField(Name.fromString("id"), string(), false);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         new Pojo(
@@ -149,7 +149,7 @@ class PojoExtensionProcessorTest {
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
     final boolean required = !optionalDetection.equals(OptionalDetection.NULLABLE_ANNOTATION);
-    final PojoField m1 = new PojoField(string(), Name.fromString("id"), required);
+    final PojoField m1 = new PojoField(Name.fromString("id"), string(), required);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         new Pojo(
@@ -189,7 +189,7 @@ class PojoExtensionProcessorTest {
     final boolean required = !optionalDetection.equals(OptionalDetection.OPTIONAL_CLASS);
     final Type type = required ? Type.optional(string()) : string();
 
-    final PojoField m1 = new PojoField(type, Name.fromString("id"), required);
+    final PojoField m1 = new PojoField(Name.fromString("id"), type, required);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         new Pojo(
@@ -227,14 +227,14 @@ class PojoExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
-    final PojoField f1 = new PojoField(Type.primitive("boolean"), Name.fromString("b"), true);
-    final PojoField f2 = new PojoField(Type.primitive("int"), Name.fromString("i"), true);
-    final PojoField f3 = new PojoField(Type.primitive("short"), Name.fromString("s"), true);
-    final PojoField f4 = new PojoField(Type.primitive("long"), Name.fromString("l"), true);
-    final PojoField f5 = new PojoField(Type.primitive("float"), Name.fromString("f"), true);
-    final PojoField f6 = new PojoField(Type.primitive("double"), Name.fromString("d"), true);
-    final PojoField f7 = new PojoField(Type.primitive("byte"), Name.fromString("by"), true);
-    final PojoField f8 = new PojoField(Type.primitive("char"), Name.fromString("c"), true);
+    final PojoField f1 = new PojoField(Name.fromString("b"), Type.primitive("boolean"), true);
+    final PojoField f2 = new PojoField(Name.fromString("i"), Type.primitive("int"), true);
+    final PojoField f3 = new PojoField(Name.fromString("s"), Type.primitive("short"), true);
+    final PojoField f4 = new PojoField(Name.fromString("l"), Type.primitive("long"), true);
+    final PojoField f5 = new PojoField(Name.fromString("f"), Type.primitive("float"), true);
+    final PojoField f6 = new PojoField(Name.fromString("d"), Type.primitive("double"), true);
+    final PojoField f7 = new PojoField(Name.fromString("by"), Type.primitive("byte"), true);
+    final PojoField f8 = new PojoField(Name.fromString("c"), Type.primitive("char"), true);
     final PList<PojoField> fields = PList.of(f1, f2, f3, f4, f5, f6, f7, f8);
     final Pojo expected =
         new Pojo(
@@ -267,9 +267,9 @@ class PojoExtensionProcessorTest {
 
     final PojoField f1 =
         new PojoField(
-            Type.map(string(), integer()).withIsArray(true), Name.fromString("data"), true);
+            Name.fromString("data"), Type.map(string(), integer()).withIsArray(true), true);
     final PojoField f2 =
-        new PojoField(Type.primitive("byte").withIsArray(true), Name.fromString("key"), true);
+        new PojoField(Name.fromString("key"), Type.primitive("byte").withIsArray(true), true);
     final PList<PojoField> fields = PList.of(f1, f2);
     final Pojo expected =
         new Pojo(
@@ -336,7 +336,7 @@ class PojoExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
 
-    final PojoField m1 = new PojoField(string(), Name.fromString("id"), true);
+    final PojoField m1 = new PojoField(Name.fromString("id"), string(), true);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         new Pojo(

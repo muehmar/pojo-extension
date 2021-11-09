@@ -25,7 +25,7 @@ class FieldDeclarationGenTest {
         FieldDeclarationGen.ofModifiers(modifiers.toArray(JavaModifier.class));
     final Writer writer =
         generator.generate(
-            new PojoField(Type.string(), Name.fromString("id"), true),
+            new PojoField(Name.fromString("id"), Type.string(), true),
             PojoSettings.defaultSettings(),
             Writer.createDefault());
 

@@ -15,7 +15,7 @@ class ArgumentTest {
   @ValueSource(booleans = {true, false})
   void getRelation_when_typesAreTheSame_then_sameType(boolean fieldRequired) {
     final Argument argument = new Argument(Name.fromString("id"), string());
-    final PojoField field = new PojoField(string(), Name.fromString("extId"), fieldRequired);
+    final PojoField field = new PojoField(Name.fromString("extId"), string(), fieldRequired);
 
     assertEquals(
         Optional.of(OptionalFieldRelation.SAME_TYPE), argument.getRelationFromField(field));
@@ -25,7 +25,7 @@ class ArgumentTest {
   void
       getRelation_when_argumentTypeWrappedIntoOptionalAndFieldNotRequired_then_relationIsWrappedIntoOptional() {
     final Argument argument = new Argument(Name.fromString("id"), optional(string()));
-    final PojoField field = new PojoField(string(), Name.fromString("extId"), false);
+    final PojoField field = new PojoField(Name.fromString("extId"), string(), false);
 
     assertEquals(
         Optional.of(OptionalFieldRelation.WRAP_INTO_OPTIONAL),
@@ -35,7 +35,7 @@ class ArgumentTest {
   @Test
   void getRelation_when_argumentTypeWrappedIntoOptionalAndFieldRequired_then_noRelation() {
     final Argument argument = new Argument(Name.fromString("id"), optional(string()));
-    final PojoField field = new PojoField(string(), Name.fromString("extId"), true);
+    final PojoField field = new PojoField(Name.fromString("extId"), string(), true);
 
     assertEquals(Optional.empty(), argument.getRelationFromField(field));
   }
@@ -44,7 +44,7 @@ class ArgumentTest {
   void
       getRelation_when_fieldTypeWrappedIntoOptionalAndFieldNoRequired_then_relationIsUnwrapOptional() {
     final Argument argument = new Argument(Name.fromString("id"), string());
-    final PojoField field = new PojoField(optional(string()), Name.fromString("extId"), false);
+    final PojoField field = new PojoField(Name.fromString("extId"), optional(string()), false);
 
     assertEquals(
         Optional.of(OptionalFieldRelation.UNWRAP_OPTIONAL), argument.getRelationFromField(field));
@@ -53,7 +53,7 @@ class ArgumentTest {
   @Test
   void getRelation_when_fieldTypeWrappedIntoOptionalAndFieldRequired_then_noRelation() {
     final Argument argument = new Argument(Name.fromString("id"), string());
-    final PojoField field = new PojoField(optional(string()), Name.fromString("extId"), true);
+    final PojoField field = new PojoField(Name.fromString("extId"), optional(string()), true);
 
     assertEquals(Optional.empty(), argument.getRelationFromField(field));
   }

@@ -13,13 +13,13 @@ class GetterTest {
 
   @Test
   void getterName_when_calledWithField_then_correctJavaBeansName() {
-    final PojoField f1 = new PojoField(Type.string(), Name.fromString("id"), true);
+    final PojoField f1 = new PojoField(Name.fromString("id"), Type.string(), true);
     assertEquals("getId", Getter.getterName(f1).asString());
 
-    final PojoField f2 = new PojoField(Type.primitive("boolean"), Name.fromString("flag"), true);
+    final PojoField f2 = new PojoField(Name.fromString("flag"), Type.primitive("boolean"), true);
     assertEquals("isFlag", Getter.getterName(f2).asString());
 
-    final PojoField f3 = new PojoField(Type.integer(), Name.fromString("xIndex"), true);
+    final PojoField f3 = new PojoField(Name.fromString("xIndex"), Type.integer(), true);
     assertEquals("getxIndex", Getter.getterName(f3).asString());
   }
 
@@ -27,7 +27,7 @@ class GetterTest {
   @ValueSource(booleans = {true, false})
   void getFieldGetter_when_nameAndTypeMatches_then_returnsFieldGetter(boolean required) {
     final Getter getter = new Getter(Name.fromString("getId"), Type.string());
-    final PojoField field = new PojoField(Type.string(), Name.fromString("id"), required);
+    final PojoField field = new PojoField(Name.fromString("id"), Type.string(), required);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
 
@@ -40,7 +40,7 @@ class GetterTest {
   @ValueSource(booleans = {true, false})
   void getFieldGetter_when_nameDoesNotMatch_then_returnsEmpty(boolean required) {
     final Getter getter = new Getter(Name.fromString("getName"), Type.string());
-    final PojoField field = new PojoField(Type.string(), Name.fromString("id"), required);
+    final PojoField field = new PojoField(Name.fromString("id"), Type.string(), required);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
 
@@ -50,7 +50,7 @@ class GetterTest {
   @Test
   void getFieldGetter_when_returnTypeWrappedInOptionalAndFieldRequired_then_returnsEmpty() {
     final Getter getter = new Getter(Name.fromString("getId"), Type.optional(Type.string()));
-    final PojoField field = new PojoField(Type.string(), Name.fromString("id"), true);
+    final PojoField field = new PojoField(Name.fromString("id"), Type.string(), true);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
 
@@ -61,7 +61,7 @@ class GetterTest {
   void
       getFieldGetter_when_returnTypeWrappedInOptionalAndFieldNotRequired_then_returnsFieldGetter() {
     final Getter getter = new Getter(Name.fromString("getId"), Type.optional(Type.string()));
-    final PojoField field = new PojoField(Type.string(), Name.fromString("id"), false);
+    final PojoField field = new PojoField(Name.fromString("id"), Type.string(), false);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
 
@@ -74,7 +74,7 @@ class GetterTest {
   @ValueSource(booleans = {true, false})
   void getFieldGetter_when_typeDoesNotMatch_then_returnsEmpty(boolean required) {
     final Getter getter = new Getter(Name.fromString("getId"), Type.integer());
-    final PojoField field = new PojoField(Type.string(), Name.fromString("id"), required);
+    final PojoField field = new PojoField(Name.fromString("id"), Type.string(), required);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
 

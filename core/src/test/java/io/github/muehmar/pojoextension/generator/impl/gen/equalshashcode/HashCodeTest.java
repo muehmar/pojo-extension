@@ -27,7 +27,7 @@ class HashCodeTest {
             .getFields()
             .cons(
                 new PojoField(
-                    Type.primitive("byte").withIsArray(true), Name.fromString("byteArray"), true));
+                    Name.fromString("byteArray"), Type.primitive("byte").withIsArray(true), true));
 
     final Writer writer =
         generator.generate(
@@ -50,7 +50,7 @@ class HashCodeTest {
     final Generator<Pojo, PojoSettings> generator = HashCode.staticHashCodeMethod();
 
     final PList<PojoField> fields =
-        PList.of(new PojoField(Type.primitiveBoolean(), Name.fromString("flag"), true));
+        PList.of(new PojoField(Name.fromString("flag"), Type.primitiveBoolean(), true));
 
     final Writer writer =
         generator.generate(
@@ -74,9 +74,9 @@ class HashCodeTest {
     final PList<PojoField> fields =
         PList.of(
             new PojoField(
-                Type.primitive("byte").withIsArray(true), Name.fromString("byteArray"), true),
+                Name.fromString("byteArray"), Type.primitive("byte").withIsArray(true), true),
             new PojoField(
-                Type.primitive("byte").withIsArray(true), Name.fromString("byteArray2"), true));
+                Name.fromString("byteArray2"), Type.primitive("byte").withIsArray(true), true));
 
     final Writer writer =
         generator.generate(
