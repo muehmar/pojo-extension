@@ -64,20 +64,41 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    final Set<? extends Element> elementsAnnotatedWith =
+    final Set<? extends Element> annotatedElements =
         roundEnv.getElementsAnnotatedWith(PojoExtension.class);
 
-    elementsAnnotatedWith.forEach(this::processElement);
+    PList.fromIter(annotatedElements)
+        .flatMap(
+            annotatedElement ->
+                findAnnotatedClasses(
+                    roundEnv,
+                    annotatedElement,
+                    annotatedElement.getAnnotation(PojoExtension.class)))
+        .forEach(this::processElementAndAnnotation);
 
     return false;
   }
 
-  private void processElement(Element element) {
+  private PList<ElementAndAnnotation> findAnnotatedClasses(
+      RoundEnvironment roundEnv, Element annotatedElement, PojoExtension extension) {
+
+    if (annotatedElement.getKind().equals(ElementKind.CLASS)) {
+      return PList.single(ElementAndAnnotation.of(annotatedElement, extension));
+    } else if (annotatedElement.getKind().equals(ElementKind.ANNOTATION_TYPE)) {
+      return PList.fromIter(roundEnv.getElementsAnnotatedWith((TypeElement) annotatedElement))
+          .flatMap(e -> findAnnotatedClasses(roundEnv, e, extension));
+    } else {
+      return PList.empty();
+    }
+  }
+
+  private void processElementAndAnnotation(ElementAndAnnotation elementAndAnnotation) {
+    final Element element = elementAndAnnotation.getElement();
+    final PojoExtension annotation = elementAndAnnotation.getPojoExtension();
     final Type pojoType = Type.fromClassName(element.toString());
     final Name className = pojoType.getName();
     final PackageName classPackage = pojoType.getPkg();
 
-    final PojoExtension annotation = element.getAnnotation(PojoExtension.class);
     final DetectionSettings detectionSettings =
         new DetectionSettings(PList.fromArray(annotation.optionalDetection()));
 
@@ -179,6 +200,28 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
     static PojoFieldMapper initial() {
       return ((element, name, type, settings) -> Optional.empty());
+    }
+  }
+
+  private static class ElementAndAnnotation {
+    private final Element element;
+    private final PojoExtension pojoExtension;
+
+    public ElementAndAnnotation(Element element, PojoExtension pojoExtension) {
+      this.element = element;
+      this.pojoExtension = pojoExtension;
+    }
+
+    public static ElementAndAnnotation of(Element element, PojoExtension extension) {
+      return new ElementAndAnnotation(element, extension);
+    }
+
+    public Element getElement() {
+      return element;
+    }
+
+    public PojoExtension getPojoExtension() {
+      return pojoExtension;
     }
   }
 }
