@@ -17,6 +17,7 @@ import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.Equals;
 import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.HashCode;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.CompleteSafeBuilderFactory;
+import io.github.muehmar.pojoextension.generator.impl.gen.tostring.ToString;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.With;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.data.WithField;
 import java.util.function.Function;
@@ -51,7 +52,11 @@ public class ExtensionFactory {
             .appendNewLine()
             .append(HashCode.hashCodeMethod())
             .appendNewLine()
-            .append(HashCode.staticHashCodeMethod());
+            .append(HashCode.staticHashCodeMethod())
+            .appendNewLine()
+            .appendNoSettings(ToString.toStringMethod())
+            .appendNewLine()
+            .appendNoSettings(ToString.staticToStringMethod());
 
     return ClassGen.<Pojo, PojoSettings>topLevel()
         .packageGen(new PackageGen())

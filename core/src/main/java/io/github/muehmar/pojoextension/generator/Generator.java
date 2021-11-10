@@ -10,6 +10,10 @@ import java.util.function.UnaryOperator;
 public interface Generator<A, B> {
   Writer generate(A data, B settings, Writer writer);
 
+  static <A, B> Generator<A, B> of(Generator<A, B> gen) {
+    return gen;
+  }
+
   static <A, B> Generator<A, B> ofWriterFunction(UnaryOperator<Writer> f) {
     return (data, settings, writer) -> f.apply(writer);
   }
@@ -26,6 +30,12 @@ public interface Generator<A, B> {
     final Generator<A, B> self = this;
     return (data, settings, writer) ->
         next.generate(data, settings, self.generate(data, settings, writer));
+  }
+
+  default Generator<A, B> appendNoSettings(Generator<A, Void> next) {
+    final Generator<A, B> self = this;
+    return (data, settings, writer) ->
+        next.generate(data, (Void) null, self.generate(data, settings, writer));
   }
 
   default Generator<A, B> append(Generator<A, B> next, int tabs) {

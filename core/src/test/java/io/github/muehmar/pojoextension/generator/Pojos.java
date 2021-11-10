@@ -22,18 +22,7 @@ public class Pojos {
             new PojoField(Name.fromString("username"), Type.string(), true),
             new PojoField(Name.fromString("nickname"), Type.string(), false));
 
-    final PList<Getter> getters =
-        fields.map(
-            f -> {
-              final Type returnType =
-                  f.isOptional() && !f.getType().isOptional()
-                      ? Type.optional(f.getType())
-                      : f.getType();
-              return Getter.newBuilder()
-                  .setName(Getter.getterName(f))
-                  .setReturnType(returnType)
-                  .build();
-            });
+    final PList<Getter> getters = fields.map(PojoFields::toGetter);
 
     final Pojo pojo =
         Pojo.newBuilder()

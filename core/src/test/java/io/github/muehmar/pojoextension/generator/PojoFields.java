@@ -18,6 +18,8 @@ public class PojoFields {
   }
 
   public static Getter toGetter(PojoField f) {
-    return new Getter(Getter.getterName(f), f.getType());
+    final Type returnType =
+        f.isOptional() && !f.getType().isOptional() ? Type.optional(f.getType()) : f.getType();
+    return Getter.newBuilder().setName(Getter.getterName(f)).setReturnType(returnType).build();
   }
 }
