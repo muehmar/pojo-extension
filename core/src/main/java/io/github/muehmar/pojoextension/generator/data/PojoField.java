@@ -7,12 +7,12 @@ import io.github.muehmar.pojoextension.annotations.PojoExtension;
 public class PojoField extends PojoFieldExtension {
   private final Name name;
   private final Type type;
-  private final boolean required;
+  private final Necessity necessity;
 
-  public PojoField(Name name, Type type, boolean required) {
+  public PojoField(Name name, Type type, Necessity necessity) {
     this.name = name;
     this.type = type;
-    this.required = required;
+    this.necessity = necessity;
   }
 
   public Type getType() {
@@ -23,17 +23,21 @@ public class PojoField extends PojoFieldExtension {
     return name;
   }
 
+  public Necessity getNecessity() {
+    return necessity;
+  }
+
   public boolean isRequired() {
-    return required;
+    return necessity.isRequired();
   }
 
   public boolean isOptional() {
-    return !isRequired();
+    return necessity.isOptional();
   }
 
   @Override
   public String toString() {
-    return "PojoField{" + "type=" + type + ", name=" + name + ", required=" + required + '}';
+    return "PojoField{" + "type=" + type + ", name=" + name + ", required=" + necessity + '}';
   }
 
   @FunctionalInterface

@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.data;
 
+import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -74,7 +75,7 @@ class PojoTest {
     final Pojo pojo = Pojos.sample();
     final Optional<FieldGetter> fieldGetter =
         pojo.findMatchingGetter(
-            new PojoField(Name.fromString("notAFieldInTheSamplePojo"), Type.string(), true));
+            new PojoField(Name.fromString("notAFieldInTheSamplePojo"), Type.string(), REQUIRED));
 
     assertEquals(Optional.empty(), fieldGetter);
   }

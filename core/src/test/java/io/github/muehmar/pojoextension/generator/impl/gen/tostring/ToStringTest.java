@@ -1,6 +1,8 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.tostring;
 
 import static io.github.muehmar.pojoextension.generator.Settings.noSettings;
+import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.bluecare.commons.data.PList;
@@ -30,7 +32,7 @@ class ToStringTest {
   void staticToStringMethod_when_calledWithRequiredStringField_then_correctOutput() {
     final Generator<Pojo, Void> gen = ToString.staticToStringMethod();
     final PList<PojoField> fields =
-        PList.single(new PojoField(Name.fromString("username"), Type.string(), true));
+        PList.single(new PojoField(Name.fromString("username"), Type.string(), REQUIRED));
     final Pojo pojo =
         Pojos.sample().withFields(fields).withGetters(fields.map(PojoFields::toGetter));
 
@@ -49,7 +51,7 @@ class ToStringTest {
   void staticToStringMethod_when_calledWithOptionalStringField_then_correctOutput() {
     final Generator<Pojo, Void> gen = ToString.staticToStringMethod();
     final PList<PojoField> fields =
-        PList.single(new PojoField(Name.fromString("username"), Type.string(), false));
+        PList.single(new PojoField(Name.fromString("username"), Type.string(), OPTIONAL));
     final Pojo pojo =
         Pojos.sample().withFields(fields).withGetters(fields.map(PojoFields::toGetter));
 
@@ -68,7 +70,7 @@ class ToStringTest {
   void staticToStringMethod_when_calledWithInteger_then_correctOutput() {
     final Generator<Pojo, Void> gen = ToString.staticToStringMethod();
     final PList<PojoField> fields =
-        PList.single(new PojoField(Name.fromString("age"), Type.integer(), true));
+        PList.single(new PojoField(Name.fromString("age"), Type.integer(), REQUIRED));
     final Pojo pojo =
         Pojos.sample().withFields(fields).withGetters(fields.map(PojoFields::toGetter));
 

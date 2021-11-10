@@ -1,6 +1,8 @@
 package io.github.muehmar.pojoextension.annotations.processor;
 
 import static io.github.muehmar.pojoextension.Names.extensionSuffix;
+import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 
 import ch.bluecare.commons.data.PList;
 import com.google.auto.service.AutoService;
@@ -156,7 +158,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     return PojoFieldMapper.initial()
         .or(this::mapOptionalPojoField)
         .or(this::mapNullablePojoField)
-        .mapWithDefault(element, name, type, settings, () -> new PojoField(name, type, true));
+        .mapWithDefault(element, name, type, settings, () -> new PojoField(name, type, REQUIRED));
   }
 
   private Optional<PojoField> mapOptionalPojoField(
@@ -166,7 +168,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             ignore ->
                 settings.getOptionalDetections().exists(OptionalDetection.OPTIONAL_CLASS::equals))
         .flatMap(t -> t.onOptional(Function.identity()))
-        .map(typeParameter -> new PojoField(name, typeParameter, false));
+        .map(typeParameter -> new PojoField(name, typeParameter, OPTIONAL));
   }
 
   private Optional<PojoField> mapNullablePojoField(
@@ -177,7 +179,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
                 settings
                     .getOptionalDetections()
                     .exists(OptionalDetection.NULLABLE_ANNOTATION::equals))
-        .map(ignore -> new PojoField(name, type, false));
+        .map(ignore -> new PojoField(name, type, OPTIONAL));
   }
 
   @FunctionalInterface

@@ -1,5 +1,7 @@
 package io.github.muehmar.pojoextension.generator;
 
+import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
+
 import io.github.muehmar.pojoextension.generator.data.Argument;
 import io.github.muehmar.pojoextension.generator.data.Getter;
 import io.github.muehmar.pojoextension.generator.data.Name;
@@ -10,7 +12,7 @@ public class PojoFields {
   private PojoFields() {}
 
   public static PojoField requiredId() {
-    return new PojoField(Name.fromString("id"), Type.integer(), true);
+    return new PojoField(Name.fromString("id"), Type.integer(), REQUIRED);
   }
 
   public static Argument toArgument(PojoField f) {

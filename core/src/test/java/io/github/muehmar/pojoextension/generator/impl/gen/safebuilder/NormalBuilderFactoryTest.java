@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder;
 
+import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_INTEGER;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,7 +69,7 @@ class NormalBuilderFactoryTest {
 
     final Writer writer =
         generator.generate(
-            PojoFields.requiredId().withRequired(false),
+            PojoFields.requiredId().withNecessity(OPTIONAL),
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     final String output = writer.asString();
@@ -85,7 +86,7 @@ class NormalBuilderFactoryTest {
 
     final Writer writer =
         generator.generate(
-            PojoFields.requiredId().withRequired(false),
+            PojoFields.requiredId().withNecessity(OPTIONAL),
             PojoSettings.defaultSettings(),
             Writer.createDefault());
 
