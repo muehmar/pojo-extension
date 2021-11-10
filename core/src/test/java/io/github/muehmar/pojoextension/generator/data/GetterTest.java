@@ -5,22 +5,31 @@ import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelati
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class GetterTest {
 
-  @Test
-  void getterName_when_calledWithField_then_correctJavaBeansName() {
-    final PojoField f1 = new PojoField(Name.fromString("id"), Type.string(), true);
-    assertEquals("getId", Getter.getterName(f1).asString());
+  @ParameterizedTest
+  @MethodSource("getterNames")
+  void getterName_when_calledWithField_then_correctJavaBeansName(
+      String fieldName, Type type, String expectedGetterName) {
+    final PojoField field = new PojoField(Name.fromString(fieldName), type, true);
+    assertEquals(expectedGetterName, Getter.getterName(field).asString());
+  }
 
-    final PojoField f2 = new PojoField(Name.fromString("flag"), Type.primitive("boolean"), true);
-    assertEquals("isFlag", Getter.getterName(f2).asString());
-
-    final PojoField f3 = new PojoField(Name.fromString("xIndex"), Type.integer(), true);
-    assertEquals("getxIndex", Getter.getterName(f3).asString());
+  private static Stream<Arguments> getterNames() {
+    return Stream.of(
+        Arguments.of("id", Type.string(), "getId"),
+        Arguments.of("flag", Type.primitiveBoolean(), "isFlag"),
+        Arguments.of("xIndex", Type.integer(), "getxIndex"),
+        Arguments.of("isFlag", Type.primitiveBoolean(), "isFlag"),
+        Arguments.of("istio", Type.primitiveBoolean(), "isIstio"),
+        Arguments.of("flag", Type.booleanClass(), "getFlag"));
   }
 
   @ParameterizedTest

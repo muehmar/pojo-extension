@@ -5,6 +5,7 @@ import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelati
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
@@ -18,8 +19,22 @@ public class Getter extends GetterExtension {
   }
 
   public static Name getterName(PojoField field) {
-    final String prefix = field.getType().equals(Type.primitiveBoolean()) ? "is" : "get";
-    return field.getName().javaBeansName().prefix(prefix);
+    if (field.getType().equals(Type.primitiveBoolean())) {
+      return primitiveBooleanGetterName(field);
+    }
+    return field.getName().javaBeansName().prefix("get");
+  }
+
+  private static Name primitiveBooleanGetterName(PojoField field) {
+    final UnaryOperator<Name> createGetter = in -> in.javaBeansName().prefix("is");
+    final Name fieldName = field.getName();
+    final boolean isAlreadyGetterName =
+        fieldName.length() > 2
+            && createGetter
+                .apply(Name.fromString(fieldName.asString().substring(2)))
+                .equals(fieldName);
+
+    return isAlreadyGetterName ? fieldName : createGetter.apply(fieldName);
   }
 
   public Name getName() {

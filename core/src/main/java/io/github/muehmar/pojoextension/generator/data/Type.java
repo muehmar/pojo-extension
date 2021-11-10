@@ -51,6 +51,10 @@ public class Type {
     return new Type(Name.fromString("Integer"), PackageName.javaLang(), PList.empty(), false);
   }
 
+  public static Type booleanClass() {
+    return new Type(Name.fromString("Boolean"), PackageName.javaLang(), PList.empty(), false);
+  }
+
   public static Type primitiveDouble() {
     return primitive("double");
   }

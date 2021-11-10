@@ -8,14 +8,14 @@ public class Name {
   private final String value;
 
   private Name(String val) {
+    if (val == null || val.trim().isEmpty()) {
+      throw new IllegalArgumentException("A name must not be null or empty");
+    }
+
     this.value = val;
   }
 
   public static Name fromString(String val) {
-    if (val == null || val.trim().isEmpty()) {
-      throw new IllegalArgumentException("A name must no be null or empty");
-    }
-
     return new Name(val);
   }
 
@@ -57,6 +57,14 @@ public class Name {
     } else {
       return toPascalCase();
     }
+  }
+
+  public boolean startsWith(String str) {
+    return value.startsWith(str);
+  }
+
+  public int length() {
+    return value.length();
   }
 
   @Override
