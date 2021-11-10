@@ -11,7 +11,8 @@ public abstract class CustomerExtension {
   }
 
   private Customer self() {
-    return (Customer)this;
+    final Object self = this;
+    return (Customer)self;
   }
 
   public Customer withId(Integer id) {

@@ -84,6 +84,8 @@ public class ExtensionFactory {
         .returnType(pojo -> pojo.getName().asString())
         .methodName("self")
         .noArguments()
-        .content((p, s, w) -> w.println("return (%s)this;", p.getName()));
+        .content(
+            (p, s, w) ->
+                w.println("final Object self = this;").println("return (%s)self;", p.getName()));
   }
 }
