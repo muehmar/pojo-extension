@@ -17,11 +17,11 @@ import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
-class HashCodeTest {
+class HashCodeGensTest {
 
   @Test
   void staticHashCodeMethod_when_generatorUsedWithSamplePojoAndArrayField_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = HashCode.staticHashCodeMethod();
+    final Generator<Pojo, PojoSettings> generator = HashCodeGens.staticHashCodeMethod();
 
     final PList<PojoField> fields =
         Pojos.sample()
@@ -50,7 +50,7 @@ class HashCodeTest {
 
   @Test
   void staticHashCodeMethod_when_generatorUsedWithBooleanField_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = HashCode.staticHashCodeMethod();
+    final Generator<Pojo, PojoSettings> generator = HashCodeGens.staticHashCodeMethod();
 
     final PList<PojoField> fields =
         PList.of(new PojoField(Name.fromString("flag"), Type.primitiveBoolean(), REQUIRED));
@@ -72,7 +72,7 @@ class HashCodeTest {
 
   @Test
   void staticHashCodeMethod_when_generatorUsedWithTwoByteArrays_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = HashCode.staticHashCodeMethod();
+    final Generator<Pojo, PojoSettings> generator = HashCodeGens.staticHashCodeMethod();
 
     final PList<PojoField> fields =
         PList.of(
@@ -98,7 +98,7 @@ class HashCodeTest {
 
   @Test
   void hashCodeMethod_when_generatorUsedWithSamplePojo_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = HashCode.hashCodeMethod();
+    final Generator<Pojo, PojoSettings> generator = HashCodeGens.hashCodeMethod();
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(

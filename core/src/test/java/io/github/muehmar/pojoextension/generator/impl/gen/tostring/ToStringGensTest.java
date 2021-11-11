@@ -16,10 +16,10 @@ import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
-class ToStringTest {
+class ToStringGensTest {
   @Test
   void toStringMethod_when_called_then_correctDelegatedCall() {
-    final Generator<Pojo, Void> gen = ToString.toStringMethod();
+    final Generator<Pojo, Void> gen = ToStringGens.toStringMethod();
 
     final Writer writer = gen.generate(Pojos.sample(), noSettings(), Writer.createDefault());
 
@@ -30,7 +30,7 @@ class ToStringTest {
 
   @Test
   void staticToStringMethod_when_calledWithRequiredStringField_then_correctOutput() {
-    final Generator<Pojo, Void> gen = ToString.staticToStringMethod();
+    final Generator<Pojo, Void> gen = ToStringGens.staticToStringMethod();
     final PList<PojoField> fields =
         PList.single(new PojoField(Name.fromString("username"), Type.string(), REQUIRED));
     final Pojo pojo =
@@ -49,7 +49,7 @@ class ToStringTest {
 
   @Test
   void staticToStringMethod_when_calledWithOptionalStringField_then_correctOutput() {
-    final Generator<Pojo, Void> gen = ToString.staticToStringMethod();
+    final Generator<Pojo, Void> gen = ToStringGens.staticToStringMethod();
     final PList<PojoField> fields =
         PList.single(new PojoField(Name.fromString("username"), Type.string(), OPTIONAL));
     final Pojo pojo =
@@ -68,7 +68,7 @@ class ToStringTest {
 
   @Test
   void staticToStringMethod_when_calledWithInteger_then_correctOutput() {
-    final Generator<Pojo, Void> gen = ToString.staticToStringMethod();
+    final Generator<Pojo, Void> gen = ToStringGens.staticToStringMethod();
     final PList<PojoField> fields =
         PList.single(new PojoField(Name.fromString("age"), Type.integer(), REQUIRED));
     final Pojo pojo =
@@ -87,7 +87,7 @@ class ToStringTest {
 
   @Test
   void staticToStringMethod_when_calledWithSamplePojo_then_correctOutput() {
-    final Generator<Pojo, Void> gen = ToString.staticToStringMethod();
+    final Generator<Pojo, Void> gen = ToStringGens.staticToStringMethod();
 
     final Writer writer = gen.generate(Pojos.sample(), noSettings(), Writer.createDefault());
 

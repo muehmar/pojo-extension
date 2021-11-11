@@ -10,13 +10,13 @@ import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.FieldVariable;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.data.WithField;
 import java.util.function.Function;
 
-public class With {
-  private With() {}
+public class WithGens {
+  private WithGens() {}
 
   public static Generator<WithField, PojoSettings> withMethod() {
     return MethodGen.<WithField, PojoSettings>modifiers(PUBLIC)
@@ -51,7 +51,7 @@ public class With {
   private static Generator<WithField, PojoSettings> withMethodContent() {
     return Generator.<WithField, PojoSettings>emptyGen()
         .append(
-            ConstructorCallGen.callWithSingleFieldVariable(),
+            ConstructorCallGens.callWithSingleFieldVariable(),
             withField -> new FieldVariable(withField.getPojo(), withField.getField(), SAME_TYPE));
   }
 
@@ -100,7 +100,7 @@ public class With {
   private static Generator<WithField, PojoSettings> optionalWithMethodContent() {
     return Generator.<WithField, PojoSettings>emptyGen()
         .append(
-            ConstructorCallGen.callWithSingleFieldVariable(),
+            ConstructorCallGens.callWithSingleFieldVariable(),
             withField ->
                 new FieldVariable(withField.getPojo(), withField.getField(), UNWRAP_OPTIONAL));
   }

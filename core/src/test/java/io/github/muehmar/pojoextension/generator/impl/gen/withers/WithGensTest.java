@@ -13,11 +13,11 @@ import io.github.muehmar.pojoextension.generator.impl.gen.withers.data.WithField
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
-class WithTest {
+class WithGensTest {
 
   @Test
   void withMethod_when_usedWithSampleAndField_then_correctDelegateCall() {
-    final Generator<WithField, PojoSettings> generator = With.withMethod();
+    final Generator<WithField, PojoSettings> generator = WithGens.withMethod();
 
     final Pojo pojo = Pojos.sample();
     final WithField withField = WithField.of(pojo, pojo.getFields().apply(2));
@@ -34,7 +34,7 @@ class WithTest {
 
   @Test
   void staticWithMethod_when_forRequiredFieldAndNullableArguments_then_correctOutput() {
-    final Generator<WithField, PojoSettings> generator = With.staticWithMethod();
+    final Generator<WithField, PojoSettings> generator = WithGens.staticWithMethod();
 
     final Pojo pojo = Pojos.sample();
     final WithField withField = WithField.of(pojo, pojo.getFields().head());
@@ -51,7 +51,7 @@ class WithTest {
 
   @Test
   void staticWithMethod_when_forOptionalFieldAndNullableArguments_then_correctOutput() {
-    final Generator<WithField, PojoSettings> generator = With.staticWithMethod();
+    final Generator<WithField, PojoSettings> generator = WithGens.staticWithMethod();
 
     final Pojo pojo = Pojos.sample();
     final WithField withField = WithField.of(pojo, pojo.getFields().apply(2));
@@ -68,7 +68,7 @@ class WithTest {
 
   @Test
   void staticWithMethod_when_forRequiredFieldAndOptionalArguments_then_correctOutput() {
-    final Generator<WithField, PojoSettings> generator = With.staticWithMethod();
+    final Generator<WithField, PojoSettings> generator = WithGens.staticWithMethod();
 
     final Pojo pojo = Pojos.sampleWithConstructorWithOptionalArgument();
     final WithField withField = WithField.of(pojo, pojo.getFields().head());
@@ -85,7 +85,7 @@ class WithTest {
 
   @Test
   void staticWithMethod_when_forOptionalFieldAndOptionalArguments_then_correctOutput() {
-    final Generator<WithField, PojoSettings> generator = With.staticWithMethod();
+    final Generator<WithField, PojoSettings> generator = WithGens.staticWithMethod();
 
     final Pojo pojo = Pojos.sampleWithConstructorWithOptionalArgument();
     final WithField withField = WithField.of(pojo, pojo.getFields().apply(2));
@@ -102,7 +102,7 @@ class WithTest {
 
   @Test
   void optionalWithMethod_when_usedWithSampleAndField_then_correctDelegateCall() {
-    final Generator<WithField, PojoSettings> generator = With.optionalWithMethod();
+    final Generator<WithField, PojoSettings> generator = WithGens.optionalWithMethod();
 
     final Pojo pojo = Pojos.sample();
     final WithField withField = WithField.of(pojo, pojo.getFields().apply(2));
@@ -120,7 +120,7 @@ class WithTest {
   @Test
   void
       staticOptionalWithMethod_when_forRequiredFieldAndNullableArguments_then_noContentGenerated() {
-    final Generator<WithField, PojoSettings> generator = With.staticOptionalWithMethod();
+    final Generator<WithField, PojoSettings> generator = WithGens.staticOptionalWithMethod();
 
     final Pojo pojo = Pojos.sample();
     final WithField withField = WithField.of(pojo, pojo.getFields().head());
@@ -133,7 +133,7 @@ class WithTest {
 
   @Test
   void staticOptionalWithMethod_when_forOptionalFieldAndNullableArguments_then_correctOutput() {
-    final Generator<WithField, PojoSettings> generator = With.staticOptionalWithMethod();
+    final Generator<WithField, PojoSettings> generator = WithGens.staticOptionalWithMethod();
 
     final Pojo pojo = Pojos.sample();
     final WithField withField = WithField.of(pojo, pojo.getFields().apply(2));
@@ -150,7 +150,7 @@ class WithTest {
 
   @Test
   void staticOptionalWithMethod_when_forOptionalFieldAndOptionalArguments_then_correctOutput() {
-    final Generator<WithField, PojoSettings> generator = With.staticOptionalWithMethod();
+    final Generator<WithField, PojoSettings> generator = WithGens.staticOptionalWithMethod();
 
     final Pojo pojo = Pojos.sampleWithConstructorWithOptionalArgument();
     final WithField withField = WithField.of(pojo, pojo.getFields().apply(2));

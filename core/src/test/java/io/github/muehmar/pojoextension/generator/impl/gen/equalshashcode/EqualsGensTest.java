@@ -19,11 +19,11 @@ import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
-class EqualsTest {
+class EqualsGensTest {
 
   @Test
   void staticEqualsMethod_when_generatorUsedWithSamplePojoWithoutFields_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = Equals.staticEqualsMethod();
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.staticEqualsMethod();
 
     final Writer writer =
         generator.generate(
@@ -44,7 +44,7 @@ class EqualsTest {
 
   @Test
   void staticEqualsMethod_when_generatorUsedWithSamplePojo_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = Equals.staticEqualsMethod();
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.staticEqualsMethod();
 
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
@@ -64,7 +64,7 @@ class EqualsTest {
 
   @Test
   void staticEqualsMethod_when_generatorUsedWithPrimitiveTypes_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = Equals.staticEqualsMethod();
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.staticEqualsMethod();
 
     final PList<PojoField> primitiveFields =
         Type.allPrimitives().map(t -> new PojoField(t.getName().prefix("p"), t, REQUIRED));
@@ -97,7 +97,7 @@ class EqualsTest {
 
   @Test
   void staticEqualsMethod_when_generatorUsedWithSamplePojoAndArrayField_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = Equals.staticEqualsMethod();
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.staticEqualsMethod();
 
     final PList<PojoField> fields =
         Pojos.sample()
@@ -130,7 +130,7 @@ class EqualsTest {
 
   @Test
   void equalsMethod_when_generatorUsedWithSamplePojo_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = Equals.equalsMethod();
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.equalsMethod();
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(

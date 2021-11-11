@@ -17,7 +17,7 @@ import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.data.Type;
-import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionFactory;
+import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -45,7 +45,7 @@ import javax.tools.JavaFileObject;
 public class PojoExtensionProcessor extends AbstractProcessor {
 
   private final Optional<BiConsumer<Pojo, PojoSettings>> redirectPojo;
-  private final Generator<Pojo, PojoSettings> generator = ExtensionFactory.extensionClass();
+  private final Generator<Pojo, PojoSettings> generator = ExtensionGens.extensionClass();
 
   private PojoExtensionProcessor(Optional<BiConsumer<Pojo, PojoSettings>> redirectPojo) {
     this.redirectPojo = redirectPojo;

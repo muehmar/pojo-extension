@@ -15,10 +15,10 @@ import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
-class NormalBuilderFactoryTest {
+class NormalBuilderGensTest {
   @Test
   void buildMethod_when_generatorUsedWithSamplePojo_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = NormalBuilderFactory.buildMethod();
+    final Generator<Pojo, PojoSettings> generator = NormalBuilderGens.buildMethod();
     final String output =
         generator
             .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault())
@@ -32,7 +32,7 @@ class NormalBuilderFactoryTest {
   @Test
   void
       buildMethod_when_generatorUsedWithSamplePojoAndConstructorWithOptionalArgument_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = NormalBuilderFactory.buildMethod();
+    final Generator<Pojo, PojoSettings> generator = NormalBuilderGens.buildMethod();
     final Writer writer =
         generator.generate(
             Pojos.sampleWithConstructorWithOptionalArgument(),
@@ -50,7 +50,7 @@ class NormalBuilderFactoryTest {
 
   @Test
   void setMethod_when_generatorUsedWithRequiredField_then_correctPrivateMethodGenerated() {
-    final Generator<PojoField, PojoSettings> generator = NormalBuilderFactory.setMethod();
+    final Generator<PojoField, PojoSettings> generator = NormalBuilderGens.setMethod();
 
     final Writer writer =
         generator.generate(
@@ -65,7 +65,7 @@ class NormalBuilderFactoryTest {
 
   @Test
   void setMethod_when_generatorUsedWithOptionalField_then_correctPublicMethodGenerated() {
-    final Generator<PojoField, PojoSettings> generator = NormalBuilderFactory.setMethod();
+    final Generator<PojoField, PojoSettings> generator = NormalBuilderGens.setMethod();
 
     final Writer writer =
         generator.generate(
@@ -82,7 +82,7 @@ class NormalBuilderFactoryTest {
 
   @Test
   void setMethodOptional_when_optionalField_then_correctPublicMethodGenerated() {
-    final Generator<PojoField, PojoSettings> generator = NormalBuilderFactory.setMethodOptional();
+    final Generator<PojoField, PojoSettings> generator = NormalBuilderGens.setMethodOptional();
 
     final Writer writer =
         generator.generate(
@@ -104,7 +104,7 @@ class NormalBuilderFactoryTest {
 
   @Test
   void builderClass_when_generatorUsedWithSamplePojo_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = NormalBuilderFactory.builderClass();
+    final Generator<Pojo, PojoSettings> generator = NormalBuilderGens.builderClass();
     final String output =
         generator
             .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault())

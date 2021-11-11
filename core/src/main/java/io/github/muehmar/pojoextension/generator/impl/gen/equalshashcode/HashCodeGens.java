@@ -17,9 +17,9 @@ import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class HashCode {
+public class HashCodeGens {
 
-  private HashCode() {}
+  private HashCodeGens() {}
 
   public static Generator<Pojo, PojoSettings> hashCodeMethod() {
     final Generator<Pojo, PojoSettings> method =

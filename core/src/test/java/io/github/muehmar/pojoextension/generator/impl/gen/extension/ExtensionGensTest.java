@@ -10,10 +10,10 @@ import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
-class ExtensionFactoryTest {
+class ExtensionGensTest {
   @Test
   void extensionClass_when_generatorUsedWithSamplePojo_then_correctClassGenerated() {
-    final Generator<Pojo, PojoSettings> generator = ExtensionFactory.extensionClass();
+    final Generator<Pojo, PojoSettings> generator = ExtensionGens.extensionClass();
 
     final String output =
         generator

@@ -18,17 +18,17 @@ import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.FieldDeclarationGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
 
 /**
  * Factory which creates more or less the well-known standard builder pattern used for the
  * SafeBuilder.
  */
-public class NormalBuilderFactory {
+public class NormalBuilderGens {
 
   private static final String BUILDER_CLASSNAME = "Builder";
 
-  private NormalBuilderFactory() {}
+  private NormalBuilderGens() {}
 
   public static Generator<Pojo, PojoSettings> builderClass() {
     final ConstructorGen<Pojo, PojoSettings> constructor =
@@ -58,7 +58,7 @@ public class NormalBuilderFactory {
         .returnType(p -> p.getName().asString())
         .methodName("build")
         .noArguments()
-        .content(ConstructorCallGen.callWithAllLocalVariables());
+        .content(ConstructorCallGens.callWithAllLocalVariables());
   }
 
   public static Generator<PojoField, PojoSettings> setMethod() {

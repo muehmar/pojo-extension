@@ -13,8 +13,8 @@ import io.github.muehmar.pojoextension.generator.impl.gen.Annotations;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import java.util.function.Function;
 
-public class ToString {
-  private ToString() {}
+public class ToStringGens {
+  private ToStringGens() {}
 
   public static Generator<Pojo, Void> toStringMethod() {
     final Generator<Pojo, Void> method =

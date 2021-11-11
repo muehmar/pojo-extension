@@ -18,8 +18,8 @@ import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-public class Equals {
-  private Equals() {}
+public class EqualsGens {
+  private EqualsGens() {}
 
   public static Generator<Pojo, PojoSettings> equalsMethod() {
     final Generator<Pojo, PojoSettings> method =

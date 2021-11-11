@@ -13,16 +13,16 @@ import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.Equals;
-import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.HashCode;
-import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.CompleteSafeBuilderFactory;
-import io.github.muehmar.pojoextension.generator.impl.gen.tostring.ToString;
-import io.github.muehmar.pojoextension.generator.impl.gen.withers.With;
+import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.EqualsGens;
+import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.HashCodeGens;
+import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.CompleteSafeBuilderGens;
+import io.github.muehmar.pojoextension.generator.impl.gen.tostring.ToStringGens;
+import io.github.muehmar.pojoextension.generator.impl.gen.withers.WithGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.data.WithField;
 import java.util.function.Function;
 
-public class ExtensionFactory {
-  private ExtensionFactory() {}
+public class ExtensionGens {
+  private ExtensionGens() {}
 
   public static Generator<Pojo, PojoSettings> extensionClass() {
 
@@ -39,23 +39,23 @@ public class ExtensionFactory {
             .appendNewLine()
             .append(selfMethod())
             .appendNewLine()
-            .appendList(With.withMethod().appendNewLine(), toWithFields)
-            .appendList(With.staticWithMethod().appendNewLine(), toWithFields)
-            .appendList(With.optionalWithMethod().append(optionalNewLine), toWithFields)
-            .appendList(With.staticOptionalWithMethod().append(optionalNewLine), toWithFields)
-            .append(CompleteSafeBuilderFactory.completeSafeBuilder())
+            .appendList(WithGens.withMethod().appendNewLine(), toWithFields)
+            .appendList(WithGens.staticWithMethod().appendNewLine(), toWithFields)
+            .appendList(WithGens.optionalWithMethod().append(optionalNewLine), toWithFields)
+            .appendList(WithGens.staticOptionalWithMethod().append(optionalNewLine), toWithFields)
+            .append(CompleteSafeBuilderGens.completeSafeBuilder())
             .appendNewLine()
-            .append(Equals.equalsMethod())
+            .append(EqualsGens.equalsMethod())
             .appendNewLine()
-            .append(Equals.staticEqualsMethod())
+            .append(EqualsGens.staticEqualsMethod())
             .appendNewLine()
-            .append(HashCode.hashCodeMethod())
+            .append(HashCodeGens.hashCodeMethod())
             .appendNewLine()
-            .append(HashCode.staticHashCodeMethod())
+            .append(HashCodeGens.staticHashCodeMethod())
             .appendNewLine()
-            .appendNoSettings(ToString.toStringMethod())
+            .appendNoSettings(ToStringGens.toStringMethod())
             .appendNewLine()
-            .appendNoSettings(ToString.staticToStringMethod());
+            .appendNoSettings(ToStringGens.staticToStringMethod());
 
     return ClassGen.<Pojo, PojoSettings>topLevel()
         .packageGen(new PackageGen())

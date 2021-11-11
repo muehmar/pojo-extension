@@ -9,11 +9,10 @@ import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
-class CompleteSafeBuilderFactoryTest {
+class CompleteSafeBuilderGensTest {
   @Test
   void completeSafeBuilder_when_generatorUsedWithSamplePojo_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator =
-        CompleteSafeBuilderFactory.completeSafeBuilder();
+    final Generator<Pojo, PojoSettings> generator = CompleteSafeBuilderGens.completeSafeBuilder();
     final String output =
         generator
             .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault())

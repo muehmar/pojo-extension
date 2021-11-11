@@ -14,12 +14,12 @@ import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.SafeB
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
-class SafeBuilderFactoryTest {
+class SafeBuilderGensTest {
 
   @Test
   void fieldBuilderClass_when_generatorUsedWithRequiredField_then_correctOutput() {
     final Generator<SafeBuilderPojoField, PojoSettings> generator =
-        SafeBuilderFactory.fieldBuilderClass();
+        SafeBuilderGens.fieldBuilderClass();
     final SafeBuilderPojoField field = new SafeBuilderPojoField(PojoFields.requiredId(), 2);
     final String output =
         generator
@@ -44,7 +44,7 @@ class SafeBuilderFactoryTest {
   @Test
   void fieldBuilderClass_when_generatorUsedWithOptionalField_then_correctOutput() {
     final Generator<SafeBuilderPojoField, PojoSettings> generator =
-        SafeBuilderFactory.fieldBuilderClass();
+        SafeBuilderGens.fieldBuilderClass();
     final SafeBuilderPojoField field =
         new SafeBuilderPojoField(PojoFields.requiredId().withNecessity(OPTIONAL), 2);
     final String output =
@@ -74,7 +74,7 @@ class SafeBuilderFactoryTest {
   @Test
   void builderClassContent_when_generatorUsedWithRequiredField_then_correctOutput() {
     final Generator<SafeBuilderPojoField, PojoSettings> generator =
-        SafeBuilderFactory.builderClassContent();
+        SafeBuilderGens.builderClassContent();
     final SafeBuilderPojoField field = new SafeBuilderPojoField(PojoFields.requiredId(), 2);
     final String output =
         generator
@@ -97,7 +97,7 @@ class SafeBuilderFactoryTest {
   @Test
   void builderClassContent_when_generatorUsedWithOptionalField_then_correctOutput() {
     final Generator<SafeBuilderPojoField, PojoSettings> generator =
-        SafeBuilderFactory.builderClassContent();
+        SafeBuilderGens.builderClassContent();
     final SafeBuilderPojoField field =
         new SafeBuilderPojoField(PojoFields.requiredId().withNecessity(OPTIONAL), 2);
     final String output =
@@ -124,8 +124,7 @@ class SafeBuilderFactoryTest {
 
   @Test
   void constructor_when_generatorUsedWithRequiredField_then_correctClassname() {
-    final Generator<SafeBuilderPojoField, PojoSettings> generator =
-        SafeBuilderFactory.constructor();
+    final Generator<SafeBuilderPojoField, PojoSettings> generator = SafeBuilderGens.constructor();
     final SafeBuilderPojoField field = new SafeBuilderPojoField(PojoFields.requiredId(), 2);
     final String output =
         generator
@@ -138,8 +137,7 @@ class SafeBuilderFactoryTest {
 
   @Test
   void constructor_when_generatorUsedWithOptionalField_then_correctClassname() {
-    final Generator<SafeBuilderPojoField, PojoSettings> generator =
-        SafeBuilderFactory.constructor();
+    final Generator<SafeBuilderPojoField, PojoSettings> generator = SafeBuilderGens.constructor();
     final SafeBuilderPojoField field =
         new SafeBuilderPojoField(PojoFields.requiredId().withNecessity(OPTIONAL), 2);
     final String output =
@@ -153,7 +151,7 @@ class SafeBuilderFactoryTest {
 
   @Test
   void finalRequiredBuilder_when_generatorUsedWithSamplePojo_then_correctClassOutput() {
-    final Generator<Pojo, PojoSettings> generator = SafeBuilderFactory.finalRequiredBuilder();
+    final Generator<Pojo, PojoSettings> generator = SafeBuilderGens.finalRequiredBuilder();
     final String output =
         generator
             .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault())
@@ -184,7 +182,7 @@ class SafeBuilderFactoryTest {
 
   @Test
   void finalOptionalBuilder_when_generatorUsedWithSamplePojo_then_correctClassOutput() {
-    final Generator<Pojo, PojoSettings> generator = SafeBuilderFactory.finalOptionalBuilder();
+    final Generator<Pojo, PojoSettings> generator = SafeBuilderGens.finalOptionalBuilder();
     final String output =
         generator
             .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault())
@@ -207,7 +205,7 @@ class SafeBuilderFactoryTest {
 
   @Test
   void setMethod_when_generatorUsedWithOptionalField_then_correctClassOutput() {
-    final Generator<SafeBuilderPojoField, PojoSettings> generator = SafeBuilderFactory.setMethod();
+    final Generator<SafeBuilderPojoField, PojoSettings> generator = SafeBuilderGens.setMethod();
     final SafeBuilderPojoField field =
         new SafeBuilderPojoField(PojoFields.requiredId().withNecessity(OPTIONAL), 2);
     final Writer writer =
@@ -224,7 +222,7 @@ class SafeBuilderFactoryTest {
 
   @Test
   void setMethod_when_generatorUsedWithRequiredField_then_correctClassOutput() {
-    final Generator<SafeBuilderPojoField, PojoSettings> generator = SafeBuilderFactory.setMethod();
+    final Generator<SafeBuilderPojoField, PojoSettings> generator = SafeBuilderGens.setMethod();
     final SafeBuilderPojoField field = new SafeBuilderPojoField(PojoFields.requiredId(), 2);
     final Writer writer =
         generator.generate(field, PojoSettings.defaultSettings(), Writer.createDefault());
@@ -241,7 +239,7 @@ class SafeBuilderFactoryTest {
   @Test
   void setMethodOptional_when_generatorUsedWithOptionalField_then_correctClassOutput() {
     final Generator<SafeBuilderPojoField, PojoSettings> generator =
-        SafeBuilderFactory.setMethodOptional();
+        SafeBuilderGens.setMethodOptional();
     final SafeBuilderPojoField field =
         new SafeBuilderPojoField(PojoFields.requiredId().withNecessity(OPTIONAL), 2);
     final Writer writer =
