@@ -13,7 +13,7 @@ class PackageGenTest {
   void generate_when_called_then_correctPackageStatementCreated() {
     final PackageGen generator = new PackageGen();
     final Writer writer =
-        generator.generate(Pojos.sample(), new PojoSettings(false), Writer.createDefault());
+        generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals("package io.github.muehmar;", writer.asString());
   }

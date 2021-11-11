@@ -121,7 +121,15 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             .setGetters(getters)
             .andAllOptionals()
             .build();
-    final PojoSettings pojoSettings = new PojoSettings(false);
+    final PojoSettings pojoSettings =
+        PojoSettings.newBuilder()
+            .setDisableSafeBuilder(false)
+            .andAllOptionals()
+            .setExtensionName(
+                Optional.ofNullable(annotation.extensionName())
+                    .filter(n -> n.trim().length() > 0)
+                    .map(Name::fromString))
+            .build();
 
     outputPojo(pojoExtension, pojoSettings);
   }

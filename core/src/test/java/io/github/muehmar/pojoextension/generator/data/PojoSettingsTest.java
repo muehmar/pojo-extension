@@ -21,6 +21,15 @@ class PojoSettingsTest {
   }
 
   @Test
+  void extensionName_when_overriddenExtensionName_then_useCustomExtensionName() {
+    final Name name =
+        PojoSettings.defaultSettings()
+            .withExtensionName(Name.fromString("MyExtension"))
+            .extensionName(Pojos.sample());
+    assertEquals("MyExtension", name.asString());
+  }
+
+  @Test
   void qualifiedExtensionName_when_calledWithSamplePojo_then_correctExtensionName() {
     final Name name = PojoSettings.defaultSettings().qualifiedExtensionName(Pojos.sample());
     assertEquals("io.github.muehmar.CustomerExtension", name.asString());
