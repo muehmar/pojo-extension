@@ -185,6 +185,10 @@ public class TestPojoComposer {
       return new PojoMethod(builder).getter(returnType, fieldName);
     }
 
+    public PojoMethod getterWithAnnotation(String returnType, String fieldName, String annotation) {
+      return new PojoMethod(builder).getterWithAnnotation(returnType, fieldName, annotation);
+    }
+
     public String create() {
       return new PojoMethod(builder).create();
     }
@@ -198,13 +202,24 @@ public class TestPojoComposer {
     }
 
     public PojoMethod getter(String returnType, String fieldName) {
-      return method(
+      return getterWithAnnotation(returnType, fieldName, "");
+    }
+
+    public PojoMethod getterWithAnnotation(String returnType, String fieldName, String annotation) {
+      return methodWithAnnotation(
           returnType,
           Name.fromString(fieldName).toPascalCase().prefix("get").asString(),
-          "return null");
+          "return null",
+          annotation);
     }
 
     public PojoMethod method(String returnType, String methodName, String content) {
+      return methodWithAnnotation(returnType, methodName, content, "");
+    }
+
+    public PojoMethod methodWithAnnotation(
+        String returnType, String methodName, String content, String annotation) {
+      builder.append(String.format("  %s\n", annotation));
       builder.append(String.format("  public %s %s() {\n", returnType, methodName));
       builder.append(String.format("    %s;\n", content));
       builder.append("  }\n");

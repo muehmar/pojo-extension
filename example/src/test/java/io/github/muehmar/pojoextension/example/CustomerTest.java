@@ -22,7 +22,7 @@ class CustomerTest {
             .setAge(Optional.empty())
             .build();
 
-    assertEquals("123456", customer.getId());
+    assertEquals("123456", customer.getIdentification());
     assertEquals("Dexter", customer.getName());
     assertEquals(12.5d, customer.getRandom());
     assertArrayEquals(new byte[] {0x15}, customer.getKey());
@@ -40,7 +40,7 @@ class CustomerTest {
     assertEquals(
         customer1,
         new Customer(
-            customer1.getId(),
+            customer1.getIdentification(),
             customer1.getName(),
             customer1.getNickname().orElse(null),
             customer1.getAge().orElse(null),
@@ -63,7 +63,7 @@ class CustomerTest {
   @Test
   void with_when_calledWithTheSameValue_then_stillEquals() {
     final Customer c = sampleCustomer();
-    assertEquals(c, c.withId(c.getId()));
+    assertEquals(c, c.withId(c.getIdentification()));
     assertEquals(c, c.withName(c.getName()));
     assertEquals(c, c.withNickname(c.getNickname().orElseThrow(IllegalStateException::new)));
     assertEquals(c, c.withRandom(c.getRandom()));

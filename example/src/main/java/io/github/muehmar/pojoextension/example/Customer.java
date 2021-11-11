@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.example;
 
+import io.github.muehmar.pojoextension.annotations.Getter;
 import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.Optional;
@@ -33,7 +34,8 @@ public class Customer extends CustomerExtension {
     this.flag = flag;
   }
 
-  public String getId() {
+  @Getter("id")
+  public String getIdentification() {
     return id;
   }
 

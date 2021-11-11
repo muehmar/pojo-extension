@@ -325,6 +325,36 @@ class PojoExtensionProcessorTest {
   }
 
   @Test
+  void run_when_annotatedGetterPresent_then_extractGetterWithFieldName() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .withImport(io.github.muehmar.pojoextension.annotations.Getter.class)
+            .annotation(PojoExtension.class)
+            .className(className)
+            .withField("Integer", "key")
+            .constructor()
+            .getterWithAnnotation("Integer", "key", "@Getter(\"key\")")
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+
+    final PList<Getter> expected =
+        PList.of(
+            Getter.newBuilder()
+                .setName(Name.fromString("getKey"))
+                .setReturnType(Type.integer())
+                .andOptionals()
+                .setFieldName(Name.fromString("key"))
+                .build());
+
+    assertEquals(expected, pojoAndSettings.pojo.getGetters());
+  }
+
+  @Test
   void run_when_constantDefined_then_constantIgnored() {
     final Name className = randomClassName();
 

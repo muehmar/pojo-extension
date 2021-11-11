@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.instantiation;
 
+import static io.github.muehmar.pojoextension.generator.data.Getter.noFieldName;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.UNWRAP_OPTIONAL;
@@ -24,7 +25,9 @@ class FinalConstructorArgumentTest {
     final PojoField pojoField = new PojoField(name, Type.string(), OPTIONAL);
     final FieldGetter fieldGetter =
         FieldGetter.of(
-            new Getter(Getter.getterName(pojoField), Type.string()), pojoField, SAME_TYPE);
+            new Getter(Getter.getterName(pojoField), Type.string(), noFieldName()),
+            pojoField,
+            SAME_TYPE);
     final FieldArgument fieldArgument =
         new FieldArgument(
             pojoField, new Argument(name, Type.optional(Type.string())), WRAP_INTO_OPTIONAL);
@@ -44,7 +47,9 @@ class FinalConstructorArgumentTest {
     final PojoField pojoField = new PojoField(name, Type.string(), OPTIONAL);
     final FieldGetter fieldGetter =
         FieldGetter.of(
-            new Getter(Getter.getterName(pojoField), Type.string()), pojoField, UNWRAP_OPTIONAL);
+            new Getter(Getter.getterName(pojoField), Type.string(), noFieldName()),
+            pojoField,
+            UNWRAP_OPTIONAL);
     final FieldArgument fieldArgument =
         new FieldArgument(pojoField, new Argument(name, Type.optional(Type.string())), SAME_TYPE);
 
@@ -63,7 +68,9 @@ class FinalConstructorArgumentTest {
     final PojoField pojoField = new PojoField(name, Type.string(), OPTIONAL);
     final FieldGetter fieldGetter =
         FieldGetter.of(
-            new Getter(Getter.getterName(pojoField), Type.string()), pojoField, UNWRAP_OPTIONAL);
+            new Getter(Getter.getterName(pojoField), Type.string(), noFieldName()),
+            pojoField,
+            UNWRAP_OPTIONAL);
     final FieldArgument fieldArgument =
         new FieldArgument(
             pojoField, new Argument(name, Type.optional(Type.string())), WRAP_INTO_OPTIONAL);

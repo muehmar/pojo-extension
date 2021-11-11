@@ -124,6 +124,10 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             .build();
     final PojoSettings pojoSettings = new PojoSettings(false);
 
+    outputPojo(pojoExtension, pojoSettings);
+  }
+
+  private void outputPojo(Pojo pojoExtension, PojoSettings pojoSettings) {
     redirectPojo.ifPresent(output -> output.accept(pojoExtension, pojoSettings));
     if (!redirectPojo.isPresent()) {
       final String generatedPojoExtension =

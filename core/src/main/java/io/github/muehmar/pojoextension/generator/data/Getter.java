@@ -12,10 +12,16 @@ import java.util.function.UnaryOperator;
 public class Getter extends GetterExtension {
   private final Name name;
   private final Type returnType;
+  private final Optional<Name> fieldName;
 
-  public Getter(Name name, Type returnType) {
+  public Getter(Name name, Type returnType, Optional<Name> fieldName) {
     this.name = name;
     this.returnType = returnType;
+    this.fieldName = fieldName;
+  }
+
+  public static Optional<Name> noFieldName() {
+    return Optional.empty();
   }
 
   public static Name getterName(PojoField field) {
@@ -45,7 +51,15 @@ public class Getter extends GetterExtension {
     return returnType;
   }
 
+  public Optional<Name> getFieldName() {
+    return fieldName;
+  }
+
   public Optional<FieldGetter> getFieldGetter(PojoField field) {
+    if (fieldName.map(n -> n.equals(field.getName())).orElse(false)) {
+      return Optional.of(FieldGetter.of(this, field, SAME_TYPE));
+    }
+
     if (not(name.equals(getterName(field)))) {
       return Optional.empty();
     }
@@ -64,6 +78,13 @@ public class Getter extends GetterExtension {
 
   @Override
   public String toString() {
-    return "Getter{" + "name=" + name + ", returnType=" + returnType + '}';
+    return "Getter{"
+        + "name="
+        + name
+        + ", returnType="
+        + returnType
+        + ", fieldName="
+        + fieldName
+        + '}';
   }
 }

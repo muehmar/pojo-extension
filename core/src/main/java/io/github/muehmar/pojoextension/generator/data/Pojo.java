@@ -93,10 +93,17 @@ public class Pojo extends io.github.muehmar.pojoextension.generator.data.PojoExt
             ? "The the actual type of this non-required field can be wrapped into an java.util.Optional."
             : "";
     return String.format(
-        "Unable to find the getter for field '%s'."
-            + " The method name should be '%s' and the returnType should match the field type %s."
-            + " %s",
-        field.getName(), Getter.getterName(field), field.getType().getClassName(), optionalMessage);
+        "Unable to find the getter for field '%s'.\n"
+            + "The method name should be '%s' and the returnType should match the field type %s.\n"
+            + "In case the method cannot be renamed you can use the @@Getter(\"%s\") annotation to mark\n"
+            + "the method as getter for the field '%s'.\n"
+            + "%s",
+        field.getName(),
+        Getter.getterName(field),
+        field.getType().getClassName(),
+        field.getName(),
+        field.getName(),
+        optionalMessage);
   }
 
   @Override
