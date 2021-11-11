@@ -21,7 +21,8 @@ present all times and which may be absent.
 Currently, the extension class contains the following features:
 
 * SafeBuilder - Special builder class which enforces setting all required attributes
-* `equals` and `hashCode`
+* `equals` and `hashCode` methods
+* `toString` method
 * `withXX` method for each field
 * More to follow...
 
@@ -31,8 +32,8 @@ Add the dependency and register it as annotation processor. In gradle this would
 
 ```
 dependencies {
-    implementation "io.github.muehmar:pojo-extension:0.3.1"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.3.1"
+    implementation "io.github.muehmar:pojo-extension:0.4.0"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.4.0"
 }
 ```
 
@@ -166,6 +167,17 @@ public static boolean equals(Customer o1, Object obj);
 public static int hashCode(Customer o);
 ```
 
+### Method `toString`
+
+The extension class contains the `toString` method which is automatically used in case the data class extends the
+extension.
+
+There is also a statically available method which can be used without extending the extension:
+
+```
+  public static String toString(Customer self) {
+```
+
 ### Method `withXX`
 
 The extension contains with method for each field. The methods return a new instance of the data class where the
@@ -221,13 +233,24 @@ private final Optional<String> nickname;
 
 ### Getter
 
-For each field a getter must be present and its name must be according to the java bean naming conventions. The type of
-the required fields must match exactly where the types of the optional fields can be (like for the constructor) either
-the actual type and nullable or wrapped into an `Optional`.
+For each field a getter must be present. A getter is detected by the processor for the following cases:
+
+* The getter name is according to the java bean naming convention
+* The getter is annotated with `@Getter("fieldName")` where `fieldName` is the name of the corresponding field
+
+The return type for required fields must match exactly where a return type for optional fields can be (like for the
+constructor) either the actual type and nullable or wrapped into an `Optional`.
 
 ## Annotation Parameters
 
-### Optional detection
+The annotation contains the following parameters:
+
+| Parameter | Description |
+| --- | --- |
+|`optionalDetection`| Defines how optional fields in data class are detected by the processor. See the next section for details. |
+| `extensionName` | Allows to override the default name of the created extension class which is the data class name followed by 'Extension'.
+
+### Parameter `optionalDetection`
 
 There are multiple ways to tell the processor which attributes of a pojo are required and which are not. The annotation
 has the parameter `optionalDetection` which is an array of `OptionalDetection` and allows customisation of each pojo if
@@ -237,16 +260,34 @@ necessary:
 | --- | --- |
 | OptionalDetection.OPTIONAL_CLASS | In this case every field in the pojo which is wrapped in an Optional is considered as optional. |
 | OptionalDetection.NULLABLE_ANNOTATION | With this option a field in the pojo can be annotated with the `Nullable` annotation to mark it as optional. The `Nullable` annotation is delivered within this package, `javax.annotations.Nullable` (JSR305) is not yet supported.
+| OptionalDetection.NONE | All fields are treated as required. This setting gets ignored in case it is used in combination with one of the others. |
 
 Both options are active as default.
 
+## Meta Annotation
+
+The `@PojoExtension` annotation can be used as meta annotation to create your own annotation with predefined behaviour.
+
+For example if you want to treat every field in an annotated class as required, you could create your own
+annotation `@AllRequiredExtension` which is annotated with `@PojoExtension` with disabled optional detection.
+
+```
+@PojoExtension(optionalDetection = OptionalDetection.NONE)
+public @interface AllRequiredExtension {}
+```
+
 ## Known Issues
 
-* Wildcard types are not yet supported
-* Generic data classes are not yet supported
+* Generic data classes are not yet supported.
 
 ## Change Log
 
+* 0.4.0
+    * Add `toString` method
+    * Support inner classes
+    * Support custom extension name
+    * Support meta annotation
+    * Support arbitrary getter names with `@Getter` annotation
 * 0.3.1 - Ignore constants in data classes
 * 0.3.0 - Add `equals`, `hashCode` and `withXX` methods
 * 0.2.5 - Remove newline character from writer output
