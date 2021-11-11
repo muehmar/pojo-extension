@@ -20,6 +20,7 @@ public class WithGens {
 
   public static Generator<WithField, PojoSettings> withMethod() {
     return MethodGen.<WithField, PojoSettings>modifiers(PUBLIC)
+        .noGenericTypes()
         .returnType(wf -> wf.getPojo().getName().asString())
         .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
         .singleArgument(
@@ -42,6 +43,7 @@ public class WithGens {
                     "%s %s", wf.getField().getType().getClassName(), wf.getField().getName()));
 
     return MethodGen.<WithField, PojoSettings>modifiers(PUBLIC, STATIC)
+        .noGenericTypes()
         .returnType(wf -> wf.getPojo().getName().asString())
         .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
         .arguments(arguments)
@@ -58,6 +60,7 @@ public class WithGens {
   public static Generator<WithField, PojoSettings> optionalWithMethod() {
     final Generator<WithField, PojoSettings> method =
         MethodGen.<WithField, PojoSettings>modifiers(PUBLIC)
+            .noGenericTypes()
             .returnType(wf -> wf.getPojo().getName().asString())
             .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
             .singleArgument(
@@ -87,6 +90,7 @@ public class WithGens {
 
     final Generator<WithField, PojoSettings> method =
         MethodGen.<WithField, PojoSettings>modifiers(PUBLIC, STATIC)
+            .noGenericTypes()
             .returnType(wf -> wf.getPojo().getName().asString())
             .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
             .arguments(arguments)

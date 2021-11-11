@@ -55,6 +55,7 @@ public class NormalBuilderGens {
 
   public static Generator<Pojo, PojoSettings> buildMethod() {
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+        .noGenericTypes()
         .returnType(p -> p.getName().asString())
         .methodName("build")
         .noArguments()
@@ -70,6 +71,7 @@ public class NormalBuilderGens {
 
     return MethodGen.<PojoField, PojoSettings>modifiers(
             (f, s) -> JavaModifiers.of(f.isRequired() ? JavaModifier.PRIVATE : JavaModifier.PUBLIC))
+        .noGenericTypes()
         .returnType(BUILDER_CLASSNAME)
         .methodName(f -> String.format("set%s", f.getName().toPascalCase()))
         .singleArgument(f -> String.format("%s %s", f.getType().getClassName(), f.getName()))
@@ -85,6 +87,7 @@ public class NormalBuilderGens {
                 .println("return this;");
 
     return MethodGen.<PojoField, PojoSettings>modifiers(PUBLIC)
+        .noGenericTypes()
         .returnType(BUILDER_CLASSNAME)
         .methodName(f -> String.format("set%s", f.getName().toPascalCase()))
         .singleArgument(

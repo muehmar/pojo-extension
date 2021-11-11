@@ -72,6 +72,7 @@ public class SafeBuilderGens {
 
   public static <A, B> Generator<A, B> andAllOptionalsMethod() {
     return MethodGen.<A, B>modifiers(PUBLIC)
+        .noGenericTypes()
         .returnType("OptBuilder0")
         .methodName("andAllOptionals")
         .noArguments()
@@ -80,6 +81,7 @@ public class SafeBuilderGens {
 
   public static <A, B> Generator<A, B> andOptionalsMethod() {
     return MethodGen.<A, B>modifiers(PUBLIC)
+        .noGenericTypes()
         .returnType("Builder")
         .methodName("andOptionals")
         .noArguments()
@@ -88,6 +90,7 @@ public class SafeBuilderGens {
 
   public static Generator<Pojo, PojoSettings> buildMethod() {
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+        .noGenericTypes()
         .returnType(p -> p.getName().asString())
         .methodName("build")
         .noArguments()
@@ -104,6 +107,7 @@ public class SafeBuilderGens {
                 f.getField().getName());
 
     return MethodGen.<SafeBuilderPojoField, PojoSettings>modifiers(PUBLIC)
+        .noGenericTypes()
         .returnType(SafeBuilderGens::createNextClassName)
         .methodName(f -> String.format("set%s", f.getField().getName().toPascalCase()))
         .singleArgument(
@@ -124,6 +128,7 @@ public class SafeBuilderGens {
                 f.getField().getName().toPascalCase());
 
     return MethodGen.<SafeBuilderPojoField, PojoSettings>modifiers(PUBLIC)
+        .noGenericTypes()
         .returnType(SafeBuilderGens::createNextClassName)
         .methodName(f -> String.format("set%s", f.getField().getName().toPascalCase()))
         .singleArgument(

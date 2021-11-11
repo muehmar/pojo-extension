@@ -8,11 +8,14 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 class CustomerTest {
+
+  public static final String SAMPLE_ID = "123456";
+
   @Test
   void newBuilder_when_usedToCreateInstance_then_allAttributesSetAccordingly() {
     final Customer customer =
         Customer.newBuilder()
-            .setId("123456")
+            .setId(SAMPLE_ID)
             .setName("Dexter")
             .setRandom(12.5d)
             .setKey(new byte[] {0x15})
@@ -22,7 +25,7 @@ class CustomerTest {
             .setAge(Optional.empty())
             .build();
 
-    assertEquals("123456", customer.getIdentification());
+    assertEquals(SAMPLE_ID, customer.getIdentification());
     assertEquals("Dexter", customer.getName());
     assertEquals(12.5d, customer.getRandom());
     assertArrayEquals(new byte[] {0x15}, customer.getKey());
@@ -79,19 +82,6 @@ class CustomerTest {
     assertEquals(c.withNickname("nick"), c.withNickname(Optional.of("nick")));
   }
 
-  private static Customer sampleCustomer() {
-    return Customer.newBuilder()
-        .setId("123456")
-        .setName("Dexter")
-        .setRandom(12.5d)
-        .setKey(new byte[] {0x15})
-        .setFlag(true)
-        .andAllOptionals()
-        .setNickname("Dex")
-        .setAge(Optional.empty())
-        .build();
-  }
-
   @Test
   void newBuilder_when_calledForAddress_then_correctInstanceCreated() {
     final Customer.Address address =
@@ -103,5 +93,50 @@ class CustomerTest {
 
     assertEquals("Waldweg 10", address.getStreet());
     assertEquals("Winterthur", address.getCity());
+  }
+
+  @Test
+  void map_when_calledForCustomer_then_mapFunctionApplied() {
+    final Customer customer = sampleCustomer().map(c -> c.withId(SAMPLE_ID + "99"));
+    assertEquals(SAMPLE_ID + "99", customer.getIdentification());
+  }
+
+  @Test
+  void mapIf_when_shouldNotMap_then_mapFunctionNotApplied() {
+    final Customer customer = sampleCustomer().mapIf(false, c -> c.withId(SAMPLE_ID + "99"));
+    assertEquals(sampleCustomer(), customer);
+  }
+
+  @Test
+  void mapIf_when_shouldMap_then_mapFunctionApplied() {
+    final Customer customer = sampleCustomer().mapIf(true, c -> c.withId(SAMPLE_ID + "99"));
+    assertEquals(SAMPLE_ID + "99", customer.getIdentification());
+  }
+
+  @Test
+  void mapIfPresent_when_valuePresent_then_mapFunctionApplied() {
+    final Customer customer =
+        sampleCustomer().mapIfPresent(Optional.of(SAMPLE_ID + "99"), (c, val) -> c.withId(val));
+    assertEquals(SAMPLE_ID + "99", customer.getIdentification());
+  }
+
+  @Test
+  void mapIfPresent_when_valueNotPresent_then_mapFunctionNotApplied() {
+    final Customer customer =
+        sampleCustomer().mapIfPresent(Optional.<String>empty(), (c, val) -> c.withId(val));
+    assertEquals(sampleCustomer(), customer);
+  }
+
+  private static Customer sampleCustomer() {
+    return Customer.newBuilder()
+        .setId(SAMPLE_ID)
+        .setName("Dexter")
+        .setRandom(12.5d)
+        .setKey(new byte[] {0x15})
+        .setFlag(true)
+        .andAllOptionals()
+        .setNickname("Dex")
+        .setAge(Optional.empty())
+        .build();
   }
 }

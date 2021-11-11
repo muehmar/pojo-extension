@@ -47,6 +47,7 @@ public class CompleteSafeBuilderGens {
 
   private static Generator<Pojo, PojoSettings> newBuilderMethod() {
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC, STATIC)
+        .noGenericTypes()
         .returnType("Builder0")
         .methodName("newBuilder")
         .noArguments()

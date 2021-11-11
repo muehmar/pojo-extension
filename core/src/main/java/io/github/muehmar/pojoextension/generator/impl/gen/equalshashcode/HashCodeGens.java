@@ -24,6 +24,7 @@ public class HashCodeGens {
   public static Generator<Pojo, PojoSettings> hashCodeMethod() {
     final Generator<Pojo, PojoSettings> method =
         MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+            .noGenericTypes()
             .returnType("int")
             .methodName("hashCode")
             .noArguments()
@@ -35,6 +36,7 @@ public class HashCodeGens {
     final Function<Pojo, String> argument = p -> String.format("%s o", p.getName());
     final Generator<Pojo, PojoSettings> content = staticHashCodeMethodContent();
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC, STATIC)
+        .noGenericTypes()
         .returnType("int")
         .methodName("hashCode")
         .singleArgument(argument)

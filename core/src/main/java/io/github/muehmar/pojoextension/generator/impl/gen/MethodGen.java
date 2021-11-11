@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen;
 
+import ch.bluecare.commons.data.NonEmptyList;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
@@ -11,6 +12,7 @@ import java.util.function.UnaryOperator;
 
 public class MethodGen<A, B> implements Generator<A, B> {
   private final BiFunction<A, B, JavaModifiers> createModifiers;
+  private final BiFunction<A, B, PList<String>> createGenericTypeParameters;
   private final BiFunction<A, B, String> createReturnType;
   private final BiFunction<A, B, String> createMethodName;
   private final BiFunction<A, B, PList<String>> createArguments;
@@ -18,11 +20,13 @@ public class MethodGen<A, B> implements Generator<A, B> {
 
   public MethodGen(
       BiFunction<A, B, JavaModifiers> createModifiers,
+      BiFunction<A, B, PList<String>> createGenericTypeParameters,
       BiFunction<A, B, String> createReturnType,
       BiFunction<A, B, String> createMethodName,
       BiFunction<A, B, PList<String>> createArguments,
       Generator<A, B> contentGenerator) {
     this.createModifiers = createModifiers;
+    this.createGenericTypeParameters = createGenericTypeParameters;
     this.createReturnType = createReturnType;
     this.createMethodName = createMethodName;
     this.createArguments = createArguments;
@@ -34,35 +38,64 @@ public class MethodGen<A, B> implements Generator<A, B> {
     return Generator.<A, B>ofWriterFunction(
             w -> {
               final JavaModifiers modifiers = createModifiers.apply(data, settings);
+              final String genericTypeParameters =
+                  NonEmptyList.fromIter(createGenericTypeParameters.apply(data, settings))
+                      .map(parameters -> parameters.toPList().mkString(", "))
+                      .map(parameters -> String.format("<%s> ", parameters))
+                      .orElse("");
               final String returnType = createReturnType.apply(data, settings);
               final String methodName = createMethodName.apply(data, settings);
               final String arguments = createArguments.apply(data, settings).mkString(", ");
               return w.print(
-                  "%s%s %s(%s) {",
-                  modifiers.asStringTrailingWhitespace(), returnType, methodName, arguments);
+                  "%s%s%s %s(%s) {",
+                  modifiers.asStringTrailingWhitespace(),
+                  genericTypeParameters,
+                  returnType,
+                  methodName,
+                  arguments);
             })
         .append(contentGenerator, 1)
         .append(w -> w.println("}"))
         .generate(data, settings, writer);
   }
 
-  public static <A, B> Builder1<A, B> modifiers(JavaModifier... modifiers) {
+  public static <A, B> BuilderTP<A, B> modifiers(JavaModifier... modifiers) {
     return modifiers((d, s) -> JavaModifiers.of(modifiers));
   }
 
-  public static <A, B> Builder1<A, B> modifiers(BiFunction<A, B, JavaModifiers> createModifiers) {
-    return new Builder1<>(createModifiers);
+  public static <A, B> BuilderTP<A, B> modifiers(BiFunction<A, B, JavaModifiers> createModifiers) {
+    return new BuilderTP<>(createModifiers);
+  }
+
+  public static class BuilderTP<A, B> {
+    private final BiFunction<A, B, JavaModifiers> createModifiers;
+
+    private BuilderTP(BiFunction<A, B, JavaModifiers> createModifiers) {
+      this.createModifiers = createModifiers;
+    }
+
+    public Builder1<A, B> noGenericTypes() {
+      return genericTypes();
+    }
+
+    public Builder1<A, B> genericTypes(String... types) {
+      return new Builder1<>(createModifiers, (data, settings) -> PList.fromArray(types));
+    }
   }
 
   public static class Builder1<A, B> {
     private final BiFunction<A, B, JavaModifiers> createModifiers;
+    private final BiFunction<A, B, PList<String>> createGenericTypeParameters;
 
-    private Builder1(BiFunction<A, B, JavaModifiers> createModifiers) {
+    private Builder1(
+        BiFunction<A, B, JavaModifiers> createModifiers,
+        BiFunction<A, B, PList<String>> createGenericTypeParameters) {
       this.createModifiers = createModifiers;
+      this.createGenericTypeParameters = createGenericTypeParameters;
     }
 
     public Builder2<A, B> returnType(BiFunction<A, B, String> createReturnType) {
-      return new Builder2<>(createModifiers, createReturnType);
+      return new Builder2<>(createModifiers, createGenericTypeParameters, createReturnType);
     }
 
     public Builder2<A, B> returnType(Function<A, String> createReturnType) {
@@ -76,17 +109,21 @@ public class MethodGen<A, B> implements Generator<A, B> {
 
   public static class Builder2<A, B> {
     private final BiFunction<A, B, JavaModifiers> createModifiers;
+    private final BiFunction<A, B, PList<String>> createGenericTypeParameters;
     private final BiFunction<A, B, String> createReturnType;
 
     private Builder2(
         BiFunction<A, B, JavaModifiers> createModifiers,
+        BiFunction<A, B, PList<String>> createGenericTypeParameters,
         BiFunction<A, B, String> createReturnType) {
       this.createModifiers = createModifiers;
+      this.createGenericTypeParameters = createGenericTypeParameters;
       this.createReturnType = createReturnType;
     }
 
     public Builder3<A, B> methodName(BiFunction<A, B, String> createMethodName) {
-      return new Builder3<>(createModifiers, createReturnType, createMethodName);
+      return new Builder3<>(
+          createModifiers, createGenericTypeParameters, createReturnType, createMethodName);
     }
 
     public Builder3<A, B> methodName(Function<A, String> createMethodName) {
@@ -100,20 +137,28 @@ public class MethodGen<A, B> implements Generator<A, B> {
 
   public static class Builder3<A, B> {
     private final BiFunction<A, B, JavaModifiers> createModifiers;
+    private final BiFunction<A, B, PList<String>> createGenericTypeParameters;
     private final BiFunction<A, B, String> createReturnType;
     private final BiFunction<A, B, String> createMethodName;
 
     private Builder3(
         BiFunction<A, B, JavaModifiers> createModifiers,
+        BiFunction<A, B, PList<String>> createGenericTypeParameters,
         BiFunction<A, B, String> createReturnType,
         BiFunction<A, B, String> createMethodName) {
       this.createModifiers = createModifiers;
+      this.createGenericTypeParameters = createGenericTypeParameters;
       this.createReturnType = createReturnType;
       this.createMethodName = createMethodName;
     }
 
     public Builder4<A, B> arguments(BiFunction<A, B, PList<String>> createArguments) {
-      return new Builder4<>(createModifiers, createReturnType, createMethodName, createArguments);
+      return new Builder4<>(
+          createModifiers,
+          createGenericTypeParameters,
+          createReturnType,
+          createMethodName,
+          createArguments);
     }
 
     public Builder4<A, B> arguments(Function<A, PList<String>> createArguments) {
@@ -131,16 +176,19 @@ public class MethodGen<A, B> implements Generator<A, B> {
 
   public static class Builder4<A, B> {
     private final BiFunction<A, B, JavaModifiers> createModifiers;
+    private final BiFunction<A, B, PList<String>> createGenericTypeParameters;
     private final BiFunction<A, B, String> createReturnType;
     private final BiFunction<A, B, String> createMethodName;
     private final BiFunction<A, B, PList<String>> createArguments;
 
     private Builder4(
         BiFunction<A, B, JavaModifiers> createModifiers,
+        BiFunction<A, B, PList<String>> createGenericTypeParameters,
         BiFunction<A, B, String> createReturnType,
         BiFunction<A, B, String> createMethodName,
         BiFunction<A, B, PList<String>> createArguments) {
       this.createModifiers = createModifiers;
+      this.createGenericTypeParameters = createGenericTypeParameters;
       this.createReturnType = createReturnType;
       this.createMethodName = createMethodName;
       this.createArguments = createArguments;
@@ -156,7 +204,12 @@ public class MethodGen<A, B> implements Generator<A, B> {
 
     public MethodGen<A, B> content(Generator<A, B> content) {
       return new MethodGen<>(
-          createModifiers, createReturnType, createMethodName, createArguments, content);
+          createModifiers,
+          createGenericTypeParameters,
+          createReturnType,
+          createMethodName,
+          createArguments,
+          content);
     }
 
     public MethodGen<A, B> contentWriter(UnaryOperator<Writer> content) {
