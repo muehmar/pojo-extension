@@ -26,6 +26,20 @@ class TypeTest {
     assertEquals(Type.optional(Type.string()).withTypeParameters(PList.empty()), type);
   }
 
+  @Test
+  void fromClassName_when_innerClassName_then_parsedCorrectly() {
+    final Type type = Type.fromClassName("io.github.muehmar.Customer.Address");
+
+    final Type expected =
+        new Type(
+            Name.fromString("Customer.Address"),
+            PackageName.fromString("io.github.muehmar"),
+            PList.empty(),
+            false);
+
+    assertEquals(expected, type);
+  }
+
   @ParameterizedTest
   @MethodSource("primitiveTypes")
   void fromClassName_when_primitiveType_then_parsedCorrectly(String primitiveType) {

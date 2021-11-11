@@ -39,7 +39,7 @@ public class ConstructorCallGen {
                               FinalConstructorArgument.ofFieldVariable(
                                   new FieldVariable(pojo, fa.getField(), SAME_TYPE), fa));
 
-              return new ConstructorCall(fields, matchingConstructor);
+              return new ConstructorCall(pojo, fields, matchingConstructor);
             });
   }
 
@@ -66,7 +66,7 @@ public class ConstructorCallGen {
                             }
                           });
 
-              return new ConstructorCall(fields, matchingConstructor);
+              return new ConstructorCall(pojo, fields, matchingConstructor);
             });
   }
 
@@ -96,8 +96,7 @@ public class ConstructorCallGen {
           .get()
           .println(
               "return new %s(%s);",
-              constructorCall.getMatchingConstructor().getConstructor().getName(),
-              constructorParameters.mkString(", "));
+              constructorCall.getPojo().getName(), constructorParameters.mkString(", "));
     };
   }
 
@@ -118,13 +117,19 @@ public class ConstructorCallGen {
   }
 
   private static class ConstructorCall {
+    private final Pojo pojo;
     private final PList<FinalConstructorArgument> fields;
     private final MatchingConstructor constructor;
 
     public ConstructorCall(
-        PList<FinalConstructorArgument> fields, MatchingConstructor constructor) {
+        Pojo pojo, PList<FinalConstructorArgument> fields, MatchingConstructor constructor) {
+      this.pojo = pojo;
       this.fields = fields;
       this.constructor = constructor;
+    }
+
+    public Pojo getPojo() {
+      return pojo;
     }
 
     public PList<FinalConstructorArgument> getFields() {
@@ -140,17 +145,26 @@ public class ConstructorCallGen {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
       ConstructorCall that = (ConstructorCall) o;
-      return Objects.equals(fields, that.fields) && Objects.equals(constructor, that.constructor);
+      return Objects.equals(pojo, that.pojo)
+          && Objects.equals(fields, that.fields)
+          && Objects.equals(constructor, that.constructor);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(fields, constructor);
+      return Objects.hash(pojo, fields, constructor);
     }
 
     @Override
     public String toString() {
-      return "ConstructorCall{" + "fields=" + fields + ", constructor=" + constructor + '}';
+      return "ConstructorCall{"
+          + "pojo="
+          + pojo
+          + ", fields="
+          + fields
+          + ", constructor="
+          + constructor
+          + '}';
     }
   }
 }

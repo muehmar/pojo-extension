@@ -1,6 +1,5 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.extension;
 
-import static io.github.muehmar.pojoextension.Names.extensionSuffix;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.ABSTRACT;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PRIVATE;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PROTECTED;
@@ -61,13 +60,13 @@ public class ExtensionFactory {
     return ClassGen.<Pojo, PojoSettings>topLevel()
         .packageGen(new PackageGen())
         .modifiers(PUBLIC, ABSTRACT)
-        .className(p -> p.getName().append(extensionSuffix()).asString())
+        .className((p, s) -> s.extensionName(p).asString())
         .content(content);
   }
 
   private static Generator<Pojo, PojoSettings> constructor() {
     return ConstructorGen.<Pojo, PojoSettings>modifiers(PROTECTED)
-        .className(p -> p.getName().append(extensionSuffix()).asString())
+        .className((p, s) -> s.extensionName(p).asString())
         .noArguments()
         .content(
             (p, s, w) ->
@@ -76,7 +75,7 @@ public class ExtensionFactory {
                     .tab(1)
                     .println(
                         "throw new IllegalArgumentException(\"Only class %s can extend %s.\");",
-                        p.getName(), p.getName().append(extensionSuffix())));
+                        p.getName(), s.extensionName(p)));
   }
 
   private static Generator<Pojo, PojoSettings> selfMethod() {

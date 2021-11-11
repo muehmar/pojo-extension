@@ -22,4 +22,12 @@ public class PojoSettings extends PojoSettingsExtension {
   public boolean isEnableSafeBuilder() {
     return !isDisableSafeBuilder();
   }
+
+  public Name qualifiedExtensionName(Pojo pojo) {
+    return pojo.getPkg().qualifiedName(extensionName(pojo));
+  }
+
+  public Name extensionName(Pojo pojo) {
+    return pojo.getName().map(n -> n.replace(".", "")).append("Extension");
+  }
 }

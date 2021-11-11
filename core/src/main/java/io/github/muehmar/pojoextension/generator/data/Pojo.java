@@ -30,10 +30,6 @@ public class Pojo extends io.github.muehmar.pojoextension.generator.data.PojoExt
     return name;
   }
 
-  public Name qualifiedName() {
-    return pkg.qualifiedName(name);
-  }
-
   public PackageName getPkg() {
     return pkg;
   }

@@ -91,4 +91,17 @@ class CustomerTest {
         .setAge(Optional.empty())
         .build();
   }
+
+  @Test
+  void newBuilder_when_calledForAddress_then_correctInstanceCreated() {
+    final Customer.Address address =
+        Customer.Address.newBuilder()
+            .setStreet("Waldweg 10")
+            .setCity("Winterthur")
+            .andAllOptionals()
+            .build();
+
+    assertEquals("Waldweg 10", address.getStreet());
+    assertEquals("Winterthur", address.getCity());
+  }
 }

@@ -1,6 +1,5 @@
 package io.github.muehmar.pojoextension.annotations.processor;
 
-import static io.github.muehmar.pojoextension.Names.extensionSuffix;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 
@@ -127,13 +126,13 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     outputPojo(pojoExtension, pojoSettings);
   }
 
-  private void outputPojo(Pojo pojoExtension, PojoSettings pojoSettings) {
-    redirectPojo.ifPresent(output -> output.accept(pojoExtension, pojoSettings));
+  private void outputPojo(Pojo pojo, PojoSettings pojoSettings) {
+    redirectPojo.ifPresent(output -> output.accept(pojo, pojoSettings));
     if (!redirectPojo.isPresent()) {
       final String generatedPojoExtension =
-          generator.generate(pojoExtension, pojoSettings, Writer.createDefault()).asString();
+          generator.generate(pojo, pojoSettings, Writer.createDefault()).asString();
       try {
-        final Name qualifiedExtensionName = pojoExtension.qualifiedName().append(extensionSuffix());
+        final Name qualifiedExtensionName = pojoSettings.qualifiedExtensionName(pojo);
         JavaFileObject builderFile =
             processingEnv.getFiler().createSourceFile(qualifiedExtensionName.asString());
         try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
