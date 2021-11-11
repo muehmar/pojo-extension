@@ -35,11 +35,6 @@ public class PojoField extends PojoFieldExtension {
     return necessity.isOptional();
   }
 
-  @Override
-  public String toString() {
-    return "PojoField{" + "type=" + type + ", name=" + name + ", required=" + necessity + '}';
-  }
-
   @FunctionalInterface
   public interface OnExactMatch<T> {
     T apply(PojoField field, Argument argument);

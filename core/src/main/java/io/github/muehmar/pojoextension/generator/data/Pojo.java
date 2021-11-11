@@ -30,7 +30,8 @@ public class Pojo extends io.github.muehmar.pojoextension.generator.data.PojoExt
     return name;
   }
 
-  public PackageName getPkg() {
+  @io.github.muehmar.pojoextension.annotations.Getter("pkg")
+  public PackageName getPackage() {
     return pkg;
   }
 
@@ -100,19 +101,5 @@ public class Pojo extends io.github.muehmar.pojoextension.generator.data.PojoExt
         field.getName(),
         field.getName(),
         optionalMessage);
-  }
-
-  @Override
-  public String toString() {
-    return "Pojo{"
-        + "name="
-        + name
-        + ", pkg="
-        + pkg
-        + ", fields="
-        + fields
-        + ", constructors="
-        + constructors
-        + '}';
   }
 }

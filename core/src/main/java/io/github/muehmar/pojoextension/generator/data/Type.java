@@ -5,13 +5,16 @@ import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelati
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.WRAP_INTO_OPTIONAL;
 
 import ch.bluecare.commons.data.PList;
-import java.util.Objects;
+import io.github.muehmar.pojoextension.annotations.Getter;
+import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Type {
+@PojoExtension
+@SuppressWarnings("java:S2160")
+public class Type extends TypeExtension {
   private final Name name;
   private final PackageName pkg;
   private final PList<Type> typeParameters;
@@ -90,10 +93,6 @@ public class Type {
     return new Type(name, pkg, PList.empty(), false);
   }
 
-  public Type withTypeParameters(PList<Type> typeParameters) {
-    return new Type(name, pkg, typeParameters, isArray);
-  }
-
   public Name getName() {
     return name;
   }
@@ -114,7 +113,8 @@ public class Type {
     return name.prefix(pkg.asString() + ".");
   }
 
-  public PackageName getPkg() {
+  @Getter("pkg")
+  public PackageName getPackage() {
     return pkg;
   }
 
@@ -128,10 +128,6 @@ public class Type {
 
   public boolean isNotArray() {
     return !isArray();
-  }
-
-  public Type withIsArray(boolean isArray) {
-    return new Type(name, pkg, typeParameters, isArray);
   }
 
   public boolean isPrimitive() {
@@ -165,35 +161,5 @@ public class Type {
     } else {
       return Optional.empty();
     }
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Type type = (Type) o;
-    return isArray == type.isArray
-        && Objects.equals(name, type.name)
-        && Objects.equals(pkg, type.pkg)
-        && Objects.equals(typeParameters, type.typeParameters);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name, pkg, typeParameters, isArray);
-  }
-
-  @Override
-  public String toString() {
-    return "Type{"
-        + "name="
-        + name
-        + ", pkg="
-        + pkg
-        + ", typeParameters="
-        + typeParameters
-        + ", isArray="
-        + isArray
-        + '}';
   }
 }

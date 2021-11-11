@@ -27,16 +27,4 @@ public class FieldArgument extends FieldArgumentExtension {
   public OptionalFieldRelation getRelation() {
     return relation;
   }
-
-  @Override
-  public String toString() {
-    return "FieldArgument{"
-        + "field="
-        + field
-        + ", argument="
-        + argument
-        + ", relation="
-        + relation
-        + '}';
-  }
 }

@@ -30,16 +30,4 @@ public class FieldGetter extends FieldGetterExtension {
   public OptionalFieldRelation getRelation() {
     return relation;
   }
-
-  @Override
-  public String toString() {
-    return "FieldGetter{"
-        + "getter="
-        + getter
-        + ", field="
-        + field
-        + ", relation="
-        + relation
-        + '}';
-  }
 }

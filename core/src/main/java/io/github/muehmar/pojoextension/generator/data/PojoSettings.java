@@ -27,7 +27,7 @@ public class PojoSettings extends PojoSettingsExtension {
   }
 
   public Name qualifiedExtensionName(Pojo pojo) {
-    return pojo.getPkg().qualifiedName(extensionName(pojo));
+    return pojo.getPackage().qualifiedName(extensionName(pojo));
   }
 
   public Optional<Name> getExtensionName() {

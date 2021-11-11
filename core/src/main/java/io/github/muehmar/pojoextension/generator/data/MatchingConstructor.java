@@ -21,14 +21,4 @@ public class MatchingConstructor extends MatchingConstructorExtension {
   public PList<FieldArgument> getFieldArguments() {
     return fieldArguments;
   }
-
-  @Override
-  public String toString() {
-    return "MatchingConstructor{"
-        + "constructor="
-        + constructor
-        + ", fieldArguments="
-        + fieldArguments
-        + '}';
-  }
 }
