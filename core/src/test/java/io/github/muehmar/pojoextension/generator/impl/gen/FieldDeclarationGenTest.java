@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen;
 
+import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -25,7 +26,7 @@ class FieldDeclarationGenTest {
         FieldDeclarationGen.ofModifiers(modifiers.toArray(JavaModifier.class));
     final Writer writer =
         generator.generate(
-            new PojoField(Type.string(), Name.fromString("id"), true),
+            new PojoField(Name.fromString("id"), Type.string(), REQUIRED),
             PojoSettings.defaultSettings(),
             Writer.createDefault());
 

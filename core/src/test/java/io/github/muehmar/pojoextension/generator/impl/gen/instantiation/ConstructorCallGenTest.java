@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.Pojos;
+import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
@@ -107,5 +108,22 @@ class ConstructorCallGenTest {
 
     assertEquals(
         "return new Customer(self.getId(), self.getUsername(), nickname);", writer.asString());
+  }
+
+  @Test
+  void callWithSingleFieldVariable_when_innerClassPojo_then_correctFullClassnameUsed() {
+    final Pojo sample = Pojos.sample().withName(Name.fromString("Customer.Address"));
+    final Generator<FieldVariable, PojoSettings> generator =
+        ConstructorCallGen.callWithSingleFieldVariable();
+
+    final FieldVariable fieldVariable =
+        new FieldVariable(sample, sample.getFields().apply(2), UNWRAP_OPTIONAL);
+
+    final Writer writer =
+        generator.generate(fieldVariable, PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "return new Customer.Address(self.getId(), self.getUsername(), nickname.orElse(null));",
+        writer.asString());
   }
 }

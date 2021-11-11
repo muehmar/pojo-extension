@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode;
 
+import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OBJECTS;
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +28,9 @@ class HashCodeTest {
             .getFields()
             .cons(
                 new PojoField(
-                    Type.primitive("byte").withIsArray(true), Name.fromString("byteArray"), true));
+                    Name.fromString("byteArray"),
+                    Type.primitive("byte").withIsArray(true),
+                    REQUIRED));
 
     final Writer writer =
         generator.generate(
@@ -50,7 +53,7 @@ class HashCodeTest {
     final Generator<Pojo, PojoSettings> generator = HashCode.staticHashCodeMethod();
 
     final PList<PojoField> fields =
-        PList.of(new PojoField(Type.primitiveBoolean(), Name.fromString("flag"), true));
+        PList.of(new PojoField(Name.fromString("flag"), Type.primitiveBoolean(), REQUIRED));
 
     final Writer writer =
         generator.generate(
@@ -74,9 +77,9 @@ class HashCodeTest {
     final PList<PojoField> fields =
         PList.of(
             new PojoField(
-                Type.primitive("byte").withIsArray(true), Name.fromString("byteArray"), true),
+                Name.fromString("byteArray"), Type.primitive("byte").withIsArray(true), REQUIRED),
             new PojoField(
-                Type.primitive("byte").withIsArray(true), Name.fromString("byteArray2"), true));
+                Name.fromString("byteArray2"), Type.primitive("byte").withIsArray(true), REQUIRED));
 
     final Writer writer =
         generator.generate(

@@ -1,5 +1,8 @@
 package io.github.muehmar.pojoextension.generator;
 
+import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
+
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.data.Argument;
 import io.github.muehmar.pojoextension.generator.data.Constructor;
@@ -18,22 +21,11 @@ public class Pojos {
   public static Pojo sample() {
     final PList<PojoField> fields =
         PList.of(
-            new PojoField(Type.integer(), Name.fromString("id"), true),
-            new PojoField(Type.string(), Name.fromString("username"), true),
-            new PojoField(Type.string(), Name.fromString("nickname"), false));
+            new PojoField(Name.fromString("id"), Type.integer(), REQUIRED),
+            new PojoField(Name.fromString("username"), Type.string(), REQUIRED),
+            new PojoField(Name.fromString("nickname"), Type.string(), OPTIONAL));
 
-    final PList<Getter> getters =
-        fields.map(
-            f -> {
-              final Type returnType =
-                  f.isOptional() && !f.getType().isOptional()
-                      ? Type.optional(f.getType())
-                      : f.getType();
-              return Getter.newBuilder()
-                  .setName(Getter.getterName(f))
-                  .setReturnType(returnType)
-                  .build();
-            });
+    final PList<Getter> getters = fields.map(PojoFields::toGetter);
 
     final Pojo pojo =
         Pojo.newBuilder()

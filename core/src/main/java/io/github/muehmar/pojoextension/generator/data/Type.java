@@ -17,8 +17,9 @@ public class Type {
   private final PList<Type> typeParameters;
   private final boolean isArray;
 
+  private static final String PACKAGE_NAME_PATTERN = "[a-z][A-Za-z_$0-9]*";
   private static final Pattern QUALIFIED_CLASS_NAME_PATTERN =
-      Pattern.compile("([.A-Za-z_$0-9]*)\\.([A-Za-z_$0-9]*)");
+      Pattern.compile(String.format("((%s\\.?)*)\\.([A-Z][A-Za-z_$0-9.]*)", PACKAGE_NAME_PATTERN));
 
   private static final PList<Type> primitiveTypes =
       PList.of("int", "byte", "short", "long", "float", "double", "boolean", "char")
@@ -51,6 +52,10 @@ public class Type {
     return new Type(Name.fromString("Integer"), PackageName.javaLang(), PList.empty(), false);
   }
 
+  public static Type booleanClass() {
+    return new Type(Name.fromString("Boolean"), PackageName.javaLang(), PList.empty(), false);
+  }
+
   public static Type primitiveDouble() {
     return primitive("double");
   }
@@ -71,8 +76,9 @@ public class Type {
   public static Type fromClassName(String className) {
     final Matcher matcher = QUALIFIED_CLASS_NAME_PATTERN.matcher(className);
     if (matcher.find()) {
+      final int count = matcher.groupCount();
       final PackageName packageName = PackageName.fromString(matcher.group(1));
-      final Name name = Name.fromString(matcher.group(2));
+      final Name name = Name.fromString(matcher.group(count));
       return new Type(name, packageName, PList.empty(), false);
     }
     return primitiveTypes
@@ -108,7 +114,7 @@ public class Type {
     return name.prefix(pkg.asString() + ".");
   }
 
-  public PackageName getPackage() {
+  public PackageName getPkg() {
     return pkg;
   }
 

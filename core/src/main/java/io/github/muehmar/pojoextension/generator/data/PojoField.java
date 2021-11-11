@@ -1,18 +1,18 @@
 package io.github.muehmar.pojoextension.generator.data;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import java.util.Objects;
 
 @PojoExtension
+@SuppressWarnings("java:S2160")
 public class PojoField extends PojoFieldExtension {
-  private final Type type;
   private final Name name;
-  private final boolean required;
+  private final Type type;
+  private final Necessity necessity;
 
-  public PojoField(Type type, Name name, boolean required) {
-    this.type = type;
+  public PojoField(Name name, Type type, Necessity necessity) {
     this.name = name;
-    this.required = required;
+    this.type = type;
+    this.necessity = necessity;
   }
 
   public Type getType() {
@@ -23,36 +23,21 @@ public class PojoField extends PojoFieldExtension {
     return name;
   }
 
+  public Necessity getNecessity() {
+    return necessity;
+  }
+
   public boolean isRequired() {
-    return required;
+    return necessity.isRequired();
   }
 
   public boolean isOptional() {
-    return !isRequired();
-  }
-
-  public PojoField withRequired(boolean required) {
-    return new PojoField(type, name, required);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    PojoField that = (PojoField) o;
-    return required == that.required
-        && Objects.equals(type, that.type)
-        && Objects.equals(name, that.name);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(type, name, required);
+    return necessity.isOptional();
   }
 
   @Override
   public String toString() {
-    return "PojoField{" + "type=" + type + ", name=" + name + ", required=" + required + '}';
+    return "PojoField{" + "type=" + type + ", name=" + name + ", required=" + necessity + '}';
   }
 
   @FunctionalInterface

@@ -14,4 +14,7 @@ public @interface PojoExtension {
   OptionalDetection[] optionalDetection() default {
     OptionalDetection.OPTIONAL_CLASS, OptionalDetection.NULLABLE_ANNOTATION
   };
+
+  /** Override the default name which is created for the extension. */
+  String extensionName() default "";
 }

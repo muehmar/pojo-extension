@@ -2,10 +2,12 @@ package io.github.muehmar.pojoextension.generator.data;
 
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 
-import java.util.Objects;
+import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.Optional;
 
-public class Argument {
+@PojoExtension
+@SuppressWarnings("java:S2160")
+public class Argument extends ArgumentExtension {
   private final Name name;
   private final Type type;
 
@@ -33,19 +35,6 @@ public class Argument {
     }
 
     return field.getType().getRelation(this.getType());
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Argument argument = (Argument) o;
-    return Objects.equals(name, argument.name) && Objects.equals(type, argument.type);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name, type);
   }
 
   @Override

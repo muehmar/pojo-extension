@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode;
 
+import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OBJECTS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -66,7 +67,7 @@ class EqualsTest {
     final Generator<Pojo, PojoSettings> generator = Equals.staticEqualsMethod();
 
     final PList<PojoField> primitiveFields =
-        Type.allPrimitives().map(t -> new PojoField(t, t.getName().prefix("p"), true));
+        Type.allPrimitives().map(t -> new PojoField(t.getName().prefix("p"), t, REQUIRED));
 
     final Writer writer =
         generator.generate(
@@ -103,7 +104,9 @@ class EqualsTest {
             .getFields()
             .cons(
                 new PojoField(
-                    Type.primitive("byte").withIsArray(true), Name.fromString("byteArray"), true));
+                    Name.fromString("byteArray"),
+                    Type.primitive("byte").withIsArray(true),
+                    REQUIRED));
 
     final Writer writer =
         generator.generate(

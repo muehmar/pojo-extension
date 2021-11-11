@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.generator;
 
 import static io.github.muehmar.pojoextension.generator.Generator.ofWriterFunction;
+import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.muehmar.pojoextension.generator.data.Pojo;
@@ -74,7 +75,7 @@ class GeneratorTest {
         genA.appendConditionally(PojoField::isRequired, genB);
     final Writer writer =
         generator.generate(
-            PojoFields.requiredId().withRequired(false), null, Writer.createDefault());
+            PojoFields.requiredId().withNecessity(OPTIONAL), null, Writer.createDefault());
 
     assertEquals("genA", writer.asString());
   }

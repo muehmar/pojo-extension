@@ -11,7 +11,8 @@ public abstract class CustomerExtension {
   }
 
   private Customer self() {
-    return (Customer)this;
+    final Object self = this;
+    return (Customer)self;
   }
 
   public Customer withId(Integer id) {
@@ -177,5 +178,18 @@ public abstract class CustomerExtension {
   public static int hashCode(Customer o) {
     int result = Objects.hash(o.getId(), o.getUsername(), o.getNickname());
     return result;
+  }
+
+  @Override
+  public String toString() {
+    return toString(self());
+  }
+
+  public static String toString(Customer self) {
+    return "Customer{"
+        + "id=" + self.getId()
+        + "username='" + self.getUsername() + '\''
+        + "nickname=" + self.getNickname()
+        + '}';
   }
 }

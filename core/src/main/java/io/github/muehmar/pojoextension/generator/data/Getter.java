@@ -4,22 +4,43 @@ import static io.github.muehmar.pojoextension.Booleans.not;
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 @PojoExtension
+@SuppressWarnings("java:S2160")
 public class Getter extends GetterExtension {
   private final Name name;
   private final Type returnType;
+  private final Optional<Name> fieldName;
 
-  public Getter(Name name, Type returnType) {
+  public Getter(Name name, Type returnType, Optional<Name> fieldName) {
     this.name = name;
     this.returnType = returnType;
+    this.fieldName = fieldName;
+  }
+
+  public static Optional<Name> noFieldName() {
+    return Optional.empty();
   }
 
   public static Name getterName(PojoField field) {
-    final String prefix = field.getType().equals(Type.primitiveBoolean()) ? "is" : "get";
-    return field.getName().javaBeansName().prefix(prefix);
+    if (field.getType().equals(Type.primitiveBoolean())) {
+      return primitiveBooleanGetterName(field);
+    }
+    return field.getName().javaBeansName().prefix("get");
+  }
+
+  private static Name primitiveBooleanGetterName(PojoField field) {
+    final UnaryOperator<Name> createGetter = in -> in.javaBeansName().prefix("is");
+    final Name fieldName = field.getName();
+    final boolean isAlreadyGetterName =
+        fieldName.length() > 2
+            && createGetter
+                .apply(Name.fromString(fieldName.asString().substring(2)))
+                .equals(fieldName);
+
+    return isAlreadyGetterName ? fieldName : createGetter.apply(fieldName);
   }
 
   public Name getName() {
@@ -30,7 +51,15 @@ public class Getter extends GetterExtension {
     return returnType;
   }
 
+  public Optional<Name> getFieldName() {
+    return fieldName;
+  }
+
   public Optional<FieldGetter> getFieldGetter(PojoField field) {
+    if (fieldName.map(n -> n.equals(field.getName())).orElse(false)) {
+      return Optional.of(FieldGetter.of(this, field, SAME_TYPE));
+    }
+
     if (not(name.equals(getterName(field)))) {
       return Optional.empty();
     }
@@ -48,20 +77,14 @@ public class Getter extends GetterExtension {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Getter getter = (Getter) o;
-    return Objects.equals(name, getter.name) && Objects.equals(returnType, getter.returnType);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name, returnType);
-  }
-
-  @Override
   public String toString() {
-    return "Getter{" + "name=" + name + ", returnType=" + returnType + '}';
+    return "Getter{"
+        + "name="
+        + name
+        + ", returnType="
+        + returnType
+        + ", fieldName="
+        + fieldName
+        + '}';
   }
 }

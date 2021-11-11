@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.annotations.processor;
 
-import static io.github.muehmar.pojoextension.Names.extensionSuffix;
+import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 
 import ch.bluecare.commons.data.PList;
 import com.google.auto.service.AutoService;
@@ -64,20 +65,41 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    final Set<? extends Element> elementsAnnotatedWith =
+    final Set<? extends Element> annotatedElements =
         roundEnv.getElementsAnnotatedWith(PojoExtension.class);
 
-    elementsAnnotatedWith.forEach(this::processElement);
+    PList.fromIter(annotatedElements)
+        .flatMap(
+            annotatedElement ->
+                findAnnotatedClasses(
+                    roundEnv,
+                    annotatedElement,
+                    annotatedElement.getAnnotation(PojoExtension.class)))
+        .forEach(this::processElementAndAnnotation);
 
     return false;
   }
 
-  private void processElement(Element element) {
+  private PList<ElementAndAnnotation> findAnnotatedClasses(
+      RoundEnvironment roundEnv, Element annotatedElement, PojoExtension extension) {
+
+    if (annotatedElement.getKind().equals(ElementKind.CLASS)) {
+      return PList.single(ElementAndAnnotation.of(annotatedElement, extension));
+    } else if (annotatedElement.getKind().equals(ElementKind.ANNOTATION_TYPE)) {
+      return PList.fromIter(roundEnv.getElementsAnnotatedWith((TypeElement) annotatedElement))
+          .flatMap(e -> findAnnotatedClasses(roundEnv, e, extension));
+    } else {
+      return PList.empty();
+    }
+  }
+
+  private void processElementAndAnnotation(ElementAndAnnotation elementAndAnnotation) {
+    final Element element = elementAndAnnotation.getElement();
+    final PojoExtension annotation = elementAndAnnotation.getPojoExtension();
     final Type pojoType = Type.fromClassName(element.toString());
     final Name className = pojoType.getName();
-    final PackageName classPackage = pojoType.getPackage();
+    final PackageName classPackage = pojoType.getPkg();
 
-    final PojoExtension annotation = element.getAnnotation(PojoExtension.class);
     final DetectionSettings detectionSettings =
         new DetectionSettings(PList.fromArray(annotation.optionalDetection()));
 
@@ -99,14 +121,26 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             .setGetters(getters)
             .andAllOptionals()
             .build();
-    final PojoSettings pojoSettings = new PojoSettings(false);
+    final PojoSettings pojoSettings =
+        PojoSettings.newBuilder()
+            .setDisableSafeBuilder(false)
+            .andAllOptionals()
+            .setExtensionName(
+                Optional.ofNullable(annotation.extensionName())
+                    .filter(n -> n.trim().length() > 0)
+                    .map(Name::fromString))
+            .build();
 
-    redirectPojo.ifPresent(output -> output.accept(pojoExtension, pojoSettings));
+    outputPojo(pojoExtension, pojoSettings);
+  }
+
+  private void outputPojo(Pojo pojo, PojoSettings pojoSettings) {
+    redirectPojo.ifPresent(output -> output.accept(pojo, pojoSettings));
     if (!redirectPojo.isPresent()) {
       final String generatedPojoExtension =
-          generator.generate(pojoExtension, pojoSettings, Writer.createDefault()).asString();
+          generator.generate(pojo, pojoSettings, Writer.createDefault()).asString();
       try {
-        final Name qualifiedExtensionName = pojoExtension.qualifiedName().append(extensionSuffix());
+        final Name qualifiedExtensionName = pojoSettings.qualifiedExtensionName(pojo);
         JavaFileObject builderFile =
             processingEnv.getFiler().createSourceFile(qualifiedExtensionName.asString());
         try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
@@ -135,7 +169,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     return PojoFieldMapper.initial()
         .or(this::mapOptionalPojoField)
         .or(this::mapNullablePojoField)
-        .mapWithDefault(element, name, type, settings, () -> new PojoField(type, name, true));
+        .mapWithDefault(element, name, type, settings, () -> new PojoField(name, type, REQUIRED));
   }
 
   private Optional<PojoField> mapOptionalPojoField(
@@ -145,7 +179,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             ignore ->
                 settings.getOptionalDetections().exists(OptionalDetection.OPTIONAL_CLASS::equals))
         .flatMap(t -> t.onOptional(Function.identity()))
-        .map(typeParameter -> new PojoField(typeParameter, name, false));
+        .map(typeParameter -> new PojoField(name, typeParameter, OPTIONAL));
   }
 
   private Optional<PojoField> mapNullablePojoField(
@@ -156,7 +190,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
                 settings
                     .getOptionalDetections()
                     .exists(OptionalDetection.NULLABLE_ANNOTATION::equals))
-        .map(ignore -> new PojoField(type, name, false));
+        .map(ignore -> new PojoField(name, type, OPTIONAL));
   }
 
   @FunctionalInterface
@@ -179,6 +213,28 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
     static PojoFieldMapper initial() {
       return ((element, name, type, settings) -> Optional.empty());
+    }
+  }
+
+  private static class ElementAndAnnotation {
+    private final Element element;
+    private final PojoExtension pojoExtension;
+
+    public ElementAndAnnotation(Element element, PojoExtension pojoExtension) {
+      this.element = element;
+      this.pojoExtension = pojoExtension;
+    }
+
+    public static ElementAndAnnotation of(Element element, PojoExtension extension) {
+      return new ElementAndAnnotation(element, extension);
+    }
+
+    public Element getElement() {
+      return element;
+    }
+
+    public PojoExtension getPojoExtension() {
+      return pojoExtension;
     }
   }
 }
