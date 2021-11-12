@@ -15,6 +15,7 @@ import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.Generators;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.SafeBuilderPojoField;
 import java.util.function.ToIntFunction;
 
@@ -115,7 +116,7 @@ public class SafeBuilderGens {
                 String.format(
                     "%s %s", f.getField().getType().getClassName(), f.getField().getName()))
         .content(content)
-        .append((f, s, w) -> w.ref(f.getField().getType().getQualifiedName().asString()));
+        .append(RefsGen.fieldRefs(), SafeBuilderPojoField::getField);
   }
 
   public static Generator<SafeBuilderPojoField, PojoSettings> setMethodOptional() {
@@ -138,7 +139,7 @@ public class SafeBuilderGens {
                     f.getField().getType().getClassName(), f.getField().getName()))
         .content(content)
         .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
-        .append((f, s, w) -> w.ref(f.getField().getType().getQualifiedName().asString()));
+        .append(RefsGen.fieldRefs(), SafeBuilderPojoField::getField);
   }
 
   public static Generator<Pojo, PojoSettings> finalRequiredBuilder() {

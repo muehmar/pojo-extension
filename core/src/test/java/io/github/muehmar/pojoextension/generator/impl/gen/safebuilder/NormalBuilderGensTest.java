@@ -2,6 +2,9 @@ package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder;
 
 import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_INTEGER;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_STRING;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_LIST;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_MAP;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -64,6 +67,19 @@ class NormalBuilderGensTest {
   }
 
   @Test
+  void setMethod_when_generatorUsedWithGenericType_then_correctRefs() {
+    final Generator<PojoField, PojoSettings> generator = NormalBuilderGens.setMethod();
+    final PojoField field = PojoFields.requiredMap();
+
+    final Writer writer =
+        generator.generate(field, PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
+    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
+  }
+
+  @Test
   void setMethod_when_generatorUsedWithOptionalField_then_correctPublicMethodGenerated() {
     final Generator<PojoField, PojoSettings> generator = NormalBuilderGens.setMethod();
 
@@ -100,6 +116,22 @@ class NormalBuilderGensTest {
             + "  return this;\n"
             + "}",
         output);
+  }
+
+  @Test
+  void setMethodOptional_when_optionalFieldWithGenericType_then_correctRefs() {
+    final Generator<PojoField, PojoSettings> generator = NormalBuilderGens.setMethodOptional();
+
+    final Writer writer =
+        generator.generate(
+            PojoFields.requiredMap().withNecessity(OPTIONAL),
+            PojoSettings.defaultSettings(),
+            Writer.createDefault());
+
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
+    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
   }
 
   @Test

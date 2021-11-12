@@ -76,6 +76,10 @@ public class Type extends TypeExtension {
     return new Type(Name.fromString("Map"), PackageName.javaUtil(), PList.of(key, value), false);
   }
 
+  public static Type list(Type value) {
+    return new Type(Name.fromString("List"), PackageName.javaUtil(), PList.single(value), false);
+  }
+
   public static Type fromClassName(String className) {
     final Matcher matcher = QUALIFIED_CLASS_NAME_PATTERN.matcher(className);
     if (matcher.find()) {
@@ -111,6 +115,12 @@ public class Type extends TypeExtension {
 
   public Name getQualifiedName() {
     return name.prefix(pkg.asString() + ".");
+  }
+
+  /** Returns the qualified class names of this and all generic types if any. */
+  public PList<Name> getAllQualifiedNames() {
+    return PList.single(getQualifiedName())
+        .concat(typeParameters.flatMap(Type::getAllQualifiedNames));
   }
 
   @Getter("pkg")

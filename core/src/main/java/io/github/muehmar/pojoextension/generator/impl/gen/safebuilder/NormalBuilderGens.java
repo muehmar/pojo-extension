@@ -18,6 +18,7 @@ import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.FieldDeclarationGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
 
 /**
@@ -76,7 +77,7 @@ public class NormalBuilderGens {
         .methodName(f -> String.format("set%s", f.getName().toPascalCase()))
         .singleArgument(f -> String.format("%s %s", f.getType().getClassName(), f.getName()))
         .content(content)
-        .append((f, s, w) -> w.ref(f.getType().getQualifiedName().asString()));
+        .append(RefsGen.fieldRefs());
   }
 
   public static Generator<PojoField, PojoSettings> setMethodOptional() {
@@ -94,6 +95,6 @@ public class NormalBuilderGens {
             f -> String.format("Optional<%s> %s", f.getType().getClassName(), f.getName()))
         .content(content)
         .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
-        .append((f, s, w) -> w.ref(f.getType().getQualifiedName().asString()));
+        .append(RefsGen.fieldRefs());
   }
 }

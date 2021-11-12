@@ -10,6 +10,7 @@ import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.FieldVariable;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.data.WithField;
@@ -31,7 +32,8 @@ public class WithGens {
             wf ->
                 String.format(
                     "return with%s(self(), %s);",
-                    wf.getField().getName().toPascalCase(), wf.getField().getName()));
+                    wf.getField().getName().toPascalCase(), wf.getField().getName()))
+        .append(RefsGen.fieldRefs(), WithField::getField);
   }
 
   public static Generator<WithField, PojoSettings> staticWithMethod() {
@@ -47,7 +49,8 @@ public class WithGens {
         .returnType(wf -> wf.getPojo().getName().asString())
         .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
         .arguments(arguments)
-        .content(withMethodContent());
+        .content(withMethodContent())
+        .append(RefsGen.fieldRefs(), WithField::getField);
   }
 
   private static Generator<WithField, PojoSettings> withMethodContent() {
@@ -73,7 +76,8 @@ public class WithGens {
                     String.format(
                         "return with%s(self(), %s);",
                         wf.getField().getName().toPascalCase(), wf.getField().getName()))
-            .append(w -> w.ref(JAVA_UTIL_OPTIONAL));
+            .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
+            .append(RefsGen.fieldRefs(), WithField::getField);
 
     return Generator.<WithField, PojoSettings>emptyGen()
         .appendConditionally(wf -> wf.getField().isOptional(), method);
@@ -95,7 +99,8 @@ public class WithGens {
             .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
             .arguments(arguments)
             .content(optionalWithMethodContent())
-            .append(w -> w.ref(JAVA_UTIL_OPTIONAL));
+            .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
+            .append(RefsGen.fieldRefs(), WithField::getField);
 
     return Generator.<WithField, PojoSettings>emptyGen()
         .appendConditionally(wf -> wf.getField().isOptional(), method);

@@ -1,11 +1,16 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.withers;
 
+import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_STRING;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_LIST;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_MAP;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoSettings;
@@ -30,6 +35,20 @@ class WithGensTest {
             + "}",
         writer.asString());
     assertFalse(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
+  }
+
+  @Test
+  void withMethod_when_genericType_then_correctRefs() {
+    final Generator<WithField, PojoSettings> generator = WithGens.withMethod();
+
+    final Pojo pojo = Pojos.sample();
+    final WithField withField = WithField.of(pojo, PojoFields.requiredMap());
+
+    final Writer writer =
+        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
+    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
   }
 
   @Test
@@ -101,6 +120,20 @@ class WithGensTest {
   }
 
   @Test
+  void staticWithMethod_when_forFieldWithGenericType_then_correctRefs() {
+    final Generator<WithField, PojoSettings> generator = WithGens.staticWithMethod();
+
+    final Pojo pojo = Pojos.sampleWithConstructorWithOptionalArgument();
+    final WithField withField = WithField.of(pojo, PojoFields.requiredMap());
+
+    final Writer writer =
+        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
+    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
+  }
+
+  @Test
   void optionalWithMethod_when_usedWithSampleAndField_then_correctDelegateCall() {
     final Generator<WithField, PojoSettings> generator = WithGens.optionalWithMethod();
 
@@ -115,6 +148,23 @@ class WithGensTest {
             + "}",
         writer.asString());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
+    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
+  }
+
+  @Test
+  void optionalWithMethod_when_genericType_then_correctRefs() {
+    final Generator<WithField, PojoSettings> generator = WithGens.optionalWithMethod();
+
+    final Pojo pojo = Pojos.sample();
+    final WithField withField =
+        WithField.of(pojo, PojoFields.requiredMap().withNecessity(OPTIONAL));
+
+    final Writer writer =
+        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
+    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
   }
 
   @Test
@@ -163,5 +213,22 @@ class WithGensTest {
             + "}",
         writer.asString());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
+  }
+
+  @Test
+  void staticOptionalWithMethod_when_forFieldWithGenericType_then_correctRefs() {
+    final Generator<WithField, PojoSettings> generator = WithGens.staticOptionalWithMethod();
+
+    final Pojo pojo = Pojos.sampleWithConstructorWithOptionalArgument();
+    final WithField withField =
+        WithField.of(pojo, PojoFields.requiredMap().withNecessity(OPTIONAL));
+
+    final Writer writer =
+        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
+    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
   }
 }

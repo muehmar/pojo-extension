@@ -1,5 +1,8 @@
 package io.github.muehmar.pojoextension.generator.data;
 
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_INTEGER;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_STRING;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_MAP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -51,6 +54,22 @@ class TypeTest {
   void getClassName_when_javaMap_then_correctNameReturned() {
     final Type type = Type.map(Type.string(), Type.integer());
     assertEquals("Map<String,Integer>", type.getClassName().asString());
+  }
+
+  @Test
+  void getQualifiedName_when_javaMap_then_correctQualifiedNameReturned() {
+    final Type type = Type.map(Type.string(), Type.integer());
+    assertEquals("java.util.Map", type.getQualifiedName().asString());
+  }
+
+  @Test
+  void getAllQualifiedNames_when_javaMap_then_correctQualifiedNames() {
+    final Type type = Type.map(Type.string(), Type.integer());
+    final PList<String> allQualifiedNames = type.getAllQualifiedNames().map(Name::asString);
+    assertEquals(3, allQualifiedNames.size());
+    assertTrue(allQualifiedNames.exists(JAVA_UTIL_MAP::equals));
+    assertTrue(allQualifiedNames.exists(JAVA_LANG_STRING::equals));
+    assertTrue(allQualifiedNames.exists(JAVA_LANG_INTEGER::equals));
   }
 
   @Test
