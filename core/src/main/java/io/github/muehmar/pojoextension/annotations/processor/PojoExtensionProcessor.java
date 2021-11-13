@@ -123,7 +123,6 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             .build();
     final PojoSettings pojoSettings =
         PojoSettings.newBuilder()
-            .setDisableSafeBuilder(false)
             .andAllOptionals()
             .setExtensionName(
                 Optional.ofNullable(annotation.extensionName())
