@@ -36,9 +36,4 @@ public class Argument extends ArgumentExtension {
 
     return field.getType().getRelation(this.getType());
   }
-
-  @Override
-  public String toString() {
-    return "Argument{" + "name=" + name + ", type=" + type + '}';
-  }
 }

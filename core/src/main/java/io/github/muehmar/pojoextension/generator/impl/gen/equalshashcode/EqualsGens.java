@@ -18,12 +18,13 @@ import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-public class Equals {
-  private Equals() {}
+public class EqualsGens {
+  private EqualsGens() {}
 
   public static Generator<Pojo, PojoSettings> equalsMethod() {
     final Generator<Pojo, PojoSettings> method =
         MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+            .noGenericTypes()
             .returnType("boolean")
             .methodName("equals")
             .singleArgument(pojo -> "Object obj")
@@ -36,6 +37,7 @@ public class Equals {
         p -> PList.of(String.format("%s o1", p.getName()), "Object obj");
 
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC, STATIC)
+        .noGenericTypes()
         .returnType("boolean")
         .methodName("equals")
         .arguments(arguments)

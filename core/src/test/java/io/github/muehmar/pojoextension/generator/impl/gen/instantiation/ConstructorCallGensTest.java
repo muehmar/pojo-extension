@@ -14,12 +14,12 @@ import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
-class ConstructorCallGenTest {
+class ConstructorCallGensTest {
 
   @Test
   void callWithAllLocalVariables_when_samplePojo_then_simpleConstructorCall() {
     final Writer writer =
-        ConstructorCallGen.callWithAllLocalVariables()
+        ConstructorCallGens.callWithAllLocalVariables()
             .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(PList.empty(), writer.getRefs());
@@ -32,7 +32,7 @@ class ConstructorCallGenTest {
     final Pojo sample = Pojos.sampleWithConstructorWithOptionalArgument();
 
     final Writer pojo =
-        ConstructorCallGen.callWithAllLocalVariables()
+        ConstructorCallGens.callWithAllLocalVariables()
             .generate(sample, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(PList.single(JAVA_UTIL_OPTIONAL), pojo.getRefs());
@@ -45,7 +45,7 @@ class ConstructorCallGenTest {
       callWithSingleFieldVariable_when_nicknameAsVariableWrappedIntoOptionalAndNullableArguments_then_unwrappedForConstructorCall() {
     final Pojo sample = Pojos.sample();
     final Generator<FieldVariable, PojoSettings> generator =
-        ConstructorCallGen.callWithSingleFieldVariable();
+        ConstructorCallGens.callWithSingleFieldVariable();
 
     final FieldVariable fieldVariable =
         new FieldVariable(sample, sample.getFields().apply(2), UNWRAP_OPTIONAL);
@@ -63,7 +63,7 @@ class ConstructorCallGenTest {
       callWithSingleFieldVariable_when_nicknameAsVariableWithSameTypeAndNullableArguments_then_passedDirectly() {
     final Pojo sample = Pojos.sample();
     final Generator<FieldVariable, PojoSettings> generator =
-        ConstructorCallGen.callWithSingleFieldVariable();
+        ConstructorCallGens.callWithSingleFieldVariable();
 
     final FieldVariable fieldVariable =
         new FieldVariable(sample, sample.getFields().apply(2), SAME_TYPE);
@@ -80,7 +80,7 @@ class ConstructorCallGenTest {
       callWithSingleFieldVariable_when_nicknameAsVariableWithSameTypeAndOptionalArguments_then_wrappedIntoOptionalForCall() {
     final Pojo sample = Pojos.sampleWithConstructorWithOptionalArgument();
     final Generator<FieldVariable, PojoSettings> generator =
-        ConstructorCallGen.callWithSingleFieldVariable();
+        ConstructorCallGens.callWithSingleFieldVariable();
 
     final FieldVariable fieldVariable =
         new FieldVariable(sample, sample.getFields().apply(2), SAME_TYPE);
@@ -98,7 +98,7 @@ class ConstructorCallGenTest {
       callWithSingleFieldVariable_when_nicknameAsVariableWrappedIntoOptionalAndOptionalArguments_then_passedDirectly() {
     final Pojo sample = Pojos.sampleWithConstructorWithOptionalArgument();
     final Generator<FieldVariable, PojoSettings> generator =
-        ConstructorCallGen.callWithSingleFieldVariable();
+        ConstructorCallGens.callWithSingleFieldVariable();
 
     final FieldVariable fieldVariable =
         new FieldVariable(sample, sample.getFields().apply(2), UNWRAP_OPTIONAL);
@@ -114,7 +114,7 @@ class ConstructorCallGenTest {
   void callWithSingleFieldVariable_when_innerClassPojo_then_correctFullClassnameUsed() {
     final Pojo sample = Pojos.sample().withName(Name.fromString("Customer.Address"));
     final Generator<FieldVariable, PojoSettings> generator =
-        ConstructorCallGen.callWithSingleFieldVariable();
+        ConstructorCallGens.callWithSingleFieldVariable();
 
     final FieldVariable fieldVariable =
         new FieldVariable(sample, sample.getFields().apply(2), UNWRAP_OPTIONAL);

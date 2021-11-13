@@ -23,9 +23,4 @@ public class User extends UserExtension {
   public Optional<Integer> getAge() {
     return age;
   }
-
-  @Override
-  public String toString() {
-    return "User{" + "name='" + name + '\'' + ", age=" + age + '}';
-  }
 }

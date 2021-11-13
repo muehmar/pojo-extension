@@ -13,12 +13,13 @@ import io.github.muehmar.pojoextension.generator.impl.gen.Annotations;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import java.util.function.Function;
 
-public class ToString {
-  private ToString() {}
+public class ToStringGens {
+  private ToStringGens() {}
 
   public static Generator<Pojo, Void> toStringMethod() {
     final Generator<Pojo, Void> method =
         MethodGen.<Pojo, Void>modifiers(PUBLIC)
+            .noGenericTypes()
             .returnType("String")
             .methodName("toString")
             .noArguments()
@@ -29,6 +30,7 @@ public class ToString {
   public static Generator<Pojo, Void> staticToStringMethod() {
     final Function<Pojo, String> argument = p -> String.format("%s self", p.getName());
     return MethodGen.<Pojo, Void>modifiers(PUBLIC, STATIC)
+        .noGenericTypes()
         .returnType("String")
         .methodName("toString")
         .singleArgument(argument)

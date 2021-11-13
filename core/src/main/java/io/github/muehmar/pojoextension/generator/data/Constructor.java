@@ -47,9 +47,4 @@ public class Constructor extends ConstructorExtension {
 
     return Optional.of(fieldArguments).filter(f -> f.size() == arguments.size());
   }
-
-  @Override
-  public String toString() {
-    return "Constructor{" + "name=" + name + ", arguments=" + arguments + '}';
-  }
 }

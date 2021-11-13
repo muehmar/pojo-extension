@@ -75,16 +75,4 @@ public class Getter extends GetterExtension {
         .getRelation(field.getType())
         .map(relation -> FieldGetter.of(self, field, relation));
   }
-
-  @Override
-  public String toString() {
-    return "Getter{"
-        + "name="
-        + name
-        + ", returnType="
-        + returnType
-        + ", fieldName="
-        + fieldName
-        + '}';
-  }
 }

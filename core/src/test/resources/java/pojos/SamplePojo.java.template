@@ -2,6 +2,9 @@ package io.github.muehmar;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public abstract class CustomerExtension {
   protected CustomerExtension() {
@@ -45,6 +48,18 @@ public abstract class CustomerExtension {
 
   public static Customer withNickname(Customer self, Optional<String> nickname) {
     return new Customer(self.getId(), self.getUsername(), nickname.orElse(null));
+  }
+
+  public <T> T map(Function<Customer, T> f) {
+    return f.apply(self());
+  }
+
+  public Customer mapIf(boolean shouldMap, UnaryOperator<Customer> f) {
+    return shouldMap ? f.apply(self()) : self();
+  }
+
+  public <T> Customer mapIfPresent(Optional<T> value, BiFunction<Customer, T, Customer> f) {
+    return value.map(v -> f.apply(self(), v)).orElseGet(this::self);
   }
 
   public static final class Builder {

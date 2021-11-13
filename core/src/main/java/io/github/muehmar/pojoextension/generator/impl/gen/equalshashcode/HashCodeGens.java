@@ -17,13 +17,14 @@ import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class HashCode {
+public class HashCodeGens {
 
-  private HashCode() {}
+  private HashCodeGens() {}
 
   public static Generator<Pojo, PojoSettings> hashCodeMethod() {
     final Generator<Pojo, PojoSettings> method =
         MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+            .noGenericTypes()
             .returnType("int")
             .methodName("hashCode")
             .noArguments()
@@ -35,6 +36,7 @@ public class HashCode {
     final Function<Pojo, String> argument = p -> String.format("%s o", p.getName());
     final Generator<Pojo, PojoSettings> content = staticHashCodeMethodContent();
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC, STATIC)
+        .noGenericTypes()
         .returnType("int")
         .methodName("hashCode")
         .singleArgument(argument)

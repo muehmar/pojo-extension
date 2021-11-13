@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen;
 
+import static io.github.muehmar.pojoextension.generator.Settings.noSettings;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.FINAL;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,6 +14,7 @@ class MethodGenTest {
   void generate_when_minimalGeneratorCreated_then_outputCorrect() {
     final MethodGen<PList<String>, Void> generator =
         MethodGen.<PList<String>, Void>modifiers(PUBLIC, FINAL)
+            .noGenericTypes()
             .returnType(l -> l.apply(0))
             .methodName(l -> l.apply(1))
             .arguments(l -> l.drop(2))
@@ -20,11 +22,27 @@ class MethodGenTest {
 
     final PList<String> data = PList.of("void", "getXY", "String a", "int b");
 
-    final String output = generator.generate(data, null, Writer.createDefault()).asString();
+    final String output = generator.generate(data, noSettings(), Writer.createDefault()).asString();
     assertEquals(
         "public final void getXY(String a, int b) {\n"
             + "  System.out.println(\"Hello World\");\n"
             + "}",
         output);
+  }
+
+  @Test
+  void generate_when_methodWithGenerics_then_outputCorrect() {
+    final MethodGen<String, Void> generator =
+        MethodGen.<String, Void>modifiers(PUBLIC, FINAL)
+            .genericTypes("T, S")
+            .returnType("T")
+            .methodName("doSomething")
+            .singleArgument(ignore -> "S s")
+            .contentWriter(w -> w.println("return s.getT();"));
+
+    final String output =
+        generator.generate("data", noSettings(), Writer.createDefault()).asString();
+    assertEquals(
+        "public final <T, S> T doSomething(S s) {\n" + "  return s.getT();\n" + "}", output);
   }
 }

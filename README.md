@@ -21,10 +21,10 @@ present all times and which may be absent.
 Currently, the extension class contains the following features:
 
 * SafeBuilder - Special builder class which enforces setting all required attributes
-* `equals` and `hashCode` methods
-* `toString` method
-* `withXX` method for each field
-* More to follow...
+* `equals()` and `hashCode()` methods
+* `toString()` method
+* `withXX()` method for each field
+* `mapXX()` methods for fluent 'updates'
 
 ## Usage
 
@@ -32,8 +32,8 @@ Add the dependency and register it as annotation processor. In gradle this would
 
 ```
 dependencies {
-    implementation "io.github.muehmar:pojo-extension:0.4.0"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.4.0"
+    implementation "io.github.muehmar:pojo-extension:0.5.0"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.5.0"
 }
 ```
 
@@ -199,6 +199,61 @@ Utilizing the customer example above, the extension would create the following w
   public Customer withNickname(Optional<String> nickname);
 ```
 
+### Method `mapXX`
+
+The `map` methods allows one to 'update' the immutable data class in a fluent style without the need to create a bunch
+of local variables, especially when the update should happen conditionally. There exists the following methods:
+
+```
+  public <T> T map(Function<Customer, T> f);
+
+  public Customer mapIf(boolean shouldMap, UnaryOperator<Customer> f);
+
+  public <T> Customer mapIfPresent(Optional<T> value, BiFunction<Customer, T, Customer> f);
+```
+
+Consider the case with a mutable data class, where a property should be updated based on some condition:
+
+```
+final Customer customer = getCustomer();
+
+if(isSomeCondition()) {
+  customer.setNickname("nickname");
+}
+```
+
+With an immutable data class we have to write something like the following to get the same behaviour:
+
+```
+final Customer customer = getCustomer();
+
+final Customer updatedCustomer = isSomeCondition() 
+  ? customer.withNickname("nickname")
+  : customer; 
+```
+
+This introduces a new local variable and we have to repeat the variable 'customer' twice in the ternary statement. This
+is error-prone, especially if there is more than one conditional update and more than two different versions of the
+customer. With the `mapIf` method one could write the following:
+
+```
+final Customer customer = getCustomer()
+  .mapIf(isSomeCondition(), c -> c.withNickname("nickname));
+```
+
+One could chain all the map operations if needed:
+
+```
+final Customer customer = getCustomer()
+  .map(c -> doSomething(c, true))
+  .mapIf(isSomeCondition(), c -> c.withNickname("nickname))
+  .mapIfPresent(getOptionalStringValue(), Customer::withNickname);
+```
+
+The `map` method allows one also to return an arbitrary value if needed but is especially useful in cases where one
+needs to pass the data class to another method which returns a new different instance of the data class without the need
+to declare a new local variable like in the example above.
+
 ## Pojo Requirements
 
 The extension class has no access to the fields of the data class, therefore the data class must provide a constructor
@@ -282,6 +337,9 @@ public @interface AllRequiredExtension {}
 
 ## Change Log
 
+* 0.5.0
+    * Add `withXX` methods
+    * Fix import for generic fields
 * 0.4.0
     * Add `toString` method
     * Support inner classes

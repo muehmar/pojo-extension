@@ -14,16 +14,14 @@ public class FieldDeclarationGen implements Generator<PojoField, PojoSettings> {
     this.modifiers = modifiers;
   }
 
-  public static FieldDeclarationGen ofModifiers(JavaModifier... modifiers) {
-    return new FieldDeclarationGen(JavaModifiers.of(modifiers));
+  public static Generator<PojoField, PojoSettings> ofModifiers(JavaModifier... modifiers) {
+    return new FieldDeclarationGen(JavaModifiers.of(modifiers)).append(RefsGen.fieldRefs());
   }
 
   @Override
   public Writer generate(PojoField field, PojoSettings settings, Writer writer) {
-    return writer
-        .println(
-            "%s%s %s;",
-            modifiers.asStringTrailingWhitespace(), field.getType().getClassName(), field.getName())
-        .ref(field.getType().getQualifiedName().asString());
+    return writer.println(
+        "%s%s %s;",
+        modifiers.asStringTrailingWhitespace(), field.getType().getClassName(), field.getName());
   }
 }

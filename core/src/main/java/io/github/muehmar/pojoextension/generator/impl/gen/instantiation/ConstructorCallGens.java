@@ -16,8 +16,8 @@ import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import java.util.Objects;
 import java.util.Optional;
 
-public class ConstructorCallGen {
-  private ConstructorCallGen() {}
+public class ConstructorCallGens {
+  private ConstructorCallGens() {}
 
   /**
    * This generator creates a call to the constructor (return the created instance) of the pojo

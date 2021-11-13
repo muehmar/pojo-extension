@@ -15,21 +15,22 @@ import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.Generators;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.SafeBuilderPojoField;
 import java.util.function.ToIntFunction;
 
 /** Factory which creates the classes which forms the SafeBuilder. */
-public class SafeBuilderFactory {
+public class SafeBuilderGens {
 
   private static final String BUILDER_ARGUMENT = "Builder builder";
   private static final String BUILDER_ASSIGNMENT = "this.builder = builder;";
 
-  private SafeBuilderFactory() {}
+  private SafeBuilderGens() {}
 
   public static Generator<SafeBuilderPojoField, PojoSettings> fieldBuilderClass() {
     return ClassGen.<SafeBuilderPojoField, PojoSettings>nested()
         .modifiers(PUBLIC, STATIC, FINAL)
-        .className(SafeBuilderFactory::createClassName)
+        .className(SafeBuilderGens::createClassName)
         .content(builderClassContent());
   }
 
@@ -45,11 +46,11 @@ public class SafeBuilderFactory {
   public static Generator<SafeBuilderPojoField, PojoSettings> builderClassContent() {
     final Generator<SafeBuilderPojoField, PojoSettings> constructor =
         ConstructorGen.<SafeBuilderPojoField, PojoSettings>modifiers(PRIVATE)
-            .className(SafeBuilderFactory::createClassName)
+            .className(SafeBuilderGens::createClassName)
             .singleArgument(BUILDER_ARGUMENT)
             .content(BUILDER_ASSIGNMENT);
 
-    return SafeBuilderFactory.<SafeBuilderPojoField, PojoSettings>fieldDeclaration()
+    return SafeBuilderGens.<SafeBuilderPojoField, PojoSettings>fieldDeclaration()
         .append(newLine())
         .append(constructor)
         .append(newLine())
@@ -65,13 +66,14 @@ public class SafeBuilderFactory {
 
   public static Generator<SafeBuilderPojoField, PojoSettings> constructor() {
     return ConstructorGen.<SafeBuilderPojoField, PojoSettings>modifiers(PRIVATE)
-        .className(SafeBuilderFactory::createClassName)
+        .className(SafeBuilderGens::createClassName)
         .singleArgument(BUILDER_ARGUMENT)
         .content(BUILDER_ASSIGNMENT);
   }
 
   public static <A, B> Generator<A, B> andAllOptionalsMethod() {
     return MethodGen.<A, B>modifiers(PUBLIC)
+        .noGenericTypes()
         .returnType("OptBuilder0")
         .methodName("andAllOptionals")
         .noArguments()
@@ -80,6 +82,7 @@ public class SafeBuilderFactory {
 
   public static <A, B> Generator<A, B> andOptionalsMethod() {
     return MethodGen.<A, B>modifiers(PUBLIC)
+        .noGenericTypes()
         .returnType("Builder")
         .methodName("andOptionals")
         .noArguments()
@@ -88,6 +91,7 @@ public class SafeBuilderFactory {
 
   public static Generator<Pojo, PojoSettings> buildMethod() {
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+        .noGenericTypes()
         .returnType(p -> p.getName().asString())
         .methodName("build")
         .noArguments()
@@ -104,14 +108,15 @@ public class SafeBuilderFactory {
                 f.getField().getName());
 
     return MethodGen.<SafeBuilderPojoField, PojoSettings>modifiers(PUBLIC)
-        .returnType(SafeBuilderFactory::createNextClassName)
+        .noGenericTypes()
+        .returnType(SafeBuilderGens::createNextClassName)
         .methodName(f -> String.format("set%s", f.getField().getName().toPascalCase()))
         .singleArgument(
             f ->
                 String.format(
                     "%s %s", f.getField().getType().getClassName(), f.getField().getName()))
         .content(content)
-        .append((f, s, w) -> w.ref(f.getField().getType().getQualifiedName().asString()));
+        .append(RefsGen.fieldRefs(), SafeBuilderPojoField::getField);
   }
 
   public static Generator<SafeBuilderPojoField, PojoSettings> setMethodOptional() {
@@ -124,7 +129,8 @@ public class SafeBuilderFactory {
                 f.getField().getName().toPascalCase());
 
     return MethodGen.<SafeBuilderPojoField, PojoSettings>modifiers(PUBLIC)
-        .returnType(SafeBuilderFactory::createNextClassName)
+        .noGenericTypes()
+        .returnType(SafeBuilderGens::createNextClassName)
         .methodName(f -> String.format("set%s", f.getField().getName().toPascalCase()))
         .singleArgument(
             f ->
@@ -133,7 +139,7 @@ public class SafeBuilderFactory {
                     f.getField().getType().getClassName(), f.getField().getName()))
         .content(content)
         .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
-        .append((f, s, w) -> w.ref(f.getField().getType().getQualifiedName().asString()));
+        .append(RefsGen.fieldRefs(), SafeBuilderPojoField::getField);
   }
 
   public static Generator<Pojo, PojoSettings> finalRequiredBuilder() {
@@ -147,7 +153,7 @@ public class SafeBuilderFactory {
             .content(BUILDER_ASSIGNMENT);
 
     final Generator<Pojo, PojoSettings> content =
-        SafeBuilderFactory.<Pojo, PojoSettings>fieldDeclaration()
+        SafeBuilderGens.<Pojo, PojoSettings>fieldDeclaration()
             .append(newLine())
             .append(constructor)
             .append(newLine())
@@ -174,7 +180,7 @@ public class SafeBuilderFactory {
             .content(BUILDER_ASSIGNMENT);
 
     final Generator<Pojo, PojoSettings> content =
-        SafeBuilderFactory.<Pojo, PojoSettings>fieldDeclaration()
+        SafeBuilderGens.<Pojo, PojoSettings>fieldDeclaration()
             .append(newLine())
             .append(constructor)
             .append(newLine())
