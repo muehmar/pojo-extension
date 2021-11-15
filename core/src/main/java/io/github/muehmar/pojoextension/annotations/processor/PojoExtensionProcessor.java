@@ -1,7 +1,10 @@
 package io.github.muehmar.pojoextension.annotations.processor;
 
+import static io.github.muehmar.pojoextension.Booleans.not;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
+import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.INHERITED;
+import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.STATIC;
 
 import ch.bluecare.commons.data.PList;
 import com.google.auto.service.AutoService;
@@ -15,8 +18,9 @@ import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.data.Type;
+import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
+import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.io.IOException;
@@ -82,11 +86,16 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
   private PList<ElementAndAnnotation> findAnnotatedClasses(
       RoundEnvironment roundEnv, Element annotatedElement, PojoExtension extension) {
+    if (not(annotatedElement instanceof TypeElement)) {
+      return PList.empty();
+    }
+
+    final TypeElement typeElement = (TypeElement) annotatedElement;
 
     if (annotatedElement.getKind().equals(ElementKind.CLASS)) {
-      return PList.single(ElementAndAnnotation.of(annotatedElement, extension));
+      return PList.single(ElementAndAnnotation.of(typeElement, extension));
     } else if (annotatedElement.getKind().equals(ElementKind.ANNOTATION_TYPE)) {
-      return PList.fromIter(roundEnv.getElementsAnnotatedWith((TypeElement) annotatedElement))
+      return PList.fromIter(roundEnv.getElementsAnnotatedWith(typeElement))
           .flatMap(e -> findAnnotatedClasses(roundEnv, e, extension));
     } else {
       return PList.empty();
@@ -94,12 +103,20 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   }
 
   private void processElementAndAnnotation(ElementAndAnnotation elementAndAnnotation) {
-    final Element element = elementAndAnnotation.getElement();
+    final TypeElement element = elementAndAnnotation.getElement();
     final PojoExtension annotation = elementAndAnnotation.getPojoExtension();
     final Type pojoType = Type.fromClassName(element.toString());
     final Name className = pojoType.getName();
     final PackageName classPackage = pojoType.getPackage();
 
+    final Pojo pojo = extractPojo(element, annotation, className, classPackage);
+    final PojoSettings pojoSettings = extractSettings(element, annotation, pojo);
+
+    outputPojo(pojo, pojoSettings);
+  }
+
+  private Pojo extractPojo(
+      TypeElement element, PojoExtension annotation, Name className, PackageName classPackage) {
     final DetectionSettings detectionSettings =
         new DetectionSettings(PList.fromArray(annotation.optionalDetection()));
 
@@ -112,25 +129,39 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             .filter(this::isNonConstantField)
             .map(e -> convertToPojoField(e, detectionSettings));
 
-    final Pojo pojoExtension =
-        Pojo.newBuilder()
-            .setName(className)
-            .setPkg(classPackage)
-            .setFields(fields)
-            .setConstructors(constructors)
-            .setGetters(getters)
-            .andAllOptionals()
-            .build();
-    final PojoSettings pojoSettings =
+    return Pojo.newBuilder()
+        .setName(className)
+        .setPkg(classPackage)
+        .setFields(fields)
+        .setConstructors(constructors)
+        .setGetters(getters)
+        .andAllOptionals()
+        .build();
+  }
+
+  private PojoSettings extractSettings(TypeElement element, PojoExtension annotation, Pojo pojo) {
+    final Optional<Name> extensionName =
+        Optional.ofNullable(annotation.extensionName())
+            .filter(n -> n.trim().length() > 0)
+            .map(Name::fromString);
+
+    final PojoSettings settings =
         PojoSettings.newBuilder()
+            .setExtensionUsage(INHERITED)
             .andAllOptionals()
-            .setExtensionName(
-                Optional.ofNullable(annotation.extensionName())
-                    .filter(n -> n.trim().length() > 0)
-                    .map(Name::fromString))
+            .setExtensionName(extensionName)
             .build();
 
-    outputPojo(pojoExtension, pojoSettings);
+    final String superclassString = element.getSuperclass().toString();
+    final String unqualifiedExtensionName = settings.extensionName(pojo).asString();
+    final String qualifiedExtensionName = settings.qualifiedExtensionName(pojo).asString();
+    final ExtensionUsage extensionUsage =
+        superclassString.equals(unqualifiedExtensionName)
+                || superclassString.equals(qualifiedExtensionName)
+            ? INHERITED
+            : STATIC;
+
+    return settings.withExtensionUsage(extensionUsage);
   }
 
   private void outputPojo(Pojo pojo, PojoSettings pojoSettings) {
@@ -216,19 +247,19 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   }
 
   private static class ElementAndAnnotation {
-    private final Element element;
+    private final TypeElement element;
     private final PojoExtension pojoExtension;
 
-    public ElementAndAnnotation(Element element, PojoExtension pojoExtension) {
+    public ElementAndAnnotation(TypeElement element, PojoExtension pojoExtension) {
       this.element = element;
       this.pojoExtension = pojoExtension;
     }
 
-    public static ElementAndAnnotation of(Element element, PojoExtension extension) {
+    public static ElementAndAnnotation of(TypeElement element, PojoExtension extension) {
       return new ElementAndAnnotation(element, extension);
     }
 
-    public Element getElement() {
+    public TypeElement getElement() {
       return element;
     }
 

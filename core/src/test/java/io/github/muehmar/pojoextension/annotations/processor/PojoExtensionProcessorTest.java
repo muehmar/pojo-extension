@@ -21,8 +21,10 @@ import io.github.muehmar.pojoextension.generator.data.Necessity;
 import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.data.Type;
+import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
+import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -52,7 +54,7 @@ class PojoExtensionProcessorTest {
             .create();
 
     final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+        runAnnotationProcessor(qualifiedClassName(className), classString);
 
     final PojoField m1 = new PojoField(Name.fromString("id"), string(), REQUIRED);
     final PList<PojoField> fields = PList.single(m1);
@@ -82,7 +84,7 @@ class PojoExtensionProcessorTest {
             .create();
 
     final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+        runAnnotationProcessor(qualifiedClassName(className), classString);
 
     final PojoField m1 = new PojoField(Name.fromString("id"), string(), OPTIONAL);
     final PList<PojoField> fields = PList.single(m1);
@@ -112,7 +114,7 @@ class PojoExtensionProcessorTest {
             .create();
 
     final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+        runAnnotationProcessor(qualifiedClassName(className), classString);
 
     final PojoField m1 = new PojoField(Name.fromString("id"), string(), OPTIONAL);
     final PList<PojoField> fields = PList.single(m1);
@@ -149,7 +151,7 @@ class PojoExtensionProcessorTest {
             .create();
 
     final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+        runAnnotationProcessor(qualifiedClassName(className), classString);
 
     final Necessity necessity =
         optionalDetection.equals(OptionalDetection.NULLABLE_ANNOTATION) ? OPTIONAL : REQUIRED;
@@ -188,7 +190,7 @@ class PojoExtensionProcessorTest {
             .create();
 
     final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+        runAnnotationProcessor(qualifiedClassName(className), classString);
 
     final Necessity required =
         optionalDetection.equals(OptionalDetection.OPTIONAL_CLASS) ? OPTIONAL : REQUIRED;
@@ -230,7 +232,7 @@ class PojoExtensionProcessorTest {
             .create();
 
     final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+        runAnnotationProcessor(qualifiedClassName(className), classString);
 
     final PojoField f1 = new PojoField(Name.fromString("b"), Type.primitive("boolean"), REQUIRED);
     final PojoField f2 = new PojoField(Name.fromString("i"), Type.primitive("int"), REQUIRED);
@@ -268,7 +270,7 @@ class PojoExtensionProcessorTest {
             .create();
 
     final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+        runAnnotationProcessor(qualifiedClassName(className), classString);
 
     final PojoField f1 =
         new PojoField(
@@ -307,7 +309,7 @@ class PojoExtensionProcessorTest {
             .create();
 
     final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+        runAnnotationProcessor(qualifiedClassName(className), classString);
 
     final PList<Getter> expected =
         PList.of(
@@ -340,7 +342,7 @@ class PojoExtensionProcessorTest {
             .create();
 
     final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+        runAnnotationProcessor(qualifiedClassName(className), classString);
 
     final PList<Getter> expected =
         PList.of(
@@ -369,7 +371,7 @@ class PojoExtensionProcessorTest {
             .create();
 
     final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className).asString(), classString);
+        runAnnotationProcessor(qualifiedClassName(className), classString);
 
     final PojoField m1 = new PojoField(Name.fromString("id"), string(), REQUIRED);
     final PList<PojoField> fields = PList.single(m1);
@@ -384,6 +386,61 @@ class PojoExtensionProcessorTest {
     assertEquals(expected, pojoAndSettings.pojo);
   }
 
+  @Test
+  void run_when_extensionNotInherited_then_extensionUsageStatic() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotation(PojoExtension.class)
+            .className(className)
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    assertEquals(ExtensionUsage.STATIC, pojoAndSettings.settings.getExtensionUsage());
+  }
+
+  @Test
+  void run_when_extensionInherited_then_extensionUsageInherited() {
+    // Use fixed class names here, see: https://github.com/jOOQ/jOOR/issues/117
+    final Name className = Name.fromString("Customerf8a97e457a");
+    final Name extensionClassName = className.append("Extension");
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotation(PojoExtension.class)
+            .className(className.append(" extends ").append(extensionClassName))
+            .create()
+            .concat(String.format("class %s {}\n", extensionClassName));
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    assertEquals(ExtensionUsage.INHERITED, pojoAndSettings.settings.getExtensionUsage());
+  }
+
+  @Test
+  void run_when_extendAnotherClass_then_extensionUsageStatic() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .withImport(ArrayList.class)
+            .annotation(PojoExtension.class)
+            .className(className.append(" extends ArrayList<String>"))
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    assertEquals(ExtensionUsage.STATIC, pojoAndSettings.settings.getExtensionUsage());
+  }
+
   private static Name randomClassName() {
     return Name.fromString("Customer")
         .append(UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10));
@@ -393,14 +450,15 @@ class PojoExtensionProcessorTest {
     return className.prefix(".").prefix(PACKAGE.asString());
   }
 
-  private static PojoAndSettings runAnnotationProcessor(String name, String content) {
+  private static PojoAndSettings runAnnotationProcessor(Name name, String content) {
     final AtomicReference<PojoAndSettings> ref = new AtomicReference<>();
     final PojoExtensionProcessor pojoExtensionProcessor =
         new PojoExtensionProcessor(
             ((pojo, settings) -> ref.set(new PojoAndSettings(pojo, settings))));
 
     try {
-      Reflect.compile(name, content, new CompileOptions().processors(pojoExtensionProcessor));
+      Reflect.compile(
+          name.asString(), content, new CompileOptions().processors(pojoExtensionProcessor));
     } catch (Exception e) {
       Assertions.fail("Compilation failed: " + e.getMessage());
     }

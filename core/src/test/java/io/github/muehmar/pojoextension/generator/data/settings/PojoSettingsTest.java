@@ -1,9 +1,10 @@
-package io.github.muehmar.pojoextension.generator.data;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+package io.github.muehmar.pojoextension.generator.data.settings;
 
 import io.github.muehmar.pojoextension.generator.Pojos;
+import io.github.muehmar.pojoextension.generator.data.Name;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PojoSettingsTest {
   @Test
