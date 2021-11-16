@@ -5,6 +5,7 @@ import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionU
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
+import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import java.util.Optional;
 
 @PojoExtension
@@ -37,5 +38,9 @@ public class PojoSettings extends PojoSettingsExtension {
   public Name extensionName(Pojo pojo) {
     return extensionName.orElseGet(
         () -> pojo.getName().map(n -> n.replace(".", "")).append("Extension"));
+  }
+
+  public JavaModifier getStaticMethodAccessModifier() {
+    return extensionUsage.isStatic() ? JavaModifier.PUBLIC : JavaModifier.PRIVATE;
   }
 }
