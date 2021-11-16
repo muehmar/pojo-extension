@@ -30,15 +30,15 @@ public abstract class CustomerExtension {
     return withNickname(self(), nickname);
   }
 
-  public static Customer withId(Customer self, Integer id) {
+  private static Customer withId(Customer self, Integer id) {
     return new Customer(id, self.getUsername(), self.getNickname().orElse(null));
   }
 
-  public static Customer withUsername(Customer self, String username) {
+  private static Customer withUsername(Customer self, String username) {
     return new Customer(self.getId(), username, self.getNickname().orElse(null));
   }
 
-  public static Customer withNickname(Customer self, String nickname) {
+  private static Customer withNickname(Customer self, String nickname) {
     return new Customer(self.getId(), self.getUsername(), nickname);
   }
 
@@ -176,7 +176,7 @@ public abstract class CustomerExtension {
     return equals(self(), obj);
   }
 
-  public static boolean equals(Customer o1, Object obj) {
+  private static boolean equals(Customer o1, Object obj) {
     if (o1 == obj) return true;
     if (obj == null || o1.getClass() != obj.getClass()) return false;
     final Customer o2 = (Customer) obj;
@@ -190,7 +190,7 @@ public abstract class CustomerExtension {
     return hashCode(self());
   }
 
-  public static int hashCode(Customer o) {
+  private static int hashCode(Customer o) {
     int result = Objects.hash(o.getId(), o.getUsername(), o.getNickname());
     return result;
   }
@@ -200,7 +200,7 @@ public abstract class CustomerExtension {
     return toString(self());
   }
 
-  public static String toString(Customer self) {
+  private static String toString(Customer self) {
     return "Customer{"
         + "id=" + self.getId()
         + "username='" + self.getUsername() + '\''

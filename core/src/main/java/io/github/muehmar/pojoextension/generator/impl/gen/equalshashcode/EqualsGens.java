@@ -12,6 +12,7 @@ import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.gen.Annotations;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
@@ -36,7 +37,8 @@ public class EqualsGens {
     final Function<Pojo, PList<String>> arguments =
         p -> PList.of(String.format("%s o1", p.getName()), "Object obj");
 
-    return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC, STATIC)
+    return MethodGen.<Pojo, PojoSettings>modifiers(
+            (p, s) -> JavaModifiers.of(s.getStaticMethodAccessModifier(), STATIC))
         .noGenericTypes()
         .returnType("boolean")
         .methodName("equals")

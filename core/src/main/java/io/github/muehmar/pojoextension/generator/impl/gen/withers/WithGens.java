@@ -9,6 +9,7 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
@@ -44,7 +45,8 @@ public class WithGens {
                 String.format(
                     "%s %s", wf.getField().getType().getClassName(), wf.getField().getName()));
 
-    return MethodGen.<WithField, PojoSettings>modifiers(PUBLIC, STATIC)
+    return MethodGen.<WithField, PojoSettings>modifiers(
+            (p, s) -> JavaModifiers.of(s.getStaticMethodAccessModifier(), STATIC))
         .noGenericTypes()
         .returnType(wf -> wf.getPojo().getName().asString())
         .methodName(wf -> "with" + wf.getField().getName().toPascalCase())

@@ -66,9 +66,9 @@ public class ExtensionGens {
         .appendNewLine()
         .append(HashCodeGens.staticHashCodeMethod())
         .appendNewLine()
-        .appendNoSettings(ToStringGens.toStringMethod())
+        .append(ToStringGens.toStringMethod())
         .appendNewLine()
-        .appendNoSettings(ToStringGens.staticToStringMethod());
+        .append(ToStringGens.staticToStringMethod());
   }
 
   private static Generator<Pojo, PojoSettings> constructor() {
