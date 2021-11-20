@@ -10,7 +10,8 @@ import io.github.muehmar.pojoextension.Updater;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.gen.Annotations;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
@@ -35,7 +36,8 @@ public class HashCodeGens {
   public static Generator<Pojo, PojoSettings> staticHashCodeMethod() {
     final Function<Pojo, String> argument = p -> String.format("%s o", p.getName());
     final Generator<Pojo, PojoSettings> content = staticHashCodeMethodContent();
-    return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC, STATIC)
+    return MethodGen.<Pojo, PojoSettings>modifiers(
+            (p, s) -> JavaModifiers.of(s.getStaticMethodAccessModifier(), STATIC))
         .noGenericTypes()
         .returnType("int")
         .methodName("hashCode")

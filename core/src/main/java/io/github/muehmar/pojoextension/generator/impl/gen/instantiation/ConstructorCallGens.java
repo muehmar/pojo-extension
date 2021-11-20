@@ -12,7 +12,7 @@ import io.github.muehmar.pojoextension.generator.data.MatchingConstructor;
 import io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import java.util.Objects;
 import java.util.Optional;
 

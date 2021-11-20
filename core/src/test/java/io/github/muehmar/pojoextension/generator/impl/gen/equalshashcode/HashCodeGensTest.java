@@ -12,8 +12,8 @@ import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.data.Type;
+import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +38,7 @@ class HashCodeGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "public static int hashCode(Customer o) {\n"
+        "private static int hashCode(Customer o) {\n"
             + "  int result = Objects.hash(o.getId(), o.getUsername(), o.getNickname());\n"
             + "  result = 31 * result + Arrays.hashCode(o.getByteArray());\n"
             + "  return result;\n"
@@ -61,7 +61,7 @@ class HashCodeGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "public static int hashCode(Customer o) {\n"
+        "private static int hashCode(Customer o) {\n"
             + "  int result = Objects.hash(o.isFlag());\n"
             + "  return result;\n"
             + "}",
@@ -87,7 +87,7 @@ class HashCodeGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "public static int hashCode(Customer o) {\n"
+        "private static int hashCode(Customer o) {\n"
             + "  int result = Arrays.hashCode(o.getByteArray());\n"
             + "  result = 31 * result + Arrays.hashCode(o.getByteArray2());\n"
             + "  return result;\n"

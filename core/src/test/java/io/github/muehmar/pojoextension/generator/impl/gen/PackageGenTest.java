@@ -3,7 +3,7 @@ package io.github.muehmar.pojoextension.generator.impl.gen;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.muehmar.pojoextension.generator.Pojos;
-import io.github.muehmar.pojoextension.generator.data.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 

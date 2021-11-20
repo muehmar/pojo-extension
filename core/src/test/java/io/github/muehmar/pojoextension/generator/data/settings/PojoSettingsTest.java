@@ -1,8 +1,10 @@
-package io.github.muehmar.pojoextension.generator.data;
+package io.github.muehmar.pojoextension.generator.data.settings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.muehmar.pojoextension.generator.Pojos;
+import io.github.muehmar.pojoextension.generator.data.Name;
+import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import org.junit.jupiter.api.Test;
 
 class PojoSettingsTest {
@@ -41,5 +43,19 @@ class PojoSettingsTest {
         PojoSettings.defaultSettings()
             .qualifiedExtensionName(Pojos.sample().withName(Name.fromString("Customer.Address")));
     assertEquals("io.github.muehmar.CustomerAddressExtension", name.asString());
+  }
+
+  @Test
+  void getStaticMethodAccessModifier_when_extensionUsageIsStatic_then_accessModifierIsPublic() {
+    final PojoSettings settings =
+        PojoSettings.defaultSettings().withExtensionUsage(ExtensionUsage.STATIC);
+    assertEquals(JavaModifier.PUBLIC, settings.getStaticMethodAccessModifier());
+  }
+
+  @Test
+  void getStaticMethodAccessModifier_when_extensionUsageIsInherited_then_accessModifierIsPrivate() {
+    final PojoSettings settings =
+        PojoSettings.defaultSettings().withExtensionUsage(ExtensionUsage.INHERITED);
+    assertEquals(JavaModifier.PRIVATE, settings.getStaticMethodAccessModifier());
   }
 }

@@ -131,6 +131,10 @@ public class TestPojoComposer {
       return new PojoFields(builder, className, fields.add(new TypeAndName(type, name)));
     }
 
+    public String create() {
+      return new PojoMethod(builder).create();
+    }
+
     public PojoConstructor constructor() {
       final String args =
           fields

@@ -44,6 +44,6 @@ public class PackageName {
 
   @Override
   public String toString() {
-    return "Package{" + "pkg='" + pkg + '\'' + '}';
+    return asString();
   }
 }

@@ -14,8 +14,8 @@ import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.PojoSettings;
 import io.github.muehmar.pojoextension.generator.data.Type;
+import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +31,7 @@ class EqualsGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "public static boolean equals(Customer o1, Object obj) {\n"
+        "private static boolean equals(Customer o1, Object obj) {\n"
             + "  if (o1 == obj) return true;\n"
             + "  if (obj == null || o1.getClass() != obj.getClass()) return false;\n"
             + "  final Customer o2 = (Customer) obj;\n"
@@ -49,7 +49,7 @@ class EqualsGensTest {
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
-        "public static boolean equals(Customer o1, Object obj) {\n"
+        "private static boolean equals(Customer o1, Object obj) {\n"
             + "  if (o1 == obj) return true;\n"
             + "  if (obj == null || o1.getClass() != obj.getClass()) return false;\n"
             + "  final Customer o2 = (Customer) obj;\n"
@@ -77,7 +77,7 @@ class EqualsGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "public static boolean equals(Customer o1, Object obj) {\n"
+        "private static boolean equals(Customer o1, Object obj) {\n"
             + "  if (o1 == obj) return true;\n"
             + "  if (obj == null || o1.getClass() != obj.getClass()) return false;\n"
             + "  final Customer o2 = (Customer) obj;\n"
@@ -114,7 +114,7 @@ class EqualsGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "public static boolean equals(Customer o1, Object obj) {\n"
+        "private static boolean equals(Customer o1, Object obj) {\n"
             + "  if (o1 == obj) return true;\n"
             + "  if (obj == null || o1.getClass() != obj.getClass()) return false;\n"
             + "  final Customer o2 = (Customer) obj;\n"

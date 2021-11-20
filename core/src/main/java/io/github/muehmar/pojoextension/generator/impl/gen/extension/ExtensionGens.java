@@ -8,7 +8,7 @@ import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
@@ -66,9 +66,9 @@ public class ExtensionGens {
         .appendNewLine()
         .append(HashCodeGens.staticHashCodeMethod())
         .appendNewLine()
-        .appendNoSettings(ToStringGens.toStringMethod())
+        .append(ToStringGens.toStringMethod())
         .appendNewLine()
-        .appendNoSettings(ToStringGens.staticToStringMethod());
+        .append(ToStringGens.staticToStringMethod());
   }
 
   private static Generator<Pojo, PojoSettings> constructor() {
