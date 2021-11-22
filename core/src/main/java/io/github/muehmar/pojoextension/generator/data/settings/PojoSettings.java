@@ -1,6 +1,8 @@
 package io.github.muehmar.pojoextension.generator.data.settings;
 
+import static io.github.muehmar.pojoextension.generator.data.settings.Ability.ENABLED;
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.INHERITED;
+import static java.util.Optional.empty;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.data.Name;
@@ -13,14 +15,40 @@ import java.util.Optional;
 public class PojoSettings extends PojoSettingsExtension {
   private final ExtensionUsage extensionUsage;
   private final Optional<Name> extensionName;
+  private final Ability safeBuilderAbility;
+  private final Ability equalsHashCodeAbility;
+  private final Ability toStringAbility;
+  private final Ability withAbility;
+  private final Ability mapAbility;
 
-  PojoSettings(ExtensionUsage extensionUsage, Optional<Name> extensionName) {
+  PojoSettings(
+      ExtensionUsage extensionUsage,
+      Optional<Name> extensionName,
+      Ability safeBuilderAbility,
+      Ability equalsHashCodeAbility,
+      Ability toStringAbility,
+      Ability withAbility,
+      Ability mapAbility) {
     this.extensionUsage = extensionUsage;
     this.extensionName = extensionName;
+    this.safeBuilderAbility = safeBuilderAbility;
+    this.equalsHashCodeAbility = equalsHashCodeAbility;
+    this.toStringAbility = toStringAbility;
+    this.withAbility = withAbility;
+    this.mapAbility = mapAbility;
   }
 
   public static PojoSettings defaultSettings() {
-    return new PojoSettings(INHERITED, Optional.empty());
+    return newBuilder()
+        .setExtensionUsage(INHERITED)
+        .setSafeBuilderAbility(ENABLED)
+        .setEqualsHashCodeAbility(ENABLED)
+        .setToStringAbility(ENABLED)
+        .setWithAbility(ENABLED)
+        .setMapAbility(ENABLED)
+        .andAllOptionals()
+        .setExtensionName(empty())
+        .build();
   }
 
   public ExtensionUsage getExtensionUsage() {
@@ -29,6 +57,26 @@ public class PojoSettings extends PojoSettingsExtension {
 
   public Optional<Name> getExtensionName() {
     return extensionName;
+  }
+
+  public Ability getSafeBuilderAbility() {
+    return safeBuilderAbility;
+  }
+
+  public Ability getEqualsHashCodeAbility() {
+    return equalsHashCodeAbility;
+  }
+
+  public Ability getToStringAbility() {
+    return toStringAbility;
+  }
+
+  public Ability getWithAbility() {
+    return withAbility;
+  }
+
+  public Ability getMapAbility() {
+    return mapAbility;
   }
 
   public Name qualifiedExtensionName(Pojo pojo) {
