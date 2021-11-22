@@ -17,4 +17,19 @@ public @interface PojoExtension {
 
   /** Override the default name which is created for the extension. */
   String extensionName() default "";
+
+  /** Enables or disables the generation of the SafeBuilder. */
+  boolean enableSafeBuilder() default true;
+
+  /** Enables or disables the generation of the equals and hashCode methods. */
+  boolean enableEqualsAndHashCode() default true;
+
+  /** Enables or disables the generation of the toString method. */
+  boolean enableToString() default true;
+
+  /** Enables or disables the generation of the with methods. */
+  boolean enableWithers() default true;
+
+  /** Enables or disables the generation of the map methods. */
+  boolean enableMappers() default true;
 }

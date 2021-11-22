@@ -3,7 +3,6 @@ package io.github.muehmar.pojoextension.annotations.processor;
 import static io.github.muehmar.pojoextension.Booleans.not;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
-import static io.github.muehmar.pojoextension.generator.data.settings.Ability.ENABLED;
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.INHERITED;
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.STATIC;
 
@@ -20,6 +19,7 @@ import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.Type;
+import io.github.muehmar.pojoextension.generator.data.settings.Ability;
 import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
@@ -149,11 +149,11 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     final PojoSettings settings =
         PojoSettings.newBuilder()
             .setExtensionUsage(INHERITED)
-            .setSafeBuilderAbility(ENABLED)
-            .setEqualsHashCodeAbility(ENABLED)
-            .setToStringAbility(ENABLED)
-            .setWithAbility(ENABLED)
-            .setMapAbility(ENABLED)
+            .setSafeBuilderAbility(Ability.fromBoolean(annotation.enableSafeBuilder()))
+            .setEqualsHashCodeAbility(Ability.fromBoolean(annotation.enableEqualsAndHashCode()))
+            .setToStringAbility(Ability.fromBoolean(annotation.enableToString()))
+            .setWithersAbility(Ability.fromBoolean(annotation.enableWithers()))
+            .setMappersAbility(Ability.fromBoolean(annotation.enableMappers()))
             .andAllOptionals()
             .setExtensionName(extensionName)
             .build();

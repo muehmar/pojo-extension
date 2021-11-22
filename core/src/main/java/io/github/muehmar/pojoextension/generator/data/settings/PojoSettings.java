@@ -18,8 +18,8 @@ public class PojoSettings extends PojoSettingsExtension {
   private final Ability safeBuilderAbility;
   private final Ability equalsHashCodeAbility;
   private final Ability toStringAbility;
-  private final Ability withAbility;
-  private final Ability mapAbility;
+  private final Ability withersAbility;
+  private final Ability mappersAbility;
 
   PojoSettings(
       ExtensionUsage extensionUsage,
@@ -34,8 +34,8 @@ public class PojoSettings extends PojoSettingsExtension {
     this.safeBuilderAbility = safeBuilderAbility;
     this.equalsHashCodeAbility = equalsHashCodeAbility;
     this.toStringAbility = toStringAbility;
-    this.withAbility = withAbility;
-    this.mapAbility = mapAbility;
+    this.withersAbility = withAbility;
+    this.mappersAbility = mapAbility;
   }
 
   public static PojoSettings defaultSettings() {
@@ -44,8 +44,8 @@ public class PojoSettings extends PojoSettingsExtension {
         .setSafeBuilderAbility(ENABLED)
         .setEqualsHashCodeAbility(ENABLED)
         .setToStringAbility(ENABLED)
-        .setWithAbility(ENABLED)
-        .setMapAbility(ENABLED)
+        .setWithersAbility(ENABLED)
+        .setMappersAbility(ENABLED)
         .andAllOptionals()
         .setExtensionName(empty())
         .build();
@@ -71,12 +71,12 @@ public class PojoSettings extends PojoSettingsExtension {
     return toStringAbility;
   }
 
-  public Ability getWithAbility() {
-    return withAbility;
+  public Ability getWithersAbility() {
+    return withersAbility;
   }
 
-  public Ability getMapAbility() {
-    return mapAbility;
+  public Ability getMappersAbility() {
+    return mappersAbility;
   }
 
   public Name qualifiedExtensionName(Pojo pojo) {

@@ -22,6 +22,7 @@ import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.Type;
+import io.github.muehmar.pojoextension.generator.data.settings.Ability;
 import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import java.util.ArrayList;
@@ -439,6 +440,111 @@ class PojoExtensionProcessorTest {
         runAnnotationProcessor(qualifiedClassName(className), classString);
 
     assertEquals(ExtensionUsage.STATIC, pojoAndSettings.settings.getExtensionUsage());
+  }
+
+  @Test
+  void run_when_disabledSafeBuilder_then_correctSettings() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotationBooleanParam(PojoExtension.class, "enableSafeBuilder", false)
+            .className(className)
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    assertEquals(
+        PojoSettings.defaultSettings()
+            .withExtensionUsage(ExtensionUsage.STATIC)
+            .withSafeBuilderAbility(Ability.DISABLED),
+        pojoAndSettings.settings);
+  }
+
+  @Test
+  void run_when_disabledEqualsAndHashCode_then_correctSettings() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotationBooleanParam(PojoExtension.class, "enableEqualsAndHashCode", false)
+            .className(className)
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    assertEquals(
+        PojoSettings.defaultSettings()
+            .withExtensionUsage(ExtensionUsage.STATIC)
+            .withEqualsHashCodeAbility(Ability.DISABLED),
+        pojoAndSettings.settings);
+  }
+
+  @Test
+  void run_when_disabledToString_then_correctSettings() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotationBooleanParam(PojoExtension.class, "enableToString", false)
+            .className(className)
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    assertEquals(
+        PojoSettings.defaultSettings()
+            .withExtensionUsage(ExtensionUsage.STATIC)
+            .withToStringAbility(Ability.DISABLED),
+        pojoAndSettings.settings);
+  }
+
+  @Test
+  void run_when_disabledWithers_then_correctSettings() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotationBooleanParam(PojoExtension.class, "enableWithers", false)
+            .className(className)
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    assertEquals(
+        PojoSettings.defaultSettings()
+            .withExtensionUsage(ExtensionUsage.STATIC)
+            .withWithersAbility(Ability.DISABLED),
+        pojoAndSettings.settings);
+  }
+
+  @Test
+  void run_when_disabledMappers_then_correctSettings() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotationBooleanParam(PojoExtension.class, "enableMappers", false)
+            .className(className)
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    assertEquals(
+        PojoSettings.defaultSettings()
+            .withExtensionUsage(ExtensionUsage.STATIC)
+            .withMappersAbility(Ability.DISABLED),
+        pojoAndSettings.settings);
   }
 
   private static Name randomClassName() {
