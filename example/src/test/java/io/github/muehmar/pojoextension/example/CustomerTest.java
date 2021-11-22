@@ -127,6 +127,14 @@ class CustomerTest {
     assertEquals(sampleCustomer(), customer);
   }
 
+  @Test
+  void toString_when_calledForPopulatedCustomer_then_correctString() {
+    final Customer customer = sampleCustomer();
+    assertEquals(
+        "Customer{id='123456', name='Dexter', nickname=Optional[Dex], age=Optional.empty, random=12.5, key=[21], flag=true}",
+        customer.toString());
+  }
+
   private static Customer sampleCustomer() {
     return Customer.newBuilder()
         .setId(SAMPLE_ID)
