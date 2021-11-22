@@ -3,8 +3,11 @@ package io.github.muehmar.pojoextension.generator.impl.gen.tostring;
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
 
+import ch.bluecare.commons.data.PList;
 import ch.bluecare.commons.data.Pair;
+import io.github.muehmar.pojoextension.Updater;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
@@ -41,18 +44,44 @@ public class ToStringGens {
   }
 
   private static Generator<Pojo, PojoSettings> staticToStringContent() {
+    final Generator<Pojo, PojoSettings> content =
+        Generator.of(
+            (p, s, w) -> {
+              final PList<FieldGetter> getters = p.getAllGettersOrThrow();
+              return getters
+                  .headOption()
+                  .map(
+                      head ->
+                          getters
+                              .tail()
+                              .foldLeft(
+                                  toStringFieldLine("").generate(head, s, w),
+                                  (wr, g) -> toStringFieldLine(", ").generate(g, s, wr)))
+                  .orElse(w);
+            });
     return Generator.<Pojo, PojoSettings>of((p, s, w) -> w.println("return \"%s{\"", p.getName()))
-        .appendList(toStringFieldLine(), Pojo::getAllGettersOrThrow)
+        .append(content)
         .append(w -> w.tab(2).println("+ '}';"));
   }
 
-  private static Generator<FieldGetter, PojoSettings> toStringFieldLine() {
+  private static Generator<FieldGetter, PojoSettings> toStringFieldLine(String separator) {
     return (fg, s, w) -> {
       final Pair<String, String> wrapper = getWrapper(fg);
-      return w.tab(2)
+      final boolean isArray = fg.getField().getType().isArray();
+      final String format =
+          isArray ? "+ \"%s%s=%s\" + Arrays.toString(self.%s())%s" : "+ \"%s%s=%s\" + self.%s()%s";
+
+      return Updater.initial(w)
+          .updateConditionally(isArray, wr -> wr.ref(JAVA_UTIL_ARRAYS))
+          .get()
+          .tab(2)
           .println(
-              "+ \"%s=%s\" + self.%s()%s",
-              fg.getField().getName(), wrapper.first(), fg.getGetter().getName(), wrapper.second());
+              format,
+              separator,
+              fg.getField().getName(),
+              wrapper.first(),
+              fg.getGetter().getName(),
+              wrapper.second());
     };
   }
 

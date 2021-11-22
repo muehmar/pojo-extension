@@ -203,8 +203,8 @@ public abstract class CustomerExtension {
   private static String toString(Customer self) {
     return "Customer{"
         + "id=" + self.getId()
-        + "username='" + self.getUsername() + '\''
-        + "nickname=" + self.getNickname()
+        + ", username='" + self.getUsername() + '\''
+        + ", nickname=" + self.getNickname()
         + '}';
   }
 }
