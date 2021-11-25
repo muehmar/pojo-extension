@@ -19,6 +19,7 @@ import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.Type;
+import io.github.muehmar.pojoextension.generator.data.settings.Ability;
 import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
@@ -148,6 +149,11 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     final PojoSettings settings =
         PojoSettings.newBuilder()
             .setExtensionUsage(INHERITED)
+            .setSafeBuilderAbility(Ability.fromBoolean(annotation.enableSafeBuilder()))
+            .setEqualsHashCodeAbility(Ability.fromBoolean(annotation.enableEqualsAndHashCode()))
+            .setToStringAbility(Ability.fromBoolean(annotation.enableToString()))
+            .setWithersAbility(Ability.fromBoolean(annotation.enableWithers()))
+            .setMappersAbility(Ability.fromBoolean(annotation.enableMappers()))
             .andAllOptionals()
             .setExtensionName(extensionName)
             .build();

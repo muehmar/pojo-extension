@@ -30,7 +30,9 @@ public class EqualsGens {
             .methodName("equals")
             .singleArgument(pojo -> "Object obj")
             .content("return equals(self(), obj);");
-    return Annotations.<Pojo, PojoSettings>overrideAnnotation().append(method);
+    return Annotations.<Pojo, PojoSettings>overrideAnnotation()
+        .append(method)
+        .filter((p, s) -> s.getEqualsHashCodeAbility().isEnabled());
   }
 
   public static Generator<Pojo, PojoSettings> staticEqualsMethod() {
@@ -43,7 +45,8 @@ public class EqualsGens {
         .returnType("boolean")
         .methodName("equals")
         .arguments(arguments)
-        .content(staticEqualsMethodContent());
+        .content(staticEqualsMethodContent())
+        .filter((p, s) -> s.getEqualsHashCodeAbility().isEnabled());
   }
 
   private static Generator<Pojo, PojoSettings> staticEqualsMethodContent() {

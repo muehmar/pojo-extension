@@ -38,6 +38,11 @@ public class TestPojoComposer {
       return new ClassAnnotations(builder).annotation(annotation, metaName, metaType, metaValue);
     }
 
+    public ClassAnnotations annotationBooleanParam(
+        Class<?> annotation, String parameterName, boolean value) {
+      return new ClassAnnotations(builder).annotationBooleanParam(annotation, parameterName, value);
+    }
+
     public ClassAnnotations annotation(Class<?> annotation) {
       return new ClassAnnotations(builder).annotation(annotation);
     }
@@ -69,6 +74,13 @@ public class TestPojoComposer {
           String.format(
               "@%s(%s = %s.%s)\n",
               annotation.getSimpleName(), metaName, metaType.getName(), metaValue.name()));
+      return this;
+    }
+
+    public ClassAnnotations annotationBooleanParam(
+        Class<?> annotation, String parameterName, boolean value) {
+      builder.append(
+          String.format("@%s(%s = %s)\n", annotation.getSimpleName(), parameterName, value));
       return this;
     }
 

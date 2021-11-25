@@ -34,7 +34,8 @@ public class WithGens {
                 String.format(
                     "return with%s(self(), %s);",
                     wf.getField().getName().toPascalCase(), wf.getField().getName()))
-        .append(RefsGen.fieldRefs(), WithField::getField);
+        .append(RefsGen.fieldRefs(), WithField::getField)
+        .filter((p, s) -> s.getWithersAbility().isEnabled());
   }
 
   public static Generator<WithField, PojoSettings> staticWithMethod() {
@@ -52,7 +53,8 @@ public class WithGens {
         .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
         .arguments(arguments)
         .content(withMethodContent())
-        .append(RefsGen.fieldRefs(), WithField::getField);
+        .append(RefsGen.fieldRefs(), WithField::getField)
+        .filter((p, s) -> s.getWithersAbility().isEnabled());
   }
 
   private static Generator<WithField, PojoSettings> withMethodContent() {
@@ -82,7 +84,8 @@ public class WithGens {
             .append(RefsGen.fieldRefs(), WithField::getField);
 
     return Generator.<WithField, PojoSettings>emptyGen()
-        .appendConditionally(wf -> wf.getField().isOptional(), method);
+        .appendConditionally(wf -> wf.getField().isOptional(), method)
+        .filter((f, s) -> s.getWithersAbility().isEnabled());
   }
 
   public static Generator<WithField, PojoSettings> staticOptionalWithMethod() {
@@ -105,7 +108,8 @@ public class WithGens {
             .append(RefsGen.fieldRefs(), WithField::getField);
 
     return Generator.<WithField, PojoSettings>emptyGen()
-        .appendConditionally(wf -> wf.getField().isOptional(), method);
+        .appendConditionally(wf -> wf.getField().isOptional(), method)
+        .filter((f, s) -> s.getWithersAbility().isEnabled());
   }
 
   private static Generator<WithField, PojoSettings> optionalWithMethodContent() {

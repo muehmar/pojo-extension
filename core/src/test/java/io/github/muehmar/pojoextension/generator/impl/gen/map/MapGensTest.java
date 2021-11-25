@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.map;
 
+import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_BIFUNCTION;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_FUNCTION;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
@@ -29,6 +30,19 @@ class MapGensTest {
   }
 
   @Test
+  void mapMethod_when_disabled_then_noOutput() {
+    final Generator<Pojo, PojoSettings> gen = MapGens.mapMethod();
+    final Writer writer =
+        gen.generate(
+            Pojos.sample(),
+            PojoSettings.defaultSettings().withMappersAbility(DISABLED),
+            Writer.createDefault());
+
+    assertEquals("", writer.asString());
+    assertTrue(writer.getRefs().isEmpty());
+  }
+
+  @Test
   void mapIfMethod_when_called_then_correctOutput() {
     final Generator<Pojo, PojoSettings> gen = MapGens.mapIfMethod();
     final Writer writer =
@@ -43,8 +57,21 @@ class MapGensTest {
   }
 
   @Test
+  void mapIfMethod_when_disabled_then_noOutput() {
+    final Generator<Pojo, PojoSettings> gen = MapGens.mapIfMethod();
+    final Writer writer =
+        gen.generate(
+            Pojos.sample(),
+            PojoSettings.defaultSettings().withMappersAbility(DISABLED),
+            Writer.createDefault());
+
+    assertEquals("", writer.asString());
+    assertTrue(writer.getRefs().isEmpty());
+  }
+
+  @Test
   void mapIfPresentMethod_when_called_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> gen = MapGens.mapIfPresent();
+    final Generator<Pojo, PojoSettings> gen = MapGens.mapIfPresentMethod();
     final Writer writer =
         gen.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
@@ -55,5 +82,18 @@ class MapGensTest {
         writer.asString());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_BIFUNCTION::equals));
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
+  }
+
+  @Test
+  void mapIfPresentMethod_when_disabled_then_noOutput() {
+    final Generator<Pojo, PojoSettings> gen = MapGens.mapIfPresentMethod();
+    final Writer writer =
+        gen.generate(
+            Pojos.sample(),
+            PojoSettings.defaultSettings().withMappersAbility(DISABLED),
+            Writer.createDefault());
+
+    assertEquals("", writer.asString());
+    assertTrue(writer.getRefs().isEmpty());
   }
 }

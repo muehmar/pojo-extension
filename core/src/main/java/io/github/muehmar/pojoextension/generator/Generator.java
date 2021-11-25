@@ -76,4 +76,18 @@ public interface Generator<A, B> {
   default Generator<A, B> appendConditionally(Predicate<A> predicate, Generator<A, B> append) {
     return appendConditionally((data, settings) -> predicate.test(data), append);
   }
+
+  /**
+   * Filters the current generator, i.e. if the given predicate does not hold true, the returned
+   * generator is an empty generator.
+   */
+  default Generator<A, B> filter(BiPredicate<A, B> predicate) {
+    final Generator<A, B> self = this;
+    return ((data, settings, writer) -> {
+      if (predicate.test(data, settings)) {
+        return self.generate(data, settings, writer);
+      }
+      return writer;
+    });
+  }
 }

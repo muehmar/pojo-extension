@@ -29,7 +29,9 @@ public class ToStringGens {
             .methodName("toString")
             .noArguments()
             .content("return toString(self());");
-    return Annotations.<Pojo, PojoSettings>overrideAnnotation().append(method);
+    return Annotations.<Pojo, PojoSettings>overrideAnnotation()
+        .append(method)
+        .filter((p, s) -> s.getToStringAbility().isEnabled());
   }
 
   public static Generator<Pojo, PojoSettings> staticToStringMethod() {
@@ -40,7 +42,8 @@ public class ToStringGens {
         .returnType("String")
         .methodName("toString")
         .singleArgument(argument)
-        .content(staticToStringContent());
+        .content(staticToStringContent())
+        .filter((p, s) -> s.getToStringAbility().isEnabled());
   }
 
   private static Generator<Pojo, PojoSettings> staticToStringContent() {

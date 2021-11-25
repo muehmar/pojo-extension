@@ -2,6 +2,7 @@ package io.github.muehmar.pojoextension.generator.impl.gen.tostring;
 
 import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
+import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,6 +30,19 @@ class ToStringGensTest {
     assertEquals(
         "@Override\n" + "public String toString() {\n" + "  return toString(self());\n" + "}",
         writer.asString());
+  }
+
+  @Test
+  void toStringMethod_when_disabled_then_noOutput() {
+    final Generator<Pojo, PojoSettings> gen = ToStringGens.toStringMethod();
+    final Writer writer =
+        gen.generate(
+            Pojos.sample(),
+            PojoSettings.defaultSettings().withToStringAbility(DISABLED),
+            Writer.createDefault());
+
+    assertEquals("", writer.asString());
+    assertTrue(writer.getRefs().isEmpty());
   }
 
   @Test
@@ -129,5 +143,18 @@ class ToStringGensTest {
             + "      + '}';\n"
             + "}",
         writer.asString());
+  }
+
+  @Test
+  void staticToStringMethod_when_disabled_then_noOutput() {
+    final Generator<Pojo, PojoSettings> gen = ToStringGens.staticToStringMethod();
+    final Writer writer =
+        gen.generate(
+            Pojos.sample(),
+            PojoSettings.defaultSettings().withToStringAbility(DISABLED),
+            Writer.createDefault());
+
+    assertEquals("", writer.asString());
+    assertTrue(writer.getRefs().isEmpty());
   }
 }

@@ -28,7 +28,8 @@ public class CompleteSafeBuilderGens {
         .appendList(
             SafeBuilderGens.fieldBuilderClass().append(newLine()),
             CompleteSafeBuilderGens::optionalPojoFields)
-        .append(SafeBuilderGens.finalOptionalBuilder());
+        .append(SafeBuilderGens.finalOptionalBuilder())
+        .filter((p, s) -> s.getSafeBuilderAbility().isEnabled());
   }
 
   private static PList<SafeBuilderPojoField> requiredPojoFields(Pojo pojo) {
