@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.withers;
 
 import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_STRING;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_LIST;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_MAP;
@@ -49,6 +50,20 @@ class WithGensTest {
     assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
     assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
     assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
+  }
+
+  @Test
+  void withMethod_when_disabled_then_noOutput() {
+    final Generator<WithField, PojoSettings> generator = WithGens.withMethod();
+    final WithField withField = WithField.of(Pojos.sample(), PojoFields.requiredMap());
+    final Writer writer =
+        generator.generate(
+            withField,
+            PojoSettings.defaultSettings().withWithersAbility(DISABLED),
+            Writer.createDefault());
+
+    assertEquals("", writer.asString());
+    assertTrue(writer.getRefs().isEmpty());
   }
 
   @Test
@@ -134,6 +149,20 @@ class WithGensTest {
   }
 
   @Test
+  void staticWithMethod_when_disabled_then_noOutput() {
+    final Generator<WithField, PojoSettings> generator = WithGens.staticWithMethod();
+    final WithField withField = WithField.of(Pojos.sample(), PojoFields.requiredMap());
+    final Writer writer =
+        generator.generate(
+            withField,
+            PojoSettings.defaultSettings().withWithersAbility(DISABLED),
+            Writer.createDefault());
+
+    assertEquals("", writer.asString());
+    assertTrue(writer.getRefs().isEmpty());
+  }
+
+  @Test
   void optionalWithMethod_when_usedWithSampleAndField_then_correctDelegateCall() {
     final Generator<WithField, PojoSettings> generator = WithGens.optionalWithMethod();
 
@@ -165,6 +194,20 @@ class WithGensTest {
     assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
     assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
     assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
+  }
+
+  @Test
+  void optionalWithMethod_when_disabled_then_noOutput() {
+    final Generator<WithField, PojoSettings> generator = WithGens.optionalWithMethod();
+    final WithField withField = WithField.of(Pojos.sample(), PojoFields.requiredMap());
+    final Writer writer =
+        generator.generate(
+            withField,
+            PojoSettings.defaultSettings().withWithersAbility(DISABLED),
+            Writer.createDefault());
+
+    assertEquals("", writer.asString());
+    assertTrue(writer.getRefs().isEmpty());
   }
 
   @Test
@@ -230,5 +273,19 @@ class WithGensTest {
     assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
     assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
     assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
+  }
+
+  @Test
+  void staticOptionalWithMethod_when_disabled_then_noOutput() {
+    final Generator<WithField, PojoSettings> generator = WithGens.staticOptionalWithMethod();
+    final WithField withField = WithField.of(Pojos.sample(), PojoFields.requiredMap());
+    final Writer writer =
+        generator.generate(
+            withField,
+            PojoSettings.defaultSettings().withWithersAbility(DISABLED),
+            Writer.createDefault());
+
+    assertEquals("", writer.asString());
+    assertTrue(writer.getRefs().isEmpty());
   }
 }

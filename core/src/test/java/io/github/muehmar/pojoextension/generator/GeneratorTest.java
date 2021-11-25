@@ -79,4 +79,26 @@ class GeneratorTest {
 
     assertEquals("genA", writer.asString());
   }
+
+  @Test
+  void filter_when_conditionIsTrue_then_generatorUnchanged() {
+    final Generator<Integer, Integer> genA = ofWriterFunction(w -> w.println("genA"));
+
+    final Generator<Integer, Integer> generator = genA.filter((i1, i2) -> i1 + i2 == 3);
+
+    final Writer writer = generator.generate(1, 2, Writer.createDefault());
+
+    assertEquals("genA", writer.asString());
+  }
+
+  @Test
+  void filter_when_conditionIsFalse_then_emptyGeneratorReturned() {
+    final Generator<Integer, Integer> genA = ofWriterFunction(w -> w.println("genA"));
+
+    final Generator<Integer, Integer> generator = genA.filter((i1, i2) -> i1 + i2 == 3);
+
+    final Writer writer = generator.generate(2, 2, Writer.createDefault());
+
+    assertEquals("", writer.asString());
+  }
 }

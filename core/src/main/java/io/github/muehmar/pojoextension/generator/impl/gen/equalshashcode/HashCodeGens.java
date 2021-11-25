@@ -30,7 +30,9 @@ public class HashCodeGens {
             .methodName("hashCode")
             .noArguments()
             .contentWriter(w -> w.println("return hashCode(self());"));
-    return Annotations.<Pojo, PojoSettings>overrideAnnotation().append(method);
+    return Annotations.<Pojo, PojoSettings>overrideAnnotation()
+        .append(method)
+        .filter((d, s) -> s.getEqualsHashCodeAbility().isEnabled());
   }
 
   public static Generator<Pojo, PojoSettings> staticHashCodeMethod() {
@@ -42,7 +44,8 @@ public class HashCodeGens {
         .returnType("int")
         .methodName("hashCode")
         .singleArgument(argument)
-        .content(content);
+        .content(content)
+        .filter((p, s) -> s.getEqualsHashCodeAbility().isEnabled());
   }
 
   private static Generator<Pojo, PojoSettings> staticHashCodeMethodContent() {

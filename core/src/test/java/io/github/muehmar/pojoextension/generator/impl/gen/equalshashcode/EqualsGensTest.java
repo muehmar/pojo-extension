@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode;
 
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
+import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OBJECTS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -129,6 +130,19 @@ class EqualsGensTest {
   }
 
   @Test
+  void staticEqualsMethod_when_disabled_then_noOutput() {
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.staticEqualsMethod();
+
+    final Writer writer =
+        generator.generate(
+            Pojos.sample(),
+            PojoSettings.defaultSettings().withEqualsHashCodeAbility(DISABLED),
+            Writer.createDefault());
+    assertEquals("", writer.asString());
+    assertTrue(writer.getRefs().isEmpty());
+  }
+
+  @Test
   void equalsMethod_when_generatorUsedWithSamplePojo_then_correctOutput() {
     final Generator<Pojo, PojoSettings> generator = EqualsGens.equalsMethod();
     final Writer writer =
@@ -141,5 +155,18 @@ class EqualsGensTest {
         writer.asString());
     assertFalse(writer.getRefs().exists(JAVA_UTIL_OBJECTS::equals));
     assertFalse(writer.getRefs().exists(JAVA_UTIL_ARRAYS::equals));
+  }
+
+  @Test
+  void equalsMethod_when_disabled_then_noOutput() {
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.equalsMethod();
+
+    final Writer writer =
+        generator.generate(
+            Pojos.sample(),
+            PojoSettings.defaultSettings().withEqualsHashCodeAbility(DISABLED),
+            Writer.createDefault());
+    assertEquals("", writer.asString());
+    assertTrue(writer.getRefs().isEmpty());
   }
 }

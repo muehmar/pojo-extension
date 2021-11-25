@@ -22,7 +22,8 @@ public class MapGens {
         .methodName("map")
         .singleArgument(p -> String.format("Function<%s, T> f", p.getName()))
         .content("return f.apply(self());")
-        .append(w -> w.ref(JAVA_UTIL_FUNCTION));
+        .append(w -> w.ref(JAVA_UTIL_FUNCTION))
+        .filter((p, s) -> s.getMappersAbility().isEnabled());
   }
 
   public static Generator<Pojo, PojoSettings> mapIfMethod() {
@@ -33,10 +34,11 @@ public class MapGens {
         .arguments(
             p -> PList.of("boolean shouldMap", String.format("UnaryOperator<%s> f", p.getName())))
         .content("return shouldMap ? f.apply(self()) : self();")
-        .append(w -> w.ref(JAVA_UTIL_UNARYOPERATOR));
+        .append(w -> w.ref(JAVA_UTIL_UNARYOPERATOR))
+        .filter((p, s) -> s.getMappersAbility().isEnabled());
   }
 
-  public static Generator<Pojo, PojoSettings> mapIfPresent() {
+  public static Generator<Pojo, PojoSettings> mapIfPresentMethod() {
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
         .genericTypes("T")
         .returnType(p -> p.getName().asString())
@@ -47,6 +49,7 @@ public class MapGens {
                     "Optional<T> value",
                     String.format("BiFunction<%s, T, %s> f", p.getName(), p.getName())))
         .content("return value.map(v -> f.apply(self(), v)).orElseGet(this::self);")
-        .append(w -> w.ref(JAVA_UTIL_OPTIONAL).ref(JAVA_UTIL_BIFUNCTION));
+        .append(w -> w.ref(JAVA_UTIL_OPTIONAL).ref(JAVA_UTIL_BIFUNCTION))
+        .filter((p, s) -> s.getMappersAbility().isEnabled());
   }
 }
