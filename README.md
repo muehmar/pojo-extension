@@ -28,12 +28,13 @@ Currently, the extension class contains the following features:
 
 ## Usage
 
-Add the dependency and register it as annotation processor. In gradle this would look like the following:
+Add the `pojo-extension-annotations` module as compile-time dependency and register the `pojo-extension` module as
+annotation processor.In gradle this would look like the following:
 
 ```
 dependencies {
-    implementation "io.github.muehmar:pojo-extension:0.5.0"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.5.0"
+    compileOnly "io.github.muehmar:pojo-extension-annotations:0.6.0"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.6.0"
 }
 ```
 
@@ -300,10 +301,15 @@ constructor) either the actual type and nullable or wrapped into an `Optional`.
 
 The annotation contains the following parameters:
 
-| Parameter | Description |
-| --- | --- |
-|`optionalDetection`| Defines how optional fields in data class are detected by the processor. See the next section for details. |
-| `extensionName` | Allows to override the default name of the created extension class which is the data class name followed by 'Extension'.
+| Parameter | Default value | Description |
+| --- | --- | --- |
+|`optionalDetection`| [OPTIONAL_CLASS, NULLABLE_ANNOTATION] | Defines how optional fields in data class are detected by the processor. See the next section for details. |
+| `extensionName` | See description | Allows to override the default name of the created extension class which is the data class name followed by 'Extension'.
+| `enableSafeBuilder` | true | Allows to disable the generation of the safe builder
+| `enableEqualsAndHashCode` | true | Allows to disable the generation the equals and hashCode method
+| `enableToString` | true | Allows to disable the generation the toString method
+| `enableWithers` | true | Allows to disable the generation the with methods
+| `enableMappers` | true | Allows to disable the generation the map methods
 
 ### Parameter `optionalDetection`
 
@@ -337,6 +343,11 @@ public @interface AllRequiredExtension {}
 
 ## Change Log
 
+* 0.6.0
+    * Fix `toString` method
+    * Add possibility to disable specific features
+    * Add separate module for annotations to be used as compile time dependency
+    * Make static methods private if data class inherits extension class
 * 0.5.0
     * Add `withXX` methods
     * Fix import for generic fields
