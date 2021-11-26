@@ -7,7 +7,7 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_
 
 import ch.bluecare.commons.data.PList;
 import ch.bluecare.commons.data.Pair;
-import io.github.muehmar.pojoextension.Updater;
+import io.github.muehmar.pojoextension.Mapper;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
@@ -74,9 +74,9 @@ public class ToStringGens {
       final String format =
           isArray ? "+ \"%s%s=%s\" + Arrays.toString(self.%s())%s" : "+ \"%s%s=%s\" + self.%s()%s";
 
-      return Updater.initial(w)
-          .updateConditionally(isArray, wr -> wr.ref(JAVA_UTIL_ARRAYS))
-          .get()
+      return Mapper.initial(w)
+          .mapConditionally(isArray, wr -> wr.ref(JAVA_UTIL_ARRAYS))
+          .apply()
           .tab(2)
           .println(
               format,

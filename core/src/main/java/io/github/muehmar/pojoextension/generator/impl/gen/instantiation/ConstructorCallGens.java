@@ -5,7 +5,7 @@ import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelati
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 
 import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.Updater;
+import io.github.muehmar.pojoextension.Mapper;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.MatchingConstructor;
@@ -91,9 +91,9 @@ public class ConstructorCallGens {
               .map(FinalConstructorArgument::getRelation)
               .exists(relation -> relation.equals(WRAP_INTO_OPTIONAL));
 
-      return Updater.initial(writer)
-          .updateConditionally(hasWrapIntoOptional, w -> w.ref(JAVA_UTIL_OPTIONAL))
-          .get()
+      return Mapper.initial(writer)
+          .mapConditionally(hasWrapIntoOptional, w -> w.ref(JAVA_UTIL_OPTIONAL))
+          .apply()
           .println(
               "return new %s(%s);",
               constructorCall.getPojo().getName(), constructorParameters.mkString(", "));

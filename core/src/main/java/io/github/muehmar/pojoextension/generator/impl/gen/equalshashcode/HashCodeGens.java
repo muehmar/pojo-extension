@@ -6,7 +6,7 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OBJECTS;
 
 import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.Updater;
+import io.github.muehmar.pojoextension.Mapper;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
@@ -68,16 +68,16 @@ public class HashCodeGens {
       final PList<FieldGetter> remainingArrayFields =
           nonArrayFields.nonEmpty() ? arrayFields : arrayFields.drop(1);
 
-      return Updater.initial(w)
-          .update(wr -> wr.print("int result = "))
-          .updateConditionally(
+      return Mapper.initial(w)
+          .map(wr -> wr.print("int result = "))
+          .mapConditionally(
               nonArrayFields.nonEmpty(), wr -> objectsHashCode.apply(wr, nonArrayFields))
-          .updateConditionally(
+          .mapConditionally(
               nonArrayFields.isEmpty(), wr -> arrayHashCode.apply(wr, arrayFields.head()))
-          .update(wr -> wr.println(";"))
-          .update(wr -> remainingArrayFields.foldLeft(wr, arrayHashCodeAdd))
-          .update(wr -> wr.println("return result;"))
-          .get();
+          .map(wr -> wr.println(";"))
+          .map(wr -> remainingArrayFields.foldLeft(wr, arrayHashCodeAdd))
+          .map(wr -> wr.println("return result;"))
+          .apply();
     };
   }
 
