@@ -1,12 +1,11 @@
 plugins {
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
-    id 'pojo-extension.java-conventions'
+    id 'pojo-extension.java-publish'
 }
 
 dependencies {
-    implementation libs.pojoextension
+    api project(":core-annotations")
+
     annotationProcessor libs.pojoextension
 
     implementation libs.google.autoservice
@@ -16,54 +15,4 @@ dependencies {
 
     testImplementation libs.joor
 
-}
-
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = 'pojo-extension'
-            from components.java
-            pom {
-                name = 'Pojo Extension'
-                description = 'Java Annotation Processor for Pojo Extension class'
-                url = 'https://github.com/muehmar/pojo-extension'
-                licenses {
-                    license {
-                        name = 'MIT License'
-                        url = 'https://github.com/muehmar/pojo-extension/blob/main/LICENSE'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'muehmar'
-                        name = 'Martin Mühlemann'
-                        email = 'poelsi@gmail.com'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:git://github.com/muehmar/pojo-extension.git'
-                    developerConnection = 'scm:git:ssh://github.com/muehmar/pojo-extension.git'
-                    url = 'https://github.com/muehmar/pojo-extension.git'
-                }
-            }
-        }
-    }
-    repositories {
-        maven {
-            name = 'ossrh'
-            credentials(PasswordCredentials)
-            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
-            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-        }
-    }
-}
-
-signing {
-    sign publishing.publications.mavenJava
 }

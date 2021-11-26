@@ -1,19 +1,19 @@
 package io.github.muehmar.pojoextension.example;
 
-import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import java.util.List;
 import java.util.Map;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
 public class GenericFieldClass extends GenericFieldClassExtension {
-  private final Map<String, PList<Integer>> listMap;
+  private final Map<String, List<Integer>> listMap;
 
-  public GenericFieldClass(Map<String, PList<Integer>> listMap) {
+  public GenericFieldClass(Map<String, List<Integer>> listMap) {
     this.listMap = listMap;
   }
 
-  public Map<String, PList<Integer>> getListMap() {
+  public Map<String, List<Integer>> getListMap() {
     return listMap;
   }
 }

@@ -1,4 +1,4 @@
-package io.github.muehmar.pojoextension.annotations.processor;
+package io.github.muehmar.pojoextension.processor;
 
 import static javax.lang.model.type.TypeKind.BOOLEAN;
 import static javax.lang.model.type.TypeKind.BYTE;

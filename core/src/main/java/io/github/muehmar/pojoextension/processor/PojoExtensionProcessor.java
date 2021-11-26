@@ -1,4 +1,4 @@
-package io.github.muehmar.pojoextension.annotations.processor;
+package io.github.muehmar.pojoextension.processor;
 
 import static io.github.muehmar.pojoextension.Booleans.not;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;

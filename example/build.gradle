@@ -4,8 +4,8 @@ plugins {
 }
 
 dependencies {
-    implementation project(':core')
+    implementation project(':core-annotations')
     annotationProcessor project(':core')
-    
+
     testImplementation libs.bundles.junit
 }
