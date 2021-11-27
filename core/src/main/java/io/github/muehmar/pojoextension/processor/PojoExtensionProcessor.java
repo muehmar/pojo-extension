@@ -8,6 +8,7 @@ import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionU
 
 import ch.bluecare.commons.data.PList;
 import com.google.auto.service.AutoService;
+import io.github.muehmar.pojoextension.Optionals;
 import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
@@ -171,20 +172,24 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   }
 
   private void outputPojo(Pojo pojo, PojoSettings pojoSettings) {
-    redirectPojo.ifPresent(output -> output.accept(pojo, pojoSettings));
-    if (!redirectPojo.isPresent()) {
-      final String generatedPojoExtension =
-          generator.generate(pojo, pojoSettings, Writer.createDefault()).asString();
-      try {
-        final Name qualifiedExtensionName = pojoSettings.qualifiedExtensionName(pojo);
-        JavaFileObject builderFile =
-            processingEnv.getFiler().createSourceFile(qualifiedExtensionName.asString());
-        try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
-          out.println(generatedPojoExtension);
-        }
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
+    Optionals.ifPresentOrElse(
+        redirectPojo,
+        output -> output.accept(pojo, pojoSettings),
+        () -> writeExtensionClass(pojo, pojoSettings));
+  }
+
+  private void writeExtensionClass(Pojo pojo, PojoSettings pojoSettings) {
+    final String generatedPojoExtension =
+        generator.generate(pojo, pojoSettings, Writer.createDefault()).asString();
+    try {
+      final Name qualifiedExtensionName = pojoSettings.qualifiedExtensionName(pojo);
+      JavaFileObject builderFile =
+          processingEnv.getFiler().createSourceFile(qualifiedExtensionName.asString());
+      try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
+        out.println(generatedPojoExtension);
       }
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
   }
 
