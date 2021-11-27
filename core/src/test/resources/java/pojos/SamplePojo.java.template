@@ -62,6 +62,10 @@ public abstract class CustomerExtension {
     return value.map(v -> f.apply(self(), v)).orElseGet(this::self);
   }
 
+  public static Builder0 newBuilder() {
+    return new Builder0(new Builder());
+  }
+
   public static final class Builder {
     private Builder() {
     }
@@ -93,10 +97,6 @@ public abstract class CustomerExtension {
     public Customer build() {
       return new Customer(id, username, nickname);
     }
-  }
-
-  public static Builder0 newBuilder() {
-    return new Builder0(new Builder());
   }
 
   public static final class Builder0 {

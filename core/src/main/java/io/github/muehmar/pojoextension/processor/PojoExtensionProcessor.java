@@ -24,6 +24,7 @@ import io.github.muehmar.pojoextension.generator.data.settings.Ability;
 import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
+import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.SafeBuilderClassGens;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -51,7 +52,9 @@ import javax.tools.JavaFileObject;
 public class PojoExtensionProcessor extends AbstractProcessor {
 
   private final Optional<BiConsumer<Pojo, PojoSettings>> redirectPojo;
-  private final Generator<Pojo, PojoSettings> generator = ExtensionGens.extensionClass();
+  private final Generator<Pojo, PojoSettings> extensionGenerator = ExtensionGens.extensionClass();
+  private final Generator<Pojo, PojoSettings> builderGenerator =
+      SafeBuilderClassGens.safeBuilderClass();
 
   private PojoExtensionProcessor(Optional<BiConsumer<Pojo, PojoSettings>> redirectPojo) {
     this.redirectPojo = redirectPojo;
@@ -179,14 +182,22 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   }
 
   private void writeExtensionClass(Pojo pojo, PojoSettings pojoSettings) {
-    final String generatedPojoExtension =
-        generator.generate(pojo, pojoSettings, Writer.createDefault()).asString();
+    writeJavaFile(
+        pojoSettings.qualifiedExtensionName(pojo), extensionGenerator, pojo, pojoSettings);
+    writeJavaFile(pojoSettings.qualifiedBuilderName(pojo), builderGenerator, pojo, pojoSettings);
+  }
+
+  private void writeJavaFile(
+      Name qualifiedClassName,
+      Generator<Pojo, PojoSettings> gen,
+      Pojo pojo,
+      PojoSettings pojoSettings) {
+    final String javaContent = gen.generate(pojo, pojoSettings, Writer.createDefault()).asString();
     try {
-      final Name qualifiedExtensionName = pojoSettings.qualifiedExtensionName(pojo);
-      JavaFileObject builderFile =
-          processingEnv.getFiler().createSourceFile(qualifiedExtensionName.asString());
+      final JavaFileObject builderFile =
+          processingEnv.getFiler().createSourceFile(qualifiedClassName.asString());
       try (PrintWriter out = new PrintWriter(builderFile.openWriter())) {
-        out.println(generatedPojoExtension);
+        out.println(javaContent);
       }
     } catch (IOException e) {
       throw new UncheckedIOException(e);

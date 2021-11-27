@@ -56,6 +56,8 @@ public class ExtensionGens {
         .appendNewLine()
         .append(MapGens.mapIfPresentMethod())
         .appendNewLine()
+        .append(CompleteSafeBuilderGens.newBuilderMethod())
+        .appendNewLine()
         .append(CompleteSafeBuilderGens.completeSafeBuilder())
         .appendNewLine()
         .append(EqualsGens.equalsMethod())

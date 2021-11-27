@@ -14,7 +14,7 @@ class CustomerTest {
   @Test
   void newBuilder_when_usedToCreateInstance_then_allAttributesSetAccordingly() {
     final Customer customer =
-        Customer.newBuilder()
+        CustomerBuilder.create()
             .setId(SAMPLE_ID)
             .setName("Dexter")
             .setRandom(12.5d)
@@ -136,7 +136,7 @@ class CustomerTest {
   }
 
   private static Customer sampleCustomer() {
-    return Customer.newBuilder()
+    return CustomerBuilder.create()
         .setId(SAMPLE_ID)
         .setName("Dexter")
         .setRandom(12.5d)

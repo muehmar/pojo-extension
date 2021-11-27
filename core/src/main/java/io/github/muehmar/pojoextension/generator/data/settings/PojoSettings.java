@@ -88,6 +88,14 @@ public class PojoSettings extends PojoSettingsExtension {
         () -> pojo.getName().map(n -> n.replace(".", "")).append("Extension"));
   }
 
+  public Name qualifiedBuilderName(Pojo pojo) {
+    return pojo.getPackage().qualifiedName(builderName(pojo));
+  }
+
+  public Name builderName(Pojo pojo) {
+    return pojo.getName().map(n -> n.replace(".", "")).append("Builder");
+  }
+
   public JavaModifier getStaticMethodAccessModifier() {
     return extensionUsage.isStatic() ? JavaModifier.PUBLIC : JavaModifier.PRIVATE;
   }
