@@ -9,7 +9,8 @@ enableFeaturePreview('VERSION_CATALOGS')
 dependencyResolutionManagement {
     versionCatalogs {
         libs {
-            alias('pojoextension').to('io.github.muehmar:pojo-extension:0.4.0')
+            alias('pojoextension').to('io.github.muehmar:pojo-extension:0.6.0')
+            alias('pojoextension-annotations').to('io.github.muehmar:pojo-extension-annotations:0.6.0')
 
             version('junit', '5.7.2')
             alias('junit-api').to('org.junit.jupiter', 'junit-jupiter-api').versionRef('junit')

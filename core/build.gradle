@@ -6,6 +6,7 @@ plugins {
 dependencies {
     api project(":core-annotations")
 
+    compileOnly libs.pojoextension.annotations
     annotationProcessor libs.pojoextension
 
     implementation libs.google.autoservice
