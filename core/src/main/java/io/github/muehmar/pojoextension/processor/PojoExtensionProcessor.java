@@ -21,6 +21,7 @@ import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.Ability;
+import io.github.muehmar.pojoextension.generator.data.settings.DiscreteBuilder;
 import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
@@ -149,17 +150,23 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         Optional.ofNullable(annotation.extensionName())
             .filter(n -> n.trim().length() > 0)
             .map(Name::fromString);
+    final Optional<Name> builderName =
+        Optional.ofNullable(annotation.builderName())
+            .filter(n -> n.trim().length() > 0)
+            .map(Name::fromString);
 
     final PojoSettings settings =
         PojoSettings.newBuilder()
             .setExtensionUsage(INHERITED)
             .setSafeBuilderAbility(Ability.fromBoolean(annotation.enableSafeBuilder()))
+            .setDiscreteBuilder(DiscreteBuilder.fromBoolean(annotation.discreteBuilder()))
             .setEqualsHashCodeAbility(Ability.fromBoolean(annotation.enableEqualsAndHashCode()))
             .setToStringAbility(Ability.fromBoolean(annotation.enableToString()))
             .setWithersAbility(Ability.fromBoolean(annotation.enableWithers()))
             .setMappersAbility(Ability.fromBoolean(annotation.enableMappers()))
             .andAllOptionals()
             .setExtensionName(extensionName)
+            .setBuilderName(builderName)
             .build();
 
     final String superclassString = element.getSuperclass().toString();
@@ -181,17 +188,30 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         () -> writeExtensionClass(pojo, pojoSettings));
   }
 
-  private void writeExtensionClass(Pojo pojo, PojoSettings pojoSettings) {
+  private void writeExtensionClass(Pojo pojo, PojoSettings settings) {
     writeJavaFile(
-        pojoSettings.qualifiedExtensionName(pojo), extensionGenerator, pojo, pojoSettings);
-    writeJavaFile(pojoSettings.qualifiedBuilderName(pojo), builderGenerator, pojo, pojoSettings);
+        settings.qualifiedExtensionName(pojo),
+        extensionGenerator,
+        pojo,
+        settings,
+        settings.createExtension());
+    writeJavaFile(
+        settings.qualifiedBuilderName(pojo),
+        builderGenerator,
+        pojo,
+        settings,
+        settings.createDiscreteBuilder());
   }
 
   private void writeJavaFile(
       Name qualifiedClassName,
       Generator<Pojo, PojoSettings> gen,
       Pojo pojo,
-      PojoSettings pojoSettings) {
+      PojoSettings pojoSettings,
+      boolean createFile) {
+    if (not(createFile)) {
+      return;
+    }
     final String javaContent = gen.generate(pojo, pojoSettings, Writer.createDefault()).asString();
     try {
       final JavaFileObject builderFile =

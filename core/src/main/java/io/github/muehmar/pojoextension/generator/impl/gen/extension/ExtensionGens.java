@@ -20,6 +20,7 @@ import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.CompleteSa
 import io.github.muehmar.pojoextension.generator.impl.gen.tostring.ToStringGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.WithGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.data.WithField;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 public class ExtensionGens {
@@ -42,6 +43,9 @@ public class ExtensionGens {
             .appendConditionally(
                 wf -> wf.getField().isOptional(), ((data, settings, writer) -> writer.println()));
 
+    final BiPredicate<Pojo, PojoSettings> nonDiscreteBuilder =
+        (p, s) -> s.getDiscreteBuilder().isDisabled();
+
     return constructor()
         .appendNewLine()
         .append(selfMethod())
@@ -56,9 +60,9 @@ public class ExtensionGens {
         .appendNewLine()
         .append(MapGens.mapIfPresentMethod())
         .appendNewLine()
-        .append(CompleteSafeBuilderGens.newBuilderMethod())
+        .appendConditionally(nonDiscreteBuilder, CompleteSafeBuilderGens.newBuilderMethod())
         .appendNewLine()
-        .append(CompleteSafeBuilderGens.completeSafeBuilder())
+        .appendConditionally(nonDiscreteBuilder, CompleteSafeBuilderGens.completeSafeBuilder())
         .appendNewLine()
         .append(EqualsGens.equalsMethod())
         .appendNewLine()

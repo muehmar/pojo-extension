@@ -15,7 +15,9 @@ import java.util.Optional;
 public class PojoSettings extends PojoSettingsExtension {
   private final ExtensionUsage extensionUsage;
   private final Optional<Name> extensionName;
+  private final Optional<Name> builderName;
   private final Ability safeBuilderAbility;
+  private final DiscreteBuilder discreteBuilder;
   private final Ability equalsHashCodeAbility;
   private final Ability toStringAbility;
   private final Ability withersAbility;
@@ -24,14 +26,18 @@ public class PojoSettings extends PojoSettingsExtension {
   PojoSettings(
       ExtensionUsage extensionUsage,
       Optional<Name> extensionName,
+      Optional<Name> builderName,
       Ability safeBuilderAbility,
+      DiscreteBuilder discreteBuilder,
       Ability equalsHashCodeAbility,
       Ability toStringAbility,
       Ability withAbility,
       Ability mapAbility) {
     this.extensionUsage = extensionUsage;
     this.extensionName = extensionName;
+    this.builderName = builderName;
     this.safeBuilderAbility = safeBuilderAbility;
+    this.discreteBuilder = discreteBuilder;
     this.equalsHashCodeAbility = equalsHashCodeAbility;
     this.toStringAbility = toStringAbility;
     this.withersAbility = withAbility;
@@ -42,12 +48,14 @@ public class PojoSettings extends PojoSettingsExtension {
     return newBuilder()
         .setExtensionUsage(INHERITED)
         .setSafeBuilderAbility(ENABLED)
+        .setDiscreteBuilder(DiscreteBuilder.ENABLED)
         .setEqualsHashCodeAbility(ENABLED)
         .setToStringAbility(ENABLED)
         .setWithersAbility(ENABLED)
         .setMappersAbility(ENABLED)
         .andAllOptionals()
         .setExtensionName(empty())
+        .setBuilderName(empty())
         .build();
   }
 
@@ -59,8 +67,16 @@ public class PojoSettings extends PojoSettingsExtension {
     return extensionName;
   }
 
+  public Optional<Name> getBuilderName() {
+    return builderName;
+  }
+
   public Ability getSafeBuilderAbility() {
     return safeBuilderAbility;
+  }
+
+  public DiscreteBuilder getDiscreteBuilder() {
+    return discreteBuilder;
   }
 
   public Ability getEqualsHashCodeAbility() {
@@ -98,5 +114,17 @@ public class PojoSettings extends PojoSettingsExtension {
 
   public JavaModifier getStaticMethodAccessModifier() {
     return extensionUsage.isStatic() ? JavaModifier.PUBLIC : JavaModifier.PRIVATE;
+  }
+
+  public boolean createDiscreteBuilder() {
+    return safeBuilderAbility.isEnabled() && discreteBuilder.isEnabled();
+  }
+
+  public boolean createExtension() {
+    return (safeBuilderAbility.isEnabled() && discreteBuilder.isDisabled())
+        || equalsHashCodeAbility.isEnabled()
+        || toStringAbility.isEnabled()
+        || withersAbility.isEnabled()
+        || mappersAbility.isEnabled();
   }
 }

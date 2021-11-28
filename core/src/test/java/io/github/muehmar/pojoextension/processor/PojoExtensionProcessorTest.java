@@ -23,6 +23,7 @@ import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.Ability;
+import io.github.muehmar.pojoextension.generator.data.settings.DiscreteBuilder;
 import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import java.util.ArrayList;
@@ -544,6 +545,48 @@ class PojoExtensionProcessorTest {
         PojoSettings.defaultSettings()
             .withExtensionUsage(ExtensionUsage.STATIC)
             .withMappersAbility(Ability.DISABLED),
+        pojoAndSettings.settings);
+  }
+
+  @Test
+  void run_when_discreteBuilderDisabled_then_correctSettings() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotationBooleanParam(PojoExtension.class, "discreteBuilder", false)
+            .className(className)
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    assertEquals(
+        PojoSettings.defaultSettings()
+            .withExtensionUsage(ExtensionUsage.STATIC)
+            .withDiscreteBuilder(DiscreteBuilder.DISABLED),
+        pojoAndSettings.settings);
+  }
+
+  @Test
+  void run_when_overrideBuilderName_then_correctSettings() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotationStringParam(PojoExtension.class, "builderName", "CustomBuilderName")
+            .className(className)
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    assertEquals(
+        PojoSettings.defaultSettings()
+            .withExtensionUsage(ExtensionUsage.STATIC)
+            .withBuilderName(Name.fromString("CustomBuilderName")),
         pojoAndSettings.settings);
   }
 

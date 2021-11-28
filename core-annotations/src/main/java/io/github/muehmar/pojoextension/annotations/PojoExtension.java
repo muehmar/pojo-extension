@@ -15,11 +15,19 @@ public @interface PojoExtension {
     OptionalDetection.OPTIONAL_CLASS, OptionalDetection.NULLABLE_ANNOTATION
   };
 
-  /** Override the default name which is created for the extension. */
+  /** Override the default name which is used for the extension class. */
   String extensionName() default "";
 
   /** Enables or disables the generation of the SafeBuilder. */
   boolean enableSafeBuilder() default true;
+
+  /** Override the default name which is used for the discrete builder class. */
+  String builderName() default "";
+
+  /**
+   * Creates a discrete builder class. If set to false, the builder is part of the extension class.
+   */
+  boolean discreteBuilder() default true;
 
   /** Enables or disables the generation of the equals and hashCode methods. */
   boolean enableEqualsAndHashCode() default true;
