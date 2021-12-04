@@ -5,12 +5,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Mark a method as getter in case the name does not conform to the java-beans naming convention.
- */
-@Target(ElementType.METHOD)
+@PojoExtension(
+    enableWithers = false,
+    enableMappers = false,
+    enableToString = false,
+    enableEqualsAndHashCode = false)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.CLASS)
-public @interface Getter {
-  /** Name of the field. */
-  String value();
+public @interface SafeBuilder {
+  String extensionName() default "ASD";
 }

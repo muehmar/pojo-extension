@@ -4,6 +4,8 @@ import static io.github.muehmar.pojoextension.generator.data.settings.Ability.EN
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.INHERITED;
 import static java.util.Optional.empty;
 
+import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
@@ -13,6 +15,7 @@ import java.util.Optional;
 @PojoExtension
 @SuppressWarnings("java:S2160")
 public class PojoSettings extends PojoSettingsExtension {
+  private final PList<OptionalDetection> optionalDetections;
   private final ExtensionUsage extensionUsage;
   private final Optional<Name> extensionName;
   private final Optional<Name> builderName;
@@ -24,6 +27,7 @@ public class PojoSettings extends PojoSettingsExtension {
   private final Ability mappersAbility;
 
   PojoSettings(
+      PList<OptionalDetection> optionalDetections,
       ExtensionUsage extensionUsage,
       Optional<Name> extensionName,
       Optional<Name> builderName,
@@ -33,6 +37,7 @@ public class PojoSettings extends PojoSettingsExtension {
       Ability toStringAbility,
       Ability withAbility,
       Ability mapAbility) {
+    this.optionalDetections = optionalDetections;
     this.extensionUsage = extensionUsage;
     this.extensionName = extensionName;
     this.builderName = builderName;
@@ -46,6 +51,8 @@ public class PojoSettings extends PojoSettingsExtension {
 
   public static PojoSettings defaultSettings() {
     return newBuilder()
+        .setOptionalDetections(
+            PList.of(OptionalDetection.OPTIONAL_CLASS, OptionalDetection.NULLABLE_ANNOTATION))
         .setExtensionUsage(INHERITED)
         .setSafeBuilderAbility(ENABLED)
         .setDiscreteBuilder(DiscreteBuilder.ENABLED)
@@ -57,6 +64,10 @@ public class PojoSettings extends PojoSettingsExtension {
         .setExtensionName(empty())
         .setBuilderName(empty())
         .build();
+  }
+
+  public PList<OptionalDetection> getOptionalDetections() {
+    return optionalDetections;
   }
 
   public ExtensionUsage getExtensionUsage() {

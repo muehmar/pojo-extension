@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /** Creates an extension class for the annotated class. */
 @Target(ElementType.TYPE)
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.CLASS)
 public @interface PojoExtension {
 
   /** Defines how optional fields in a pojo are detected. */

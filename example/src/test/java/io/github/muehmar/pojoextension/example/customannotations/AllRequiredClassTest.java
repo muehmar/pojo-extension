@@ -1,4 +1,4 @@
-package io.github.muehmar.pojoextension.example;
+package io.github.muehmar.pojoextension.example.customannotations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

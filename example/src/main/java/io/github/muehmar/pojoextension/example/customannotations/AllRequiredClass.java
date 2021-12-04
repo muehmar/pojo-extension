@@ -1,9 +1,9 @@
-package io.github.muehmar.pojoextension.example;
+package io.github.muehmar.pojoextension.example.customannotations;
 
 import io.github.muehmar.pojoextension.annotations.Nullable;
 import java.util.Optional;
 
-@AllRequiredExtension
+@AllRequiredExtension(extensionName = "AllRequiredClassExtension")
 public class AllRequiredClass extends AllRequiredClassExtension {
   private final String id;
   private final Optional<Boolean> flag;

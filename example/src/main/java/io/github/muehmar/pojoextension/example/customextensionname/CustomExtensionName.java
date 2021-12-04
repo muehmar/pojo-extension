@@ -1,4 +1,4 @@
-package io.github.muehmar.pojoextension.example;
+package io.github.muehmar.pojoextension.example.customextensionname;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 

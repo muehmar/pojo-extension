@@ -5,6 +5,15 @@ import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.INHERITED;
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.STATIC;
+import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getBuilderName;
+import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getDiscreteBuilder;
+import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getEnableEqualsAndHashCode;
+import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getEnableMappers;
+import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getEnableSafeBuilder;
+import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getEnableToString;
+import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getEnableWithers;
+import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getExtensionName;
+import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getOptionalDetection;
 
 import ch.bluecare.commons.data.PList;
 import com.google.auto.service.AutoService;
@@ -24,6 +33,7 @@ import io.github.muehmar.pojoextension.generator.data.settings.Ability;
 import io.github.muehmar.pojoextension.generator.data.settings.DiscreteBuilder;
 import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.settings.PojoSettingsExtension;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.SafeBuilderClassGens;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
@@ -41,6 +51,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
@@ -75,56 +86,67 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    final Set<? extends Element> annotatedElements =
-        roundEnv.getElementsAnnotatedWith(PojoExtension.class);
+    PList.fromIter(annotations)
+        .flatMap(roundEnv::getElementsAnnotatedWith)
+        .filter(e -> e.getKind().equals(ElementKind.CLASS))
+        .filter(TypeElement.class::isInstance)
+        .map(TypeElement.class::cast)
+        .distinct(Object::toString)
+        .map(
+            classElement -> {
+              final PList<AnnotationMirror> path = findAnnotationPath(classElement, PList.empty());
+              return ElementAndAnnotationPath.of(classElement, path);
+            })
+        .forEach(
+            elementAndPath -> {
+              final PojoSettings pojoSettings =
+                  extractSettingsFromAnnotationPath(
+                      elementAndPath.getPath(), PojoSettings.defaultSettings());
+              final Type pojoType = Type.fromClassName(elementAndPath.getClassElement().toString());
+              final Name className = pojoType.getName();
+              final PackageName classPackage = pojoType.getPackage();
+              final Pojo pojo =
+                  extractPojo(
+                      elementAndPath.getClassElement(), pojoSettings, className, classPackage);
+              final PojoSettings pojoSettings1 =
+                  deviateExtensionUsage(elementAndPath.getClassElement(), pojoSettings, pojo);
 
-    PList.fromIter(annotatedElements)
-        .flatMap(
-            annotatedElement ->
-                findAnnotatedClasses(
-                    roundEnv,
-                    annotatedElement,
-                    annotatedElement.getAnnotation(PojoExtension.class)))
-        .forEach(this::processElementAndAnnotation);
+              outputPojo(pojo, pojoSettings1);
+            });
 
     return false;
   }
 
-  private PList<ElementAndAnnotation> findAnnotatedClasses(
-      RoundEnvironment roundEnv, Element annotatedElement, PojoExtension extension) {
-    if (not(annotatedElement instanceof TypeElement)) {
-      return PList.empty();
-    }
+  private PList<AnnotationMirror> findAnnotationPath(
+      Element currentElement, PList<AnnotationMirror> currentPath) {
+    final PList<AnnotationMirror> annotationMirrors =
+        PList.fromIter(currentElement.getAnnotationMirrors()).map(a -> a);
+    final Optional<AnnotationMirror> pojoExtension =
+        annotationMirrors.find(
+            a ->
+                a.getAnnotationType()
+                    .asElement()
+                    .asType()
+                    .toString()
+                    .equals(PojoExtension.class.getName()));
 
-    final TypeElement typeElement = (TypeElement) annotatedElement;
-
-    if (annotatedElement.getKind().equals(ElementKind.CLASS)) {
-      return PList.single(ElementAndAnnotation.of(typeElement, extension));
-    } else if (annotatedElement.getKind().equals(ElementKind.ANNOTATION_TYPE)) {
-      return PList.fromIter(roundEnv.getElementsAnnotatedWith(typeElement))
-          .flatMap(e -> findAnnotatedClasses(roundEnv, e, extension));
-    } else {
-      return PList.empty();
-    }
-  }
-
-  private void processElementAndAnnotation(ElementAndAnnotation elementAndAnnotation) {
-    final TypeElement element = elementAndAnnotation.getElement();
-    final PojoExtension annotation = elementAndAnnotation.getPojoExtension();
-    final Type pojoType = Type.fromClassName(element.toString());
-    final Name className = pojoType.getName();
-    final PackageName classPackage = pojoType.getPackage();
-
-    final Pojo pojo = extractPojo(element, annotation, className, classPackage);
-    final PojoSettings pojoSettings = extractSettings(element, annotation, pojo);
-
-    outputPojo(pojo, pojoSettings);
+    return pojoExtension
+        .map(currentPath::cons)
+        .orElseGet(
+            () ->
+                annotationMirrors
+                    .map(
+                        a ->
+                            findAnnotationPath(
+                                a.getAnnotationType().asElement(), currentPath.cons(a)))
+                    .find(PList::nonEmpty)
+                    .orElse(PList.empty()));
   }
 
   private Pojo extractPojo(
-      TypeElement element, PojoExtension annotation, Name className, PackageName classPackage) {
+      TypeElement element, PojoSettings settings, Name className, PackageName classPackage) {
     final DetectionSettings detectionSettings =
-        new DetectionSettings(PList.fromArray(annotation.optionalDetection()));
+        new DetectionSettings(settings.getOptionalDetections());
 
     final PList<Constructor> constructors = ConstructorProcessor.process(element);
     final PList<Getter> getters = GetterProcessor.process(element);
@@ -145,29 +167,8 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .build();
   }
 
-  private PojoSettings extractSettings(TypeElement element, PojoExtension annotation, Pojo pojo) {
-    final Optional<Name> extensionName =
-        Optional.ofNullable(annotation.extensionName())
-            .filter(n -> n.trim().length() > 0)
-            .map(Name::fromString);
-    final Optional<Name> builderName =
-        Optional.ofNullable(annotation.builderName())
-            .filter(n -> n.trim().length() > 0)
-            .map(Name::fromString);
-
-    final PojoSettings settings =
-        PojoSettings.newBuilder()
-            .setExtensionUsage(INHERITED)
-            .setSafeBuilderAbility(Ability.fromBoolean(annotation.enableSafeBuilder()))
-            .setDiscreteBuilder(DiscreteBuilder.fromBoolean(annotation.discreteBuilder()))
-            .setEqualsHashCodeAbility(Ability.fromBoolean(annotation.enableEqualsAndHashCode()))
-            .setToStringAbility(Ability.fromBoolean(annotation.enableToString()))
-            .setWithersAbility(Ability.fromBoolean(annotation.enableWithers()))
-            .setMappersAbility(Ability.fromBoolean(annotation.enableMappers()))
-            .andAllOptionals()
-            .setExtensionName(extensionName)
-            .setBuilderName(builderName)
-            .build();
+  private PojoSettings deviateExtensionUsage(
+      TypeElement element, PojoSettings settings, Pojo pojo) {
 
     final String superclassString = element.getSuperclass().toString();
     final String unqualifiedExtensionName = settings.extensionName(pojo).asString();
@@ -179,6 +180,47 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             : STATIC;
 
     return settings.withExtensionUsage(extensionUsage);
+  }
+
+  private PojoSettings extractSettingsFromAnnotationPath(
+      PList<AnnotationMirror> annotations, PojoSettings currentSettings) {
+    return annotations
+        .headOption()
+        .map(
+            a ->
+                extractSettingsFromAnnotationPath(
+                    annotations.tail(), overrideWithAnnotationValues(a, currentSettings)))
+        .orElse(currentSettings);
+  }
+
+  private PojoSettings overrideWithAnnotationValues(
+      AnnotationMirror annotation, PojoSettings currentSettings) {
+    return currentSettings
+        .mapIfPresent(getOptionalDetection(annotation), PojoSettings::withOptionalDetections)
+        .mapIfPresent(
+            getExtensionName(annotation).filter(s -> s.length() > 0).map(Name::fromString),
+            PojoSettings::withExtensionName)
+        .mapIfPresent(
+            getBuilderName(annotation).filter(s -> s.length() > 0).map(Name::fromString),
+            PojoSettingsExtension::withBuilderName)
+        .mapIfPresent(
+            getEnableSafeBuilder(annotation).map(Ability::fromBoolean),
+            PojoSettings::withSafeBuilderAbility)
+        .mapIfPresent(
+            getDiscreteBuilder(annotation).map(DiscreteBuilder::fromBoolean),
+            PojoSettings::withDiscreteBuilder)
+        .mapIfPresent(
+            getEnableEqualsAndHashCode(annotation).map(Ability::fromBoolean),
+            PojoSettings::withEqualsHashCodeAbility)
+        .mapIfPresent(
+            getEnableToString(annotation).map(Ability::fromBoolean),
+            PojoSettings::withToStringAbility)
+        .mapIfPresent(
+            getEnableWithers(annotation).map(Ability::fromBoolean),
+            PojoSettings::withWithersAbility)
+        .mapIfPresent(
+            getEnableMappers(annotation).map(Ability::fromBoolean),
+            PojoSettings::withMappersAbility);
   }
 
   private void outputPojo(Pojo pojo, PojoSettings pojoSettings) {
@@ -288,25 +330,25 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     }
   }
 
-  private static class ElementAndAnnotation {
-    private final TypeElement element;
-    private final PojoExtension pojoExtension;
+  private static class ElementAndAnnotationPath {
+    private final TypeElement classElement;
+    private final PList<AnnotationMirror> path;
 
-    public ElementAndAnnotation(TypeElement element, PojoExtension pojoExtension) {
-      this.element = element;
-      this.pojoExtension = pojoExtension;
+    public ElementAndAnnotationPath(TypeElement classElement, PList<AnnotationMirror> path) {
+      this.classElement = classElement;
+      this.path = path;
     }
 
-    public static ElementAndAnnotation of(TypeElement element, PojoExtension extension) {
-      return new ElementAndAnnotation(element, extension);
+    public static ElementAndAnnotationPath of(TypeElement element, PList<AnnotationMirror> path) {
+      return new ElementAndAnnotationPath(element, path);
     }
 
-    public TypeElement getElement() {
-      return element;
+    public TypeElement getClassElement() {
+      return classElement;
     }
 
-    public PojoExtension getPojoExtension() {
-      return pojoExtension;
+    public PList<AnnotationMirror> getPath() {
+      return path;
     }
   }
 }
