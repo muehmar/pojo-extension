@@ -93,8 +93,12 @@ The 'Safe Builder' is an extended builder pattern which enforces one to create v
 property in a pojo will be set. The pattern follows also the convention not using `null` in the code which improves
 support by the compiler.
 
-The pattern is realized by creating a single builder class for each required property, with a single method setting the
-corresponding property and returning the next builder for the next property. The `build`
+The builder can be part of the extension class or a discrete java file,
+see [Annotation Parameters](#annotation-parameters). There exists a predefined annotation `@SafeBuilder` which creates a
+builder in a discrete class which can be used in case the other features are not used.
+
+The pattern is implemented by creating a single builder class for each required property, with a single method setting
+the corresponding property and returning the next builder for the next property. The `build`
 method will only be present after each required property is set.
 
 For example, given the following class:
@@ -306,6 +310,8 @@ The annotation contains the following parameters:
 |`optionalDetection`| [OPTIONAL_CLASS, NULLABLE_ANNOTATION] | Defines how optional fields in data class are detected by the processor. See the next section for details. |
 | `extensionName` | See description | Allows to override the default name of the created extension class which is the data class name followed by 'Extension'.
 | `enableSafeBuilder` | true | Allows to disable the generation of the safe builder
+| `builderName` | See description | Allows to override the default name of the discrete builder. Ignored if `discreteBuilder` is false. The default builder name is the data class name followed by 'Builder'.
+| `discreteBuilder` | true | Creates a discrete builder class if true. If set to false, the builder is part of the extension class.
 | `enableEqualsAndHashCode` | true | Allows to disable the generation the equals and hashCode method
 | `enableToString` | true | Allows to disable the generation the toString method
 | `enableWithers` | true | Allows to disable the generation the with methods
@@ -325,7 +331,7 @@ necessary:
 
 Both options are active as default.
 
-## Meta Annotation
+## Custom Annotation / Meta Annotation
 
 The `@PojoExtension` annotation can be used as meta annotation to create your own annotation with predefined behaviour.
 
@@ -335,6 +341,18 @@ annotation `@AllRequiredExtension` which is annotated with `@PojoExtension` with
 ```
 @PojoExtension(optionalDetection = OptionalDetection.NONE)
 public @interface AllRequiredExtension {}
+```
+
+If one wants to create a custom annotation, with default values but allow overriding for certain classes, simply create
+the corresponding method in the annotation with the same name providing the default value, i.e.:
+
+```
+@PojoExtension
+public @interface AllRequiredExtension {
+
+  OptionalDetection[] optionalDetection() default {OptionalDetection.NONE};
+  
+}
 ```
 
 ## Known Issues
