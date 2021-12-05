@@ -1,11 +1,11 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder;
 
+import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.settings.Ability;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
@@ -51,10 +51,6 @@ class CompleteSafeBuilderGensTest {
             + "  public Customer build() {\n"
             + "    return new Customer(id, username, nickname);\n"
             + "  }\n"
-            + "}\n"
-            + "\n"
-            + "public static Builder0 newBuilder() {\n"
-            + "  return new Builder0(new Builder());\n"
             + "}\n"
             + "\n"
             + "public static final class Builder0 {\n"
@@ -138,7 +134,32 @@ class CompleteSafeBuilderGensTest {
         generator
             .generate(
                 Pojos.sample(),
-                PojoSettings.defaultSettings().withSafeBuilderAbility(Ability.DISABLED),
+                PojoSettings.defaultSettings().withSafeBuilderAbility(DISABLED),
+                Writer.createDefault())
+            .asString();
+
+    assertEquals("", output);
+  }
+
+  @Test
+  void newBuilderMethod_when_called_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = CompleteSafeBuilderGens.newBuilderMethod();
+    final String output =
+        gen.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault())
+            .asString();
+
+    assertEquals(
+        "public static Builder0 newBuilder() {\n" + "  return new Builder0(new Builder());\n" + "}",
+        output);
+  }
+
+  @Test
+  void newBuilderMethod_when_safeBuilderDisabled_then_emptyOutput() {
+    final Generator<Pojo, PojoSettings> gen = CompleteSafeBuilderGens.newBuilderMethod();
+    final String output =
+        gen.generate(
+                Pojos.sample(),
+                PojoSettings.defaultSettings().withSafeBuilderAbility(DISABLED),
                 Writer.createDefault())
             .asString();
 

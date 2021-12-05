@@ -18,8 +18,6 @@ public class CompleteSafeBuilderGens {
   public static Generator<Pojo, PojoSettings> completeSafeBuilder() {
     return NormalBuilderGens.builderClass()
         .append(newLine())
-        .append(newBuilderMethod())
-        .append(newLine())
         .appendList(
             SafeBuilderGens.fieldBuilderClass().append(newLine()),
             CompleteSafeBuilderGens::requiredPojoFields)
@@ -46,12 +44,13 @@ public class CompleteSafeBuilderGens {
         .map(p -> new SafeBuilderPojoField(p.first(), p.second()));
   }
 
-  private static Generator<Pojo, PojoSettings> newBuilderMethod() {
+  public static Generator<Pojo, PojoSettings> newBuilderMethod() {
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC, STATIC)
         .noGenericTypes()
         .returnType("Builder0")
         .methodName("newBuilder")
         .noArguments()
-        .content("return new Builder0(new Builder());");
+        .content("return new Builder0(new Builder());")
+        .filter((p, s) -> s.getSafeBuilderAbility().isEnabled());
   }
 }

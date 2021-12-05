@@ -7,6 +7,7 @@ import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.Resources;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
+import io.github.muehmar.pojoextension.generator.data.settings.DiscreteBuilder;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,21 @@ class ExtensionGensTest {
             .asString();
 
     assertEquals(readResourcePojoTemplate("SamplePojo"), output);
+  }
+
+  @Test
+  void extensionClass_when_withNonDiscreteBuilder_then_correctClassGenerated() {
+    final Generator<Pojo, PojoSettings> generator = ExtensionGens.extensionClass();
+
+    final String output =
+        generator
+            .generate(
+                Pojos.sample(),
+                PojoSettings.defaultSettings().withDiscreteBuilder(DiscreteBuilder.DISABLED),
+                Writer.createDefault())
+            .asString();
+
+    assertEquals(readResourcePojoTemplate("SamplePojoIncludingSafeBuilder"), output);
   }
 
   @Test

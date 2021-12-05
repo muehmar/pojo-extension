@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.annotations;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /** Defines how optional fields in a pojo are detected. */
 public enum OptionalDetection {
@@ -15,5 +16,9 @@ public enum OptionalDetection {
   OPTIONAL_CLASS,
 
   /** A field is considered as optional in case it is annotated with {@link Nullable}. */
-  NULLABLE_ANNOTATION
+  NULLABLE_ANNOTATION;
+
+  public static Optional<OptionalDetection> fromString(String name) {
+    return Stream.of(values()).filter(od -> od.name().equals(name)).findFirst();
+  }
 }

@@ -6,7 +6,6 @@ import static io.github.muehmar.pojoextension.generator.data.Type.integer;
 import static io.github.muehmar.pojoextension.generator.data.Type.primitiveBoolean;
 import static io.github.muehmar.pojoextension.generator.data.Type.string;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.Nullable;
@@ -22,24 +21,13 @@ import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.Type;
-import io.github.muehmar.pojoextension.generator.data.settings.Ability;
-import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
-import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
-import org.joor.CompileOptions;
-import org.joor.Reflect;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-class PojoExtensionProcessorTest {
-
-  private static final PackageName PACKAGE = PackageName.fromString("io.github.muehmar");
+class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
 
   @Test
   void run_when_simplePojo_then_correctPojoCreated() {
@@ -67,7 +55,7 @@ class PojoExtensionProcessorTest {
             PList.single(new Constructor(className, fields.map(PojoFields::toArgument))),
             PList.empty());
 
-    assertEquals(expected, pojoAndSettings.pojo);
+    assertEquals(expected, pojoAndSettings.getPojo());
   }
 
   @Test
@@ -97,7 +85,7 @@ class PojoExtensionProcessorTest {
             PList.single(new Constructor(className, fields.map(PojoFields::toArgument))),
             PList.empty());
 
-    assertEquals(expected, pojoAndSettings.pojo);
+    assertEquals(expected, pojoAndSettings.getPojo());
   }
 
   @Test
@@ -127,7 +115,7 @@ class PojoExtensionProcessorTest {
             PList.single(new Constructor(className, fields.map(PojoFields::toArgument))),
             PList.empty());
 
-    assertEquals(expected, pojoAndSettings.pojo);
+    assertEquals(expected, pojoAndSettings.getPojo());
   }
 
   @ParameterizedTest
@@ -141,7 +129,7 @@ class PojoExtensionProcessorTest {
         TestPojoComposer.ofPackage(PACKAGE)
             .withImport(PojoExtension.class)
             .withImport(Nullable.class)
-            .annotation(
+            .annotationEnumParam(
                 PojoExtension.class,
                 "optionalDetection",
                 OptionalDetection.class,
@@ -166,7 +154,7 @@ class PojoExtensionProcessorTest {
             PList.single(new Constructor(className, fields.map(PojoFields::toArgument))),
             PList.empty());
 
-    assertEquals(expected, pojoAndSettings.pojo);
+    assertEquals(expected, pojoAndSettings.getPojo());
   }
 
   @ParameterizedTest
@@ -180,7 +168,7 @@ class PojoExtensionProcessorTest {
         TestPojoComposer.ofPackage(PACKAGE)
             .withImport(PojoExtension.class)
             .withImport(Optional.class)
-            .annotation(
+            .annotationEnumParam(
                 PojoExtension.class,
                 "optionalDetection",
                 OptionalDetection.class,
@@ -209,7 +197,7 @@ class PojoExtensionProcessorTest {
                     className, PList.single(new Argument(Name.fromString("id"), Type.string())))),
             PList.empty());
 
-    assertEquals(expected, pojoAndSettings.pojo);
+    assertEquals(expected, pojoAndSettings.getPojo());
   }
 
   @Test
@@ -252,7 +240,7 @@ class PojoExtensionProcessorTest {
             PList.single(new Constructor(className, fields.map(PojoFields::toArgument))),
             PList.empty());
 
-    assertEquals(expected, pojoAndSettings.pojo);
+    assertEquals(expected, pojoAndSettings.getPojo());
   }
 
   @Test
@@ -287,7 +275,7 @@ class PojoExtensionProcessorTest {
             PList.single(new Constructor(className, fields.map(PojoFields::toArgument))),
             PList.empty());
 
-    assertEquals(expected, pojoAndSettings.pojo);
+    assertEquals(expected, pojoAndSettings.getPojo());
   }
 
   @Test
@@ -324,7 +312,7 @@ class PojoExtensionProcessorTest {
                 .setReturnType(primitiveBoolean())
                 .build());
 
-    assertEquals(expected, pojoAndSettings.pojo.getGetters());
+    assertEquals(expected, pojoAndSettings.getPojo().getGetters());
   }
 
   @Test
@@ -354,7 +342,7 @@ class PojoExtensionProcessorTest {
                 .setFieldName(Name.fromString("key"))
                 .build());
 
-    assertEquals(expected, pojoAndSettings.pojo.getGetters());
+    assertEquals(expected, pojoAndSettings.getPojo().getGetters());
   }
 
   @Test
@@ -384,203 +372,6 @@ class PojoExtensionProcessorTest {
             PList.single(new Constructor(className, fields.map(PojoFields::toArgument))),
             PList.empty());
 
-    assertEquals(expected, pojoAndSettings.pojo);
-  }
-
-  @Test
-  void run_when_extensionNotInherited_then_extensionUsageStatic() {
-    final Name className = randomClassName();
-
-    final String classString =
-        TestPojoComposer.ofPackage(PACKAGE)
-            .withImport(PojoExtension.class)
-            .annotation(PojoExtension.class)
-            .className(className)
-            .create();
-
-    final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className), classString);
-
-    assertEquals(ExtensionUsage.STATIC, pojoAndSettings.settings.getExtensionUsage());
-  }
-
-  @Test
-  void run_when_extensionInherited_then_extensionUsageInherited() {
-    // Use fixed class names here, see: https://github.com/jOOQ/jOOR/issues/117
-    final Name className = Name.fromString("Customerf8a97e457a");
-    final Name extensionClassName = className.append("Extension");
-
-    final String classString =
-        TestPojoComposer.ofPackage(PACKAGE)
-            .withImport(PojoExtension.class)
-            .annotation(PojoExtension.class)
-            .className(className.append(" extends ").append(extensionClassName))
-            .create()
-            .concat(String.format("class %s {}\n", extensionClassName));
-
-    final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className), classString);
-
-    assertEquals(ExtensionUsage.INHERITED, pojoAndSettings.settings.getExtensionUsage());
-  }
-
-  @Test
-  void run_when_extendAnotherClass_then_extensionUsageStatic() {
-    final Name className = randomClassName();
-
-    final String classString =
-        TestPojoComposer.ofPackage(PACKAGE)
-            .withImport(PojoExtension.class)
-            .withImport(ArrayList.class)
-            .annotation(PojoExtension.class)
-            .className(className.append(" extends ArrayList<String>"))
-            .create();
-
-    final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className), classString);
-
-    assertEquals(ExtensionUsage.STATIC, pojoAndSettings.settings.getExtensionUsage());
-  }
-
-  @Test
-  void run_when_disabledSafeBuilder_then_correctSettings() {
-    final Name className = randomClassName();
-
-    final String classString =
-        TestPojoComposer.ofPackage(PACKAGE)
-            .withImport(PojoExtension.class)
-            .annotationBooleanParam(PojoExtension.class, "enableSafeBuilder", false)
-            .className(className)
-            .create();
-
-    final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className), classString);
-
-    assertEquals(
-        PojoSettings.defaultSettings()
-            .withExtensionUsage(ExtensionUsage.STATIC)
-            .withSafeBuilderAbility(Ability.DISABLED),
-        pojoAndSettings.settings);
-  }
-
-  @Test
-  void run_when_disabledEqualsAndHashCode_then_correctSettings() {
-    final Name className = randomClassName();
-
-    final String classString =
-        TestPojoComposer.ofPackage(PACKAGE)
-            .withImport(PojoExtension.class)
-            .annotationBooleanParam(PojoExtension.class, "enableEqualsAndHashCode", false)
-            .className(className)
-            .create();
-
-    final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className), classString);
-
-    assertEquals(
-        PojoSettings.defaultSettings()
-            .withExtensionUsage(ExtensionUsage.STATIC)
-            .withEqualsHashCodeAbility(Ability.DISABLED),
-        pojoAndSettings.settings);
-  }
-
-  @Test
-  void run_when_disabledToString_then_correctSettings() {
-    final Name className = randomClassName();
-
-    final String classString =
-        TestPojoComposer.ofPackage(PACKAGE)
-            .withImport(PojoExtension.class)
-            .annotationBooleanParam(PojoExtension.class, "enableToString", false)
-            .className(className)
-            .create();
-
-    final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className), classString);
-
-    assertEquals(
-        PojoSettings.defaultSettings()
-            .withExtensionUsage(ExtensionUsage.STATIC)
-            .withToStringAbility(Ability.DISABLED),
-        pojoAndSettings.settings);
-  }
-
-  @Test
-  void run_when_disabledWithers_then_correctSettings() {
-    final Name className = randomClassName();
-
-    final String classString =
-        TestPojoComposer.ofPackage(PACKAGE)
-            .withImport(PojoExtension.class)
-            .annotationBooleanParam(PojoExtension.class, "enableWithers", false)
-            .className(className)
-            .create();
-
-    final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className), classString);
-
-    assertEquals(
-        PojoSettings.defaultSettings()
-            .withExtensionUsage(ExtensionUsage.STATIC)
-            .withWithersAbility(Ability.DISABLED),
-        pojoAndSettings.settings);
-  }
-
-  @Test
-  void run_when_disabledMappers_then_correctSettings() {
-    final Name className = randomClassName();
-
-    final String classString =
-        TestPojoComposer.ofPackage(PACKAGE)
-            .withImport(PojoExtension.class)
-            .annotationBooleanParam(PojoExtension.class, "enableMappers", false)
-            .className(className)
-            .create();
-
-    final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className), classString);
-
-    assertEquals(
-        PojoSettings.defaultSettings()
-            .withExtensionUsage(ExtensionUsage.STATIC)
-            .withMappersAbility(Ability.DISABLED),
-        pojoAndSettings.settings);
-  }
-
-  private static Name randomClassName() {
-    return Name.fromString("Customer")
-        .append(UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10));
-  }
-
-  private static Name qualifiedClassName(Name className) {
-    return className.prefix(".").prefix(PACKAGE.asString());
-  }
-
-  private static PojoAndSettings runAnnotationProcessor(Name name, String content) {
-    final AtomicReference<PojoAndSettings> ref = new AtomicReference<>();
-    final PojoExtensionProcessor pojoExtensionProcessor =
-        new PojoExtensionProcessor(
-            ((pojo, settings) -> ref.set(new PojoAndSettings(pojo, settings))));
-
-    try {
-      Reflect.compile(
-          name.asString(), content, new CompileOptions().processors(pojoExtensionProcessor));
-    } catch (Exception e) {
-      Assertions.fail("Compilation failed: " + e.getMessage());
-    }
-    final PojoAndSettings pojoAndSettings = ref.get();
-    assertNotNull(pojoAndSettings, "Output not redirected");
-
-    return pojoAndSettings;
-  }
-
-  private static class PojoAndSettings {
-    private final Pojo pojo;
-    private final PojoSettings settings;
-
-    public PojoAndSettings(Pojo pojo, PojoSettings settings) {
-      this.pojo = pojo;
-      this.settings = settings;
-    }
+    assertEquals(expected, pojoAndSettings.getPojo());
   }
 }

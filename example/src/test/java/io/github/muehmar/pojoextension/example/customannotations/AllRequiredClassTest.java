@@ -1,4 +1,4 @@
-package io.github.muehmar.pojoextension.example;
+package io.github.muehmar.pojoextension.example.customannotations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -10,7 +10,7 @@ class AllRequiredClassTest {
   @Test
   void newBuilder_when_used_then_noOptionalFieldsPresent() {
     final AllRequiredClass allRequiredClass =
-        AllRequiredClass.newBuilder()
+        AllRequiredClassBuilder.create()
             .setId("id")
             .setFlag(Optional.of(true))
             .setAge(30)

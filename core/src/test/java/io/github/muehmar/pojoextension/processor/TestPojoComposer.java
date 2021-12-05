@@ -33,14 +33,20 @@ public class TestPojoComposer {
       return this;
     }
 
-    public <T extends Enum<T>> ClassAnnotations annotation(
+    public <T extends Enum<T>> ClassAnnotations annotationEnumParam(
         Class<?> annotation, String metaName, Class<T> metaType, T metaValue) {
-      return new ClassAnnotations(builder).annotation(annotation, metaName, metaType, metaValue);
+      return new ClassAnnotations(builder)
+          .annotationEnumParam(annotation, metaName, metaType, metaValue);
     }
 
     public ClassAnnotations annotationBooleanParam(
         Class<?> annotation, String parameterName, boolean value) {
       return new ClassAnnotations(builder).annotationBooleanParam(annotation, parameterName, value);
+    }
+
+    public ClassAnnotations annotationStringParam(
+        Class<?> annotation, String parameterName, String value) {
+      return new ClassAnnotations(builder).annotationStringParam(annotation, parameterName, value);
     }
 
     public ClassAnnotations annotation(Class<?> annotation) {
@@ -68,7 +74,7 @@ public class TestPojoComposer {
       return this;
     }
 
-    public <T extends Enum<T>> ClassAnnotations annotation(
+    public <T extends Enum<T>> ClassAnnotations annotationEnumParam(
         Class<?> annotation, String metaName, Class<T> metaType, T metaValue) {
       builder.append(
           String.format(
@@ -81,6 +87,13 @@ public class TestPojoComposer {
         Class<?> annotation, String parameterName, boolean value) {
       builder.append(
           String.format("@%s(%s = %s)\n", annotation.getSimpleName(), parameterName, value));
+      return this;
+    }
+
+    public ClassAnnotations annotationStringParam(
+        Class<?> annotation, String parameterName, String value) {
+      builder.append(
+          String.format("@%s(%s = \"%s\")\n", annotation.getSimpleName(), parameterName, value));
       return this;
     }
 
