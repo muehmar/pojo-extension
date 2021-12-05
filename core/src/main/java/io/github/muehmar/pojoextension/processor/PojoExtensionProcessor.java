@@ -5,15 +5,15 @@ import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.INHERITED;
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.STATIC;
-import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getBuilderName;
-import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getDiscreteBuilder;
-import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getEnableEqualsAndHashCode;
-import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getEnableMappers;
-import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getEnableSafeBuilder;
-import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getEnableToString;
-import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getEnableWithers;
-import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getExtensionName;
-import static io.github.muehmar.pojoextension.processor.data.AnnotationValueExtractor.getOptionalDetection;
+import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getBuilderName;
+import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getDiscreteBuilder;
+import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableEqualsAndHashCode;
+import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableMappers;
+import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableSafeBuilder;
+import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableToString;
+import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableWithers;
+import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getExtensionName;
+import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getOptionalDetection;
 
 import ch.bluecare.commons.data.PList;
 import com.google.auto.service.AutoService;
@@ -92,29 +92,27 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .filter(TypeElement.class::isInstance)
         .map(TypeElement.class::cast)
         .distinct(Object::toString)
-        .map(
-            classElement -> {
-              final PList<AnnotationMirror> path = findAnnotationPath(classElement, PList.empty());
-              return ElementAndAnnotationPath.of(classElement, path);
-            })
-        .forEach(
-            elementAndPath -> {
-              final PojoSettings pojoSettings =
-                  extractSettingsFromAnnotationPath(
-                      elementAndPath.getPath(), PojoSettings.defaultSettings());
-              final Type pojoType = Type.fromClassName(elementAndPath.getClassElement().toString());
-              final Name className = pojoType.getName();
-              final PackageName classPackage = pojoType.getPackage();
-              final Pojo pojo =
-                  extractPojo(
-                      elementAndPath.getClassElement(), pojoSettings, className, classPackage);
-              final PojoSettings pojoSettings1 =
-                  deviateExtensionUsage(elementAndPath.getClassElement(), pojoSettings, pojo);
-
-              outputPojo(pojo, pojoSettings1);
-            });
+        .flatMapOptional(this::findAnnotationPath)
+        .forEach(this::processElementAndPath);
 
     return false;
+  }
+
+  private void processElementAndPath(ElementAndAnnotationPath elementAndPath) {
+    final PojoSettings pojoSettings = extractSettingsFromAnnotationPath(elementAndPath.getPath());
+    final TypeElement classElement = elementAndPath.getClassElement();
+    final Type pojoType = Type.fromClassName(classElement.toString());
+    final Name className = pojoType.getName();
+    final PackageName classPackage = pojoType.getPackage();
+    final Pojo pojo = extractPojo(classElement, pojoSettings, className, classPackage);
+
+    outputPojo(pojo, deviateExtensionUsage(classElement, pojoSettings, pojo));
+  }
+
+  private Optional<ElementAndAnnotationPath> findAnnotationPath(TypeElement element) {
+    return Optional.of(findAnnotationPath(element, PList.empty()))
+        .filter(PList::nonEmpty)
+        .map(path -> new ElementAndAnnotationPath(element, path));
   }
 
   private PList<AnnotationMirror> findAnnotationPath(
@@ -180,6 +178,10 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             : STATIC;
 
     return settings.withExtensionUsage(extensionUsage);
+  }
+
+  private PojoSettings extractSettingsFromAnnotationPath(PList<AnnotationMirror> annotations) {
+    return extractSettingsFromAnnotationPath(annotations, PojoSettings.defaultSettings());
   }
 
   private PojoSettings extractSettingsFromAnnotationPath(

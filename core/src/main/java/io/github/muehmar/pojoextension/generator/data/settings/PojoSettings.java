@@ -120,7 +120,8 @@ public class PojoSettings extends PojoSettingsExtension {
   }
 
   public Name builderName(Pojo pojo) {
-    return pojo.getName().map(n -> n.replace(".", "")).append("Builder");
+    return builderName.orElseGet(
+        () -> pojo.getName().map(n -> n.replace(".", "")).append("Builder"));
   }
 
   public JavaModifier getStaticMethodAccessModifier() {

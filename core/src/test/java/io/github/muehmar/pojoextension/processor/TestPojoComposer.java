@@ -33,9 +33,10 @@ public class TestPojoComposer {
       return this;
     }
 
-    public <T extends Enum<T>> ClassAnnotations annotation(
+    public <T extends Enum<T>> ClassAnnotations annotationEnumParam(
         Class<?> annotation, String metaName, Class<T> metaType, T metaValue) {
-      return new ClassAnnotations(builder).annotation(annotation, metaName, metaType, metaValue);
+      return new ClassAnnotations(builder)
+          .annotationEnumParam(annotation, metaName, metaType, metaValue);
     }
 
     public ClassAnnotations annotationBooleanParam(
@@ -73,7 +74,7 @@ public class TestPojoComposer {
       return this;
     }
 
-    public <T extends Enum<T>> ClassAnnotations annotation(
+    public <T extends Enum<T>> ClassAnnotations annotationEnumParam(
         Class<?> annotation, String metaName, Class<T> metaType, T metaValue) {
       builder.append(
           String.format(

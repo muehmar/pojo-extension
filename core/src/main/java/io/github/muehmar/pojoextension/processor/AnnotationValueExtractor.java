@@ -1,4 +1,4 @@
-package io.github.muehmar.pojoextension.processor.data;
+package io.github.muehmar.pojoextension.processor;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.Optionals;

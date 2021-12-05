@@ -6,6 +6,4 @@ import io.github.muehmar.pojoextension.annotations.PojoExtension;
 @PojoExtension(optionalDetection = OptionalDetection.NONE)
 public @interface AllRequiredExtension {
   String extensionName() default "";
-
-  boolean enableMappers() default false;
 }
