@@ -62,6 +62,7 @@ import javax.tools.JavaFileObject;
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @AutoService(Processor.class)
 public class PojoExtensionProcessor extends AbstractProcessor {
+  private static final int MAX_ANNOTATION_PATH_DEPTH = 50;
 
   private final Optional<BiConsumer<Pojo, PojoSettings>> redirectPojo;
   private final Generator<Pojo, PojoSettings> extensionGenerator = ExtensionGens.extensionClass();
@@ -117,6 +118,10 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
   private PList<AnnotationMirror> findAnnotationPath(
       Element currentElement, PList<AnnotationMirror> currentPath) {
+    if (currentPath.size() >= MAX_ANNOTATION_PATH_DEPTH) {
+      return PList.empty();
+    }
+
     final PList<AnnotationMirror> annotationMirrors =
         PList.fromIter(currentElement.getAnnotationMirrors()).map(a -> a);
     final Optional<AnnotationMirror> pojoExtension =
@@ -133,6 +138,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .orElseGet(
             () ->
                 annotationMirrors
+                    .filter(a -> not(currentPath.exists(a::equals)))
                     .map(
                         a ->
                             findAnnotationPath(
