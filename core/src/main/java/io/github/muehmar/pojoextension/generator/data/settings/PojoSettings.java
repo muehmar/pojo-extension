@@ -52,7 +52,7 @@ public class PojoSettings extends PojoSettingsExtension {
   }
 
   public static PojoSettings defaultSettings() {
-    return newBuilder()
+    return PojoSettingsBuilder.create()
         .setOptionalDetections(
             PList.of(OptionalDetection.OPTIONAL_CLASS, OptionalDetection.NULLABLE_ANNOTATION))
         .setExtensionUsage(INHERITED)

@@ -15,6 +15,7 @@ import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.data.Argument;
 import io.github.muehmar.pojoextension.generator.data.Constructor;
 import io.github.muehmar.pojoextension.generator.data.Getter;
+import io.github.muehmar.pojoextension.generator.data.GetterBuilder;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Necessity;
 import io.github.muehmar.pojoextension.generator.data.PackageName;
@@ -302,12 +303,15 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
 
     final PList<Getter> expected =
         PList.of(
-            Getter.newBuilder()
+            GetterBuilder.create()
                 .setName(Name.fromString("getData"))
                 .setReturnType(Type.optional(string()))
                 .build(),
-            Getter.newBuilder().setName(Name.fromString("getKey")).setReturnType(integer()).build(),
-            Getter.newBuilder()
+            GetterBuilder.create()
+                .setName(Name.fromString("getKey"))
+                .setReturnType(integer())
+                .build(),
+            GetterBuilder.create()
                 .setName(Name.fromString("isFlag"))
                 .setReturnType(primitiveBoolean())
                 .build());
@@ -335,7 +339,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
 
     final PList<Getter> expected =
         PList.of(
-            Getter.newBuilder()
+            GetterBuilder.create()
                 .setName(Name.fromString("getKey"))
                 .setReturnType(Type.integer())
                 .andOptionals()

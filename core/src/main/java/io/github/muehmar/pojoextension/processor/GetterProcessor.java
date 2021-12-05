@@ -2,6 +2,7 @@ package io.github.muehmar.pojoextension.processor;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.data.Getter;
+import io.github.muehmar.pojoextension.generator.data.GetterBuilder;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class GetterProcessor {
               final Optional<Name> fieldName = extractFieldName(e);
               final Name methodName = Name.fromString(e.getSimpleName().toString());
               final Type returnType = TypeMirrorMapper.map(e.getReturnType());
-              return Getter.newBuilder()
+              return GetterBuilder.create()
                   .setName(methodName)
                   .setReturnType(returnType)
                   .andAllOptionals()

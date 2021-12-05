@@ -22,7 +22,7 @@ class PojoTest {
             .zip(pojo.getConstructors().head().getArguments())
             .map(p -> new FieldArgument(p.first(), p.second(), SAME_TYPE));
     final MatchingConstructor expected =
-        MatchingConstructor.newBuilder()
+        MatchingConstructorBuilder.create()
             .setConstructor(pojo.getConstructors().head())
             .setFieldArguments(fieldArguments)
             .build();

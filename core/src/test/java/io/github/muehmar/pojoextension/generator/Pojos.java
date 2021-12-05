@@ -10,6 +10,7 @@ import io.github.muehmar.pojoextension.generator.data.Getter;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
+import io.github.muehmar.pojoextension.generator.data.PojoBuilder;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.Type;
 
@@ -28,7 +29,7 @@ public class Pojos {
     final PList<Getter> getters = fields.map(PojoFields::toGetter);
 
     final Pojo pojo =
-        Pojo.newBuilder()
+        PojoBuilder.create()
             .setName(Name.fromString("Customer"))
             .setPkg(PACKAGE_NAME)
             .setFields(fields)

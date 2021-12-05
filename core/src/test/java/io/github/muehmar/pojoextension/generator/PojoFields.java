@@ -5,6 +5,7 @@ import static io.github.muehmar.pojoextension.generator.data.Type.string;
 
 import io.github.muehmar.pojoextension.generator.data.Argument;
 import io.github.muehmar.pojoextension.generator.data.Getter;
+import io.github.muehmar.pojoextension.generator.data.GetterBuilder;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.Type;
@@ -28,6 +29,6 @@ public class PojoFields {
   public static Getter toGetter(PojoField f) {
     final Type returnType =
         f.isOptional() && !f.getType().isOptional() ? Type.optional(f.getType()) : f.getType();
-    return Getter.newBuilder().setName(Getter.getterName(f)).setReturnType(returnType).build();
+    return GetterBuilder.create().setName(Getter.getterName(f)).setReturnType(returnType).build();
   }
 }

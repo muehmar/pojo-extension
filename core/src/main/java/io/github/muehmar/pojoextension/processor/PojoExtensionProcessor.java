@@ -27,6 +27,7 @@ import io.github.muehmar.pojoextension.generator.data.Getter;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
+import io.github.muehmar.pojoextension.generator.data.PojoBuilder;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.Ability;
@@ -161,7 +162,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             .filter(this::isNonConstantField)
             .map(e -> convertToPojoField(e, detectionSettings));
 
-    return Pojo.newBuilder()
+    return PojoBuilder.create()
         .setName(className)
         .setPkg(classPackage)
         .setFields(fields)
