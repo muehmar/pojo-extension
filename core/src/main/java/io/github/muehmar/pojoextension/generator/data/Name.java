@@ -63,6 +63,10 @@ public class Name {
     return value.startsWith(str);
   }
 
+  public Name replace(Name oldName, Name newName) {
+    return map(s -> s.replace(oldName.asString(), newName.asString()));
+  }
+
   public int length() {
     return value.length();
   }

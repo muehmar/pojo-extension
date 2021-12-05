@@ -2,7 +2,6 @@ package io.github.muehmar.pojoextension.generator.data.settings;
 
 import static io.github.muehmar.pojoextension.generator.data.settings.Ability.ENABLED;
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.INHERITED;
-import static java.util.Optional.empty;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
@@ -15,6 +14,9 @@ import java.util.Optional;
 @PojoExtension
 @SuppressWarnings("java:S2160")
 public class PojoSettings extends PojoSettingsExtension {
+  private static final Name CLASS_NAME_PLACEHOLDER = Name.fromString("{CLASSNAME}");
+  public static final Name BUILDER_CLASS_POSTFIX = Name.fromString("Builder");
+  public static final Name EXTENSION_CLASS_POSTFIX = Name.fromString("Extension");
   private final PList<OptionalDetection> optionalDetections;
   private final ExtensionUsage extensionUsage;
   private final Optional<Name> extensionName;
@@ -61,8 +63,8 @@ public class PojoSettings extends PojoSettingsExtension {
         .setWithersAbility(ENABLED)
         .setMappersAbility(ENABLED)
         .andAllOptionals()
-        .setExtensionName(empty())
-        .setBuilderName(empty())
+        .setExtensionName(Optional.of(CLASS_NAME_PLACEHOLDER.append(EXTENSION_CLASS_POSTFIX)))
+        .setBuilderName(Optional.of(CLASS_NAME_PLACEHOLDER.append(BUILDER_CLASS_POSTFIX)))
         .build();
   }
 
@@ -111,8 +113,7 @@ public class PojoSettings extends PojoSettingsExtension {
   }
 
   public Name extensionName(Pojo pojo) {
-    return extensionName.orElseGet(
-        () -> pojo.getName().map(n -> n.replace(".", "")).append("Extension"));
+    return getNameOrAppend(extensionName, EXTENSION_CLASS_POSTFIX, pojo);
   }
 
   public Name qualifiedBuilderName(Pojo pojo) {
@@ -120,8 +121,16 @@ public class PojoSettings extends PojoSettingsExtension {
   }
 
   public Name builderName(Pojo pojo) {
-    return builderName.orElseGet(
-        () -> pojo.getName().map(n -> n.replace(".", "")).append("Builder"));
+    return getNameOrAppend(builderName, BUILDER_CLASS_POSTFIX, pojo);
+  }
+
+  private Name getNameOrAppend(Optional<Name> name, Name postfix, Pojo pojo) {
+    return name.map(n -> n.replace(CLASS_NAME_PLACEHOLDER, getClassName(pojo)))
+        .orElseGet(() -> getClassName(pojo).append(postfix));
+  }
+
+  private Name getClassName(Pojo pojo) {
+    return pojo.getName().map(n -> n.replace(".", ""));
   }
 
   public JavaModifier getStaticMethodAccessModifier() {

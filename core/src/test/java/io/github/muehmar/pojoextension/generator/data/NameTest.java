@@ -17,4 +17,12 @@ class NameTest {
     assertEquals("xIndex", Name.fromString("xIndex").javaBeansName().asString());
     assertEquals("XxIndex", Name.fromString("xxIndex").javaBeansName().asString());
   }
+
+  @Test
+  void replace_when_called_then_oldNameReplaceWithNew() {
+    final Name name = Name.fromString("HelloWorld!");
+    assertEquals(
+        "HelloReplace!",
+        name.replace(Name.fromString("World"), Name.fromString("Replace")).asString());
+  }
 }

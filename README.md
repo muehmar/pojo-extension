@@ -308,9 +308,9 @@ The annotation contains the following parameters:
 | Parameter | Default value | Description |
 | --- | --- | --- |
 |`optionalDetection`| [OPTIONAL_CLASS, NULLABLE_ANNOTATION] | Defines how optional fields in data class are detected by the processor. See the next section for details. |
-| `extensionName` | See description | Allows to override the default name of the created extension class which is the data class name followed by 'Extension'.
+| `extensionName` | "{CLASSNAME}Extension" | Allows to override the default name of the created extension. `{CLASSNAME}` gets replaced by the name of the data class.
 | `enableSafeBuilder` | true | Allows to disable the generation of the safe builder
-| `builderName` | See description | Allows to override the default name of the discrete builder. Ignored if `discreteBuilder` is false. The default builder name is the data class name followed by 'Builder'.
+| `builderName` | "{CLASSNAME}Builder" | Allows to override the default name of the discrete builder. `{CLASSNAME}` gets replaced by the name of the data class. Ignored if `discreteBuilder` is false.
 | `discreteBuilder` | true | Creates a discrete builder class if true. If set to false, the builder is part of the extension class.
 | `enableEqualsAndHashCode` | true | Allows to disable the generation the equals and hashCode method
 | `enableToString` | true | Allows to disable the generation the toString method

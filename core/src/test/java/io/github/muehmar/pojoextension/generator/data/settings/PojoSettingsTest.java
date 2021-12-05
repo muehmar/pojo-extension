@@ -34,6 +34,15 @@ class PojoSettingsTest {
   }
 
   @Test
+  void extensionName_when_overriddenExtensionNameWithClassname_then_customExtensionNameCreated() {
+    final Name name =
+        PojoSettings.defaultSettings()
+            .withExtensionName(Name.fromString("{CLASSNAME}Ext"))
+            .extensionName(Pojos.sample());
+    assertEquals("CustomerExt", name.asString());
+  }
+
+  @Test
   void qualifiedExtensionName_when_calledWithSamplePojo_then_correctExtensionName() {
     final Name name = PojoSettings.defaultSettings().qualifiedExtensionName(Pojos.sample());
     assertEquals("io.github.muehmar.CustomerExtension", name.asString());
@@ -68,6 +77,15 @@ class PojoSettingsTest {
             .withBuilderName(Name.fromString("MyBuilder"))
             .builderName(Pojos.sample());
     assertEquals("MyBuilder", name.asString());
+  }
+
+  @Test
+  void builderName_when_overriddenBuilderNameWithClassname_then_customBuilderNameCreated() {
+    final Name name =
+        PojoSettings.defaultSettings()
+            .withBuilderName(Name.fromString("{CLASSNAME}SafeBuilder"))
+            .builderName(Pojos.sample());
+    assertEquals("CustomerSafeBuilder", name.asString());
   }
 
   @Test

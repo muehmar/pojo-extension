@@ -1,8 +1,8 @@
 package io.github.muehmar.pojoextension.example.safebuilder;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 class BuilderClassTest {
 
