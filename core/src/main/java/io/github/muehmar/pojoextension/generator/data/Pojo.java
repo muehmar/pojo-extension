@@ -4,9 +4,9 @@ import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.Optional;
 
-@PojoExtension
+@PojoExtension(extensionName = "{CLASSNAME}Ext")
 @SuppressWarnings("java:S2160")
-public class Pojo extends io.github.muehmar.pojoextension.generator.data.PojoExtension {
+public class Pojo extends PojoExt {
   private final Name name;
   private final PackageName pkg;
   private final PList<PojoField> fields;
@@ -54,9 +54,7 @@ public class Pojo extends io.github.muehmar.pojoextension.generator.data.PojoExt
   }
 
   public MatchingConstructor getMatchingConstructorOrThrow() {
-    return constructors
-        .flatMapOptional(c -> c.matchFields(fields).map(f -> new MatchingConstructor(c, f)))
-        .headOption()
+    return findMatchingConstructor()
         .orElseThrow(() -> new IllegalArgumentException(noMatchingConstructorMessage()));
   }
 
@@ -73,9 +71,7 @@ public class Pojo extends io.github.muehmar.pojoextension.generator.data.PojoExt
   }
 
   public FieldGetter getMatchingGetterOrThrow(PojoField field) {
-    return getters
-        .flatMapOptional(g -> g.getFieldGetter(field))
-        .headOption()
+    return findMatchingGetter(field)
         .orElseThrow(() -> new IllegalArgumentException(noGetterFoundMessage(field)));
   }
 
