@@ -75,7 +75,7 @@ public class NormalBuilderGens {
         .noGenericTypes()
         .returnType(BUILDER_CLASSNAME)
         .methodName(f -> String.format("set%s", f.getName().toPascalCase()))
-        .singleArgument(f -> String.format("%s %s", f.getType().getClassName(), f.getName()))
+        .singleArgument(f -> String.format("%s %s", f.getType().getTypeDeclaration(), f.getName()))
         .content(content)
         .append(RefsGen.fieldRefs());
   }
@@ -92,7 +92,7 @@ public class NormalBuilderGens {
         .returnType(BUILDER_CLASSNAME)
         .methodName(f -> String.format("set%s", f.getName().toPascalCase()))
         .singleArgument(
-            f -> String.format("Optional<%s> %s", f.getType().getClassName(), f.getName()))
+            f -> String.format("Optional<%s> %s", f.getType().getTypeDeclaration(), f.getName()))
         .content(content)
         .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
         .append(RefsGen.fieldRefs());

@@ -114,7 +114,7 @@ public class SafeBuilderGens {
         .singleArgument(
             f ->
                 String.format(
-                    "%s %s", f.getField().getType().getClassName(), f.getField().getName()))
+                    "%s %s", f.getField().getType().getTypeDeclaration(), f.getField().getName()))
         .content(content)
         .append(RefsGen.fieldRefs(), SafeBuilderPojoField::getField);
   }
@@ -136,7 +136,7 @@ public class SafeBuilderGens {
             f ->
                 String.format(
                     "Optional<%s> %s",
-                    f.getField().getType().getClassName(), f.getField().getName()))
+                    f.getField().getType().getTypeDeclaration(), f.getField().getName()))
         .content(content)
         .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
         .append(RefsGen.fieldRefs(), SafeBuilderPojoField::getField);

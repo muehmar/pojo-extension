@@ -11,6 +11,6 @@ public class RefsGen {
 
   public static Generator<PojoField, PojoSettings> fieldRefs() {
     return (f, s, w) ->
-        f.getType().getAllQualifiedNames().map(Name::asString).foldLeft(w, Writer::ref);
+        f.getType().getAllQualifiedTypes().map(Name::asString).foldLeft(w, Writer::ref);
   }
 }

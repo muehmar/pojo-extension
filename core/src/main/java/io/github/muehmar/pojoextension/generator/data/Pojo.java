@@ -93,7 +93,7 @@ public class Pojo extends PojoExt {
             + "%s",
         field.getName(),
         Getter.getterName(field),
-        field.getType().getClassName(),
+        field.getType().getTypeDeclaration(),
         field.getName(),
         field.getName(),
         optionalMessage);
