@@ -33,8 +33,8 @@ annotation processor.In gradle this would look like the following:
 
 ```
 dependencies {
-    compileOnly "io.github.muehmar:pojo-extension-annotations:0.7.1"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.7.1"
+    compileOnly "io.github.muehmar:pojo-extension-annotations:0.7.2"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.7.2"
 }
 ```
 
@@ -361,6 +361,7 @@ public @interface AllRequiredExtension {
 
 ## Change Log
 
+* 0.7.2 - Fix type conversion for annotated getter method for optional fields
 * 0.7.1 - Fix possible stackoverflow caused by circular annotation paths
 * 0.7.0
     * SafeBuilder can be created as discrete class

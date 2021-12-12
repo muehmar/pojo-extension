@@ -53,19 +53,19 @@ class TypeTest {
   @Test
   void getClassName_when_javaMap_then_correctNameReturned() {
     final Type type = Type.map(Type.string(), Type.integer());
-    assertEquals("Map<String,Integer>", type.getClassName().asString());
+    assertEquals("Map<String,Integer>", type.getTypeDeclaration().asString());
   }
 
   @Test
   void getQualifiedName_when_javaMap_then_correctQualifiedNameReturned() {
     final Type type = Type.map(Type.string(), Type.integer());
-    assertEquals("java.util.Map", type.getQualifiedName().asString());
+    assertEquals("java.util.Map", type.getQualifiedType().asString());
   }
 
   @Test
   void getAllQualifiedNames_when_javaMap_then_correctQualifiedNames() {
     final Type type = Type.map(Type.string(), Type.integer());
-    final PList<String> allQualifiedNames = type.getAllQualifiedNames().map(Name::asString);
+    final PList<String> allQualifiedNames = type.getAllQualifiedTypes().map(Name::asString);
     assertEquals(3, allQualifiedNames.size());
     assertTrue(allQualifiedNames.exists(JAVA_UTIL_MAP::equals));
     assertTrue(allQualifiedNames.exists(JAVA_LANG_STRING::equals));
@@ -75,13 +75,14 @@ class TypeTest {
   @Test
   void onOptional_when_typeIsOptional_then_functionAppliedWithTypeParameter() {
     final Type type = Type.optional(Type.string());
-    assertEquals(Optional.of("String"), type.onOptional(Type::getClassName).map(Name::asString));
+    assertEquals(
+        Optional.of("String"), type.onOptional(Type::getTypeDeclaration).map(Name::asString));
   }
 
   @Test
   void onOptional_when_typeIsNotOptional_then_emptyReturned() {
     final Type type = Type.map(Type.string(), Type.integer());
-    assertEquals(Optional.empty(), type.onOptional(Type::getClassName).map(Name::asString));
+    assertEquals(Optional.empty(), type.onOptional(Type::getTypeDeclaration).map(Name::asString));
   }
 
   @Test

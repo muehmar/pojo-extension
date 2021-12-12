@@ -28,7 +28,7 @@ public class WithGens {
         .singleArgument(
             wf ->
                 String.format(
-                    "%s %s", wf.getField().getType().getClassName(), wf.getField().getName()))
+                    "%s %s", wf.getField().getType().getTypeDeclaration(), wf.getField().getName()))
         .content(
             wf ->
                 String.format(
@@ -44,7 +44,8 @@ public class WithGens {
             PList.of(
                 String.format("%s self", wf.getPojo().getName()),
                 String.format(
-                    "%s %s", wf.getField().getType().getClassName(), wf.getField().getName()));
+                    "%s %s",
+                    wf.getField().getType().getTypeDeclaration(), wf.getField().getName()));
 
     return MethodGen.<WithField, PojoSettings>modifiers(
             (p, s) -> JavaModifiers.of(s.getStaticMethodAccessModifier(), STATIC))
@@ -74,7 +75,7 @@ public class WithGens {
                 wf ->
                     String.format(
                         "Optional<%s> %s",
-                        wf.getField().getType().getClassName(), wf.getField().getName()))
+                        wf.getField().getType().getTypeDeclaration(), wf.getField().getName()))
             .content(
                 wf ->
                     String.format(
@@ -95,7 +96,7 @@ public class WithGens {
                 String.format("%s self", wf.getPojo().getName()),
                 String.format(
                     "Optional<%s> %s",
-                    wf.getField().getType().getClassName(), wf.getField().getName()));
+                    wf.getField().getType().getTypeDeclaration(), wf.getField().getName()));
 
     final Generator<WithField, PojoSettings> method =
         MethodGen.<WithField, PojoSettings>modifiers(PUBLIC, STATIC)

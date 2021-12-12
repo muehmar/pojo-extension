@@ -78,6 +78,36 @@ class GetterTest {
   }
 
   @Test
+  void getFieldGetter_optionalFieldNameDoesNotMatchButFieldNameMatches_then_returnFieldGetter() {
+    final Getter getter =
+        new Getter(
+            Name.fromString("getIdentification"),
+            Type.optional(Type.string()),
+            Optional.of(Name.fromString("id")));
+    final PojoField field = new PojoField(Name.fromString("id"), Type.string(), OPTIONAL);
+
+    final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
+
+    final FieldGetter expected = new FieldGetter(getter, field, UNWRAP_OPTIONAL);
+
+    assertEquals(Optional.of(expected), fieldGetter);
+  }
+
+  @Test
+  void getFieldGetter_fieldNameMatchesButReturnTypeDoesNotForRequiredField_then_returnsEmpty() {
+    final Getter getter =
+        new Getter(
+            Name.fromString("getIdentification"),
+            Type.optional(Type.string()),
+            Optional.of(Name.fromString("id")));
+    final PojoField field = new PojoField(Name.fromString("id"), Type.string(), REQUIRED);
+
+    final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
+
+    assertEquals(Optional.empty(), fieldGetter);
+  }
+
+  @Test
   void getFieldGetter_when_returnTypeWrappedInOptionalAndFieldRequired_then_returnsEmpty() {
     final Getter getter =
         new Getter(Name.fromString("getId"), Type.optional(Type.string()), noFieldName());

@@ -101,11 +101,11 @@ public class Type extends TypeExtension {
     return name;
   }
 
-  /** Returns the class name of this type including type parameters. */
-  public Name getClassName() {
+  /** Returns the type declaration of this type, i.e. including type parameters. */
+  public Name getTypeDeclaration() {
     final Optional<Name> formattedTypeParameters =
         typeParameters
-            .map(Type::getClassName)
+            .map(Type::getTypeDeclaration)
             .reduce((s1, s2) -> s1.append(",").append(s2))
             .map(s -> s.prefix("<").append(">"));
     return getName()
@@ -113,14 +113,14 @@ public class Type extends TypeExtension {
         .append(isArray ? "[]" : "");
   }
 
-  public Name getQualifiedName() {
+  public Name getQualifiedType() {
     return name.prefix(pkg.asString() + ".");
   }
 
-  /** Returns the qualified class names of this and all generic types if any. */
-  public PList<Name> getAllQualifiedNames() {
-    return PList.single(getQualifiedName())
-        .concat(typeParameters.flatMap(Type::getAllQualifiedNames));
+  /** Returns all qualified types which this type consists of, i.e. including type parameters. */
+  public PList<Name> getAllQualifiedTypes() {
+    return PList.single(getQualifiedType())
+        .concat(typeParameters.flatMap(Type::getAllQualifiedTypes));
   }
 
   @Getter("pkg")

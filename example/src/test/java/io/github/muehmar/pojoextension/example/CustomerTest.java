@@ -29,7 +29,7 @@ class CustomerTest {
     assertEquals("Dexter", customer.getName());
     assertEquals(12.5d, customer.getRandom());
     assertArrayEquals(new byte[] {0x15}, customer.getKey());
-    assertEquals(Optional.of("Dex"), customer.getNickname());
+    assertEquals(Optional.of("Dex"), customer.getNick());
     assertEquals(Optional.empty(), customer.getAge());
   }
 
@@ -45,7 +45,7 @@ class CustomerTest {
         new Customer(
             customer1.getIdentification(),
             customer1.getName(),
-            customer1.getNickname().orElse(null),
+            customer1.getNick().orElse(null),
             customer1.getAge().orElse(null),
             customer1.getRandom(),
             customer1.getKey(),
@@ -68,7 +68,7 @@ class CustomerTest {
     final Customer c = sampleCustomer();
     assertEquals(c, c.withId(c.getIdentification()));
     assertEquals(c, c.withName(c.getName()));
-    assertEquals(c, c.withNickname(c.getNickname().orElseThrow(IllegalStateException::new)));
+    assertEquals(c, c.withNickname(c.getNick().orElseThrow(IllegalStateException::new)));
     assertEquals(c, c.withRandom(c.getRandom()));
     assertEquals(c, c.withKey(c.getKey()));
   }
@@ -76,7 +76,7 @@ class CustomerTest {
   @Test
   void with_when_calledWithOverloadedOptional_then_stillEquals() {
     final Customer c = sampleCustomer();
-    assertEquals(c, c.withNickname(c.getNickname()));
+    assertEquals(c, c.withNickname(c.getNick()));
     assertEquals(c, c.withAge(c.getAge()));
     assertEquals(c.withAge(15), c.withAge(Optional.of(15)));
     assertEquals(c.withNickname("nick"), c.withNickname(Optional.of("nick")));
