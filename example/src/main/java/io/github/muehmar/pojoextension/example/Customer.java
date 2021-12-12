@@ -47,7 +47,8 @@ public class Customer extends CustomerExtension {
     return random;
   }
 
-  public Optional<String> getNickname() {
+  @Getter("nickname")
+  public Optional<String> getNick() {
     return nickname;
   }
 

@@ -56,11 +56,10 @@ public class Getter extends GetterExtension {
   }
 
   public Optional<FieldGetter> getFieldGetter(PojoField field) {
-    if (fieldName.map(n -> n.equals(field.getName())).orElse(false)) {
-      return Optional.of(FieldGetter.of(this, field, SAME_TYPE));
-    }
+    final boolean fieldNameMatches = fieldName.map(n -> n.equals(field.getName())).orElse(false);
+    final boolean methodNameMatches = name.equals(getterName(field));
 
-    if (not(name.equals(getterName(field)))) {
+    if (not(methodNameMatches) && not(fieldNameMatches)) {
       return Optional.empty();
     }
 
@@ -71,8 +70,6 @@ public class Getter extends GetterExtension {
           : Optional.empty();
     }
 
-    return returnType
-        .getRelation(field.getType())
-        .map(relation -> FieldGetter.of(self, field, relation));
+    return returnType.getRelation(field.getType()).map(rel -> FieldGetter.of(self, field, rel));
   }
 }
