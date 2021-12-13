@@ -35,6 +35,7 @@ public class Pojos {
             .setFields(fields)
             .setConstructors(PList.empty())
             .setGetters(getters)
+            .setGenerics(PList.empty())
             .andAllOptionals()
             .build();
     return pojo.withConstructors(PList.single(deviateStandardConstructor(pojo)));

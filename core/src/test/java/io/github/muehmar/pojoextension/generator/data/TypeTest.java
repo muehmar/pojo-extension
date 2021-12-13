@@ -51,21 +51,15 @@ class TypeTest {
   }
 
   @Test
-  void getClassName_when_javaMap_then_correctNameReturned() {
+  void getTypeDeclaration_when_javaMap_then_correctNameReturned() {
     final Type type = Type.map(Type.string(), Type.integer());
     assertEquals("Map<String,Integer>", type.getTypeDeclaration().asString());
   }
 
   @Test
-  void getQualifiedName_when_javaMap_then_correctQualifiedNameReturned() {
+  void getImports_when_javaMap_then_correctQualifiedNames() {
     final Type type = Type.map(Type.string(), Type.integer());
-    assertEquals("java.util.Map", type.getQualifiedType().asString());
-  }
-
-  @Test
-  void getAllQualifiedNames_when_javaMap_then_correctQualifiedNames() {
-    final Type type = Type.map(Type.string(), Type.integer());
-    final PList<String> allQualifiedNames = type.getAllQualifiedTypes().map(Name::asString);
+    final PList<String> allQualifiedNames = type.getImports().map(Name::asString);
     assertEquals(3, allQualifiedNames.size());
     assertTrue(allQualifiedNames.exists(JAVA_UTIL_MAP::equals));
     assertTrue(allQualifiedNames.exists(JAVA_LANG_STRING::equals));

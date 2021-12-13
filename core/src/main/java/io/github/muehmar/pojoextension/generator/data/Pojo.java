@@ -12,18 +12,21 @@ public class Pojo extends PojoExt {
   private final PList<PojoField> fields;
   private final PList<Constructor> constructors;
   private final PList<Getter> getters;
+  private final PList<Generic> generics;
 
   public Pojo(
       Name name,
       PackageName pkg,
       PList<PojoField> fields,
       PList<Constructor> constructors,
-      PList<Getter> getters) {
+      PList<Getter> getters,
+      PList<Generic> generics) {
     this.name = name;
     this.pkg = pkg;
     this.fields = fields;
     this.constructors = constructors;
     this.getters = getters;
+    this.generics = generics;
   }
 
   public Name getName() {
@@ -45,6 +48,10 @@ public class Pojo extends PojoExt {
 
   public PList<Getter> getGetters() {
     return getters;
+  }
+
+  public PList<Generic> getGenerics() {
+    return generics;
   }
 
   public Optional<MatchingConstructor> findMatchingConstructor() {

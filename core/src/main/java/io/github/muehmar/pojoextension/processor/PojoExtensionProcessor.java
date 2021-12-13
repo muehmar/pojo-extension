@@ -105,7 +105,13 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     final TypeElement classElement = elementAndPath.getClassElement();
     final Type pojoType = Type.fromClassName(classElement.toString());
     final Name className = pojoType.getName();
-    final PackageName classPackage = pojoType.getPackage();
+    final PackageName classPackage =
+        pojoType
+            .getPackage()
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
+                        "Class " + className.toString() + " does not have a package"));
     final Pojo pojo = extractPojo(classElement, pojoSettings, className, classPackage);
 
     outputPojo(pojo, deviateExtensionUsage(classElement, pojoSettings, pojo));
@@ -168,6 +174,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .setFields(fields)
         .setConstructors(constructors)
         .setGetters(getters)
+        .setGenerics(PList.empty())
         .andAllOptionals()
         .build();
   }
