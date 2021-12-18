@@ -42,6 +42,10 @@ public class Type extends TypeExtension {
     this.isArray = isArray;
   }
 
+  public static Type typeVariable(Name typeVariableName) {
+    return new Type(typeVariableName, Optional.empty(), PList.empty(), false);
+  }
+
   public static PList<Type> allPrimitives() {
     return primitiveTypes;
   }
@@ -85,6 +89,11 @@ public class Type extends TypeExtension {
 
   public static Type list(Type value) {
     return new Type(Name.fromString("List"), PackageName.javaUtil(), PList.single(value), false);
+  }
+
+  public static Type comparable(Type objType) {
+    return new Type(
+        Name.fromString("Comparable"), PackageName.javaLang(), PList.single(objType), false);
   }
 
   public static Type fromClassName(String className) {

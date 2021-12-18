@@ -11,12 +11,14 @@ import static javax.lang.model.type.TypeKind.SHORT;
 import static javax.lang.model.type.TypeKind.VOID;
 
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import java.util.function.Function;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 
 public class TypeMirrorMapper {
   private static final PList<Mapper> MAPPER_MAP = createMapperMap();
@@ -40,6 +42,7 @@ public class TypeMirrorMapper {
     return PList.of(
         declaredTypeMapper(),
         arrayTypeMapper(),
+        typeVariableMapper(),
         Mapper.forFixMapping(BOOLEAN, Type.primitive("boolean")),
         Mapper.forFixMapping(CHAR, Type.primitive("char")),
         Mapper.forFixMapping(INT, Type.primitive("int")),
@@ -68,6 +71,13 @@ public class TypeMirrorMapper {
         TypeKind.ARRAY,
         ArrayType.class,
         arrayType -> map(arrayType.getComponentType()).withIsArray(true));
+  }
+
+  private static Mapper typeVariableMapper() {
+    return Mapper.forKindAndClass(
+        TypeKind.TYPEVAR,
+        TypeVariable.class,
+        typeVariable -> Type.typeVariable(Name.fromString(typeVariable.toString())));
   }
 
   private static class Mapper {
