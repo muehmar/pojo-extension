@@ -13,14 +13,14 @@ import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
+import io.github.muehmar.pojoextension.generator.data.PojoAndField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
 class NormalBuilderGensTest {
   @Test
-  void buildMethod_when_generatorUsedWithSamplePojo_then_correctOutput() {
+  void buildMethod_when_calledWithSample_then_correctOutput() {
     final Generator<Pojo, PojoSettings> generator = NormalBuilderGens.buildMethod();
     final String output =
         generator
@@ -29,6 +29,21 @@ class NormalBuilderGensTest {
 
     assertEquals(
         "public Customer build() {\n" + "  return new Customer(id, username, nickname);\n" + "}",
+        output);
+  }
+
+  @Test
+  void buildMethod_when_calledWithGenericSample_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = NormalBuilderGens.buildMethod();
+    final String output =
+        generator
+            .generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault())
+            .asString();
+
+    assertEquals(
+        "public Customer<T, S> build() {\n"
+            + "  return new Customer<>(id, data, additionalData);\n"
+            + "}",
         output);
   }
 
@@ -53,11 +68,12 @@ class NormalBuilderGensTest {
 
   @Test
   void setMethod_when_generatorUsedWithRequiredField_then_correctPrivateMethodGenerated() {
-    final Generator<PojoField, PojoSettings> generator = NormalBuilderGens.setMethod();
+    final Generator<PojoAndField, PojoSettings> generator = NormalBuilderGens.setMethod();
+
+    final PojoAndField pojoAndField = new PojoAndField(Pojos.sample(), PojoFields.requiredId());
 
     final Writer writer =
-        generator.generate(
-            PojoFields.requiredId(), PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
     final String output = writer.asString();
 
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
@@ -68,11 +84,12 @@ class NormalBuilderGensTest {
 
   @Test
   void setMethod_when_generatorUsedWithGenericType_then_correctRefs() {
-    final Generator<PojoField, PojoSettings> generator = NormalBuilderGens.setMethod();
-    final PojoField field = PojoFields.requiredMap();
+    final Generator<PojoAndField, PojoSettings> generator = NormalBuilderGens.setMethod();
+
+    final PojoAndField pojoAndField = new PojoAndField(Pojos.sample(), PojoFields.requiredMap());
 
     final Writer writer =
-        generator.generate(field, PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
     assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
@@ -81,13 +98,13 @@ class NormalBuilderGensTest {
 
   @Test
   void setMethod_when_generatorUsedWithOptionalField_then_correctPublicMethodGenerated() {
-    final Generator<PojoField, PojoSettings> generator = NormalBuilderGens.setMethod();
+    final Generator<PojoAndField, PojoSettings> generator = NormalBuilderGens.setMethod();
+
+    final PojoAndField pojoAndField =
+        new PojoAndField(Pojos.sample(), PojoFields.requiredId().withNecessity(OPTIONAL));
 
     final Writer writer =
-        generator.generate(
-            PojoFields.requiredId().withNecessity(OPTIONAL),
-            PojoSettings.defaultSettings(),
-            Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
     final String output = writer.asString();
 
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
@@ -97,14 +114,34 @@ class NormalBuilderGensTest {
   }
 
   @Test
-  void setMethodOptional_when_optionalField_then_correctPublicMethodGenerated() {
-    final Generator<PojoField, PojoSettings> generator = NormalBuilderGens.setMethodOptional();
+  void setMethod_when_fieldOfGenericClass_then_correctParameterizableBuilder() {
+    final Generator<PojoAndField, PojoSettings> generator = NormalBuilderGens.setMethod();
+
+    final PojoAndField pojoAndField =
+        new PojoAndField(Pojos.genericSample(), PojoFields.requiredId().withNecessity(OPTIONAL));
 
     final Writer writer =
-        generator.generate(
-            PojoFields.requiredId().withNecessity(OPTIONAL),
-            PojoSettings.defaultSettings(),
-            Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
+    final String output = writer.asString();
+
+    assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
+    assertEquals(
+        "public Builder<T, S> setId(Integer id) {\n"
+            + "  this.id = id;\n"
+            + "  return this;\n"
+            + "}",
+        output);
+  }
+
+  @Test
+  void setMethodOptional_when_optionalField_then_correctPublicMethodGenerated() {
+    final Generator<PojoAndField, PojoSettings> generator = NormalBuilderGens.setMethodOptional();
+
+    final PojoAndField pojoAndField =
+        new PojoAndField(Pojos.sample(), PojoFields.requiredId().withNecessity(OPTIONAL));
+
+    final Writer writer =
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
 
     final String output = writer.asString();
 
@@ -120,18 +157,40 @@ class NormalBuilderGensTest {
 
   @Test
   void setMethodOptional_when_optionalFieldWithGenericType_then_correctRefs() {
-    final Generator<PojoField, PojoSettings> generator = NormalBuilderGens.setMethodOptional();
+    final Generator<PojoAndField, PojoSettings> generator = NormalBuilderGens.setMethodOptional();
+
+    final PojoAndField pojoAndField =
+        new PojoAndField(Pojos.sample(), PojoFields.requiredMap().withNecessity(OPTIONAL));
 
     final Writer writer =
-        generator.generate(
-            PojoFields.requiredMap().withNecessity(OPTIONAL),
-            PojoSettings.defaultSettings(),
-            Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
     assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
     assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
     assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
+  }
+
+  @Test
+  void setMethodOptional_when_genericClass_then_correctPublicMethodGenerated() {
+    final Generator<PojoAndField, PojoSettings> generator = NormalBuilderGens.setMethodOptional();
+
+    final PojoAndField pojoAndField =
+        new PojoAndField(Pojos.genericSample(), PojoFields.requiredId().withNecessity(OPTIONAL));
+
+    final Writer writer =
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
+
+    final String output = writer.asString();
+
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
+    assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
+    assertEquals(
+        "public Builder<T, S> setId(Optional<Integer> id) {\n"
+            + "  this.id = id.orElse(null);\n"
+            + "  return this;\n"
+            + "}",
+        output);
   }
 
   @Test
@@ -173,6 +232,50 @@ class NormalBuilderGensTest {
             + "\n"
             + "  public Customer build() {\n"
             + "    return new Customer(id, username, nickname);\n"
+            + "  }\n"
+            + "}",
+        output);
+  }
+
+  @Test
+  void builderClass_when_generatorUsedWithGenericSamplePojo_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = NormalBuilderGens.builderClass();
+    final String output =
+        generator
+            .generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault())
+            .asString();
+
+    assertEquals(
+        "public static final class Builder<T extends List<String>, S> {\n"
+            + "  private Builder() {\n"
+            + "  }\n"
+            + "\n"
+            + "  private String id;\n"
+            + "  private T data;\n"
+            + "  private S additionalData;\n"
+            + "\n"
+            + "  private Builder<T, S> setId(String id) {\n"
+            + "    this.id = id;\n"
+            + "    return this;\n"
+            + "  }\n"
+            + "\n"
+            + "  private Builder<T, S> setData(T data) {\n"
+            + "    this.data = data;\n"
+            + "    return this;\n"
+            + "  }\n"
+            + "\n"
+            + "  public Builder<T, S> setAdditionalData(S additionalData) {\n"
+            + "    this.additionalData = additionalData;\n"
+            + "    return this;\n"
+            + "  }\n"
+            + "\n"
+            + "  public Builder<T, S> setAdditionalData(Optional<S> additionalData) {\n"
+            + "    this.additionalData = additionalData.orElse(null);\n"
+            + "    return this;\n"
+            + "  }\n"
+            + "\n"
+            + "  public Customer<T, S> build() {\n"
+            + "    return new Customer<>(id, data, additionalData);\n"
             + "  }\n"
             + "}",
         output);

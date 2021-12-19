@@ -43,6 +43,10 @@ public class Pojo extends PojoExt {
     return fields;
   }
 
+  public PList<PojoAndField> getPojoAndFields() {
+    return fields.map(f -> new PojoAndField(this, f));
+  }
+
   public PList<Constructor> getConstructors() {
     return constructors;
   }
@@ -63,8 +67,12 @@ public class Pojo extends PojoExt {
     return generics.nonEmpty() ? "<>" : "";
   }
 
-  public PList<String> getGenericTypeDeclaration() {
+  public PList<String> getGenericTypeDeclarations() {
     return generics.map(Generic::getTypeDeclaration).map(Name::asString);
+  }
+
+  public String getGenericTypeDeclarationSection() {
+    return Strings.surroundIfNotEmpty("<", getGenericTypeDeclarations().mkString(", "), ">");
   }
 
   public String getTypeVariablesSection() {

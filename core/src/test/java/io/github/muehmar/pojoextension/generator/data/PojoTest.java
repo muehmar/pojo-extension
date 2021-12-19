@@ -104,14 +104,26 @@ class PojoTest {
   }
 
   @Test
-  void getGenericDefinitions_when_calledForNonGenericSample_then_empty() {
-    assertEquals(PList.empty(), Pojos.sample().getGenericTypeDeclaration());
+  void getGenericTypeDeclarations_when_calledForNonGenericSample_then_empty() {
+    assertEquals(PList.empty(), Pojos.sample().getGenericTypeDeclarations());
   }
 
   @Test
-  void getGenericDefinitions_when_calledForGenericSample_then_empty() {
+  void getGenericTypeDeclarations_when_calledForGenericSample_then_empty() {
     assertEquals(
-        PList.of("T extends List<String>", "S"), Pojos.genericSample().getGenericTypeDeclaration());
+        PList.of("T extends List<String>", "S"),
+        Pojos.genericSample().getGenericTypeDeclarations());
+  }
+
+  @Test
+  void getGenericTypeDeclarationSection_when_calledForNonGenericSample_then_empty() {
+    assertEquals("", Pojos.sample().getGenericTypeDeclarationSection());
+  }
+
+  @Test
+  void getGenericTypeDeclarationSection_when_calledForGenericSample_then_empty() {
+    assertEquals(
+        "<T extends List<String>, S>", Pojos.genericSample().getGenericTypeDeclarationSection());
   }
 
   @Test

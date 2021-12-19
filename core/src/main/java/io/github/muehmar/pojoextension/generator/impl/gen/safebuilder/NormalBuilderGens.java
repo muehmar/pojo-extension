@@ -10,6 +10,7 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_
 
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
+import io.github.muehmar.pojoextension.generator.data.PojoAndField;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
@@ -42,59 +43,70 @@ public class NormalBuilderGens {
             .append(newLine())
             .appendList(FieldDeclarationGen.ofModifiers(PRIVATE), Pojo::getFields)
             .append(newLine())
-            .appendList(setMethod().append(newLine()), Pojo::getFields)
+            .appendList(setMethod().append(newLine()), Pojo::getPojoAndFields)
             .appendList(
                 setMethodOptional().append(newLine()),
-                p -> p.getFields().filter(PojoField::isOptional))
+                p -> p.getFields().filter(PojoField::isOptional).map(f -> new PojoAndField(p, f)))
             .append(buildMethod());
 
     return ClassGen.<Pojo, PojoSettings>nested()
         .modifiers(PUBLIC, STATIC, FINAL)
-        .className(BUILDER_CLASSNAME)
+        .className(p -> BUILDER_CLASSNAME + p.getGenericTypeDeclarationSection())
         .content(content);
   }
 
   public static Generator<Pojo, PojoSettings> buildMethod() {
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
         .noGenericTypes()
-        .returnType(p -> p.getName().asString())
+        .returnType(p -> p.getName().asString() + p.getTypeVariablesSection())
         .methodName("build")
         .noArguments()
         .content(ConstructorCallGens.callWithAllLocalVariables());
   }
 
-  public static Generator<PojoField, PojoSettings> setMethod() {
-    final Generator<PojoField, PojoSettings> content =
-        (field, settings, writer) ->
+  public static Generator<PojoAndField, PojoSettings> setMethod() {
+    final Generator<PojoAndField, PojoSettings> content =
+        (paf, settings, writer) ->
             writer
-                .println("this.%s = %s;", field.getName(), field.getName())
+                .println("this.%s = %s;", paf.getField().getName(), paf.getField().getName())
                 .println("return this;");
 
-    return MethodGen.<PojoField, PojoSettings>modifiers(
-            (f, s) -> JavaModifiers.of(f.isRequired() ? JavaModifier.PRIVATE : JavaModifier.PUBLIC))
+    return MethodGen.<PojoAndField, PojoSettings>modifiers(
+            (paf, s) ->
+                JavaModifiers.of(
+                    paf.getField().isRequired() ? JavaModifier.PRIVATE : JavaModifier.PUBLIC))
         .noGenericTypes()
-        .returnType(BUILDER_CLASSNAME)
-        .methodName(f -> String.format("set%s", f.getName().toPascalCase()))
-        .singleArgument(f -> String.format("%s %s", f.getType().getTypeDeclaration(), f.getName()))
+        .returnType(paf -> BUILDER_CLASSNAME + paf.getPojo().getTypeVariablesSection())
+        .methodName(paf -> String.format("set%s", paf.getField().getName().toPascalCase()))
+        .singleArgument(
+            paf ->
+                String.format(
+                    "%s %s",
+                    paf.getField().getType().getTypeDeclaration(), paf.getField().getName()))
         .content(content)
-        .append(RefsGen.fieldRefs());
+        .append(RefsGen.fieldRefs(), PojoAndField::getField);
   }
 
-  public static Generator<PojoField, PojoSettings> setMethodOptional() {
-    final Generator<PojoField, PojoSettings> content =
-        (field, settings, writer) ->
+  public static Generator<PojoAndField, PojoSettings> setMethodOptional() {
+    final Generator<PojoAndField, PojoSettings> content =
+        (paf, settings, writer) ->
             writer
-                .println("this.%s = %s.orElse(null);", field.getName(), field.getName())
+                .println(
+                    "this.%s = %s.orElse(null);",
+                    paf.getField().getName(), paf.getField().getName())
                 .println("return this;");
 
-    return MethodGen.<PojoField, PojoSettings>modifiers(PUBLIC)
+    return MethodGen.<PojoAndField, PojoSettings>modifiers(PUBLIC)
         .noGenericTypes()
-        .returnType(BUILDER_CLASSNAME)
-        .methodName(f -> String.format("set%s", f.getName().toPascalCase()))
+        .returnType(paf -> BUILDER_CLASSNAME + paf.getPojo().getTypeVariablesSection())
+        .methodName(paf -> String.format("set%s", paf.getField().getName().toPascalCase()))
         .singleArgument(
-            f -> String.format("Optional<%s> %s", f.getType().getTypeDeclaration(), f.getName()))
+            paf ->
+                String.format(
+                    "Optional<%s> %s",
+                    paf.getField().getType().getTypeDeclaration(), paf.getField().getName()))
         .content(content)
         .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
-        .append(RefsGen.fieldRefs());
+        .append(RefsGen.fieldRefs(), PojoAndField::getField);
   }
 }

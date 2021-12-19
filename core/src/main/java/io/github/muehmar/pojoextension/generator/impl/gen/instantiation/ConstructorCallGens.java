@@ -95,8 +95,10 @@ public class ConstructorCallGens {
           .mapConditionally(hasWrapIntoOptional, w -> w.ref(JAVA_UTIL_OPTIONAL))
           .apply()
           .println(
-              "return new %s(%s);",
-              constructorCall.getPojo().getName(), constructorParameters.mkString(", "));
+              "return new %s%s(%s);",
+              constructorCall.getPojo().getName(),
+              constructorCall.getPojo().getDiamond(),
+              constructorParameters.mkString(", "));
     };
   }
 
