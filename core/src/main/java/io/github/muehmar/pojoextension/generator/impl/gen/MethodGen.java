@@ -81,6 +81,10 @@ public class MethodGen<A, B> implements Generator<A, B> {
     public Builder1<A, B> genericTypes(String... types) {
       return new Builder1<>(createModifiers, (data, settings) -> PList.fromArray(types));
     }
+
+    public Builder1<A, B> genericTypes(Function<A, PList<String>> types) {
+      return new Builder1<>(createModifiers, (data, settings) -> types.apply(data));
+    }
   }
 
   public static class Builder1<A, B> {

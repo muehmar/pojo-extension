@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.generator.data;
 
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.Strings;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.Optional;
 
@@ -52,6 +53,23 @@ public class Pojo extends PojoExt {
 
   public PList<Generic> getGenerics() {
     return generics;
+  }
+
+  public PList<Name> getGenericImports() {
+    return generics.flatMap(Generic::getUpperBounds).flatMap(Type::getImports);
+  }
+
+  public String getDiamond() {
+    return generics.nonEmpty() ? "<>" : "";
+  }
+
+  public PList<String> getGenericTypeDeclaration() {
+    return generics.map(Generic::getTypeDeclaration).map(Name::asString);
+  }
+
+  public String getTypeVariablesSection() {
+    return Strings.surroundIfNotEmpty(
+        "<", generics.map(Generic::getTypeVariable).mkString(", "), ">");
   }
 
   public Optional<MatchingConstructor> findMatchingConstructor() {

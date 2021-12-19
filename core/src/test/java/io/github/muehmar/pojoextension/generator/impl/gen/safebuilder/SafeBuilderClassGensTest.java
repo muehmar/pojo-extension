@@ -1,21 +1,35 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder;
 
+import static io.github.muehmar.pojoextension.generator.data.settings.PojoSettings.defaultSettings;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.impl.gen.Refs;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
 class SafeBuilderClassGensTest {
+
+  @Test
+  void createMethod_when_calledWithSamplePojo_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = SafeBuilderClassGens.createMethod();
+
+    final Writer writer = gen.generate(Pojos.sample(), defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "public static Builder0 create() {\n" + "  return new Builder0(new Builder());\n" + "}",
+        writer.asString());
+  }
+
   @Test
   void safeBuilderClass_when_calledWithSamplePojo_then_correctOutput() {
     final Generator<Pojo, PojoSettings> gen = SafeBuilderClassGens.safeBuilderClass();
 
-    final Writer writer =
-        gen.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
+    final Writer writer = gen.generate(Pojos.sample(), defaultSettings(), Writer.createDefault());
     assertEquals(
         "package io.github.muehmar;\n"
             + "\n"
@@ -137,5 +151,21 @@ class SafeBuilderClassGensTest {
             + "  }\n"
             + "}",
         writer.asString());
+  }
+
+  @Test
+  void createMethod_when_calledWithGenericSamplePojo_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = SafeBuilderClassGens.createMethod();
+
+    final Writer writer =
+        gen.generate(Pojos.genericSample(), defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "public static <T extends List<String>, S> Builder0<T, S> create() {\n"
+            + "  return new Builder0<>(new Builder<>());\n"
+            + "}",
+        writer.asString());
+
+    assertTrue(writer.getRefs().exists(Refs.JAVA_UTIL_LIST::equals));
   }
 }

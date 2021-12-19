@@ -6,12 +6,16 @@ import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
 
 import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.data.Generic;
+import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
+import io.github.muehmar.pojoextension.generator.writer.Writer;
+import java.util.function.Function;
 
 public class SafeBuilderClassGens {
   private SafeBuilderClassGens() {}
@@ -39,12 +43,18 @@ public class SafeBuilderClassGens {
         .append(CompleteSafeBuilderGens.completeSafeBuilder());
   }
 
-  private static Generator<Pojo, PojoSettings> createMethod() {
+  public static Generator<Pojo, PojoSettings> createMethod() {
+    final Function<Pojo, String> returnType = p -> "Builder0" + p.getTypeVariablesSection();
+    final Function<Pojo, String> content =
+        p ->
+            String.format(
+                "return new Builder0%s(new Builder%s());", p.getDiamond(), p.getDiamond());
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC, STATIC)
-        .noGenericTypes()
-        .returnType("Builder0")
+        .genericTypes(p -> p.getGenerics().map(Generic::getTypeDeclaration).map(Name::asString))
+        .returnType(returnType)
         .methodName("create")
         .noArguments()
-        .content("return new Builder0(new Builder());");
+        .content(content)
+        .append((p, s, w) -> p.getGenericImports().map(Name::asString).foldLeft(w, Writer::ref));
   }
 }
