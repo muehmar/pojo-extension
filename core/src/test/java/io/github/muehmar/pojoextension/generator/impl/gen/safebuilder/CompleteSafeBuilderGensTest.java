@@ -2,11 +2,13 @@ package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder;
 
 import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.impl.gen.Refs;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
@@ -164,5 +166,21 @@ class CompleteSafeBuilderGensTest {
             .asString();
 
     assertEquals("", output);
+  }
+
+  @Test
+  void newBuilderMethod_when_calledWithGenericSample_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = CompleteSafeBuilderGens.newBuilderMethod();
+    final Writer writer =
+        gen.generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "public static <T extends List<String>, S> Builder0<T, S> newBuilder() {\n"
+            + "  return new Builder0<>(new Builder<>());\n"
+            + "}",
+        writer.asString());
+
+    assertTrue(writer.getRefs().exists(Refs.JAVA_UTIL_LIST::equals));
+    assertTrue(writer.getRefs().exists(Refs.JAVA_LANG_STRING::equals));
   }
 }

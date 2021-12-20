@@ -40,7 +40,7 @@ public class SafeBuilderGens {
   }
 
   private static String createNextClassName(SafeBuilderPojoField field, PojoSettings settings) {
-    return createClassName(field.withFieldIndex(field.getIndex() + 1), settings);
+    return createClassName(field.withIndex(field.getIndex() + 1), settings);
   }
 
   public static Generator<SafeBuilderPojoField, PojoSettings> builderClassContent() {
