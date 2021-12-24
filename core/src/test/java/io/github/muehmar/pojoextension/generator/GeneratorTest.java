@@ -101,4 +101,15 @@ class GeneratorTest {
 
     assertEquals("", writer.asString());
   }
+
+  @Test
+  void contraMap_when_newGenCalled_then_inputTransformedAccordingly() {
+    final Generator<String, Void> genA = (s, ignore, w) -> w.println(s);
+
+    final Generator<Integer, Void> generator = genA.contraMap(Integer::toHexString);
+
+    final Writer writer = generator.generate(255, null, Writer.createDefault());
+
+    assertEquals("ff", writer.asString());
+  }
 }
