@@ -16,10 +16,8 @@ class CompleteSafeBuilderGensTest {
   @Test
   void completeSafeBuilder_when_generatorUsedWithSamplePojo_then_correctOutput() {
     final Generator<Pojo, PojoSettings> generator = CompleteSafeBuilderGens.completeSafeBuilder();
-    final String output =
-        generator
-            .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault())
-            .asString();
+    final Writer writer =
+        generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
         "public static final class Builder {\n"
@@ -126,7 +124,130 @@ class CompleteSafeBuilderGensTest {
             + "    return builder.build();\n"
             + "  }\n"
             + "}",
-        output);
+        writer.asString());
+
+    assertTrue(writer.getRefs().exists(Refs.JAVA_LANG_INTEGER::equals));
+    assertTrue(writer.getRefs().exists(Refs.JAVA_LANG_STRING::equals));
+    assertTrue(writer.getRefs().exists(Refs.JAVA_UTIL_OPTIONAL::equals));
+  }
+
+  @Test
+  void completeSafeBuilder_when_genericPojo_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = CompleteSafeBuilderGens.completeSafeBuilder();
+    final Writer writer =
+        generator.generate(
+            Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "public static final class Builder<T extends List<String>, S> {\n"
+            + "  private Builder() {\n"
+            + "  }\n"
+            + "\n"
+            + "  private String id;\n"
+            + "  private T data;\n"
+            + "  private S additionalData;\n"
+            + "\n"
+            + "  private Builder<T, S> setId(String id) {\n"
+            + "    this.id = id;\n"
+            + "    return this;\n"
+            + "  }\n"
+            + "\n"
+            + "  private Builder<T, S> setData(T data) {\n"
+            + "    this.data = data;\n"
+            + "    return this;\n"
+            + "  }\n"
+            + "\n"
+            + "  public Builder<T, S> setAdditionalData(S additionalData) {\n"
+            + "    this.additionalData = additionalData;\n"
+            + "    return this;\n"
+            + "  }\n"
+            + "\n"
+            + "  public Builder<T, S> setAdditionalData(Optional<S> additionalData) {\n"
+            + "    this.additionalData = additionalData.orElse(null);\n"
+            + "    return this;\n"
+            + "  }\n"
+            + "\n"
+            + "  public Customer<T, S> build() {\n"
+            + "    return new Customer<>(id, data, additionalData);\n"
+            + "  }\n"
+            + "}\n"
+            + "\n"
+            + "public static final class Builder0<T extends List<String>, S> {\n"
+            + "  private final Builder<T, S> builder;\n"
+            + "\n"
+            + "  private Builder0(Builder<T, S> builder) {\n"
+            + "    this.builder = builder;\n"
+            + "  }\n"
+            + "\n"
+            + "  public Builder1<T, S> setId(String id) {\n"
+            + "    return new Builder1<>(builder.setId(id));\n"
+            + "  }\n"
+            + "}\n"
+            + "\n"
+            + "public static final class Builder1<T extends List<String>, S> {\n"
+            + "  private final Builder<T, S> builder;\n"
+            + "\n"
+            + "  private Builder1(Builder<T, S> builder) {\n"
+            + "    this.builder = builder;\n"
+            + "  }\n"
+            + "\n"
+            + "  public Builder2<T, S> setData(T data) {\n"
+            + "    return new Builder2<>(builder.setData(data));\n"
+            + "  }\n"
+            + "}\n"
+            + "\n"
+            + "public static final class Builder2<T extends List<String>, S> {\n"
+            + "  private final Builder<T, S> builder;\n"
+            + "\n"
+            + "  private Builder2(Builder<T, S> builder) {\n"
+            + "    this.builder = builder;\n"
+            + "  }\n"
+            + "\n"
+            + "  public OptBuilder0<T, S> andAllOptionals() {\n"
+            + "    return new OptBuilder0<>(builder);\n"
+            + "  }\n"
+            + "\n"
+            + "  public Builder<T, S> andOptionals() {\n"
+            + "    return builder;\n"
+            + "  }\n"
+            + "\n"
+            + "  public Customer<T, S> build() {\n"
+            + "    return builder.build();\n"
+            + "  }\n"
+            + "}\n"
+            + "\n"
+            + "public static final class OptBuilder0<T extends List<String>, S> {\n"
+            + "  private final Builder<T, S> builder;\n"
+            + "\n"
+            + "  private OptBuilder0(Builder<T, S> builder) {\n"
+            + "    this.builder = builder;\n"
+            + "  }\n"
+            + "\n"
+            + "  public OptBuilder1<T, S> setAdditionalData(S additionalData) {\n"
+            + "    return new OptBuilder1<>(builder.setAdditionalData(additionalData));\n"
+            + "  }\n"
+            + "\n"
+            + "  public OptBuilder1<T, S> setAdditionalData(Optional<S> additionalData) {\n"
+            + "    return new OptBuilder1<>(additionalData.map(builder::setAdditionalData).orElse(builder));\n"
+            + "  }\n"
+            + "}\n"
+            + "\n"
+            + "public static final class OptBuilder1<T extends List<String>, S> {\n"
+            + "  private final Builder<T, S> builder;\n"
+            + "\n"
+            + "  private OptBuilder1(Builder<T, S> builder) {\n"
+            + "    this.builder = builder;\n"
+            + "  }\n"
+            + "\n"
+            + "  public Customer<T, S> build() {\n"
+            + "    return builder.build();\n"
+            + "  }\n"
+            + "}",
+        writer.asString());
+
+    assertTrue(writer.getRefs().exists(Refs.JAVA_UTIL_LIST::equals));
+    assertTrue(writer.getRefs().exists(Refs.JAVA_LANG_STRING::equals));
+    assertTrue(writer.getRefs().exists(Refs.JAVA_UTIL_OPTIONAL::equals));
   }
 
   @Test
@@ -176,7 +297,7 @@ class CompleteSafeBuilderGensTest {
 
     assertEquals(
         "public static <T extends List<String>, S> Builder0<T, S> newBuilder() {\n"
-            + "  return new Builder0<>(new Builder<>());\n"
+            + "  return new Builder0<>(new Builder<T, S>());\n"
             + "}",
         writer.asString());
 

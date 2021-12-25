@@ -18,6 +18,6 @@ class GenericTest {
                     Type.comparable(Type.typeVariable(Name.fromString("T")))))
             .build();
 
-    assertEquals("T extends List<String>, Comparable<T>", generic.getTypeDeclaration().asString());
+    assertEquals("T extends List<String> & Comparable<T>", generic.getTypeDeclaration().asString());
   }
 }

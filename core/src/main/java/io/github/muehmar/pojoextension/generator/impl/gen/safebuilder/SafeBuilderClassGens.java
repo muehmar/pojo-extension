@@ -48,7 +48,8 @@ public class SafeBuilderClassGens {
     final Function<Pojo, String> content =
         p ->
             String.format(
-                "return new Builder0%s(new Builder%s());", p.getDiamond(), p.getDiamond());
+                "return new Builder0%s(new Builder%s());",
+                p.getDiamond(), p.getTypeVariablesSection());
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC, STATIC)
         .genericTypes(p -> p.getGenerics().map(Generic::getTypeDeclaration).map(Name::asString))
         .returnType(returnType)

@@ -24,7 +24,7 @@ public class Generic extends GenericExtension {
 
   public Name getTypeDeclaration() {
     final String upperBoundsDeclaration =
-        upperBounds.map(Type::getTypeDeclaration).map(Name::asString).mkString(", ");
+        upperBounds.map(Type::getTypeDeclaration).map(Name::asString).mkString(" & ");
     return typeVariable.append(Strings.surroundIfNotEmpty(" extends ", upperBoundsDeclaration, ""));
   }
 }

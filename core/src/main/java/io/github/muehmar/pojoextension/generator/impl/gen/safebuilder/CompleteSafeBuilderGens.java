@@ -55,7 +55,8 @@ public class CompleteSafeBuilderGens {
         .content(
             p ->
                 String.format(
-                    "return new Builder0%s(new Builder%s());", p.getDiamond(), p.getDiamond()))
+                    "return new Builder0%s(new Builder%s());",
+                    p.getDiamond(), p.getTypeVariablesSection()))
         .filter((p, s) -> s.getSafeBuilderAbility().isEnabled())
         .append((p, s, w) -> p.getGenericImports().map(Name::asString).foldLeft(w, Writer::ref));
   }
