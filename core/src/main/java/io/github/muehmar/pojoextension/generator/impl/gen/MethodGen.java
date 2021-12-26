@@ -1,7 +1,7 @@
 package io.github.muehmar.pojoextension.generator.impl.gen;
 
-import ch.bluecare.commons.data.NonEmptyList;
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.Strings;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
@@ -40,10 +40,8 @@ public class MethodGen<A, B> implements Generator<A, B> {
             w -> {
               final JavaModifiers modifiers = createModifiers.apply(data, settings);
               final String genericTypeParameters =
-                  NonEmptyList.fromIter(createGenericTypeParameters.apply(data, settings))
-                      .map(parameters -> parameters.toPList().mkString(", "))
-                      .map(parameters -> String.format("<%s> ", parameters))
-                      .orElse("");
+                  Strings.surroundIfNotEmpty(
+                      "<", createGenericTypeParameters.apply(data, settings).mkString(", "), "> ");
               final String returnType = createReturnType.apply(data, settings);
               final String methodName = createMethodName.apply(data, settings);
               final String arguments = createArguments.apply(data, settings).mkString(", ");
