@@ -8,6 +8,8 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.data.Generic;
+import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
@@ -15,6 +17,7 @@ import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.FieldVariable;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.data.WithField;
+import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.Function;
 
 public class WithGens {
@@ -23,7 +26,8 @@ public class WithGens {
   public static Generator<WithField, PojoSettings> withMethod() {
     return MethodGen.<WithField, PojoSettings>modifiers(PUBLIC)
         .noGenericTypes()
-        .returnType(wf -> wf.getPojo().getName().asString())
+        .returnType(
+            wf -> wf.getPojo().getName().asString() + wf.getPojo().getTypeVariablesSection())
         .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
         .singleArgument(
             wf ->
@@ -42,19 +46,25 @@ public class WithGens {
     final Function<WithField, PList<String>> arguments =
         wf ->
             PList.of(
-                String.format("%s self", wf.getPojo().getName()),
+                String.format(
+                    "%s%s self", wf.getPojo().getName(), wf.getPojo().getTypeVariablesSection()),
                 String.format(
                     "%s %s",
                     wf.getField().getType().getTypeDeclaration(), wf.getField().getName()));
 
     return MethodGen.<WithField, PojoSettings>modifiers(
             (p, s) -> JavaModifiers.of(s.getStaticMethodAccessModifier(), STATIC))
-        .noGenericTypes()
-        .returnType(wf -> wf.getPojo().getName().asString())
+        .genericTypes(
+            wf -> wf.getPojo().getGenerics().map(Generic::getTypeDeclaration).map(Name::asString))
+        .returnType(
+            wf -> wf.getPojo().getName().asString() + wf.getPojo().getTypeVariablesSection())
         .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
         .arguments(arguments)
         .content(withMethodContent())
         .append(RefsGen.fieldRefs(), WithField::getField)
+        .append(
+            (p, s, w) -> p.getGenericImports().map(Name::asString).foldLeft(w, Writer::ref),
+            WithField::getPojo)
         .filter((p, s) -> s.getWithersAbility().isEnabled());
   }
 
