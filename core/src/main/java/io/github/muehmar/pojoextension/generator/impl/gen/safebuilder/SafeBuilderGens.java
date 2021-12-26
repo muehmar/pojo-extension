@@ -39,14 +39,6 @@ public class SafeBuilderGens {
     return String.format("%sBuilder%d", prefix, field.getIndex());
   }
 
-  private static String classDiamond(SafeBuilderPojoField field) {
-    return rawClassName(field) + field.getPojo().getDiamond();
-  }
-
-  private static String classTypeVariables(SafeBuilderPojoField field) {
-    return rawClassName(field) + field.getPojo().getTypeVariablesSection();
-  }
-
   private static String classDeclaration(SafeBuilderPojoField field) {
     return rawClassName(field) + field.getPojo().getGenericTypeDeclarationSection();
   }

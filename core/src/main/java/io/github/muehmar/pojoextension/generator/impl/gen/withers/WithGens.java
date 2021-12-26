@@ -25,8 +25,7 @@ public class WithGens {
   public static Generator<WithField, PojoSettings> withMethod() {
     return MethodGen.<WithField, PojoSettings>modifiers(PUBLIC)
         .noGenericTypes()
-        .returnType(
-            wf -> wf.getPojo().getName().asString() + wf.getPojo().getTypeVariablesSection())
+        .returnTypeName(wf -> wf.getPojo().getNameWithTypeVariables())
         .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
         .singleArgument(
             wf ->
@@ -45,8 +44,7 @@ public class WithGens {
     final Function<WithField, PList<String>> arguments =
         wf ->
             PList.of(
-                String.format(
-                    "%s%s self", wf.getPojo().getName(), wf.getPojo().getTypeVariablesSection()),
+                String.format("%s self", wf.getPojo().getNameWithTypeVariables()),
                 String.format(
                     "%s %s",
                     wf.getField().getType().getTypeDeclaration(), wf.getField().getName()));
@@ -55,8 +53,7 @@ public class WithGens {
             (p, s) -> JavaModifiers.of(s.getStaticMethodAccessModifier(), STATIC))
         .genericTypes(
             wf -> wf.getPojo().getGenerics().map(Generic::getTypeDeclaration).map(Name::asString))
-        .returnType(
-            wf -> wf.getPojo().getName().asString() + wf.getPojo().getTypeVariablesSection())
+        .returnTypeName(wf -> wf.getPojo().getNameWithTypeVariables())
         .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
         .arguments(arguments)
         .content(withMethodContent())
@@ -76,8 +73,7 @@ public class WithGens {
     final Generator<WithField, PojoSettings> method =
         MethodGen.<WithField, PojoSettings>modifiers(PUBLIC)
             .noGenericTypes()
-            .returnType(
-                wf -> wf.getPojo().getName().asString() + wf.getPojo().getTypeVariablesSection())
+            .returnTypeName(wf -> wf.getPojo().getNameWithTypeVariables())
             .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
             .singleArgument(
                 wf ->
@@ -101,8 +97,7 @@ public class WithGens {
     final Function<WithField, PList<String>> arguments =
         wf ->
             PList.of(
-                String.format(
-                    "%s%s self", wf.getPojo().getName(), wf.getPojo().getTypeVariablesSection()),
+                String.format("%s self", wf.getPojo().getNameWithTypeVariables()),
                 String.format(
                     "Optional<%s> %s",
                     wf.getField().getType().getTypeDeclaration(), wf.getField().getName()));
@@ -112,8 +107,7 @@ public class WithGens {
             .genericTypes(
                 wf ->
                     wf.getPojo().getGenerics().map(Generic::getTypeDeclaration).map(Name::asString))
-            .returnType(
-                wf -> wf.getPojo().getName().asString() + wf.getPojo().getTypeVariablesSection())
+            .returnTypeName(wf -> wf.getPojo().getNameWithTypeVariables())
             .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
             .arguments(arguments)
             .content(optionalWithMethodContent())

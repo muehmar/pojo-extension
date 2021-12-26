@@ -85,6 +85,10 @@ public class Pojo extends PojoExt {
         "<", generics.map(Generic::getTypeVariable).mkString(", "), ">");
   }
 
+  public Name getNameWithTypeVariables() {
+    return name.append(getTypeVariablesSection());
+  }
+
   public String getTypeVariablesWildcardSection() {
     return Strings.surroundIfNotEmpty("<", generics.map(ignore -> "?").mkString(", "), ">");
   }

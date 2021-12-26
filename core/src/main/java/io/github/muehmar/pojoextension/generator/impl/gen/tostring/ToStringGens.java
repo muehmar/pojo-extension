@@ -37,7 +37,7 @@ public class ToStringGens {
 
   public static Generator<Pojo, PojoSettings> staticToStringMethod() {
     final Function<Pojo, String> argument =
-        p -> String.format("%s%s self", p.getName(), p.getTypeVariablesSection());
+        p -> String.format("%s self", p.getNameWithTypeVariables());
     return MethodGen.<Pojo, PojoSettings>modifiers(
             (p, s) -> JavaModifiers.of(s.getStaticMethodAccessModifier(), STATIC))
         .genericTypes(Pojo::getGenericTypeDeclarations)

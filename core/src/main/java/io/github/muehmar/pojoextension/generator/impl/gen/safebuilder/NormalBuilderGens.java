@@ -58,7 +58,7 @@ public class NormalBuilderGens {
   public static Generator<Pojo, PojoSettings> buildMethod() {
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
         .noGenericTypes()
-        .returnType(p -> p.getName().asString() + p.getTypeVariablesSection())
+        .returnTypeName(Pojo::getNameWithTypeVariables)
         .methodName("build")
         .noArguments()
         .content(ConstructorCallGens.callWithAllLocalVariables());

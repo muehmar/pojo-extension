@@ -38,9 +38,7 @@ public class EqualsGens {
 
   public static Generator<Pojo, PojoSettings> staticEqualsMethod() {
     final Function<Pojo, PList<String>> arguments =
-        p ->
-            PList.of(
-                String.format("%s%s o1", p.getName(), p.getTypeVariablesSection()), "Object obj");
+        p -> PList.of(String.format("%s o1", p.getNameWithTypeVariables()), "Object obj");
 
     return MethodGen.<Pojo, PojoSettings>modifiers(
             (p, s) -> JavaModifiers.of(s.getStaticMethodAccessModifier(), STATIC))

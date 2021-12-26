@@ -110,6 +110,10 @@ public class MethodGen<A, B> implements Generator<A, B> {
       return returnType((data, settings) -> createReturnType.apply(data));
     }
 
+    public Builder2<A, B> returnTypeName(Function<A, Name> createReturnType) {
+      return returnType((data, settings) -> createReturnType.apply(data).asString());
+    }
+
     public Builder2<A, B> returnType(String returnType) {
       return returnType((data, settings) -> returnType);
     }

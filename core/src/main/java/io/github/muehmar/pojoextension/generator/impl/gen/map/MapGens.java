@@ -25,10 +25,8 @@ public class MapGens {
         .singleArgument(
             p ->
                 String.format(
-                    "Function<%s%s, %s> f",
-                    p.getName(),
-                    p.getTypeVariablesSection(),
-                    p.findUnusedTypeVariableName(preferred)))
+                    "Function<%s, %s> f",
+                    p.getNameWithTypeVariables(), p.findUnusedTypeVariableName(preferred)))
         .content("return f.apply(self());")
         .append(w -> w.ref(JAVA_UTIL_FUNCTION))
         .filter((p, s) -> s.getMappersAbility().isEnabled());
@@ -37,14 +35,13 @@ public class MapGens {
   public static Generator<Pojo, PojoSettings> mapIfMethod() {
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
         .noGenericTypes()
-        .returnType(p -> p.getName().asString() + p.getTypeVariablesSection())
+        .returnTypeName(Pojo::getNameWithTypeVariables)
         .methodName("mapIf")
         .arguments(
             p ->
                 PList.of(
                     "boolean shouldMap",
-                    String.format(
-                        "UnaryOperator<%s%s> f", p.getName(), p.getTypeVariablesSection())))
+                    String.format("UnaryOperator<%s> f", p.getNameWithTypeVariables())))
         .content("return shouldMap ? f.apply(self()) : self();")
         .append(w -> w.ref(JAVA_UTIL_UNARYOPERATOR))
         .filter((p, s) -> s.getMappersAbility().isEnabled());
@@ -54,19 +51,17 @@ public class MapGens {
     final Name preferred = Name.fromString("T");
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
         .singleGenericType(p -> p.findUnusedTypeVariableName(preferred))
-        .returnType(p -> p.getName().asString() + p.getTypeVariablesSection())
+        .returnTypeName(Pojo::getNameWithTypeVariables)
         .methodName("mapIfPresent")
         .arguments(
             p ->
                 PList.of(
                     String.format("Optional<%s> value", p.findUnusedTypeVariableName(preferred)),
                     String.format(
-                        "BiFunction<%s%s, %s, %s%s> f",
-                        p.getName(),
-                        p.getTypeVariablesSection(),
+                        "BiFunction<%s, %s, %s> f",
+                        p.getNameWithTypeVariables(),
                         p.findUnusedTypeVariableName(preferred),
-                        p.getName(),
-                        p.getTypeVariablesSection())))
+                        p.getNameWithTypeVariables())))
         .content("return value.map(v -> f.apply(self(), v)).orElseGet(this::self);")
         .append(w -> w.ref(JAVA_UTIL_OPTIONAL).ref(JAVA_UTIL_BIFUNCTION))
         .filter((p, s) -> s.getMappersAbility().isEnabled());

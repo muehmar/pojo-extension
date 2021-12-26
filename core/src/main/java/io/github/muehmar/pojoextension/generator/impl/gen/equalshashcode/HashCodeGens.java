@@ -38,7 +38,7 @@ public class HashCodeGens {
 
   public static Generator<Pojo, PojoSettings> staticHashCodeMethod() {
     final Function<Pojo, String> argument =
-        p -> String.format("%s%s o", p.getName(), p.getTypeVariablesSection());
+        p -> String.format("%s o", p.getNameWithTypeVariables());
     final Generator<Pojo, PojoSettings> content = staticHashCodeMethodContent();
     return MethodGen.<Pojo, PojoSettings>modifiers(
             (p, s) -> JavaModifiers.of(s.getStaticMethodAccessModifier(), STATIC))
