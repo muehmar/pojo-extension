@@ -33,8 +33,8 @@ annotation processor.In gradle this would look like the following:
 
 ```
 dependencies {
-    compileOnly "io.github.muehmar:pojo-extension-annotations:0.7.2"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.7.2"
+    compileOnly "io.github.muehmar:pojo-extension-annotations:0.8.0"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.8.0"
 }
 ```
 
@@ -357,10 +357,13 @@ public @interface AllRequiredExtension {
 
 ## Known Issues
 
-* Generic data classes are not yet supported.
+* Fields in superclasses of data classes are currently ignored.
 
 ## Change Log
 
+* 0.8.0
+    * Support generic data classes
+    * Support newer Java versions
 * 0.7.2 - Fix type conversion for annotated getter method for optional fields
 * 0.7.1 - Fix possible stackoverflow caused by circular annotation paths
 * 0.7.0
