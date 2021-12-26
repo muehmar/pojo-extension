@@ -1,16 +1,20 @@
 package io.github.muehmar.pojoextension.example;
 
-import io.github.muehmar.pojoextension.annotations.SafeBuilder;
+import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.List;
+import java.util.Optional;
 
-@SafeBuilder
-public class GenericClass<T extends List<String> & Comparable<T>> {
+@PojoExtension
+public class GenericClass<T extends List<String> & Comparable<T>, S>
+    extends GenericClassExtension<T, S> {
   private final String prop1;
   private final T data;
+  private final Optional<S> additionalData;
 
-  public GenericClass(String prop1, T data) {
+  public GenericClass(String prop1, T data, Optional<S> additionalData) {
     this.prop1 = prop1;
     this.data = data;
+    this.additionalData = additionalData;
   }
 
   public String getProp1() {
@@ -19,5 +23,9 @@ public class GenericClass<T extends List<String> & Comparable<T>> {
 
   public T getData() {
     return data;
+  }
+
+  public Optional<S> getAdditionalData() {
+    return additionalData;
   }
 }
