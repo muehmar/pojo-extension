@@ -27,6 +27,17 @@ class ConstructorCallGensTest {
   }
 
   @Test
+  void callWithAllLocalVariables_when_genericSamplePojo_then_simpleConstructorCall() {
+    final Writer writer =
+        ConstructorCallGens.callWithAllLocalVariables()
+            .generate(
+                Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals(PList.empty(), writer.getRefs());
+    assertEquals("return new Customer<>(id, data, additionalData);", writer.asString());
+  }
+
+  @Test
   void
       callWithAllLocalVariables_when_samplePojoAndOptionalArgumentWrappedInOptional_then_wrapNullableFieldInOptional() {
     final Pojo sample = Pojos.sampleWithConstructorWithOptionalArgument();

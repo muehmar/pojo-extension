@@ -23,6 +23,7 @@ import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Constructor;
+import io.github.muehmar.pojoextension.generator.data.Generic;
 import io.github.muehmar.pojoextension.generator.data.Getter;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.PackageName;
@@ -105,7 +106,13 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     final TypeElement classElement = elementAndPath.getClassElement();
     final Type pojoType = Type.fromClassName(classElement.toString());
     final Name className = pojoType.getName();
-    final PackageName classPackage = pojoType.getPackage();
+    final PackageName classPackage =
+        pojoType
+            .getPackage()
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
+                        "Class " + className.toString() + " does not have a package"));
     final Pojo pojo = extractPojo(classElement, pojoSettings, className, classPackage);
 
     outputPojo(pojo, deviateExtensionUsage(classElement, pojoSettings, pojo));
@@ -155,6 +162,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
 
     final PList<Constructor> constructors = ConstructorProcessor.process(element);
     final PList<Getter> getters = GetterProcessor.process(element);
+    final PList<Generic> generics = ClassTypeVariableProcessor.processGenerics(element);
 
     final PList<PojoField> fields =
         PList.fromIter(element.getEnclosedElements())
@@ -168,6 +176,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .setFields(fields)
         .setConstructors(constructors)
         .setGetters(getters)
+        .setGenerics(generics)
         .andAllOptionals()
         .build();
   }

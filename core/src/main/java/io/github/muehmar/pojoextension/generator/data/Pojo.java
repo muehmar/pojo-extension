@@ -1,29 +1,38 @@
 package io.github.muehmar.pojoextension.generator.data;
 
+import static io.github.muehmar.pojoextension.Booleans.not;
+
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.Strings;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.Optional;
 
 @PojoExtension(extensionName = "{CLASSNAME}Ext")
 @SuppressWarnings("java:S2160")
 public class Pojo extends PojoExt {
+  private static final PList<Name> LETTERS_AZ =
+      PList.range(65, 91).map(n -> Character.toString((char) n.intValue())).map(Name::fromString);
+
   private final Name name;
   private final PackageName pkg;
   private final PList<PojoField> fields;
   private final PList<Constructor> constructors;
   private final PList<Getter> getters;
+  private final PList<Generic> generics;
 
   public Pojo(
       Name name,
       PackageName pkg,
       PList<PojoField> fields,
       PList<Constructor> constructors,
-      PList<Getter> getters) {
+      PList<Getter> getters,
+      PList<Generic> generics) {
     this.name = name;
     this.pkg = pkg;
     this.fields = fields;
     this.constructors = constructors;
     this.getters = getters;
+    this.generics = generics;
   }
 
   public Name getName() {
@@ -39,12 +48,45 @@ public class Pojo extends PojoExt {
     return fields;
   }
 
+  public PList<PojoAndField> getPojoAndFields() {
+    return fields.map(f -> new PojoAndField(this, f));
+  }
+
   public PList<Constructor> getConstructors() {
     return constructors;
   }
 
   public PList<Getter> getGetters() {
     return getters;
+  }
+
+  public PList<Generic> getGenerics() {
+    return generics;
+  }
+
+  public PList<Name> getGenericImports() {
+    return generics.flatMap(Generic::getUpperBounds).flatMap(Type::getImports);
+  }
+
+  public String getDiamond() {
+    return generics.nonEmpty() ? "<>" : "";
+  }
+
+  public PList<String> getGenericTypeDeclarations() {
+    return generics.map(Generic::getTypeDeclaration).map(Name::asString);
+  }
+
+  public String getGenericTypeDeclarationSection() {
+    return Strings.surroundIfNotEmpty("<", getGenericTypeDeclarations().mkString(", "), ">");
+  }
+
+  public String getTypeVariablesSection() {
+    return Strings.surroundIfNotEmpty(
+        "<", generics.map(Generic::getTypeVariable).mkString(", "), ">");
+  }
+
+  public String getTypeVariablesWildcardSection() {
+    return Strings.surroundIfNotEmpty("<", generics.map(ignore -> "?").mkString(", "), ">");
   }
 
   public Optional<MatchingConstructor> findMatchingConstructor() {
@@ -97,5 +139,32 @@ public class Pojo extends PojoExt {
         field.getName(),
         field.getName(),
         optionalMessage);
+  }
+
+  public Name findUnusedTypeVariableName() {
+    final PList<Name> typeVariableNames = generics.map(Generic::getTypeVariable);
+    return LETTERS_AZ
+        .filter(n -> not(typeVariableNames.exists(n::equals)))
+        .headOption()
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    "All single-letter type variables already used for generic class "
+                        + getName()
+                        + "! If this is really a use case and should be supported, please contact the maintainer."));
+  }
+
+  public Name findUnusedTypeVariableName(Name preferred) {
+    final PList<Name> typeVariableNames = generics.map(Generic::getTypeVariable);
+    return LETTERS_AZ
+        .cons(preferred)
+        .filter(n -> not(typeVariableNames.exists(n::equals)))
+        .headOption()
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    "All single-letter type variables already used for generic class "
+                        + getName()
+                        + "! If this is really a use case and should be supported, please contact the maintainer."));
   }
 }

@@ -1,39 +1,37 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data;
 
+import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import io.github.muehmar.pojoextension.generator.data.Pojo;
+import io.github.muehmar.pojoextension.generator.data.PojoAndField;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import java.util.Objects;
 
-public class SafeBuilderPojoField {
-  private final PojoField field;
+@PojoExtension
+public class SafeBuilderPojoField extends SafeBuilderPojoFieldExtension {
+  private final PojoAndField pojoAndField;
   private final int index;
 
-  public SafeBuilderPojoField(PojoField field, int index) {
-    this.field = field;
+  public SafeBuilderPojoField(PojoAndField pojoAndField, int index) {
+    this.pojoAndField = pojoAndField;
     this.index = index;
   }
 
+  public SafeBuilderPojoField(Pojo pojo, PojoField field, int index) {
+    this(new PojoAndField(pojo, field), index);
+  }
+
+  public PojoAndField getPojoAndField() {
+    return pojoAndField;
+  }
+
   public PojoField getField() {
-    return field;
+    return pojoAndField.getField();
+  }
+
+  public Pojo getPojo() {
+    return pojoAndField.getPojo();
   }
 
   public int getIndex() {
     return index;
-  }
-
-  public SafeBuilderPojoField withFieldIndex(int index) {
-    return new SafeBuilderPojoField(field, index);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    SafeBuilderPojoField that = (SafeBuilderPojoField) o;
-    return index == that.index && Objects.equals(field, that.field);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(field, index);
   }
 }

@@ -373,7 +373,7 @@ public @interface AllRequiredExtension {
     * Add separate module for annotations to be used as compile time dependency
     * Make static methods private if data class inherits extension class
 * 0.5.0
-    * Add `withXX` methods
+    * Add `mapXX` methods
     * Fix import for generic fields
 * 0.4.0
     * Add `toString` method

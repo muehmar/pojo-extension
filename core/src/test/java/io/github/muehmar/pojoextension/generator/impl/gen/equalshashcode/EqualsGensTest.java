@@ -2,7 +2,9 @@ package io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode;
 
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_STRING;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_LIST;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OBJECTS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -140,6 +142,28 @@ class EqualsGensTest {
             Writer.createDefault());
     assertEquals("", writer.asString());
     assertTrue(writer.getRefs().isEmpty());
+  }
+
+  @Test
+  void staticEqualsMethod_when_genericSample_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.staticEqualsMethod();
+
+    final Writer writer =
+        generator.generate(
+            Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
+    assertEquals(
+        "private static <T extends List<String>, S> boolean equals(Customer<T, S> o1, Object obj) {\n"
+            + "  if (o1 == obj) return true;\n"
+            + "  if (obj == null || o1.getClass() != obj.getClass()) return false;\n"
+            + "  final Customer<?, ?> o2 = (Customer<?, ?>) obj;\n"
+            + "  return Objects.equals(o1.getId(), o2.getId())\n"
+            + "      && Objects.equals(o1.getData(), o2.getData())\n"
+            + "      && Objects.equals(o1.getAdditionalData(), o2.getAdditionalData());\n"
+            + "}",
+        writer.asString());
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_OBJECTS::equals));
+    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
   }
 
   @Test

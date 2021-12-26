@@ -30,7 +30,7 @@ public class ExtensionGens {
     return ClassGen.<Pojo, PojoSettings>topLevel()
         .packageGen(new PackageGen())
         .modifiers(PUBLIC, ABSTRACT)
-        .className((p, s) -> s.extensionName(p).asString())
+        .className((p, s) -> s.extensionName(p).asString() + p.getGenericTypeDeclarationSection())
         .content(content());
   }
 
@@ -77,28 +77,31 @@ public class ExtensionGens {
         .append(ToStringGens.staticToStringMethod());
   }
 
-  private static Generator<Pojo, PojoSettings> constructor() {
+  public static Generator<Pojo, PojoSettings> constructor() {
     return ConstructorGen.<Pojo, PojoSettings>modifiers(PROTECTED)
         .className((p, s) -> s.extensionName(p).asString())
         .noArguments()
         .content(
             (p, s, w) ->
                 w.println("final Object o = this;")
-                    .println("if(!(o instanceof %s))", p.getName())
+                    .println(
+                        "if(!(o instanceof %s%s))",
+                        p.getName(), p.getTypeVariablesWildcardSection())
                     .tab(1)
                     .println(
                         "throw new IllegalArgumentException(\"Only class %s can extend %s.\");",
                         p.getName(), s.extensionName(p)));
   }
 
-  private static Generator<Pojo, PojoSettings> selfMethod() {
+  public static Generator<Pojo, PojoSettings> selfMethod() {
     return MethodGen.<Pojo, PojoSettings>modifiers(PRIVATE)
         .noGenericTypes()
-        .returnType(pojo -> pojo.getName().asString())
+        .returnType(pojo -> pojo.getName().asString() + pojo.getTypeVariablesSection())
         .methodName("self")
         .noArguments()
         .content(
             (p, s, w) ->
-                w.println("final Object self = this;").println("return (%s)self;", p.getName()));
+                w.println("final Object self = this;")
+                    .println("return (%s%s)self;", p.getName(), p.getTypeVariablesSection()));
   }
 }

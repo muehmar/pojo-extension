@@ -60,6 +60,66 @@ class ExtensionGensTest {
     assertEquals(readResourcePojoTemplate("AllDisabledSamplePojo"), output);
   }
 
+  @Test
+  void constructor_when_sample_then_correctContent() {
+    final Writer writer =
+        ExtensionGens.constructor()
+            .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "protected CustomerExtension() {\n"
+            + "  final Object o = this;\n"
+            + "  if(!(o instanceof Customer))\n"
+            + "    throw new IllegalArgumentException(\"Only class Customer can extend CustomerExtension.\");\n"
+            + "}",
+        writer.asString());
+  }
+
+  @Test
+  void constructor_when_genericSample_then_correctContent() {
+    final Writer writer =
+        ExtensionGens.constructor()
+            .generate(
+                Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "protected CustomerExtension() {\n"
+            + "  final Object o = this;\n"
+            + "  if(!(o instanceof Customer<?, ?>))\n"
+            + "    throw new IllegalArgumentException(\"Only class Customer can extend CustomerExtension.\");\n"
+            + "}",
+        writer.asString());
+  }
+
+  @Test
+  void selfMethod_when_sample_then_correctContent() {
+    final Writer writer =
+        ExtensionGens.selfMethod()
+            .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "private Customer self() {\n"
+            + "  final Object self = this;\n"
+            + "  return (Customer)self;\n"
+            + "}",
+        writer.asString());
+  }
+
+  @Test
+  void selfMethod_when_genericSample_then_correctContent() {
+    final Writer writer =
+        ExtensionGens.selfMethod()
+            .generate(
+                Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "private Customer<T, S> self() {\n"
+            + "  final Object self = this;\n"
+            + "  return (Customer<T, S>)self;\n"
+            + "}",
+        writer.asString());
+  }
+
   private static String readResourcePojoTemplate(String template) {
     return Resources.readString("/java/pojos/" + template + ".java.template");
   }

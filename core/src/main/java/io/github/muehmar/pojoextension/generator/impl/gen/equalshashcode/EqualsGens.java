@@ -37,15 +37,18 @@ public class EqualsGens {
 
   public static Generator<Pojo, PojoSettings> staticEqualsMethod() {
     final Function<Pojo, PList<String>> arguments =
-        p -> PList.of(String.format("%s o1", p.getName()), "Object obj");
+        p ->
+            PList.of(
+                String.format("%s%s o1", p.getName(), p.getTypeVariablesSection()), "Object obj");
 
     return MethodGen.<Pojo, PojoSettings>modifiers(
             (p, s) -> JavaModifiers.of(s.getStaticMethodAccessModifier(), STATIC))
-        .noGenericTypes()
+        .genericTypes(Pojo::getGenericTypeDeclarations)
         .returnType("boolean")
         .methodName("equals")
         .arguments(arguments)
         .content(staticEqualsMethodContent())
+        .append((p, s, w) -> p.getGenericImports().map(Name::asString).foldLeft(w, Writer::ref))
         .filter((p, s) -> s.getEqualsHashCodeAbility().isEnabled());
   }
 
@@ -65,7 +68,13 @@ public class EqualsGens {
   }
 
   private static Generator<Pojo, PojoSettings> staticEqualsCastObjectToCompare() {
-    return (p, s, w) -> w.println("final %s o2 = (%s) obj;", p.getName(), p.getName());
+    return (p, s, w) ->
+        w.println(
+            "final %s%s o2 = (%s%s) obj;",
+            p.getName(),
+            p.getTypeVariablesWildcardSection(),
+            p.getName(),
+            p.getTypeVariablesWildcardSection());
   }
 
   private static Generator<PList<FieldGetter>, PojoSettings> staticEqualsCompareFields() {

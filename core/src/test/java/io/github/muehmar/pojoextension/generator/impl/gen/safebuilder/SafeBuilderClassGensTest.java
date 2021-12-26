@@ -1,21 +1,35 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder;
 
+import static io.github.muehmar.pojoextension.generator.data.settings.PojoSettings.defaultSettings;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.impl.gen.Refs;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
 class SafeBuilderClassGensTest {
+
+  @Test
+  void createMethod_when_calledWithSamplePojo_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = SafeBuilderClassGens.createMethod();
+
+    final Writer writer = gen.generate(Pojos.sample(), defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "public static Builder0 create() {\n" + "  return new Builder0(new Builder());\n" + "}",
+        writer.asString());
+  }
+
   @Test
   void safeBuilderClass_when_calledWithSamplePojo_then_correctOutput() {
     final Generator<Pojo, PojoSettings> gen = SafeBuilderClassGens.safeBuilderClass();
 
-    final Writer writer =
-        gen.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
+    final Writer writer = gen.generate(Pojos.sample(), defaultSettings(), Writer.createDefault());
     assertEquals(
         "package io.github.muehmar;\n"
             + "\n"
@@ -137,5 +151,151 @@ class SafeBuilderClassGensTest {
             + "  }\n"
             + "}",
         writer.asString());
+  }
+
+  @Test
+  void safeBuilderClass_when_genericPojo_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = SafeBuilderClassGens.safeBuilderClass();
+
+    final Writer writer =
+        gen.generate(Pojos.genericSample(), defaultSettings(), Writer.createDefault());
+    assertEquals(
+        "package io.github.muehmar;\n"
+            + "\n"
+            + "import java.util.List;\n"
+            + "import java.util.Optional;\n"
+            + "\n"
+            + "public final class CustomerBuilder {\n"
+            + "\n"
+            + "  private CustomerBuilder() {\n"
+            + "\n"
+            + "  }\n"
+            + "\n"
+            + "  public static <T extends List<String>, S> Builder0<T, S> create() {\n"
+            + "    return new Builder0<>(new Builder<T, S>());\n"
+            + "  }\n"
+            + "\n"
+            + "  public static final class Builder<T extends List<String>, S> {\n"
+            + "    private Builder() {\n"
+            + "    }\n"
+            + "\n"
+            + "    private String id;\n"
+            + "    private T data;\n"
+            + "    private S additionalData;\n"
+            + "\n"
+            + "    private Builder<T, S> setId(String id) {\n"
+            + "      this.id = id;\n"
+            + "      return this;\n"
+            + "    }\n"
+            + "\n"
+            + "    private Builder<T, S> setData(T data) {\n"
+            + "      this.data = data;\n"
+            + "      return this;\n"
+            + "    }\n"
+            + "\n"
+            + "    public Builder<T, S> setAdditionalData(S additionalData) {\n"
+            + "      this.additionalData = additionalData;\n"
+            + "      return this;\n"
+            + "    }\n"
+            + "\n"
+            + "    public Builder<T, S> setAdditionalData(Optional<S> additionalData) {\n"
+            + "      this.additionalData = additionalData.orElse(null);\n"
+            + "      return this;\n"
+            + "    }\n"
+            + "\n"
+            + "    public Customer<T, S> build() {\n"
+            + "      return new Customer<>(id, data, additionalData);\n"
+            + "    }\n"
+            + "  }\n"
+            + "\n"
+            + "  public static final class Builder0<T extends List<String>, S> {\n"
+            + "    private final Builder<T, S> builder;\n"
+            + "\n"
+            + "    private Builder0(Builder<T, S> builder) {\n"
+            + "      this.builder = builder;\n"
+            + "    }\n"
+            + "\n"
+            + "    public Builder1<T, S> setId(String id) {\n"
+            + "      return new Builder1<>(builder.setId(id));\n"
+            + "    }\n"
+            + "  }\n"
+            + "\n"
+            + "  public static final class Builder1<T extends List<String>, S> {\n"
+            + "    private final Builder<T, S> builder;\n"
+            + "\n"
+            + "    private Builder1(Builder<T, S> builder) {\n"
+            + "      this.builder = builder;\n"
+            + "    }\n"
+            + "\n"
+            + "    public Builder2<T, S> setData(T data) {\n"
+            + "      return new Builder2<>(builder.setData(data));\n"
+            + "    }\n"
+            + "  }\n"
+            + "\n"
+            + "  public static final class Builder2<T extends List<String>, S> {\n"
+            + "    private final Builder<T, S> builder;\n"
+            + "\n"
+            + "    private Builder2(Builder<T, S> builder) {\n"
+            + "      this.builder = builder;\n"
+            + "    }\n"
+            + "\n"
+            + "    public OptBuilder0<T, S> andAllOptionals() {\n"
+            + "      return new OptBuilder0<>(builder);\n"
+            + "    }\n"
+            + "\n"
+            + "    public Builder<T, S> andOptionals() {\n"
+            + "      return builder;\n"
+            + "    }\n"
+            + "\n"
+            + "    public Customer<T, S> build() {\n"
+            + "      return builder.build();\n"
+            + "    }\n"
+            + "  }\n"
+            + "\n"
+            + "  public static final class OptBuilder0<T extends List<String>, S> {\n"
+            + "    private final Builder<T, S> builder;\n"
+            + "\n"
+            + "    private OptBuilder0(Builder<T, S> builder) {\n"
+            + "      this.builder = builder;\n"
+            + "    }\n"
+            + "\n"
+            + "    public OptBuilder1<T, S> setAdditionalData(S additionalData) {\n"
+            + "      return new OptBuilder1<>(builder.setAdditionalData(additionalData));\n"
+            + "    }\n"
+            + "\n"
+            + "    public OptBuilder1<T, S> setAdditionalData(Optional<S> additionalData) {\n"
+            + "      return new OptBuilder1<>(additionalData.map(builder::setAdditionalData).orElse(builder));\n"
+            + "    }\n"
+            + "  }\n"
+            + "\n"
+            + "  public static final class OptBuilder1<T extends List<String>, S> {\n"
+            + "    private final Builder<T, S> builder;\n"
+            + "\n"
+            + "    private OptBuilder1(Builder<T, S> builder) {\n"
+            + "      this.builder = builder;\n"
+            + "    }\n"
+            + "\n"
+            + "    public Customer<T, S> build() {\n"
+            + "      return builder.build();\n"
+            + "    }\n"
+            + "  }\n"
+            + "}",
+        writer.asString());
+  }
+
+  @Test
+  void createMethod_when_calledWithGenericSamplePojo_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = SafeBuilderClassGens.createMethod();
+
+    final Writer writer =
+        gen.generate(Pojos.genericSample(), defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "public static <T extends List<String>, S> Builder0<T, S> create() {\n"
+            + "  return new Builder0<>(new Builder<T, S>());\n"
+            + "}",
+        writer.asString());
+
+    assertTrue(writer.getRefs().exists(Refs.JAVA_UTIL_LIST::equals));
   }
 }

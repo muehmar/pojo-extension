@@ -2,6 +2,8 @@ package io.github.muehmar.pojoextension.generator.data;
 
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_STRING;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_LIST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -9,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class PojoTest {
@@ -78,5 +81,104 @@ class PojoTest {
             new PojoField(Name.fromString("notAFieldInTheSamplePojo"), Type.string(), REQUIRED));
 
     assertEquals(Optional.empty(), fieldGetter);
+  }
+
+  @Test
+  void getDiamond_when_calledForNonGenericSample_then_empty() {
+    assertEquals("", Pojos.sample().getDiamond());
+  }
+
+  @Test
+  void getDiamond_when_calledForGenericSample_then_empty() {
+    assertEquals("<>", Pojos.genericSample().getDiamond());
+  }
+
+  @Test
+  void getTypeVariablesSection_when_calledForNonGenericSample_then_empty() {
+    assertEquals("", Pojos.sample().getTypeVariablesSection());
+  }
+
+  @Test
+  void getTypeVariablesSection_when_calledForGenericSample_then_empty() {
+    assertEquals("<T, S>", Pojos.genericSample().getTypeVariablesSection());
+  }
+
+  @Test
+  void getTypeVariablesWildcardSection_when_calledForNonGenericSample_then_empty() {
+    assertEquals("", Pojos.sample().getTypeVariablesWildcardSection());
+  }
+
+  @Test
+  void getTypeVariablesWildcardSection_when_calledForGenericSample_then_empty() {
+    assertEquals("<?, ?>", Pojos.genericSample().getTypeVariablesWildcardSection());
+  }
+
+  @Test
+  void getGenericTypeDeclarations_when_calledForNonGenericSample_then_empty() {
+    assertEquals(PList.empty(), Pojos.sample().getGenericTypeDeclarations());
+  }
+
+  @Test
+  void getGenericTypeDeclarations_when_calledForGenericSample_then_empty() {
+    assertEquals(
+        PList.of("T extends List<String>", "S"),
+        Pojos.genericSample().getGenericTypeDeclarations());
+  }
+
+  @Test
+  void getGenericTypeDeclarationSection_when_calledForNonGenericSample_then_empty() {
+    assertEquals("", Pojos.sample().getGenericTypeDeclarationSection());
+  }
+
+  @Test
+  void getGenericTypeDeclarationSection_when_calledForGenericSample_then_empty() {
+    assertEquals(
+        "<T extends List<String>, S>", Pojos.genericSample().getGenericTypeDeclarationSection());
+  }
+
+  @Test
+  void getGenericImports_when_calledForNonGenericSample_then_empty() {
+    assertEquals(PList.empty(), Pojos.sample().getGenericImports());
+  }
+
+  @Test
+  void getGenericImports_when_calledForGenericSample_then_empty() {
+    final Set<Name> actual = Pojos.genericSample().getGenericImports().toHashSet();
+    final Set<Name> expected =
+        PList.of(Name.fromString(JAVA_UTIL_LIST), Name.fromString(JAVA_LANG_STRING)).toHashSet();
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  void findUnusedTypeVariableName_when_nonGenericSample_then_firstUppercaseLetterReturned() {
+    final Name unusedTypeVariableName = Pojos.sample().findUnusedTypeVariableName();
+    assertEquals("A", unusedTypeVariableName.asString());
+  }
+
+  @Test
+  void findUnusedTypeVariableName_when_genericSample_then_nextFreeUppercaseLetterReturned() {
+    final Name unusedTypeVariableName =
+        Pojos.sample()
+            .withGenerics(PList.single(new Generic(Name.fromString("A"), PList.empty())))
+            .findUnusedTypeVariableName();
+    assertEquals("B", unusedTypeVariableName.asString());
+  }
+
+  @Test
+  void
+      findUnusedTypeVariableName_when_genericSampleWithPresentPreferredValue_then_returnNextFree() {
+    final Name unusedTypeVariableName =
+        Pojos.genericSample().findUnusedTypeVariableName(Name.fromString("T"));
+    assertEquals("A", unusedTypeVariableName.asString());
+  }
+
+  @Test
+  void
+      findUnusedTypeVariableName_when_genericSampleWithAbsentPreferredValue_then_returnPreferred() {
+    final Name unusedTypeVariableName =
+        Pojos.sample()
+            .withGenerics(PList.single(new Generic(Name.fromString("A"), PList.empty())))
+            .findUnusedTypeVariableName(Name.fromString("T"));
+    assertEquals("T", unusedTypeVariableName.asString());
   }
 }

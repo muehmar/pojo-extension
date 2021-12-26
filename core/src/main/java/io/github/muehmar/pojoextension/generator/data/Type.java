@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("java:S2160")
 public class Type extends TypeExtension {
   private final Name name;
-  private final PackageName pkg;
+  private final Optional<PackageName> pkg;
   private final PList<Type> typeParameters;
   private final boolean isArray;
 
@@ -28,11 +28,22 @@ public class Type extends TypeExtension {
       PList.of("int", "byte", "short", "long", "float", "double", "boolean", "char")
           .map(Type::primitive);
 
-  public Type(Name name, PackageName pkg, PList<Type> typeParameters, boolean isArray) {
+  Type(Name name, Optional<PackageName> pkg, PList<Type> typeParameters, boolean isArray) {
     this.name = name;
     this.pkg = pkg;
     this.typeParameters = typeParameters;
     this.isArray = isArray;
+  }
+
+  Type(Name name, PackageName pkg, PList<Type> typeParameters, boolean isArray) {
+    this.name = name;
+    this.pkg = Optional.of(pkg);
+    this.typeParameters = typeParameters;
+    this.isArray = isArray;
+  }
+
+  public static Type typeVariable(Name typeVariableName) {
+    return new Type(typeVariableName, Optional.empty(), PList.empty(), false);
   }
 
   public static PList<Type> allPrimitives() {
@@ -80,6 +91,11 @@ public class Type extends TypeExtension {
     return new Type(Name.fromString("List"), PackageName.javaUtil(), PList.single(value), false);
   }
 
+  public static Type comparable(Type objType) {
+    return new Type(
+        Name.fromString("Comparable"), PackageName.javaLang(), PList.single(objType), false);
+  }
+
   public static Type fromClassName(String className) {
     final Matcher matcher = QUALIFIED_CLASS_NAME_PATTERN.matcher(className);
     if (matcher.find()) {
@@ -113,18 +129,14 @@ public class Type extends TypeExtension {
         .append(isArray ? "[]" : "");
   }
 
-  public Name getQualifiedType() {
-    return name.prefix(pkg.asString() + ".");
-  }
-
-  /** Returns all qualified types which this type consists of, i.e. including type parameters. */
-  public PList<Name> getAllQualifiedTypes() {
-    return PList.single(getQualifiedType())
-        .concat(typeParameters.flatMap(Type::getAllQualifiedTypes));
+  /** Returns all qualified types used for imports. */
+  public PList<Name> getImports() {
+    return PList.fromOptional(pkg.map(p -> name.prefix(p + ".")))
+        .concat(typeParameters.flatMap(Type::getImports));
   }
 
   @Getter("pkg")
-  public PackageName getPackage() {
+  public Optional<PackageName> getPackage() {
     return pkg;
   }
 

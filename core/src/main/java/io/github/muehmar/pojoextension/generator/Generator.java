@@ -78,6 +78,15 @@ public interface Generator<A, B> {
   }
 
   /**
+   * Returns a new {@link Generator} whose input data is transformed before the current generator is
+   * applied.
+   */
+  default <C> Generator<C, B> contraMap(Function<C, A> f) {
+    final Generator<A, B> self = this;
+    return (data, settings, writer) -> self.generate(f.apply(data), settings, writer);
+  }
+
+  /**
    * Filters the current generator, i.e. if the given predicate does not hold true, the returned
    * generator is an empty generator.
    */

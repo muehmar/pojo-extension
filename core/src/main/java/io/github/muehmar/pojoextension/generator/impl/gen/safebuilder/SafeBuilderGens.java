@@ -8,6 +8,7 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newL
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 
 import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
@@ -17,12 +18,12 @@ import io.github.muehmar.pojoextension.generator.impl.gen.Generators;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.SafeBuilderPojoField;
+import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.ToIntFunction;
 
 /** Factory which creates the classes which forms the SafeBuilder. */
 public class SafeBuilderGens {
 
-  private static final String BUILDER_ARGUMENT = "Builder builder";
   private static final String BUILDER_ASSIGNMENT = "this.builder = builder;";
 
   private SafeBuilderGens() {}
@@ -30,29 +31,47 @@ public class SafeBuilderGens {
   public static Generator<SafeBuilderPojoField, PojoSettings> fieldBuilderClass() {
     return ClassGen.<SafeBuilderPojoField, PojoSettings>nested()
         .modifiers(PUBLIC, STATIC, FINAL)
-        .className(SafeBuilderGens::createClassName)
-        .content(builderClassContent());
+        .className(SafeBuilderGens::classDeclaration)
+        .content(builderClassContent())
+        .append(
+            (p, s, w) ->
+                p.getPojo().getGenericImports().map(Name::asString).foldLeft(w, Writer::ref));
   }
 
-  private static String createClassName(SafeBuilderPojoField field, PojoSettings settings) {
+  private static String rawClassName(SafeBuilderPojoField field) {
     final String prefix = field.getField().isRequired() ? "" : "Opt";
     return String.format("%sBuilder%d", prefix, field.getIndex());
   }
 
-  private static String createNextClassName(SafeBuilderPojoField field, PojoSettings settings) {
-    return createClassName(field.withFieldIndex(field.getIndex() + 1), settings);
+  private static String classDiamond(SafeBuilderPojoField field) {
+    return rawClassName(field) + field.getPojo().getDiamond();
+  }
+
+  private static String classTypeVariables(SafeBuilderPojoField field) {
+    return rawClassName(field) + field.getPojo().getTypeVariablesSection();
+  }
+
+  private static String classDeclaration(SafeBuilderPojoField field) {
+    return rawClassName(field) + field.getPojo().getGenericTypeDeclarationSection();
+  }
+
+  private static String nextClassTypeVariables(SafeBuilderPojoField field) {
+    return nextRawClassName(field) + field.getPojo().getTypeVariablesSection();
+  }
+
+  private static String nextClassDiamond(SafeBuilderPojoField field) {
+    return nextRawClassName(field) + field.getPojo().getDiamond();
+  }
+
+  private static String nextRawClassName(SafeBuilderPojoField field) {
+    return rawClassName(field.withIndex(field.getIndex() + 1));
   }
 
   public static Generator<SafeBuilderPojoField, PojoSettings> builderClassContent() {
-    final Generator<SafeBuilderPojoField, PojoSettings> constructor =
-        ConstructorGen.<SafeBuilderPojoField, PojoSettings>modifiers(PRIVATE)
-            .className(SafeBuilderGens::createClassName)
-            .singleArgument(BUILDER_ARGUMENT)
-            .content(BUILDER_ASSIGNMENT);
-
-    return SafeBuilderGens.<SafeBuilderPojoField, PojoSettings>fieldDeclaration()
+    return SafeBuilderGens.<PojoSettings>fieldDeclaration()
+        .contraMap(SafeBuilderPojoField::getPojo)
         .append(newLine())
-        .append(constructor)
+        .append(constructor())
         .append(newLine())
         .append(setMethod())
         .appendConditionally(
@@ -60,30 +79,31 @@ public class SafeBuilderGens {
             Generators.<SafeBuilderPojoField, PojoSettings>newLine().append(setMethodOptional()));
   }
 
-  public static <A, B> Generator<A, B> fieldDeclaration() {
-    return (f, s, w) -> w.println("private final Builder builder;");
+  public static <A> Generator<Pojo, A> fieldDeclaration() {
+    return (p, s, w) -> w.println("private final Builder%s builder;", p.getTypeVariablesSection());
   }
 
   public static Generator<SafeBuilderPojoField, PojoSettings> constructor() {
     return ConstructorGen.<SafeBuilderPojoField, PojoSettings>modifiers(PRIVATE)
-        .className(SafeBuilderGens::createClassName)
-        .singleArgument(BUILDER_ARGUMENT)
+        .className(SafeBuilderGens::rawClassName)
+        .singleArgument(
+            f -> String.format("Builder%s builder", f.getPojo().getTypeVariablesSection()))
         .content(BUILDER_ASSIGNMENT);
   }
 
-  public static <A, B> Generator<A, B> andAllOptionalsMethod() {
-    return MethodGen.<A, B>modifiers(PUBLIC)
+  public static <A> Generator<Pojo, A> andAllOptionalsMethod() {
+    return MethodGen.<Pojo, A>modifiers(PUBLIC)
         .noGenericTypes()
-        .returnType("OptBuilder0")
+        .returnType(p -> "OptBuilder0" + p.getTypeVariablesSection())
         .methodName("andAllOptionals")
         .noArguments()
-        .content("return new OptBuilder0(builder);");
+        .content(p -> String.format("return new OptBuilder0%s(builder);", p.getDiamond()));
   }
 
-  public static <A, B> Generator<A, B> andOptionalsMethod() {
-    return MethodGen.<A, B>modifiers(PUBLIC)
+  public static <A> Generator<Pojo, A> andOptionalsMethod() {
+    return MethodGen.<Pojo, A>modifiers(PUBLIC)
         .noGenericTypes()
-        .returnType("Builder")
+        .returnType(p -> "Builder" + p.getTypeVariablesSection())
         .methodName("andOptionals")
         .noArguments()
         .content("return builder;");
@@ -92,7 +112,7 @@ public class SafeBuilderGens {
   public static Generator<Pojo, PojoSettings> buildMethod() {
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
         .noGenericTypes()
-        .returnType(p -> p.getName().asString())
+        .returnType(p -> p.getName().asString() + p.getTypeVariablesSection())
         .methodName("build")
         .noArguments()
         .content("return builder.build();");
@@ -103,13 +123,11 @@ public class SafeBuilderGens {
         (f, s, w) ->
             w.println(
                 "return new %s(builder.set%s(%s));",
-                createNextClassName(f, s),
-                f.getField().getName().toPascalCase(),
-                f.getField().getName());
+                nextClassDiamond(f), f.getField().getName().toPascalCase(), f.getField().getName());
 
     return MethodGen.<SafeBuilderPojoField, PojoSettings>modifiers(PUBLIC)
         .noGenericTypes()
-        .returnType(SafeBuilderGens::createNextClassName)
+        .returnType(SafeBuilderGens::nextClassTypeVariables)
         .methodName(f -> String.format("set%s", f.getField().getName().toPascalCase()))
         .singleArgument(
             f ->
@@ -124,13 +142,11 @@ public class SafeBuilderGens {
         (f, s, w) ->
             w.println(
                 "return new %s(%s.map(builder::set%s).orElse(builder));",
-                createNextClassName(f, s),
-                f.getField().getName(),
-                f.getField().getName().toPascalCase());
+                nextClassDiamond(f), f.getField().getName(), f.getField().getName().toPascalCase());
 
     return MethodGen.<SafeBuilderPojoField, PojoSettings>modifiers(PUBLIC)
         .noGenericTypes()
-        .returnType(SafeBuilderGens::createNextClassName)
+        .returnType(SafeBuilderGens::nextClassTypeVariables)
         .methodName(f -> String.format("set%s", f.getField().getName().toPascalCase()))
         .singleArgument(
             f ->
@@ -149,11 +165,11 @@ public class SafeBuilderGens {
     final Generator<Pojo, PojoSettings> constructor =
         ConstructorGen.<Pojo, PojoSettings>modifiers(PRIVATE)
             .className(p -> String.format("Builder%d", builderNumber.applyAsInt(p)))
-            .singleArgument(BUILDER_ARGUMENT)
+            .singleArgument(p -> String.format("Builder%s builder", p.getTypeVariablesSection()))
             .content(BUILDER_ASSIGNMENT);
 
     final Generator<Pojo, PojoSettings> content =
-        SafeBuilderGens.<Pojo, PojoSettings>fieldDeclaration()
+        SafeBuilderGens.<PojoSettings>fieldDeclaration()
             .append(newLine())
             .append(constructor)
             .append(newLine())
@@ -165,8 +181,13 @@ public class SafeBuilderGens {
 
     return ClassGen.<Pojo, PojoSettings>nested()
         .modifiers(PUBLIC, STATIC, FINAL)
-        .className((p, s) -> String.format("Builder%d", builderNumber.applyAsInt(p)))
-        .content(content);
+        .className(
+            (p, s) ->
+                String.format(
+                    "Builder%d%s",
+                    builderNumber.applyAsInt(p), p.getGenericTypeDeclarationSection()))
+        .content(content)
+        .append((p, s, w) -> p.getGenericImports().map(Name::asString).foldLeft(w, Writer::ref));
   }
 
   public static Generator<Pojo, PojoSettings> finalOptionalBuilder() {
@@ -176,11 +197,11 @@ public class SafeBuilderGens {
     final Generator<Pojo, PojoSettings> constructor =
         ConstructorGen.<Pojo, PojoSettings>modifiers(PRIVATE)
             .className(p -> String.format("OptBuilder%d", builderNumber.applyAsInt(p)))
-            .singleArgument(BUILDER_ARGUMENT)
+            .singleArgument(p -> String.format("Builder%s builder", p.getTypeVariablesSection()))
             .content(BUILDER_ASSIGNMENT);
 
     final Generator<Pojo, PojoSettings> content =
-        SafeBuilderGens.<Pojo, PojoSettings>fieldDeclaration()
+        SafeBuilderGens.<PojoSettings>fieldDeclaration()
             .append(newLine())
             .append(constructor)
             .append(newLine())
@@ -188,7 +209,12 @@ public class SafeBuilderGens {
 
     return ClassGen.<Pojo, PojoSettings>nested()
         .modifiers(PUBLIC, STATIC, FINAL)
-        .className((p, s) -> String.format("OptBuilder%d", builderNumber.applyAsInt(p)))
-        .content(content);
+        .className(
+            (p, s) ->
+                String.format(
+                    "OptBuilder%d%s",
+                    builderNumber.applyAsInt(p), p.getGenericTypeDeclarationSection()))
+        .content(content)
+        .append((p, s, w) -> p.getGenericImports().map(Name::asString).foldLeft(w, Writer::ref));
   }
 }

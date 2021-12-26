@@ -10,7 +10,6 @@ public class RefsGen {
   private RefsGen() {}
 
   public static Generator<PojoField, PojoSettings> fieldRefs() {
-    return (f, s, w) ->
-        f.getType().getAllQualifiedTypes().map(Name::asString).foldLeft(w, Writer::ref);
+    return (f, s, w) -> f.getType().getImports().map(Name::asString).foldLeft(w, Writer::ref);
   }
 }

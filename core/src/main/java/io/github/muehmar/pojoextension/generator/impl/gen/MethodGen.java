@@ -1,8 +1,9 @@
 package io.github.muehmar.pojoextension.generator.impl.gen;
 
-import ch.bluecare.commons.data.NonEmptyList;
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.Strings;
 import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
@@ -39,10 +40,8 @@ public class MethodGen<A, B> implements Generator<A, B> {
             w -> {
               final JavaModifiers modifiers = createModifiers.apply(data, settings);
               final String genericTypeParameters =
-                  NonEmptyList.fromIter(createGenericTypeParameters.apply(data, settings))
-                      .map(parameters -> parameters.toPList().mkString(", "))
-                      .map(parameters -> String.format("<%s> ", parameters))
-                      .orElse("");
+                  Strings.surroundIfNotEmpty(
+                      "<", createGenericTypeParameters.apply(data, settings).mkString(", "), "> ");
               final String returnType = createReturnType.apply(data, settings);
               final String methodName = createMethodName.apply(data, settings);
               final String arguments = createArguments.apply(data, settings).mkString(", ");
@@ -80,6 +79,15 @@ public class MethodGen<A, B> implements Generator<A, B> {
 
     public Builder1<A, B> genericTypes(String... types) {
       return new Builder1<>(createModifiers, (data, settings) -> PList.fromArray(types));
+    }
+
+    public Builder1<A, B> genericTypes(Function<A, PList<String>> types) {
+      return new Builder1<>(createModifiers, (data, settings) -> types.apply(data));
+    }
+
+    public Builder1<A, B> singleGenericType(Function<A, Name> type) {
+      return new Builder1<>(
+          createModifiers, (data, settings) -> PList.single(type.apply(data)).map(Name::asString));
     }
   }
 

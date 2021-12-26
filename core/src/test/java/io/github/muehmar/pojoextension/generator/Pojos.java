@@ -6,6 +6,7 @@ import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.data.Argument;
 import io.github.muehmar.pojoextension.generator.data.Constructor;
+import io.github.muehmar.pojoextension.generator.data.Generic;
 import io.github.muehmar.pojoextension.generator.data.Getter;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.PackageName;
@@ -35,6 +36,7 @@ public class Pojos {
             .setFields(fields)
             .setConstructors(PList.empty())
             .setGetters(getters)
+            .setGenerics(PList.empty())
             .andAllOptionals()
             .build();
     return pojo.withConstructors(PList.single(deviateStandardConstructor(pojo)));
@@ -52,6 +54,37 @@ public class Pojos {
 
     return pojo.withConstructors(
         PList.single(new Constructor(Name.fromString("Customer"), arguments)));
+  }
+
+  public static Pojo genericSample() {
+    final PList<PojoField> fields =
+        PList.of(
+            new PojoField(Name.fromString("id"), Type.string(), REQUIRED),
+            new PojoField(
+                Name.fromString("data"), Type.typeVariable(Name.fromString("T")), REQUIRED),
+            new PojoField(
+                Name.fromString("additionalData"),
+                Type.typeVariable(Name.fromString("S")),
+                OPTIONAL));
+
+    final PList<Getter> getters = fields.map(PojoFields::toGetter);
+
+    final PList<Generic> generics =
+        PList.of(
+            new Generic(Name.fromString("T"), PList.single(Type.list(Type.string()))),
+            new Generic(Name.fromString("S"), PList.empty()));
+
+    final Pojo pojo =
+        PojoBuilder.create()
+            .setName(Name.fromString("Customer"))
+            .setPkg(PACKAGE_NAME)
+            .setFields(fields)
+            .setConstructors(PList.empty())
+            .setGetters(getters)
+            .setGenerics(generics)
+            .andAllOptionals()
+            .build();
+    return pojo.withConstructors(PList.single(deviateStandardConstructor(pojo)));
   }
 
   public static Constructor deviateStandardConstructor(Pojo pojo) {
