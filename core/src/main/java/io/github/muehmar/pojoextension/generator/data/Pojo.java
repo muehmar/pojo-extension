@@ -80,6 +80,10 @@ public class Pojo extends PojoExt {
         "<", generics.map(Generic::getTypeVariable).mkString(", "), ">");
   }
 
+  public String getTypeVariablesWildcardSection() {
+    return Strings.surroundIfNotEmpty("<", generics.map(ignore -> "?").mkString(", "), ">");
+  }
+
   public Optional<MatchingConstructor> findMatchingConstructor() {
     return constructors
         .flatMapOptional(c -> c.matchFields(fields).map(f -> new MatchingConstructor(c, f)))

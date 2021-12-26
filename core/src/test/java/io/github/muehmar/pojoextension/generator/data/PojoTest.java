@@ -104,6 +104,16 @@ class PojoTest {
   }
 
   @Test
+  void getTypeVariablesWildcardSection_when_calledForNonGenericSample_then_empty() {
+    assertEquals("", Pojos.sample().getTypeVariablesWildcardSection());
+  }
+
+  @Test
+  void getTypeVariablesWildcardSection_when_calledForGenericSample_then_empty() {
+    assertEquals("<?, ?>", Pojos.genericSample().getTypeVariablesWildcardSection());
+  }
+
+  @Test
   void getGenericTypeDeclarations_when_calledForNonGenericSample_then_empty() {
     assertEquals(PList.empty(), Pojos.sample().getGenericTypeDeclarations());
   }
