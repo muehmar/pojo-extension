@@ -8,7 +8,6 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newL
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 
 import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
@@ -18,7 +17,6 @@ import io.github.muehmar.pojoextension.generator.impl.gen.Generators;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.SafeBuilderPojoField;
-import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.ToIntFunction;
 
 /** Factory which creates the classes which forms the SafeBuilder. */
@@ -33,9 +31,7 @@ public class SafeBuilderGens {
         .modifiers(PUBLIC, STATIC, FINAL)
         .className(SafeBuilderGens::classDeclaration)
         .content(builderClassContent())
-        .append(
-            (p, s, w) ->
-                p.getPojo().getGenericImports().map(Name::asString).foldLeft(w, Writer::ref));
+        .append(RefsGen.genericRefs(), SafeBuilderPojoField::getPojo);
   }
 
   private static String rawClassName(SafeBuilderPojoField field) {
@@ -187,7 +183,7 @@ public class SafeBuilderGens {
                     "Builder%d%s",
                     builderNumber.applyAsInt(p), p.getGenericTypeDeclarationSection()))
         .content(content)
-        .append((p, s, w) -> p.getGenericImports().map(Name::asString).foldLeft(w, Writer::ref));
+        .append(RefsGen.genericRefs());
   }
 
   public static Generator<Pojo, PojoSettings> finalOptionalBuilder() {
@@ -215,6 +211,6 @@ public class SafeBuilderGens {
                     "OptBuilder%d%s",
                     builderNumber.applyAsInt(p), p.getGenericTypeDeclarationSection()))
         .content(content)
-        .append((p, s, w) -> p.getGenericImports().map(Name::asString).foldLeft(w, Writer::ref));
+        .append(RefsGen.genericRefs());
   }
 }

@@ -15,6 +15,7 @@ import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.gen.Annotations;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -48,7 +49,7 @@ public class EqualsGens {
         .methodName("equals")
         .arguments(arguments)
         .content(staticEqualsMethodContent())
-        .append((p, s, w) -> p.getGenericImports().map(Name::asString).foldLeft(w, Writer::ref))
+        .append(RefsGen.genericRefs())
         .filter((p, s) -> s.getEqualsHashCodeAbility().isEnabled());
   }
 

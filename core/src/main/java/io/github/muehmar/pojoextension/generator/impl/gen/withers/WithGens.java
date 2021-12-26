@@ -17,7 +17,6 @@ import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.FieldVariable;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.data.WithField;
-import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.Function;
 
 public class WithGens {
@@ -62,9 +61,7 @@ public class WithGens {
         .arguments(arguments)
         .content(withMethodContent())
         .append(RefsGen.fieldRefs(), WithField::getField)
-        .append(
-            (p, s, w) -> p.getGenericImports().map(Name::asString).foldLeft(w, Writer::ref),
-            WithField::getPojo)
+        .append(RefsGen.genericRefs(), WithField::getPojo)
         .filter((p, s) -> s.getWithersAbility().isEnabled());
   }
 
@@ -121,9 +118,7 @@ public class WithGens {
             .arguments(arguments)
             .content(optionalWithMethodContent())
             .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
-            .append(
-                (p, s, w) -> p.getGenericImports().map(Name::asString).foldLeft(w, Writer::ref),
-                WithField::getPojo)
+            .append(RefsGen.genericRefs(), WithField::getPojo)
             .append(RefsGen.fieldRefs(), WithField::getField);
 
     return Generator.<WithField, PojoSettings>emptyGen()

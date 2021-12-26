@@ -14,7 +14,7 @@ import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
-import io.github.muehmar.pojoextension.generator.writer.Writer;
+import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import java.util.function.Function;
 
 public class SafeBuilderClassGens {
@@ -56,6 +56,6 @@ public class SafeBuilderClassGens {
         .methodName("create")
         .noArguments()
         .content(content)
-        .append((p, s, w) -> p.getGenericImports().map(Name::asString).foldLeft(w, Writer::ref));
+        .append(RefsGen.genericRefs());
   }
 }
