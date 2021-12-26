@@ -113,7 +113,7 @@ class ExtensionGensTest {
                 Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "private Customer self() {\n"
+        "private Customer<T, S> self() {\n"
             + "  final Object self = this;\n"
             + "  return (Customer<T, S>)self;\n"
             + "}",

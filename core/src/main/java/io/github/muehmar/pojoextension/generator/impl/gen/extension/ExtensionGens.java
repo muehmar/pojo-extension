@@ -96,7 +96,7 @@ public class ExtensionGens {
   public static Generator<Pojo, PojoSettings> selfMethod() {
     return MethodGen.<Pojo, PojoSettings>modifiers(PRIVATE)
         .noGenericTypes()
-        .returnType(pojo -> pojo.getName().asString())
+        .returnType(pojo -> pojo.getName().asString() + pojo.getTypeVariablesSection())
         .methodName("self")
         .noArguments()
         .content(
