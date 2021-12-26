@@ -3,7 +3,9 @@ package io.github.muehmar.pojoextension.generator.impl.gen.tostring;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_STRING;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_LIST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -156,5 +158,25 @@ class ToStringGensTest {
 
     assertEquals("", writer.asString());
     assertTrue(writer.getRefs().isEmpty());
+  }
+
+  @Test
+  void staticToStringMethod_when_genericSample_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = ToStringGens.staticToStringMethod();
+
+    final Writer writer =
+        gen.generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "private static <T extends List<String>, S> String toString(Customer<T, S> self) {\n"
+            + "  return \"Customer{\"\n"
+            + "      + \"id='\" + self.getId() + '\\''\n"
+            + "      + \", data=\" + self.getData()\n"
+            + "      + \", additionalData=\" + self.getAdditionalData()\n"
+            + "      + '}';\n"
+            + "}",
+        writer.asString());
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
+    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
   }
 }
