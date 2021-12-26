@@ -85,7 +85,7 @@ public class MethodGen<A, B> implements Generator<A, B> {
       return new Builder1<>(createModifiers, (data, settings) -> types.apply(data));
     }
 
-    public Builder1<A, B> singleGenericTypes(Function<A, Name> type) {
+    public Builder1<A, B> singleGenericType(Function<A, Name> type) {
       return new Builder1<>(
           createModifiers, (data, settings) -> PList.single(type.apply(data)).map(Name::asString));
     }

@@ -2,7 +2,9 @@ package io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode;
 
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_STRING;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_LIST;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OBJECTS;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -108,6 +110,30 @@ class HashCodeGensTest {
             Writer.createDefault());
     assertEquals("", writer.asString());
     assertTrue(writer.getRefs().isEmpty());
+  }
+
+  @Test
+  void staticHashCodeMethod_when_genericSample_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = HashCodeGens.staticHashCodeMethod();
+
+    final PList<PojoField> fields =
+        PList.of(new PojoField(Name.fromString("flag"), Type.primitiveBoolean(), REQUIRED));
+
+    final Writer writer =
+        generator.generate(
+            Pojos.genericSample().withFields(fields).withGetters(fields.map(PojoFields::toGetter)),
+            PojoSettings.defaultSettings(),
+            Writer.createDefault());
+    assertEquals(
+        "private static <T extends List<String>, S> int hashCode(Customer<T, S> o) {\n"
+            + "  int result = Objects.hash(o.isFlag());\n"
+            + "  return result;\n"
+            + "}",
+        writer.asString());
+    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_OBJECTS::equals));
+    assertFalse(writer.getRefs().exists(JAVA_UTIL_ARRAYS::equals));
   }
 
   @Test

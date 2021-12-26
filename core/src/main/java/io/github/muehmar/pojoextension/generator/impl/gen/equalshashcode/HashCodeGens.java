@@ -9,6 +9,7 @@ import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.Mapper;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.FieldGetter;
+import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
@@ -36,15 +37,17 @@ public class HashCodeGens {
   }
 
   public static Generator<Pojo, PojoSettings> staticHashCodeMethod() {
-    final Function<Pojo, String> argument = p -> String.format("%s o", p.getName());
+    final Function<Pojo, String> argument =
+        p -> String.format("%s%s o", p.getName(), p.getTypeVariablesSection());
     final Generator<Pojo, PojoSettings> content = staticHashCodeMethodContent();
     return MethodGen.<Pojo, PojoSettings>modifiers(
             (p, s) -> JavaModifiers.of(s.getStaticMethodAccessModifier(), STATIC))
-        .noGenericTypes()
+        .genericTypes(Pojo::getGenericTypeDeclarations)
         .returnType("int")
         .methodName("hashCode")
         .singleArgument(argument)
         .content(content)
+        .append((p, s, w) -> p.getGenericImports().map(Name::asString).foldLeft(w, Writer::ref))
         .filter((p, s) -> s.getEqualsHashCodeAbility().isEnabled());
   }
 

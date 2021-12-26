@@ -19,7 +19,7 @@ public class MapGens {
   public static Generator<Pojo, PojoSettings> mapMethod() {
     final Name preferred = Name.fromString("T");
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
-        .singleGenericTypes(p -> p.findUnusedTypeVariableName(preferred))
+        .singleGenericType(p -> p.findUnusedTypeVariableName(preferred))
         .returnType(p -> p.findUnusedTypeVariableName(preferred).asString())
         .methodName("map")
         .singleArgument(
@@ -53,7 +53,7 @@ public class MapGens {
   public static Generator<Pojo, PojoSettings> mapIfPresentMethod() {
     final Name preferred = Name.fromString("T");
     return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
-        .singleGenericTypes(p -> p.findUnusedTypeVariableName(preferred))
+        .singleGenericType(p -> p.findUnusedTypeVariableName(preferred))
         .returnType(p -> p.getName().asString() + p.getTypeVariablesSection())
         .methodName("mapIfPresent")
         .arguments(
