@@ -43,6 +43,18 @@ class MapGensTest {
   }
 
   @Test
+  void mapMethod_when_genericSample_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = MapGens.mapMethod();
+    final Writer writer =
+        gen.generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "public <A> A map(Function<Customer<T, S>, A> f) {\n" + "  return f.apply(self());\n" + "}",
+        writer.asString());
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_FUNCTION::equals));
+  }
+
+  @Test
   void mapIfMethod_when_called_then_correctOutput() {
     final Generator<Pojo, PojoSettings> gen = MapGens.mapIfMethod();
     final Writer writer =
@@ -67,6 +79,20 @@ class MapGensTest {
 
     assertEquals("", writer.asString());
     assertTrue(writer.getRefs().isEmpty());
+  }
+
+  @Test
+  void mapIfMethod_when_genericSample_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = MapGens.mapIfMethod();
+    final Writer writer =
+        gen.generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "public Customer<T, S> mapIf(boolean shouldMap, UnaryOperator<Customer<T, S>> f) {\n"
+            + "  return shouldMap ? f.apply(self()) : self();\n"
+            + "}",
+        writer.asString());
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_UNARYOPERATOR::equals));
   }
 
   @Test
@@ -95,5 +121,20 @@ class MapGensTest {
 
     assertEquals("", writer.asString());
     assertTrue(writer.getRefs().isEmpty());
+  }
+
+  @Test
+  void mapIfPresentMethod_when_genericSample_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = MapGens.mapIfPresentMethod();
+    final Writer writer =
+        gen.generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals(
+        "public <A> Customer<T, S> mapIfPresent(Optional<A> value, BiFunction<Customer<T, S>, A, Customer<T, S>> f) {\n"
+            + "  return value.map(v -> f.apply(self(), v)).orElseGet(this::self);\n"
+            + "}",
+        writer.asString());
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_BIFUNCTION::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
   }
 }

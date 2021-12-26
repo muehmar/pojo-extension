@@ -1,5 +1,7 @@
 package io.github.muehmar.pojoextension.generator.data;
 
+import static io.github.muehmar.pojoextension.Booleans.not;
+
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.Strings;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
@@ -8,6 +10,9 @@ import java.util.Optional;
 @PojoExtension(extensionName = "{CLASSNAME}Ext")
 @SuppressWarnings("java:S2160")
 public class Pojo extends PojoExt {
+  private static final PList<Name> LETTERS_AZ =
+      PList.range(65, 91).map(n -> Character.toString((char) n.intValue())).map(Name::fromString);
+
   private final Name name;
   private final PackageName pkg;
   private final PList<PojoField> fields;
@@ -134,5 +139,32 @@ public class Pojo extends PojoExt {
         field.getName(),
         field.getName(),
         optionalMessage);
+  }
+
+  public Name findUnusedTypeVariableName() {
+    final PList<Name> typeVariableNames = generics.map(Generic::getTypeVariable);
+    return LETTERS_AZ
+        .filter(n -> not(typeVariableNames.exists(n::equals)))
+        .headOption()
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    "All single-letter type variables already used for generic class "
+                        + getName()
+                        + "! If this is really a use case and should be supported, please contact the maintainer."));
+  }
+
+  public Name findUnusedTypeVariableName(Name preferred) {
+    final PList<Name> typeVariableNames = generics.map(Generic::getTypeVariable);
+    return LETTERS_AZ
+        .cons(preferred)
+        .filter(n -> not(typeVariableNames.exists(n::equals)))
+        .headOption()
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    "All single-letter type variables already used for generic class "
+                        + getName()
+                        + "! If this is really a use case and should be supported, please contact the maintainer."));
   }
 }

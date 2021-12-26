@@ -3,6 +3,7 @@ package io.github.muehmar.pojoextension.generator.impl.gen;
 import ch.bluecare.commons.data.NonEmptyList;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
@@ -84,6 +85,11 @@ public class MethodGen<A, B> implements Generator<A, B> {
 
     public Builder1<A, B> genericTypes(Function<A, PList<String>> types) {
       return new Builder1<>(createModifiers, (data, settings) -> types.apply(data));
+    }
+
+    public Builder1<A, B> singleGenericTypes(Function<A, Name> type) {
+      return new Builder1<>(
+          createModifiers, (data, settings) -> PList.single(type.apply(data)).map(Name::asString));
     }
   }
 
