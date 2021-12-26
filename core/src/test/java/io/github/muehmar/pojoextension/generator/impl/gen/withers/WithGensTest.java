@@ -246,6 +246,23 @@ class WithGensTest {
   }
 
   @Test
+  void optionalWithMethod_when_genericSampleAndField_then_correctDelegateCall() {
+    final Generator<WithField, PojoSettings> generator = WithGens.optionalWithMethod();
+
+    final Pojo pojo = Pojos.genericSample();
+    final WithField withField = WithField.of(pojo, pojo.getFields().apply(2));
+
+    final Writer writer =
+        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+    assertEquals(
+        "public Customer<T, S> withAdditionalData(Optional<S> additionalData) {\n"
+            + "  return withAdditionalData(self(), additionalData);\n"
+            + "}",
+        writer.asString());
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
+  }
+
+  @Test
   void
       staticOptionalWithMethod_when_forRequiredFieldAndNullableArguments_then_noContentGenerated() {
     final Generator<WithField, PojoSettings> generator = WithGens.staticOptionalWithMethod();
@@ -322,5 +339,24 @@ class WithGensTest {
 
     assertEquals("", writer.asString());
     assertTrue(writer.getRefs().isEmpty());
+  }
+
+  @Test
+  void staticOptionalWithMethod_when_genericSample_then_correctOutput() {
+    final Generator<WithField, PojoSettings> generator = WithGens.staticOptionalWithMethod();
+
+    final Pojo pojo = Pojos.genericSample();
+    final WithField withField = WithField.of(pojo, pojo.getFields().apply(2));
+
+    final Writer writer =
+        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+    assertEquals(
+        "public static <T extends List<String>, S> Customer<T, S> withAdditionalData(Customer<T, S> self, Optional<S> additionalData) {\n"
+            + "  return new Customer<>(self.getId(), self.getData(), additionalData.orElse(null));\n"
+            + "}",
+        writer.asString());
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
+    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
   }
 }
