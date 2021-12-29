@@ -36,7 +36,7 @@ class FinalConstructorArgumentTest {
     final FinalConstructorArgument finalConstructorArgument =
         FinalConstructorArgument.ofGetter(fieldGetter, fieldArgument);
 
-    assertEquals("self.getId()", finalConstructorArgument.getFieldString());
+    assertEquals("getId()", finalConstructorArgument.getFieldString());
     assertEquals(WRAP_INTO_OPTIONAL, finalConstructorArgument.getRelation());
   }
 
@@ -57,7 +57,7 @@ class FinalConstructorArgumentTest {
     final FinalConstructorArgument finalConstructorArgument =
         FinalConstructorArgument.ofGetter(fieldGetter, fieldArgument);
 
-    assertEquals("self.getId()", finalConstructorArgument.getFieldString());
+    assertEquals("getId()", finalConstructorArgument.getFieldString());
     assertEquals(UNWRAP_OPTIONAL, finalConstructorArgument.getRelation());
   }
 
@@ -79,7 +79,7 @@ class FinalConstructorArgumentTest {
     final FinalConstructorArgument finalConstructorArgument =
         FinalConstructorArgument.ofGetter(fieldGetter, fieldArgument);
 
-    assertEquals("self.getId()", finalConstructorArgument.getFieldString());
+    assertEquals("getId()", finalConstructorArgument.getFieldString());
     assertEquals(SAME_TYPE, finalConstructorArgument.getRelation());
   }
 

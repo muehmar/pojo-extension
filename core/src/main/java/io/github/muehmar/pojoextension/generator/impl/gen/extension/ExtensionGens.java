@@ -51,7 +51,6 @@ public class ExtensionGens {
         .appendNewLine()
         .appendList(getterMethod().appendNewLine(), toFieldGetter)
         .appendList(WithGens.withMethod().appendNewLine(), toWithFields)
-        .appendList(WithGens.staticWithMethod().appendNewLine(), toWithFields)
         .appendList(WithGens.optionalWithMethod().append(optionalNewLine), toWithFields)
         .appendList(WithGens.staticOptionalWithMethod().append(optionalNewLine), toWithFields)
         .append(MapGens.mapMethod())

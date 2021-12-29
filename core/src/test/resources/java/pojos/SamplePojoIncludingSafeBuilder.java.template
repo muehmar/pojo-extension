@@ -14,28 +14,16 @@ public interface CustomerExtension {
 
   String getNickname();
 
-  public Customer withId(Integer id) {
-    return withId(self(), id);
+  Customer withId(Integer id) {
+    return new Customer(id, getUsername(), getNickname().orElse(null));
   }
 
-  public Customer withUsername(String username) {
-    return withUsername(self(), username);
+  Customer withUsername(String username) {
+    return new Customer(getId(), username, getNickname().orElse(null));
   }
 
-  public Customer withNickname(String nickname) {
-    return withNickname(self(), nickname);
-  }
-
-  private static Customer withId(Customer self, Integer id) {
-    return new Customer(id, self.getUsername(), self.getNickname().orElse(null));
-  }
-
-  private static Customer withUsername(Customer self, String username) {
-    return new Customer(self.getId(), username, self.getNickname().orElse(null));
-  }
-
-  private static Customer withNickname(Customer self, String nickname) {
-    return new Customer(self.getId(), self.getUsername(), nickname);
+  Customer withNickname(String nickname) {
+    return new Customer(getId(), getUsername(), nickname);
   }
 
   public Customer withNickname(Optional<String> nickname) {
@@ -43,7 +31,7 @@ public interface CustomerExtension {
   }
 
   public static Customer withNickname(Customer self, Optional<String> nickname) {
-    return new Customer(self.getId(), self.getUsername(), nickname.orElse(null));
+    return new Customer(getId(), getUsername(), nickname.orElse(null));
   }
 
   public <T> T map(Function<Customer, T> f) {

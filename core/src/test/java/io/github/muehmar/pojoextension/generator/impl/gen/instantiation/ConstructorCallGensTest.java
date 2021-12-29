@@ -65,8 +65,7 @@ class ConstructorCallGensTest {
         generator.generate(fieldVariable, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "return new Customer(self.getId(), self.getUsername(), nickname.orElse(null));",
-        writer.asString());
+        "return new Customer(getId(), getUsername(), nickname.orElse(null));", writer.asString());
   }
 
   @Test
@@ -82,8 +81,7 @@ class ConstructorCallGensTest {
     final Writer writer =
         generator.generate(fieldVariable, PojoSettings.defaultSettings(), Writer.createDefault());
 
-    assertEquals(
-        "return new Customer(self.getId(), self.getUsername(), nickname);", writer.asString());
+    assertEquals("return new Customer(getId(), getUsername(), nickname);", writer.asString());
   }
 
   @Test
@@ -100,7 +98,7 @@ class ConstructorCallGensTest {
         generator.generate(fieldVariable, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "return new Customer(self.getId(), self.getUsername(), Optional.ofNullable(nickname));",
+        "return new Customer(getId(), getUsername(), Optional.ofNullable(nickname));",
         writer.asString());
   }
 
@@ -117,8 +115,7 @@ class ConstructorCallGensTest {
     final Writer writer =
         generator.generate(fieldVariable, PojoSettings.defaultSettings(), Writer.createDefault());
 
-    assertEquals(
-        "return new Customer(self.getId(), self.getUsername(), nickname);", writer.asString());
+    assertEquals("return new Customer(getId(), getUsername(), nickname);", writer.asString());
   }
 
   @Test
@@ -134,7 +131,7 @@ class ConstructorCallGensTest {
         generator.generate(fieldVariable, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "return new Customer.Address(self.getId(), self.getUsername(), nickname.orElse(null));",
+        "return new Customer.Address(getId(), getUsername(), nickname.orElse(null));",
         writer.asString());
   }
 }
