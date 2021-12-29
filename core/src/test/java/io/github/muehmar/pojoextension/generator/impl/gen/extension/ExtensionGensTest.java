@@ -94,35 +94,6 @@ class ExtensionGensTest {
   }
 
   @Test
-  void selfMethod_when_sample_then_correctContent() {
-    final Writer writer =
-        ExtensionGens.selfMethod()
-            .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
-
-    assertEquals(
-        "private Customer self() {\n"
-            + "  final Object self = this;\n"
-            + "  return (Customer)self;\n"
-            + "}",
-        writer.asString());
-  }
-
-  @Test
-  void selfMethod_when_genericSample_then_correctContent() {
-    final Writer writer =
-        ExtensionGens.selfMethod()
-            .generate(
-                Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
-
-    assertEquals(
-        "private Customer<T, S> self() {\n"
-            + "  final Object self = this;\n"
-            + "  return (Customer<T, S>)self;\n"
-            + "}",
-        writer.asString());
-  }
-
-  @Test
   void getterMethod_when_samplePojo_then_correctContent() {
     final Pojo pojo = Pojos.sample();
     final FieldGetter fieldGetter =

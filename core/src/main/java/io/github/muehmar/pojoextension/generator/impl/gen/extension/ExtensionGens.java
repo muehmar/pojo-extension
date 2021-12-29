@@ -1,7 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.extension;
 
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.ABSTRACT;
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PRIVATE;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PROTECTED;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
 
@@ -39,6 +38,9 @@ public class ExtensionGens {
     final Function<Pojo, PList<WithField>> toWithFields =
         pojo -> pojo.getFields().map(field -> WithField.of(pojo, field));
 
+    final Function<Pojo, PList<FieldGetter>> toFieldGetter =
+        pojo -> pojo.getFields().map(pojo::getMatchingGetterOrThrow);
+
     final Generator<WithField, PojoSettings> optionalNewLine =
         Generator.<WithField, PojoSettings>emptyGen()
             .appendConditionally(
@@ -49,8 +51,7 @@ public class ExtensionGens {
 
     return constructor()
         .appendNewLine()
-        .append(selfMethod())
-        .appendNewLine()
+        .appendList(getterMethod().appendNewLine(), toFieldGetter)
         .appendList(WithGens.withMethod().appendNewLine(), toWithFields)
         .appendList(WithGens.staticWithMethod().appendNewLine(), toWithFields)
         .appendList(WithGens.optionalWithMethod().append(optionalNewLine), toWithFields)
@@ -92,18 +93,6 @@ public class ExtensionGens {
                     .println(
                         "throw new IllegalArgumentException(\"Only class %s can extend %s.\");",
                         p.getName(), s.extensionName(p)));
-  }
-
-  public static Generator<Pojo, PojoSettings> selfMethod() {
-    return MethodGen.<Pojo, PojoSettings>modifiers(PRIVATE)
-        .noGenericTypes()
-        .returnTypeName(Pojo::getNameWithTypeVariables)
-        .methodName("self")
-        .noArguments()
-        .content(
-            (p, s, w) ->
-                w.println("final Object self = this;")
-                    .println("return (%s)self;", p.getNameWithTypeVariables()));
   }
 
   public static Generator<FieldGetter, PojoSettings> getterMethod() {
