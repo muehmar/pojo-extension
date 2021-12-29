@@ -65,7 +65,8 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   private static final int MAX_ANNOTATION_PATH_DEPTH = 50;
 
   private final Optional<BiConsumer<Pojo, PojoSettings>> redirectPojo;
-  private final Generator<Pojo, PojoSettings> extensionGenerator = ExtensionGens.extensionClass();
+  private final Generator<Pojo, PojoSettings> extensionGenerator =
+      ExtensionGens.extensionInterface();
   private final Generator<Pojo, PojoSettings> builderGenerator =
       SafeBuilderClassGens.safeBuilderClass();
 

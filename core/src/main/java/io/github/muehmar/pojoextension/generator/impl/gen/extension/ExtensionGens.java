@@ -1,6 +1,5 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.extension;
 
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.ABSTRACT;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
 
 import ch.bluecare.commons.data.PList;
@@ -24,11 +23,11 @@ import java.util.function.Function;
 public class ExtensionGens {
   private ExtensionGens() {}
 
-  public static Generator<Pojo, PojoSettings> extensionClass() {
-    return ClassGen.<Pojo, PojoSettings>clazz()
+  public static Generator<Pojo, PojoSettings> extensionInterface() {
+    return ClassGen.<Pojo, PojoSettings>ifc()
         .topLevel()
         .packageGen(new PackageGen())
-        .modifiers(PUBLIC, ABSTRACT)
+        .modifiers(PUBLIC)
         .className((p, s) -> s.extensionName(p).asString() + p.getGenericTypeDeclarationSection())
         .content(content());
   }

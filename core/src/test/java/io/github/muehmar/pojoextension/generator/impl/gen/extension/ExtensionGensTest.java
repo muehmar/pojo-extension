@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test;
 
 class ExtensionGensTest {
   @Test
-  void extensionClass_when_generatorUsedWithSamplePojo_then_correctClassGenerated() {
-    final Generator<Pojo, PojoSettings> generator = ExtensionGens.extensionClass();
+  void extensionInterface_when_generatorUsedWithSamplePojo_then_correctClassGenerated() {
+    final Generator<Pojo, PojoSettings> generator = ExtensionGens.extensionInterface();
 
     final String output =
         generator
@@ -28,8 +28,8 @@ class ExtensionGensTest {
   }
 
   @Test
-  void extensionClass_when_withNonDiscreteBuilder_then_correctClassGenerated() {
-    final Generator<Pojo, PojoSettings> generator = ExtensionGens.extensionClass();
+  void extensionInterface_when_withNonDiscreteBuilder_then_correctClassGenerated() {
+    final Generator<Pojo, PojoSettings> generator = ExtensionGens.extensionInterface();
 
     final String output =
         generator
@@ -43,8 +43,8 @@ class ExtensionGensTest {
   }
 
   @Test
-  void extensionClass_when_everythingDisabled_then_correctClassGenerated() {
-    final Generator<Pojo, PojoSettings> generator = ExtensionGens.extensionClass();
+  void extensionInterface_when_everythingDisabled_then_correctClassGenerated() {
+    final Generator<Pojo, PojoSettings> generator = ExtensionGens.extensionInterface();
 
     final String output =
         generator
