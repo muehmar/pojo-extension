@@ -20,7 +20,8 @@ class ClassGenTest {
   @Test
   void generate_when_simplePojoAndSingleContent_then_correctGeneratedString() {
     final ClassGen<Pojo, PojoSettings> generator =
-        ClassGen.<Pojo, PojoSettings>topLevel()
+        ClassGen.<Pojo, PojoSettings>clazz()
+            .topLevel()
             .packageGen(new PackageGen())
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> s.extensionName(p).asString())
@@ -39,9 +40,32 @@ class ClassGenTest {
   }
 
   @Test
+  void generate_when_interface_then_correctOutput() {
+    final ClassGen<Pojo, PojoSettings> generator =
+        ClassGen.<Pojo, PojoSettings>ifc()
+            .topLevel()
+            .packageGen(new PackageGen())
+            .modifiers(JavaModifier.PUBLIC)
+            .className((p, s) -> s.extensionName(p).asString())
+            .content(Generator.ofWriterFunction(w -> w.println("Content")));
+
+    final Writer writer =
+        generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
+    assertEquals(
+        "package io.github.muehmar;\n"
+            + "\n"
+            + "\n"
+            + "public interface CustomerExtension {\n"
+            + "  Content\n"
+            + "}",
+        writer.asString());
+  }
+
+  @Test
   void generate_when_refAddedInContent_then_refPrinted() {
     final ClassGen<Pojo, PojoSettings> generator =
-        ClassGen.<Pojo, PojoSettings>topLevel()
+        ClassGen.<Pojo, PojoSettings>clazz()
+            .topLevel()
             .packageGen(new PackageGen())
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> s.extensionName(p).asString())
@@ -62,7 +86,8 @@ class ClassGenTest {
   @Test
   void generate_when_nestedClass_then_noRefsAndPackagePrinted() {
     final ClassGen<Pojo, PojoSettings> generator =
-        ClassGen.<Pojo, PojoSettings>nested()
+        ClassGen.<Pojo, PojoSettings>clazz()
+            .nested()
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> s.extensionName(p).asString())
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
@@ -77,7 +102,8 @@ class ClassGenTest {
   void generate_when_privateAndFinalModifierUnordered_then_correctOutputWithOrderedModifiers(
       PList<JavaModifier> modifiers) {
     final ClassGen<Pojo, PojoSettings> generator =
-        ClassGen.<Pojo, PojoSettings>nested()
+        ClassGen.<Pojo, PojoSettings>clazz()
+            .nested()
             .modifiers(modifiers.toArray(JavaModifier.class))
             .className((p, s) -> s.extensionName(p).asString())
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));

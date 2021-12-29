@@ -49,7 +49,8 @@ public class NormalBuilderGens {
                 p -> p.getFields().filter(PojoField::isOptional).map(f -> new PojoAndField(p, f)))
             .append(buildMethod());
 
-    return ClassGen.<Pojo, PojoSettings>nested()
+    return ClassGen.<Pojo, PojoSettings>clazz()
+        .nested()
         .modifiers(PUBLIC, STATIC, FINAL)
         .className(p -> BUILDER_CLASSNAME + p.getGenericTypeDeclarationSection())
         .content(content);

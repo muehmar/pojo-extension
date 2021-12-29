@@ -27,7 +27,8 @@ public class SafeBuilderGens {
   private SafeBuilderGens() {}
 
   public static Generator<SafeBuilderPojoField, PojoSettings> fieldBuilderClass() {
-    return ClassGen.<SafeBuilderPojoField, PojoSettings>nested()
+    return ClassGen.<SafeBuilderPojoField, PojoSettings>clazz()
+        .nested()
         .modifiers(PUBLIC, STATIC, FINAL)
         .className(SafeBuilderGens::classDeclaration)
         .content(builderClassContent())
@@ -167,7 +168,8 @@ public class SafeBuilderGens {
             .append(newLine())
             .append(buildMethod());
 
-    return ClassGen.<Pojo, PojoSettings>nested()
+    return ClassGen.<Pojo, PojoSettings>clazz()
+        .nested()
         .modifiers(PUBLIC, STATIC, FINAL)
         .className(
             (p, s) ->
@@ -195,7 +197,8 @@ public class SafeBuilderGens {
             .append(newLine())
             .append(buildMethod());
 
-    return ClassGen.<Pojo, PojoSettings>nested()
+    return ClassGen.<Pojo, PojoSettings>clazz()
+        .nested()
         .modifiers(PUBLIC, STATIC, FINAL)
         .className(
             (p, s) ->

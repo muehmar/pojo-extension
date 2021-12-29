@@ -25,7 +25,8 @@ public class ExtensionGens {
   private ExtensionGens() {}
 
   public static Generator<Pojo, PojoSettings> extensionClass() {
-    return ClassGen.<Pojo, PojoSettings>topLevel()
+    return ClassGen.<Pojo, PojoSettings>clazz()
+        .topLevel()
         .packageGen(new PackageGen())
         .modifiers(PUBLIC, ABSTRACT)
         .className((p, s) -> s.extensionName(p).asString() + p.getGenericTypeDeclarationSection())
