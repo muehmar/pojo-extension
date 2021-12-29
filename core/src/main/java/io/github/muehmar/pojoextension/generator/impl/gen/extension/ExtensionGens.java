@@ -7,6 +7,7 @@ import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
@@ -103,5 +104,14 @@ public class ExtensionGens {
             (p, s, w) ->
                 w.println("final Object self = this;")
                     .println("return (%s)self;", p.getNameWithTypeVariables()));
+  }
+
+  public static Generator<FieldGetter, PojoSettings> getterMethod() {
+    return MethodGen.<FieldGetter, PojoSettings>modifiers()
+        .noGenericTypes()
+        .returnType(fg -> fg.getField().getType().getTypeDeclaration().asString())
+        .methodName(fg -> fg.getGetter().getName().asString())
+        .noArguments()
+        .noBody();
   }
 }

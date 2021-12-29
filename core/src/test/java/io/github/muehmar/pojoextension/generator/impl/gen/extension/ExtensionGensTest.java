@@ -1,11 +1,13 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.extension;
 
+import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.Resources;
+import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.DiscreteBuilder;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
@@ -118,6 +120,31 @@ class ExtensionGensTest {
             + "  return (Customer<T, S>)self;\n"
             + "}",
         writer.asString());
+  }
+
+  @Test
+  void getterMethod_when_samplePojo_then_correctContent() {
+    final Pojo pojo = Pojos.sample();
+    final FieldGetter fieldGetter =
+        FieldGetter.of(pojo.getGetters().head(), pojo.getFields().head(), SAME_TYPE);
+    final Writer writer =
+        ExtensionGens.getterMethod()
+            .generate(fieldGetter, PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals("Integer getId();", writer.asString());
+  }
+
+  @Test
+  void getterMethod_when_genenricPojo_then_correctContent() {
+    final Pojo pojo = Pojos.genericSample();
+    final FieldGetter fieldGetter =
+        FieldGetter.of(
+            pojo.getGetters().drop(1).head(), pojo.getFields().drop(1).head(), SAME_TYPE);
+    final Writer writer =
+        ExtensionGens.getterMethod()
+            .generate(fieldGetter, PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals("T getData();", writer.asString());
   }
 
   private static String readResourcePojoTemplate(String template) {
