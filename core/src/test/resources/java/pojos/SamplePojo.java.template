@@ -26,11 +26,7 @@ public interface CustomerExtension {
     return new Customer(getId(), getUsername(), nickname);
   }
 
-  public Customer withNickname(Optional<String> nickname) {
-    return withNickname(self(), nickname);
-  }
-
-  public static Customer withNickname(Customer self, Optional<String> nickname) {
+  Customer withNickname(Optional<String> nickname) {
     return new Customer(getId(), getUsername(), nickname.orElse(null));
   }
 

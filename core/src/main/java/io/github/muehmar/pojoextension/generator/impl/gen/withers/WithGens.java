@@ -44,7 +44,7 @@ public class WithGens {
 
   public static Generator<WithField, PojoSettings> optionalWithMethod() {
     final Generator<WithField, PojoSettings> method =
-        MethodGen.<WithField, PojoSettings>modifiers(PUBLIC)
+        MethodGen.<WithField, PojoSettings>modifiers()
             .noGenericTypes()
             .returnTypeName(wf -> wf.getPojo().getNameWithTypeVariables())
             .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
@@ -53,11 +53,7 @@ public class WithGens {
                     String.format(
                         "Optional<%s> %s",
                         wf.getField().getType().getTypeDeclaration(), wf.getField().getName()))
-            .content(
-                wf ->
-                    String.format(
-                        "return with%s(self(), %s);",
-                        wf.getField().getName().toPascalCase(), wf.getField().getName()))
+            .content(optionalWithMethodContent())
             .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
             .append(RefsGen.fieldRefs(), WithField::getField);
 
