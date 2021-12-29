@@ -79,7 +79,7 @@ public class ExtensionGens {
   public static Generator<FieldGetter, PojoSettings> getterMethod() {
     return MethodGen.<FieldGetter, PojoSettings>modifiers()
         .noGenericTypes()
-        .returnType(fg -> fg.getField().getType().getTypeDeclaration().asString())
+        .returnType(fg -> fg.getGetter().getReturnType().getTypeDeclaration().asString())
         .methodName(fg -> fg.getGetter().getName().asString())
         .noArguments()
         .noBody();

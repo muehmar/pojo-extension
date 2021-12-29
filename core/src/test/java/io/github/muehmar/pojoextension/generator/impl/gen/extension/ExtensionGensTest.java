@@ -75,6 +75,19 @@ class ExtensionGensTest {
   }
 
   @Test
+  void getterMethod_when_samplePojoForOptionalField_then_correctContent() {
+    final Pojo pojo = Pojos.sample();
+    final FieldGetter fieldGetter =
+        FieldGetter.of(
+            pojo.getGetters().drop(2).head(), pojo.getFields().drop(2).head(), SAME_TYPE);
+    final Writer writer =
+        ExtensionGens.getterMethod()
+            .generate(fieldGetter, PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals("Optional<String> getNickname();", writer.asString());
+  }
+
+  @Test
   void getterMethod_when_genenricPojo_then_correctContent() {
     final Pojo pojo = Pojos.genericSample();
     final FieldGetter fieldGetter =

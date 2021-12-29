@@ -12,7 +12,7 @@ public interface CustomerExtension {
 
   String getUsername();
 
-  String getNickname();
+  Optional<String> getNickname();
 
   Customer withId(Integer id) {
     return new Customer(id, getUsername(), getNickname().orElse(null));
