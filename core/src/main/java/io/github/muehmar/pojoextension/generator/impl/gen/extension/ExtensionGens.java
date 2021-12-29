@@ -1,7 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.extension;
 
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.ABSTRACT;
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PROTECTED;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
 
 import ch.bluecare.commons.data.PList;
@@ -10,7 +9,6 @@ import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.EqualsGens;
@@ -49,7 +47,7 @@ public class ExtensionGens {
     final BiPredicate<Pojo, PojoSettings> nonDiscreteBuilder =
         (p, s) -> s.getDiscreteBuilder().isDisabled();
 
-    return constructor()
+    return Generator.<Pojo, PojoSettings>emptyGen()
         .appendNewLine()
         .appendList(getterMethod().appendNewLine(), toFieldGetter)
         .appendList(WithGens.withMethod().appendNewLine(), toWithFields)
@@ -77,22 +75,6 @@ public class ExtensionGens {
         .append(ToStringGens.toStringMethod())
         .appendNewLine()
         .append(ToStringGens.staticToStringMethod());
-  }
-
-  public static Generator<Pojo, PojoSettings> constructor() {
-    return ConstructorGen.<Pojo, PojoSettings>modifiers(PROTECTED)
-        .className((p, s) -> s.extensionName(p).asString())
-        .noArguments()
-        .content(
-            (p, s, w) ->
-                w.println("final Object o = this;")
-                    .println(
-                        "if(!(o instanceof %s%s))",
-                        p.getName(), p.getTypeVariablesWildcardSection())
-                    .tab(1)
-                    .println(
-                        "throw new IllegalArgumentException(\"Only class %s can extend %s.\");",
-                        p.getName(), s.extensionName(p)));
   }
 
   public static Generator<FieldGetter, PojoSettings> getterMethod() {

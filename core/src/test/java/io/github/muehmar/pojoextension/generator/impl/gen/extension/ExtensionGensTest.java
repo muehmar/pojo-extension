@@ -63,37 +63,6 @@ class ExtensionGensTest {
   }
 
   @Test
-  void constructor_when_sample_then_correctContent() {
-    final Writer writer =
-        ExtensionGens.constructor()
-            .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
-
-    assertEquals(
-        "protected CustomerExtension() {\n"
-            + "  final Object o = this;\n"
-            + "  if(!(o instanceof Customer))\n"
-            + "    throw new IllegalArgumentException(\"Only class Customer can extend CustomerExtension.\");\n"
-            + "}",
-        writer.asString());
-  }
-
-  @Test
-  void constructor_when_genericSample_then_correctContent() {
-    final Writer writer =
-        ExtensionGens.constructor()
-            .generate(
-                Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
-
-    assertEquals(
-        "protected CustomerExtension() {\n"
-            + "  final Object o = this;\n"
-            + "  if(!(o instanceof Customer<?, ?>))\n"
-            + "    throw new IllegalArgumentException(\"Only class Customer can extend CustomerExtension.\");\n"
-            + "}",
-        writer.asString());
-  }
-
-  @Test
   void getterMethod_when_samplePojo_then_correctContent() {
     final Pojo pojo = Pojos.sample();
     final FieldGetter fieldGetter =

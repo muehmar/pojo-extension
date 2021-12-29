@@ -2,11 +2,6 @@ package io.github.muehmar;
 
 
 public abstract class CustomerExtension {
-  protected CustomerExtension() {
-    final Object o = this;
-    if(!(o instanceof Customer))
-      throw new IllegalArgumentException("Only class Customer can extend CustomerExtension.");
-  }
 
   Integer getId();
 
