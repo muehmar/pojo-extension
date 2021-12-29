@@ -138,7 +138,7 @@ public class Pojo extends PojoExt {
             + "the method as getter for the field '%s'.\n"
             + "%s",
         field.getName(),
-        Getter.getterName(field),
+        Getter.javaBeanGetterName(field),
         field.getType().getTypeDeclaration(),
         field.getName(),
         field.getName(),

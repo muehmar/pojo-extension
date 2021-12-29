@@ -1,7 +1,7 @@
 plugins {
     id 'maven-publish'
     id 'signing'
-    id 'pojo-extension.java-conventions'
+    id 'pojo-extension.java'
 }
 
 java {

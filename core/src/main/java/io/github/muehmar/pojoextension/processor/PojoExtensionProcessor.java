@@ -94,7 +94,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
     PList.fromIter(annotations)
         .flatMap(roundEnv::getElementsAnnotatedWith)
-        .filter(e -> e.getKind().equals(ElementKind.CLASS))
+        .filter(this::isClassOrRecord)
         .filter(TypeElement.class::isInstance)
         .map(TypeElement.class::cast)
         .distinct(Object::toString)
@@ -102,6 +102,10 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .forEach(this::processElementAndPath);
 
     return false;
+  }
+
+  private boolean isClassOrRecord(Element e) {
+    return e.getKind().equals(ElementKind.CLASS) || e.getKind().name().equalsIgnoreCase("Record");
   }
 
   private void processElementAndPath(ElementAndAnnotationPath elementAndPath) {
