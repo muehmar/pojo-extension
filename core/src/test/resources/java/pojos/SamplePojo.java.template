@@ -30,16 +30,22 @@ public interface CustomerExtension {
     return new Customer(getId(), getUsername(), nickname.orElse(null));
   }
 
-  public <T> T map(Function<Customer, T> f) {
-    return f.apply(self());
+  <T> T map(Function<Customer, T> f) {
+    final Customer self =
+      new Customer(getId(), getUsername(), getNickname().orElse(null));
+    return f.apply(self);
   }
 
-  public Customer mapIf(boolean shouldMap, UnaryOperator<Customer> f) {
-    return shouldMap ? f.apply(self()) : self();
+  Customer mapIf(boolean shouldMap, UnaryOperator<Customer> f) {
+    final Customer self =
+      new Customer(getId(), getUsername(), getNickname().orElse(null));
+    return shouldMap ? f.apply(self) : self;
   }
 
-  public <T> Customer mapIfPresent(Optional<T> value, BiFunction<Customer, T, Customer> f) {
-    return value.map(v -> f.apply(self(), v)).orElseGet(this::self);
+  <T> Customer mapIfPresent(Optional<T> value, BiFunction<Customer, T, Customer> f) {
+    final Customer self =
+      new Customer(getId(), getUsername(), getNickname().orElse(null));
+    return value.map(v -> f.apply(self, v)).orElse(self);
   }
 
 

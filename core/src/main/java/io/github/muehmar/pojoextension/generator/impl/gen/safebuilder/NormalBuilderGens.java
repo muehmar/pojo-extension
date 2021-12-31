@@ -62,7 +62,7 @@ public class NormalBuilderGens {
         .returnTypeName(Pojo::getNameWithTypeVariables)
         .methodName("build")
         .noArguments()
-        .content(ConstructorCallGens.callWithAllLocalVariables());
+        .content(ConstructorCallGens.callWithAllLocalVariables("return "));
   }
 
   public static Generator<PojoAndField, PojoSettings> setMethod() {

@@ -38,7 +38,7 @@ public class WithGens {
   private static Generator<WithField, PojoSettings> withMethodContent() {
     return Generator.<WithField, PojoSettings>emptyGen()
         .append(
-            ConstructorCallGens.callWithSingleFieldVariable(),
+            ConstructorCallGens.callWithSingleFieldVariable("return "),
             withField -> new FieldVariable(withField.getPojo(), withField.getField(), SAME_TYPE));
   }
 
@@ -92,7 +92,7 @@ public class WithGens {
   private static Generator<WithField, PojoSettings> optionalWithMethodContent() {
     return Generator.<WithField, PojoSettings>emptyGen()
         .append(
-            ConstructorCallGens.callWithSingleFieldVariable(),
+            ConstructorCallGens.callWithSingleFieldVariable("return "),
             withField ->
                 new FieldVariable(withField.getPojo(), withField.getField(), UNWRAP_OPTIONAL));
   }

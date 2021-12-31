@@ -24,10 +24,10 @@ public class ConstructorCallGens {
    * while wrapping optional fields into an {@link Optional} depending on the argument of the
    * constructor.
    */
-  public static Generator<Pojo, PojoSettings> callWithAllLocalVariables() {
+  public static Generator<Pojo, PojoSettings> callWithAllLocalVariables(String prefix) {
     return Generator.<Pojo, PojoSettings>emptyGen()
         .append(
-            constructorCallForFields(),
+            constructorCallForFields(prefix),
             pojo -> {
               final MatchingConstructor matchingConstructor = pojo.getMatchingConstructorOrThrow();
 
@@ -43,10 +43,10 @@ public class ConstructorCallGens {
             });
   }
 
-  public static Generator<FieldVariable, PojoSettings> callWithSingleFieldVariable() {
+  public static Generator<FieldVariable, PojoSettings> callWithSingleFieldVariable(String prefix) {
     return Generator.<FieldVariable, PojoSettings>emptyGen()
         .append(
-            constructorCallForFields(),
+            constructorCallForFields(prefix),
             fieldVariable -> {
               final Pojo pojo = fieldVariable.getPojo();
               final MatchingConstructor matchingConstructor = pojo.getMatchingConstructorOrThrow();
@@ -70,7 +70,29 @@ public class ConstructorCallGens {
             });
   }
 
-  private static Generator<ConstructorCall, PojoSettings> constructorCallForFields() {
+  public static Generator<Pojo, PojoSettings> callWithNoFieldVariables(String prefix) {
+    return Generator.<Pojo, PojoSettings>emptyGen()
+        .append(
+            constructorCallForFields(prefix),
+            pojo -> {
+              final MatchingConstructor matchingConstructor = pojo.getMatchingConstructorOrThrow();
+
+              final PList<FinalConstructorArgument> fields =
+                  matchingConstructor
+                      .getFieldArguments()
+                      .map(
+                          fa -> {
+                            final PojoField pojoField = fa.getField();
+                            final FieldGetter fieldGetter =
+                                pojo.getMatchingGetterOrThrow(pojoField);
+                            return FinalConstructorArgument.ofGetter(fieldGetter, fa);
+                          });
+
+              return new ConstructorCall(pojo, fields, matchingConstructor);
+            });
+  }
+
+  private static Generator<ConstructorCall, PojoSettings> constructorCallForFields(String prefix) {
     return (constructorCall, settings, writer) -> {
       final PList<String> constructorParameters =
           constructorCall
@@ -95,7 +117,8 @@ public class ConstructorCallGens {
           .mapConditionally(hasWrapIntoOptional, w -> w.ref(JAVA_UTIL_OPTIONAL))
           .apply()
           .println(
-              "return new %s%s(%s);",
+              "%snew %s%s(%s);",
+              prefix,
               constructorCall.getPojo().getName(),
               constructorCall.getPojo().getDiamond(),
               constructorParameters.mkString(", "));
