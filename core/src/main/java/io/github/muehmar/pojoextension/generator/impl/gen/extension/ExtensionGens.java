@@ -66,9 +66,7 @@ public class ExtensionGens {
         .appendNewLine()
         .append(HashCodeGens.genHashCodeMethod())
         .appendNewLine()
-        .append(ToStringGens.toStringMethod())
-        .appendNewLine()
-        .append(ToStringGens.staticToStringMethod());
+        .append(ToStringGens.genToStringMethod());
   }
 
   public static Generator<FieldGetter, PojoSettings> getterMethod() {

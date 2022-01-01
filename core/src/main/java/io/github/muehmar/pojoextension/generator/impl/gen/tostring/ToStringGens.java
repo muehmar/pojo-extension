@@ -1,7 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.tostring;
 
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
 
@@ -14,7 +13,6 @@ import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
-import io.github.muehmar.pojoextension.generator.impl.gen.Annotations;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import java.util.function.Function;
@@ -22,17 +20,15 @@ import java.util.function.Function;
 public class ToStringGens {
   private ToStringGens() {}
 
-  public static Generator<Pojo, PojoSettings> toStringMethod() {
+  public static Generator<Pojo, PojoSettings> genToStringMethod() {
     final Generator<Pojo, PojoSettings> method =
-        MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+        MethodGen.<Pojo, PojoSettings>modifiers()
             .noGenericTypes()
             .returnType("String")
-            .methodName("toString")
+            .methodName("genToString")
             .noArguments()
-            .content("return toString(self());");
-    return Annotations.<Pojo, PojoSettings>overrideAnnotation()
-        .append(method)
-        .filter((p, s) -> s.getToStringAbility().isEnabled());
+            .content(genToStringContent());
+    return method.filter((p, s) -> s.getToStringAbility().isEnabled());
   }
 
   public static Generator<Pojo, PojoSettings> staticToStringMethod() {
@@ -44,12 +40,12 @@ public class ToStringGens {
         .returnType("String")
         .methodName("toString")
         .singleArgument(argument)
-        .content(staticToStringContent())
+        .content(genToStringContent())
         .append(RefsGen.genericRefs())
         .filter((p, s) -> s.getToStringAbility().isEnabled());
   }
 
-  private static Generator<Pojo, PojoSettings> staticToStringContent() {
+  private static Generator<Pojo, PojoSettings> genToStringContent() {
     final Generator<Pojo, PojoSettings> content =
         Generator.of(
             (p, s, w) -> {
@@ -75,7 +71,7 @@ public class ToStringGens {
       final Pair<String, String> wrapper = getWrapper(fg);
       final boolean isArray = fg.getField().getType().isArray();
       final String format =
-          isArray ? "+ \"%s%s=%s\" + Arrays.toString(self.%s())%s" : "+ \"%s%s=%s\" + self.%s()%s";
+          isArray ? "+ \"%s%s=%s\" + Arrays.toString(%s())%s" : "+ \"%s%s=%s\" + %s()%s";
 
       return Mapper.initial(w)
           .mapConditionally(isArray, wr -> wr.ref(JAVA_UTIL_ARRAYS))

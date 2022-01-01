@@ -64,16 +64,11 @@ public interface CustomerExtension {
     return result;
   }
 
-  @Override
-  public String toString() {
-    return toString(self());
-  }
-
-  private static String toString(Customer self) {
+  String genToString() {
     return "Customer{"
-        + "id=" + self.getId()
-        + ", username='" + self.getUsername() + '\''
-        + ", nickname=" + self.getNickname()
+        + "id=" + getId()
+        + ", username='" + getUsername() + '\''
+        + ", nickname=" + getNickname()
         + '}';
   }
 }
