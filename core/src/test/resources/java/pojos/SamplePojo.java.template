@@ -50,18 +50,13 @@ public interface CustomerExtension {
 
 
 
-  @Override
-  public boolean equals(Object obj) {
-    return equals(self(), obj);
-  }
-
-  private static boolean equals(Customer o1, Object obj) {
-    if (o1 == obj) return true;
-    if (obj == null || o1.getClass() != obj.getClass()) return false;
-    final Customer o2 = (Customer) obj;
-    return Objects.equals(o1.getId(), o2.getId())
-        && Objects.equals(o1.getUsername(), o2.getUsername())
-        && Objects.equals(o1.getNickname(), o2.getNickname());
+  boolean genEquals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null || this.getClass() != obj.getClass()) return false;
+    final Customer other = (Customer) obj;
+    return Objects.equals(getId(), other.getId())
+        && Objects.equals(getUsername(), other.getUsername())
+        && Objects.equals(getNickname(), other.getNickname());
   }
 
   @Override

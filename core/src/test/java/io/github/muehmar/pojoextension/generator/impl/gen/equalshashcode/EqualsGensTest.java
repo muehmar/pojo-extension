@@ -2,9 +2,7 @@ package io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode;
 
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
-import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_STRING;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
-import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_LIST;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OBJECTS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -25,8 +23,8 @@ import org.junit.jupiter.api.Test;
 class EqualsGensTest {
 
   @Test
-  void staticEqualsMethod_when_generatorUsedWithSamplePojoWithoutFields_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = EqualsGens.staticEqualsMethod();
+  void genEqualsMethod_when_generatorUsedWithSamplePojoWithoutFields_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.genEqualsMethod();
 
     final Writer writer =
         generator.generate(
@@ -34,10 +32,10 @@ class EqualsGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "private static boolean equals(Customer o1, Object obj) {\n"
-            + "  if (o1 == obj) return true;\n"
-            + "  if (obj == null || o1.getClass() != obj.getClass()) return false;\n"
-            + "  final Customer o2 = (Customer) obj;\n"
+        "boolean genEquals(Object obj) {\n"
+            + "  if (this == obj) return true;\n"
+            + "  if (obj == null || this.getClass() != obj.getClass()) return false;\n"
+            + "  final Customer other = (Customer) obj;\n"
             + "  return true;\n"
             + "}",
         writer.asString());
@@ -46,19 +44,19 @@ class EqualsGensTest {
   }
 
   @Test
-  void staticEqualsMethod_when_generatorUsedWithSamplePojo_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = EqualsGens.staticEqualsMethod();
+  void genEqualsMethod_when_generatorUsedWithSamplePojo_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.genEqualsMethod();
 
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
-        "private static boolean equals(Customer o1, Object obj) {\n"
-            + "  if (o1 == obj) return true;\n"
-            + "  if (obj == null || o1.getClass() != obj.getClass()) return false;\n"
-            + "  final Customer o2 = (Customer) obj;\n"
-            + "  return Objects.equals(o1.getId(), o2.getId())\n"
-            + "      && Objects.equals(o1.getUsername(), o2.getUsername())\n"
-            + "      && Objects.equals(o1.getNickname(), o2.getNickname());\n"
+        "boolean genEquals(Object obj) {\n"
+            + "  if (this == obj) return true;\n"
+            + "  if (obj == null || this.getClass() != obj.getClass()) return false;\n"
+            + "  final Customer other = (Customer) obj;\n"
+            + "  return Objects.equals(getId(), other.getId())\n"
+            + "      && Objects.equals(getUsername(), other.getUsername())\n"
+            + "      && Objects.equals(getNickname(), other.getNickname());\n"
             + "}",
         writer.asString());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OBJECTS::equals));
@@ -66,8 +64,8 @@ class EqualsGensTest {
   }
 
   @Test
-  void staticEqualsMethod_when_generatorUsedWithPrimitiveTypes_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = EqualsGens.staticEqualsMethod();
+  void genEqualsMethod_when_generatorUsedWithPrimitiveTypes_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.genEqualsMethod();
 
     final PList<PojoField> primitiveFields =
         Type.allPrimitives().map(t -> new PojoField(t.getName().prefix("p"), t, REQUIRED));
@@ -80,18 +78,18 @@ class EqualsGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "private static boolean equals(Customer o1, Object obj) {\n"
-            + "  if (o1 == obj) return true;\n"
-            + "  if (obj == null || o1.getClass() != obj.getClass()) return false;\n"
-            + "  final Customer o2 = (Customer) obj;\n"
-            + "  return o1.getPint() == o2.getPint()\n"
-            + "      && o1.getPbyte() == o2.getPbyte()\n"
-            + "      && o1.getPshort() == o2.getPshort()\n"
-            + "      && o1.getPlong() == o2.getPlong()\n"
-            + "      && o1.getPfloat() == o2.getPfloat()\n"
-            + "      && Double.compare(o1.getPdouble(), o2.getPdouble()) == 0\n"
-            + "      && o1.isPboolean() == o2.isPboolean()\n"
-            + "      && o1.getPchar() == o2.getPchar();\n"
+        "boolean genEquals(Object obj) {\n"
+            + "  if (this == obj) return true;\n"
+            + "  if (obj == null || this.getClass() != obj.getClass()) return false;\n"
+            + "  final Customer other = (Customer) obj;\n"
+            + "  return getPint() == other.getPint()\n"
+            + "      && getPbyte() == other.getPbyte()\n"
+            + "      && getPshort() == other.getPshort()\n"
+            + "      && getPlong() == other.getPlong()\n"
+            + "      && getPfloat() == other.getPfloat()\n"
+            + "      && Double.compare(getPdouble(), other.getPdouble()) == 0\n"
+            + "      && isPboolean() == other.isPboolean()\n"
+            + "      && getPchar() == other.getPchar();\n"
             + "}",
         writer.asString());
     assertFalse(writer.getRefs().exists(JAVA_UTIL_OBJECTS::equals));
@@ -99,8 +97,8 @@ class EqualsGensTest {
   }
 
   @Test
-  void staticEqualsMethod_when_generatorUsedWithSamplePojoAndArrayField_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = EqualsGens.staticEqualsMethod();
+  void genEqualsMethod_when_generatorUsedWithSamplePojoAndArrayField_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.genEqualsMethod();
 
     final PList<PojoField> fields =
         Pojos.sample()
@@ -117,14 +115,14 @@ class EqualsGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "private static boolean equals(Customer o1, Object obj) {\n"
-            + "  if (o1 == obj) return true;\n"
-            + "  if (obj == null || o1.getClass() != obj.getClass()) return false;\n"
-            + "  final Customer o2 = (Customer) obj;\n"
-            + "  return Arrays.equals(o1.getByteArray(), o2.getByteArray())\n"
-            + "      && Objects.equals(o1.getId(), o2.getId())\n"
-            + "      && Objects.equals(o1.getUsername(), o2.getUsername())\n"
-            + "      && Objects.equals(o1.getNickname(), o2.getNickname());\n"
+        "boolean genEquals(Object obj) {\n"
+            + "  if (this == obj) return true;\n"
+            + "  if (obj == null || this.getClass() != obj.getClass()) return false;\n"
+            + "  final Customer other = (Customer) obj;\n"
+            + "  return Arrays.equals(getByteArray(), other.getByteArray())\n"
+            + "      && Objects.equals(getId(), other.getId())\n"
+            + "      && Objects.equals(getUsername(), other.getUsername())\n"
+            + "      && Objects.equals(getNickname(), other.getNickname());\n"
             + "}",
         writer.asString());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OBJECTS::equals));
@@ -132,8 +130,8 @@ class EqualsGensTest {
   }
 
   @Test
-  void staticEqualsMethod_when_disabled_then_noOutput() {
-    final Generator<Pojo, PojoSettings> generator = EqualsGens.staticEqualsMethod();
+  void genEqualsMethod_when_disabled_then_noOutput() {
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.genEqualsMethod();
 
     final Writer writer =
         generator.generate(
@@ -145,45 +143,28 @@ class EqualsGensTest {
   }
 
   @Test
-  void staticEqualsMethod_when_genericSample_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = EqualsGens.staticEqualsMethod();
+  void genEqualsMethod_when_genericSample_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.genEqualsMethod();
 
     final Writer writer =
         generator.generate(
             Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
-        "private static <T extends List<String>, S> boolean equals(Customer<T, S> o1, Object obj) {\n"
-            + "  if (o1 == obj) return true;\n"
-            + "  if (obj == null || o1.getClass() != obj.getClass()) return false;\n"
-            + "  final Customer<?, ?> o2 = (Customer<?, ?>) obj;\n"
-            + "  return Objects.equals(o1.getId(), o2.getId())\n"
-            + "      && Objects.equals(o1.getData(), o2.getData())\n"
-            + "      && Objects.equals(o1.getAdditionalData(), o2.getAdditionalData());\n"
+        "boolean genEquals(Object obj) {\n"
+            + "  if (this == obj) return true;\n"
+            + "  if (obj == null || this.getClass() != obj.getClass()) return false;\n"
+            + "  final Customer<?, ?> other = (Customer<?, ?>) obj;\n"
+            + "  return Objects.equals(getId(), other.getId())\n"
+            + "      && Objects.equals(getData(), other.getData())\n"
+            + "      && Objects.equals(getAdditionalData(), other.getAdditionalData());\n"
             + "}",
         writer.asString());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OBJECTS::equals));
-    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
-    assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
-  }
-
-  @Test
-  void equalsMethod_when_generatorUsedWithSamplePojo_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = EqualsGens.equalsMethod();
-    final Writer writer =
-        generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
-    assertEquals(
-        "@Override\n"
-            + "public boolean equals(Object obj) {\n"
-            + "  return equals(self(), obj);\n"
-            + "}",
-        writer.asString());
-    assertFalse(writer.getRefs().exists(JAVA_UTIL_OBJECTS::equals));
-    assertFalse(writer.getRefs().exists(JAVA_UTIL_ARRAYS::equals));
   }
 
   @Test
   void equalsMethod_when_disabled_then_noOutput() {
-    final Generator<Pojo, PojoSettings> generator = EqualsGens.equalsMethod();
+    final Generator<Pojo, PojoSettings> generator = EqualsGens.genEqualsMethod();
 
     final Writer writer =
         generator.generate(
