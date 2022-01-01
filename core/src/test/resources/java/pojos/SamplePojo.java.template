@@ -59,13 +59,8 @@ public interface CustomerExtension {
         && Objects.equals(getNickname(), other.getNickname());
   }
 
-  @Override
-  public int hashCode() {
-    return hashCode(self());
-  }
-
-  private static int hashCode(Customer o) {
-    int result = Objects.hash(o.getId(), o.getUsername(), o.getNickname());
+  int genHashCode() {
+    int result = Objects.hash(getId(), getUsername(), getNickname());
     return result;
   }
 
