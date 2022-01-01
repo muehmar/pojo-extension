@@ -24,7 +24,7 @@ class MapGensTest {
         gen.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "<T> T map(Function<Customer, T> f) {\n"
+        "default <T> T map(Function<Customer, T> f) {\n"
             + "  final Customer self =\n"
             + "    new Customer(getId(), getUsername(), getNickname().orElse(null));\n"
             + "  return f.apply(self);\n"
@@ -53,7 +53,7 @@ class MapGensTest {
         gen.generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "<A> A map(Function<Customer<T, S>, A> f) {\n"
+        "default <A> A map(Function<Customer<T, S>, A> f) {\n"
             + "  final Customer<T, S> self =\n"
             + "    new Customer<>(getId(), getData(), getAdditionalData().orElse(null));\n"
             + "  return f.apply(self);\n"
@@ -69,7 +69,7 @@ class MapGensTest {
         gen.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "Customer mapIf(boolean shouldMap, UnaryOperator<Customer> f) {\n"
+        "default Customer mapIf(boolean shouldMap, UnaryOperator<Customer> f) {\n"
             + "  final Customer self =\n"
             + "    new Customer(getId(), getUsername(), getNickname().orElse(null));\n"
             + "  return shouldMap ? f.apply(self) : self;\n"
@@ -98,7 +98,7 @@ class MapGensTest {
         gen.generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "Customer<T, S> mapIf(boolean shouldMap, UnaryOperator<Customer<T, S>> f) {\n"
+        "default Customer<T, S> mapIf(boolean shouldMap, UnaryOperator<Customer<T, S>> f) {\n"
             + "  final Customer<T, S> self =\n"
             + "    new Customer<>(getId(), getData(), getAdditionalData().orElse(null));\n"
             + "  return shouldMap ? f.apply(self) : self;\n"
@@ -114,7 +114,7 @@ class MapGensTest {
         gen.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "<T> Customer mapIfPresent(Optional<T> value, BiFunction<Customer, T, Customer> f) {\n"
+        "default <T> Customer mapIfPresent(Optional<T> value, BiFunction<Customer, T, Customer> f) {\n"
             + "  final Customer self =\n"
             + "    new Customer(getId(), getUsername(), getNickname().orElse(null));\n"
             + "  return value.map(v -> f.apply(self, v)).orElse(self);\n"
@@ -144,7 +144,7 @@ class MapGensTest {
         gen.generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "<A> Customer<T, S> mapIfPresent(Optional<A> value, BiFunction<Customer<T, S>, A, Customer<T, S>> f) {\n"
+        "default <A> Customer<T, S> mapIfPresent(Optional<A> value, BiFunction<Customer<T, S>, A, Customer<T, S>> f) {\n"
             + "  final Customer<T, S> self =\n"
             + "    new Customer<>(getId(), getData(), getAdditionalData().orElse(null));\n"
             + "  return value.map(v -> f.apply(self, v)).orElse(self);\n"

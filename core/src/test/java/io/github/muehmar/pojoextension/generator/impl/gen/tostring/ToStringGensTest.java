@@ -33,7 +33,7 @@ class ToStringGensTest {
         gen.generate(pojo, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "String genToString() {\n"
+        "default String genToString() {\n"
             + "  return \"Customer{\"\n"
             + "      + \"username='\" + getUsername() + '\\''\n"
             + "      + '}';\n"
@@ -53,7 +53,7 @@ class ToStringGensTest {
         gen.generate(pojo, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "String genToString() {\n"
+        "default String genToString() {\n"
             + "  return \"Customer{\"\n"
             + "      + \"username=\" + getUsername()\n"
             + "      + '}';\n"
@@ -73,7 +73,7 @@ class ToStringGensTest {
         gen.generate(pojo, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "String genToString() {\n"
+        "default String genToString() {\n"
             + "  return \"Customer{\"\n"
             + "      + \"age=\" + getAge()\n"
             + "      + '}';\n"
@@ -94,7 +94,7 @@ class ToStringGensTest {
         gen.generate(pojo, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "String genToString() {\n"
+        "default String genToString() {\n"
             + "  return \"Customer{\"\n"
             + "      + \"data=\" + Arrays.toString(getData())\n"
             + "      + '}';\n"
@@ -111,7 +111,7 @@ class ToStringGensTest {
         gen.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "String genToString() {\n"
+        "default String genToString() {\n"
             + "  return \"Customer{\"\n"
             + "      + \"id=\" + getId()\n"
             + "      + \", username='\" + getUsername() + '\\''\n"
@@ -142,7 +142,7 @@ class ToStringGensTest {
         gen.generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "String genToString() {\n"
+        "default String genToString() {\n"
             + "  return \"Customer{\"\n"
             + "      + \"id='\" + getId() + '\\''\n"
             + "      + \", data=\" + getData()\n"

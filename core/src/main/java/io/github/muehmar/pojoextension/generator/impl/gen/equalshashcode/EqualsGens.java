@@ -1,5 +1,9 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode;
 
+import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.DEFAULT;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
+import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OBJECTS;
+
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.FieldGetter;
@@ -11,15 +15,12 @@ import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.UnaryOperator;
 
-import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
-import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OBJECTS;
-
 public class EqualsGens {
   private EqualsGens() {}
 
   public static Generator<Pojo, PojoSettings> genEqualsMethod() {
     final Generator<Pojo, PojoSettings> method =
-        MethodGen.<Pojo, PojoSettings>modifiers()
+        MethodGen.<Pojo, PojoSettings>modifiers(DEFAULT)
             .noGenericTypes()
             .returnType("boolean")
             .methodName("genEquals")

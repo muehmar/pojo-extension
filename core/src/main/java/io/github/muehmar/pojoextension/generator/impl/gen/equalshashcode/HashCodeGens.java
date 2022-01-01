@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode;
 
+import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.DEFAULT;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OBJECTS;
@@ -23,7 +24,7 @@ public class HashCodeGens {
 
   public static Generator<Pojo, PojoSettings> genHashCodeMethod() {
     final Generator<Pojo, PojoSettings> method =
-        MethodGen.<Pojo, PojoSettings>modifiers()
+        MethodGen.<Pojo, PojoSettings>modifiers(DEFAULT)
             .noGenericTypes()
             .returnType("int")
             .methodName("genHashCode")

@@ -10,6 +10,7 @@ import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.EqualsGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.HashCodeGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.map.MapGens;
@@ -29,7 +30,8 @@ public class ExtensionGens {
         .packageGen(new PackageGen())
         .modifiers(PUBLIC)
         .className((p, s) -> s.extensionName(p).asString() + p.getGenericTypeDeclarationSection())
-        .content(content());
+        .content(content())
+        .append(RefsGen.genericRefs());
   }
 
   private static Generator<Pojo, PojoSettings> content() {

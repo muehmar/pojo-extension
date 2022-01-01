@@ -39,7 +39,7 @@ class HashCodeGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "int genHashCode() {\n"
+        "default int genHashCode() {\n"
             + "  int result = Objects.hash(getId(), getUsername(), getNickname());\n"
             + "  result = 31 * result + Arrays.hashCode(getByteArray());\n"
             + "  return result;\n"
@@ -62,7 +62,7 @@ class HashCodeGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "int genHashCode() {\n"
+        "default int genHashCode() {\n"
             + "  int result = Objects.hash(isFlag());\n"
             + "  return result;\n"
             + "}",
@@ -88,7 +88,7 @@ class HashCodeGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "int genHashCode() {\n"
+        "default int genHashCode() {\n"
             + "  int result = Arrays.hashCode(getByteArray());\n"
             + "  result = 31 * result + Arrays.hashCode(getByteArray2());\n"
             + "  return result;\n"
@@ -110,7 +110,7 @@ class HashCodeGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "int genHashCode() {\n"
+        "default int genHashCode() {\n"
             + "  int result = Objects.hash(isFlag());\n"
             + "  return result;\n"
             + "}",

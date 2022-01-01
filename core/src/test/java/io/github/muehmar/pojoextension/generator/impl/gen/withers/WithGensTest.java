@@ -58,7 +58,7 @@ class WithGensTest {
     final Writer writer =
         generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
-        "Customer withId(Integer id) {\n"
+        "default Customer withId(Integer id) {\n"
             + "  return new Customer(id, getUsername(), getNickname().orElse(null));\n"
             + "}",
         writer.asString());
@@ -75,7 +75,7 @@ class WithGensTest {
     final Writer writer =
         generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
-        "Customer withNickname(String nickname) {\n"
+        "default Customer withNickname(String nickname) {\n"
             + "  return new Customer(getId(), getUsername(), nickname);\n"
             + "}",
         writer.asString());
@@ -92,7 +92,7 @@ class WithGensTest {
     final Writer writer =
         generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
-        "Customer withId(Integer id) {\n"
+        "default Customer withId(Integer id) {\n"
             + "  return new Customer(id, getUsername(), getNickname());\n"
             + "}",
         writer.asString());
@@ -109,7 +109,7 @@ class WithGensTest {
     final Writer writer =
         generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
-        "Customer withNickname(String nickname) {\n"
+        "default Customer withNickname(String nickname) {\n"
             + "  return new Customer(getId(), getUsername(), Optional.ofNullable(nickname));\n"
             + "}",
         writer.asString());
@@ -140,7 +140,7 @@ class WithGensTest {
     final Writer writer =
         generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
-        "Customer<T, S> withAdditionalData(S additionalData) {\n"
+        "default Customer<T, S> withAdditionalData(S additionalData) {\n"
             + "  return new Customer<>(getId(), getData(), additionalData);\n"
             + "}",
         writer.asString());
@@ -185,7 +185,7 @@ class WithGensTest {
     final Writer writer =
         generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
-        "Customer withNickname(Optional<String> nickname) {\n"
+        "default Customer withNickname(Optional<String> nickname) {\n"
             + "  return new Customer(getId(), getUsername(), nickname.orElse(null));\n"
             + "}",
         writer.asString());
@@ -202,7 +202,7 @@ class WithGensTest {
     final Writer writer =
         generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
-        "Customer withNickname(Optional<String> nickname) {\n"
+        "default Customer withNickname(Optional<String> nickname) {\n"
             + "  return new Customer(getId(), getUsername(), nickname);\n"
             + "}",
         writer.asString());
@@ -250,7 +250,7 @@ class WithGensTest {
     final Writer writer =
         generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
-        "Customer<T, S> withAdditionalData(Optional<S> additionalData) {\n"
+        "default Customer<T, S> withAdditionalData(Optional<S> additionalData) {\n"
             + "  return new Customer<>(getId(), getData(), additionalData.orElse(null));\n"
             + "}",
         writer.asString());

@@ -14,35 +14,35 @@ public interface CustomerExtension {
 
   Optional<String> getNickname();
 
-  Customer withId(Integer id) {
+  default Customer withId(Integer id) {
     return new Customer(id, getUsername(), getNickname().orElse(null));
   }
 
-  Customer withUsername(String username) {
+  default Customer withUsername(String username) {
     return new Customer(getId(), username, getNickname().orElse(null));
   }
 
-  Customer withNickname(String nickname) {
+  default Customer withNickname(String nickname) {
     return new Customer(getId(), getUsername(), nickname);
   }
 
-  Customer withNickname(Optional<String> nickname) {
+  default Customer withNickname(Optional<String> nickname) {
     return new Customer(getId(), getUsername(), nickname.orElse(null));
   }
 
-  <T> T map(Function<Customer, T> f) {
+  default <T> T map(Function<Customer, T> f) {
     final Customer self =
       new Customer(getId(), getUsername(), getNickname().orElse(null));
     return f.apply(self);
   }
 
-  Customer mapIf(boolean shouldMap, UnaryOperator<Customer> f) {
+  default Customer mapIf(boolean shouldMap, UnaryOperator<Customer> f) {
     final Customer self =
       new Customer(getId(), getUsername(), getNickname().orElse(null));
     return shouldMap ? f.apply(self) : self;
   }
 
-  <T> Customer mapIfPresent(Optional<T> value, BiFunction<Customer, T, Customer> f) {
+  default <T> Customer mapIfPresent(Optional<T> value, BiFunction<Customer, T, Customer> f) {
     final Customer self =
       new Customer(getId(), getUsername(), getNickname().orElse(null));
     return value.map(v -> f.apply(self, v)).orElse(self);
@@ -50,7 +50,7 @@ public interface CustomerExtension {
 
 
 
-  boolean genEquals(Object obj) {
+  default boolean genEquals(Object obj) {
     if (this == obj) return true;
     if (obj == null || this.getClass() != obj.getClass()) return false;
     final Customer other = (Customer) obj;
@@ -59,12 +59,12 @@ public interface CustomerExtension {
         && Objects.equals(getNickname(), other.getNickname());
   }
 
-  int genHashCode() {
+  default int genHashCode() {
     int result = Objects.hash(getId(), getUsername(), getNickname());
     return result;
   }
 
-  String genToString() {
+  default String genToString() {
     return "Customer{"
         + "id=" + getId()
         + ", username='" + getUsername() + '\''

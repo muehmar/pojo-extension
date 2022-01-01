@@ -2,6 +2,7 @@ package io.github.muehmar.pojoextension.generator.impl.gen.withers;
 
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.UNWRAP_OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.DEFAULT;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
@@ -22,7 +23,7 @@ public class WithGens {
   private WithGens() {}
 
   public static Generator<WithField, PojoSettings> withMethod() {
-    return MethodGen.<WithField, PojoSettings>modifiers()
+    return MethodGen.<WithField, PojoSettings>modifiers(DEFAULT)
         .noGenericTypes()
         .returnTypeName(wf -> wf.getPojo().getNameWithTypeVariables())
         .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
@@ -44,7 +45,7 @@ public class WithGens {
 
   public static Generator<WithField, PojoSettings> optionalWithMethod() {
     final Generator<WithField, PojoSettings> method =
-        MethodGen.<WithField, PojoSettings>modifiers()
+        MethodGen.<WithField, PojoSettings>modifiers(DEFAULT)
             .noGenericTypes()
             .returnTypeName(wf -> wf.getPojo().getNameWithTypeVariables())
             .methodName(wf -> "with" + wf.getField().getName().toPascalCase())

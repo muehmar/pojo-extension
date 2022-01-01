@@ -32,7 +32,7 @@ class EqualsGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "boolean genEquals(Object obj) {\n"
+        "default boolean genEquals(Object obj) {\n"
             + "  if (this == obj) return true;\n"
             + "  if (obj == null || this.getClass() != obj.getClass()) return false;\n"
             + "  final Customer other = (Customer) obj;\n"
@@ -50,7 +50,7 @@ class EqualsGensTest {
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
-        "boolean genEquals(Object obj) {\n"
+        "default boolean genEquals(Object obj) {\n"
             + "  if (this == obj) return true;\n"
             + "  if (obj == null || this.getClass() != obj.getClass()) return false;\n"
             + "  final Customer other = (Customer) obj;\n"
@@ -78,7 +78,7 @@ class EqualsGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "boolean genEquals(Object obj) {\n"
+        "default boolean genEquals(Object obj) {\n"
             + "  if (this == obj) return true;\n"
             + "  if (obj == null || this.getClass() != obj.getClass()) return false;\n"
             + "  final Customer other = (Customer) obj;\n"
@@ -115,7 +115,7 @@ class EqualsGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "boolean genEquals(Object obj) {\n"
+        "default boolean genEquals(Object obj) {\n"
             + "  if (this == obj) return true;\n"
             + "  if (obj == null || this.getClass() != obj.getClass()) return false;\n"
             + "  final Customer other = (Customer) obj;\n"
@@ -150,7 +150,7 @@ class EqualsGensTest {
         generator.generate(
             Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
-        "boolean genEquals(Object obj) {\n"
+        "default boolean genEquals(Object obj) {\n"
             + "  if (this == obj) return true;\n"
             + "  if (obj == null || this.getClass() != obj.getClass()) return false;\n"
             + "  final Customer<?, ?> other = (Customer<?, ?>) obj;\n"

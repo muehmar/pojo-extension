@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.map;
 
+import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.DEFAULT;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_BIFUNCTION;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_FUNCTION;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
@@ -18,7 +19,7 @@ public class MapGens {
 
   public static Generator<Pojo, PojoSettings> mapMethod() {
     final Name preferred = Name.fromString("T");
-    return MethodGen.<Pojo, PojoSettings>modifiers()
+    return MethodGen.<Pojo, PojoSettings>modifiers(DEFAULT)
         .singleGenericType(p -> p.findUnusedTypeVariableName(preferred))
         .returnType(p -> p.findUnusedTypeVariableName(preferred).asString())
         .methodName("map")
@@ -40,7 +41,7 @@ public class MapGens {
   }
 
   public static Generator<Pojo, PojoSettings> mapIfMethod() {
-    return MethodGen.<Pojo, PojoSettings>modifiers()
+    return MethodGen.<Pojo, PojoSettings>modifiers(DEFAULT)
         .noGenericTypes()
         .returnTypeName(Pojo::getNameWithTypeVariables)
         .methodName("mapIf")
@@ -63,7 +64,7 @@ public class MapGens {
 
   public static Generator<Pojo, PojoSettings> mapIfPresentMethod() {
     final Name preferred = Name.fromString("T");
-    return MethodGen.<Pojo, PojoSettings>modifiers()
+    return MethodGen.<Pojo, PojoSettings>modifiers(DEFAULT)
         .singleGenericType(p -> p.findUnusedTypeVariableName(preferred))
         .returnTypeName(Pojo::getNameWithTypeVariables)
         .methodName("mapIfPresent")

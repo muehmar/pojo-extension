@@ -6,7 +6,7 @@ import java.util.Optional;
 
 @PojoExtension
 public class GenericClass<T extends List<String> & Comparable<T>, S>
-    extends GenericClassExtension<T, S> {
+    implements GenericClassExtension<T, S> {
   private final String prop1;
   private final T data;
   private final Optional<S> additionalData;
@@ -27,5 +27,15 @@ public class GenericClass<T extends List<String> & Comparable<T>, S>
 
   public Optional<S> getAdditionalData() {
     return additionalData;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return genEquals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return genHashCode();
   }
 }
