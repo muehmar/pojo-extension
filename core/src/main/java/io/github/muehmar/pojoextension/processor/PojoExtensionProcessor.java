@@ -5,8 +5,9 @@ import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.INHERITED;
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.STATIC;
+import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getBaseClassName;
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getBuilderName;
-import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getDiscreteBuilder;
+import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableBaseClass;
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableEqualsAndHashCode;
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableMappers;
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableSafeBuilder;
@@ -32,7 +33,6 @@ import io.github.muehmar.pojoextension.generator.data.PojoBuilder;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.Ability;
-import io.github.muehmar.pojoextension.generator.data.settings.DiscreteBuilder;
 import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettingsExtension;
@@ -233,9 +233,6 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             getEnableSafeBuilder(annotation).map(Ability::fromBoolean),
             PojoSettings::withSafeBuilderAbility)
         .mapIfPresent(
-            getDiscreteBuilder(annotation).map(DiscreteBuilder::fromBoolean),
-            PojoSettings::withDiscreteBuilder)
-        .mapIfPresent(
             getEnableEqualsAndHashCode(annotation).map(Ability::fromBoolean),
             PojoSettings::withEqualsHashCodeAbility)
         .mapIfPresent(
@@ -246,7 +243,12 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             PojoSettings::withWithersAbility)
         .mapIfPresent(
             getEnableMappers(annotation).map(Ability::fromBoolean),
-            PojoSettings::withMappersAbility);
+            PojoSettings::withMappersAbility)
+        .mapIfPresent(
+            getBaseClassName(annotation).map(Name::fromString), PojoSettings::withBaseClassName)
+        .mapIfPresent(
+            getEnableBaseClass(annotation).map(Ability::fromBoolean),
+            PojoSettings::withBaseClassAbility);
   }
 
   private void outputPojo(Pojo pojo, PojoSettings pojoSettings) {
