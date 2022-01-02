@@ -38,4 +38,9 @@ public class GenericClass<T extends List<String> & Comparable<T>, S>
   public int hashCode() {
     return genHashCode();
   }
+
+  @Override
+  public String toString() {
+    return genToString();
+  }
 }

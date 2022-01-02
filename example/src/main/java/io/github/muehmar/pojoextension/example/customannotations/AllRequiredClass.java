@@ -4,7 +4,7 @@ import io.github.muehmar.pojoextension.annotations.Nullable;
 import java.util.Optional;
 
 @AllRequiredExtension(extensionName = "CustomExtension")
-public class AllRequiredClass extends CustomExtension {
+public class AllRequiredClass implements CustomExtension {
   private final String id;
   private final Optional<Boolean> flag;
   @Nullable private final Integer age;
@@ -25,5 +25,20 @@ public class AllRequiredClass extends CustomExtension {
 
   public Integer getAge() {
     return age;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return genEquals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return genHashCode();
+  }
+
+  @Override
+  public String toString() {
+    return genToString();
   }
 }

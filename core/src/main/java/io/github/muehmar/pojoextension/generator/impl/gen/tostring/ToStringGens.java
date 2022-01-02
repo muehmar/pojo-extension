@@ -2,7 +2,6 @@ package io.github.muehmar.pojoextension.generator.impl.gen.tostring;
 
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.DEFAULT;
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
 
 import ch.bluecare.commons.data.PList;
@@ -13,10 +12,7 @@ import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
-import java.util.function.Function;
 
 public class ToStringGens {
   private ToStringGens() {}
@@ -30,20 +26,6 @@ public class ToStringGens {
             .noArguments()
             .content(genToStringContent());
     return method.filter((p, s) -> s.getToStringAbility().isEnabled());
-  }
-
-  public static Generator<Pojo, PojoSettings> staticToStringMethod() {
-    final Function<Pojo, String> argument =
-        p -> String.format("%s self", p.getNameWithTypeVariables());
-    return MethodGen.<Pojo, PojoSettings>modifiers(
-            (p, s) -> JavaModifiers.of(s.getStaticMethodAccessModifier(), STATIC))
-        .genericTypes(Pojo::getGenericTypeDeclarations)
-        .returnType("String")
-        .methodName("toString")
-        .singleArgument(argument)
-        .content(genToStringContent())
-        .append(RefsGen.genericRefs())
-        .filter((p, s) -> s.getToStringAbility().isEnabled());
   }
 
   private static Generator<Pojo, PojoSettings> genToStringContent() {

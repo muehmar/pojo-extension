@@ -14,11 +14,9 @@ import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.EqualsGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.HashCodeGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.map.MapGens;
-import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.CompleteSafeBuilderGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.tostring.ToStringGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.WithGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.data.WithField;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 public class ExtensionGens {
@@ -46,9 +44,6 @@ public class ExtensionGens {
             .appendConditionally(
                 wf -> wf.getField().isOptional(), ((data, settings, writer) -> writer.println()));
 
-    final BiPredicate<Pojo, PojoSettings> nonDiscreteBuilder =
-        (p, s) -> s.getDiscreteBuilder().isDisabled();
-
     return Generator.<Pojo, PojoSettings>emptyGen()
         .appendNewLine()
         .appendList(getterMethod().appendNewLine(), toFieldGetter)
@@ -59,10 +54,6 @@ public class ExtensionGens {
         .append(MapGens.mapIfMethod())
         .appendNewLine()
         .append(MapGens.mapIfPresentMethod())
-        .appendNewLine()
-        .appendConditionally(nonDiscreteBuilder, CompleteSafeBuilderGens.newBuilderMethod())
-        .appendNewLine()
-        .appendConditionally(nonDiscreteBuilder, CompleteSafeBuilderGens.completeSafeBuilder())
         .appendNewLine()
         .append(EqualsGens.genEqualsMethod())
         .appendNewLine()

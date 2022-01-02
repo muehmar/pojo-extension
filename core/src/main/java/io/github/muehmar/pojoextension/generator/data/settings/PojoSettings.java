@@ -8,7 +8,6 @@ import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import java.util.Optional;
 
 @PojoExtension
@@ -133,17 +132,12 @@ public class PojoSettings extends PojoSettingsExtension {
     return pojo.getName().map(n -> n.replace(".", ""));
   }
 
-  public JavaModifier getStaticMethodAccessModifier() {
-    return extensionUsage.isStatic() ? JavaModifier.PUBLIC : JavaModifier.PRIVATE;
-  }
-
   public boolean createDiscreteBuilder() {
-    return safeBuilderAbility.isEnabled() && discreteBuilder.isEnabled();
+    return safeBuilderAbility.isEnabled();
   }
 
   public boolean createExtension() {
-    return (safeBuilderAbility.isEnabled() && discreteBuilder.isDisabled())
-        || equalsHashCodeAbility.isEnabled()
+    return equalsHashCodeAbility.isEnabled()
         || toStringAbility.isEnabled()
         || withersAbility.isEnabled()
         || mappersAbility.isEnabled();

@@ -1,7 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode;
 
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.DEFAULT;
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OBJECTS;
 
@@ -11,12 +10,9 @@ import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class HashCodeGens {
 
@@ -31,21 +27,6 @@ public class HashCodeGens {
             .noArguments()
             .content(genHashCodeMethodContent());
     return method.filter((d, s) -> s.getEqualsHashCodeAbility().isEnabled());
-  }
-
-  public static Generator<Pojo, PojoSettings> staticHashCodeMethod() {
-    final Function<Pojo, String> argument =
-        p -> String.format("%s o", p.getNameWithTypeVariables());
-    final Generator<Pojo, PojoSettings> content = genHashCodeMethodContent();
-    return MethodGen.<Pojo, PojoSettings>modifiers(
-            (p, s) -> JavaModifiers.of(s.getStaticMethodAccessModifier(), STATIC))
-        .genericTypes(Pojo::getGenericTypeDeclarations)
-        .returnType("int")
-        .methodName("hashCode")
-        .singleArgument(argument)
-        .content(content)
-        .append(RefsGen.genericRefs())
-        .filter((p, s) -> s.getEqualsHashCodeAbility().isEnabled());
   }
 
   private static Generator<Pojo, PojoSettings> genHashCodeMethodContent() {

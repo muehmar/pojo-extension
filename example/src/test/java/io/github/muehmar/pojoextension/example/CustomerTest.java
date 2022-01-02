@@ -85,7 +85,7 @@ class CustomerTest {
   @Test
   void newBuilder_when_calledForAddress_then_correctInstanceCreated() {
     final Customer.Address address =
-        Customer.Address.newBuilder()
+        CustomerAddressBuilder.create()
             .setStreet("Waldweg 10")
             .setCity("Winterthur")
             .andAllOptionals()
@@ -116,14 +116,14 @@ class CustomerTest {
   @Test
   void mapIfPresent_when_valuePresent_then_mapFunctionApplied() {
     final Customer customer =
-        sampleCustomer().mapIfPresent(Optional.of(SAMPLE_ID + "99"), (c, val) -> c.withId(val));
+        sampleCustomer().mapIfPresent(Optional.of(SAMPLE_ID + "99"), CustomerExtension::withId);
     assertEquals(SAMPLE_ID + "99", customer.getIdentification());
   }
 
   @Test
   void mapIfPresent_when_valueNotPresent_then_mapFunctionNotApplied() {
     final Customer customer =
-        sampleCustomer().mapIfPresent(Optional.<String>empty(), (c, val) -> c.withId(val));
+        sampleCustomer().mapIfPresent(Optional.<String>empty(), CustomerExtension::withId);
     assertEquals(sampleCustomer(), customer);
   }
 

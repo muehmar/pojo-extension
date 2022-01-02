@@ -5,7 +5,7 @@ import java.util.Optional;
 
 @PojoExtension
 @SuppressWarnings("java:S2160") // Not overriding equals and hashCode is fine
-public class User extends UserExtension {
+public class User implements UserExtension {
   public static final String USER_LABEL = "label";
   private final String name;
   private final Optional<Integer> age;
@@ -22,5 +22,20 @@ public class User extends UserExtension {
 
   public Optional<Integer> getAge() {
     return age;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return genEquals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return genHashCode();
+  }
+
+  @Override
+  public String toString() {
+    return genToString();
   }
 }

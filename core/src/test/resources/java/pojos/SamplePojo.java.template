@@ -48,8 +48,6 @@ public interface CustomerExtension {
     return value.map(v -> f.apply(self, v)).orElse(self);
   }
 
-
-
   default boolean genEquals(Object obj) {
     if (this == obj) return true;
     if (obj == null || this.getClass() != obj.getClass()) return false;
