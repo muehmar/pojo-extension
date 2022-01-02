@@ -196,27 +196,6 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
   }
 
   @Test
-  void run_when_discreteBuilderDisabled_then_correctSettings() {
-    final Name className = randomClassName();
-
-    final String classString =
-        TestPojoComposer.ofPackage(PACKAGE)
-            .withImport(PojoExtension.class)
-            .annotationBooleanParam(PojoExtension.class, "discreteBuilder", false)
-            .className(className)
-            .create();
-
-    final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className), classString);
-
-    assertEquals(
-        PojoSettings.defaultSettings()
-            .withExtensionUsage(ExtensionUsage.STATIC)
-            .withDiscreteBuilder(DiscreteBuilder.DISABLED),
-        pojoAndSettings.getSettings());
-  }
-
-  @Test
   void run_when_overrideBuilderName_then_correctSettings() {
     final Name className = randomClassName();
 

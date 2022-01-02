@@ -64,7 +64,7 @@ public class Customer implements CustomerExtension {
     return flag;
   }
 
-  @PojoExtension(discreteBuilder = false)
+  @PojoExtension
   public static class Address implements CustomerAddressExtension {
     private final String street;
     private final String city;

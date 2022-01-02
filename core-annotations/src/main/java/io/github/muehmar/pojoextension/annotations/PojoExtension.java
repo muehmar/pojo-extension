@@ -30,11 +30,6 @@ public @interface PojoExtension {
    */
   String builderName() default "{CLASSNAME}Builder";
 
-  /**
-   * Creates a discrete builder class. If set to false, the builder is part of the extension class.
-   */
-  boolean discreteBuilder() default true;
-
   /** Enables or disables the generation of the equals and hashCode methods. */
   boolean enableEqualsAndHashCode() default true;
 
