@@ -16,8 +16,8 @@ public @interface PojoExtension {
   };
 
   /**
-   * Override the default name which is used for the extension class. `{CLASSNAME}` gets replaced by
-   * the classname of the annotated class.
+   * Override the default name which is used for the extension interface. `{CLASSNAME}` gets
+   * replaced by the classname of the annotated class.
    */
   String extensionName() default "{CLASSNAME}Extension";
 
