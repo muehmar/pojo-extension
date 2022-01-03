@@ -28,6 +28,7 @@ public class ExtensionGens {
         .packageGen(new PackageGen())
         .modifiers(PUBLIC)
         .className((p, s) -> s.extensionName(p).asString() + p.getGenericTypeDeclarationSection())
+        .noSuperClassAndInterface()
         .content(content())
         .append(RefsGen.genericRefs());
   }

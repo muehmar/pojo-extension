@@ -53,6 +53,7 @@ public class NormalBuilderGens {
         .nested()
         .modifiers(PUBLIC, STATIC, FINAL)
         .className(p -> BUILDER_CLASSNAME + p.getGenericTypeDeclarationSection())
+        .noSuperClassAndInterface()
         .content(content);
   }
 

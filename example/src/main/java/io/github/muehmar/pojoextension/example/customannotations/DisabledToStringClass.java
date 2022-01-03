@@ -1,7 +1,7 @@
 package io.github.muehmar.pojoextension.example.customannotations;
 
 @DisabledToString
-public class DisabledToStringClass implements DisabledToStringClassExtension {
+public class DisabledToStringClass extends DisabledToStringClassBase {
   private final String prop1;
 
   public DisabledToStringClass(String prop1) {
@@ -10,15 +10,5 @@ public class DisabledToStringClass implements DisabledToStringClassExtension {
 
   public String getProp1() {
     return prop1;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return genEquals(o);
-  }
-
-  @Override
-  public int hashCode() {
-    return genHashCode();
   }
 }

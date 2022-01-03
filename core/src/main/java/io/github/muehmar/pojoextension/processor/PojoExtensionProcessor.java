@@ -36,6 +36,7 @@ import io.github.muehmar.pojoextension.generator.data.settings.Ability;
 import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettingsExtension;
+import io.github.muehmar.pojoextension.generator.impl.gen.baseclass.BaseClassGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.SafeBuilderClassGens;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
@@ -65,10 +66,6 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   private static final int MAX_ANNOTATION_PATH_DEPTH = 50;
 
   private final Optional<BiConsumer<Pojo, PojoSettings>> redirectPojo;
-  private final Generator<Pojo, PojoSettings> extensionGenerator =
-      ExtensionGens.extensionInterface();
-  private final Generator<Pojo, PojoSettings> builderGenerator =
-      SafeBuilderClassGens.safeBuilderClass();
 
   private PojoExtensionProcessor(Optional<BiConsumer<Pojo, PojoSettings>> redirectPojo) {
     this.redirectPojo = redirectPojo;
@@ -261,16 +258,22 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   private void writeExtensionClass(Pojo pojo, PojoSettings settings) {
     writeJavaFile(
         settings.qualifiedExtensionName(pojo),
-        extensionGenerator,
+        ExtensionGens.extensionInterface(),
         pojo,
         settings,
         settings.createExtension());
     writeJavaFile(
         settings.qualifiedBuilderName(pojo),
-        builderGenerator,
+        SafeBuilderClassGens.safeBuilderClass(),
         pojo,
         settings,
         settings.createDiscreteBuilder());
+    writeJavaFile(
+        settings.qualifiedBaseClassName(pojo),
+        BaseClassGens.baseClass(),
+        pojo,
+        settings,
+        settings.createBaseClass());
   }
 
   private void writeJavaFile(

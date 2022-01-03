@@ -1,7 +1,7 @@
 package io.github.muehmar.pojoextension.example.customannotations;
 
 @DisabledWithers
-public class DisabledWithersClass implements DisabledWithersClassExtension {
+public class DisabledWithersClass extends DisabledWithersClassBase {
   private final String prop1;
 
   public DisabledWithersClass(String prop1) {
@@ -10,20 +10,5 @@ public class DisabledWithersClass implements DisabledWithersClassExtension {
 
   public String getProp1() {
     return prop1;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return genEquals(o);
-  }
-
-  @Override
-  public int hashCode() {
-    return genHashCode();
-  }
-
-  @Override
-  public String toString() {
-    return genToString();
   }
 }

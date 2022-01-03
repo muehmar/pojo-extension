@@ -132,6 +132,14 @@ public class PojoSettings extends PojoSettingsExtension {
     return getNameOrAppend(builderName, BUILDER_CLASS_POSTFIX, pojo);
   }
 
+  public Name qualifiedBaseClassName(Pojo pojo) {
+    return pojo.getPackage().qualifiedName(baseClassName(pojo));
+  }
+
+  public Name baseClassName(Pojo pojo) {
+    return getNameOrAppend(baseClassName, BASE_CLASS_POSTFIX, pojo);
+  }
+
   private Name getNameOrAppend(Optional<Name> name, Name postfix, Pojo pojo) {
     return name.map(n -> n.replace(CLASS_NAME_PLACEHOLDER, getClassName(pojo)))
         .orElseGet(() -> getClassName(pojo).append(postfix));

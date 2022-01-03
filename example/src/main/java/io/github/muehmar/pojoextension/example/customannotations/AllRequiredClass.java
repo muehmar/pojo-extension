@@ -4,7 +4,7 @@ import io.github.muehmar.pojoextension.annotations.Nullable;
 import java.util.Optional;
 
 @AllRequiredExtension(extensionName = "CustomExtension")
-public class AllRequiredClass extends AllRequiredClassAdapter {
+public class AllRequiredClass extends AllRequiredClassBase {
   private final String id;
   private final Optional<Boolean> flag;
   @Nullable private final Integer age;

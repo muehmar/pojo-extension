@@ -31,6 +31,7 @@ public class SafeBuilderGens {
         .nested()
         .modifiers(PUBLIC, STATIC, FINAL)
         .className(SafeBuilderGens::classDeclaration)
+        .noSuperClassAndInterface()
         .content(builderClassContent())
         .append(RefsGen.genericRefs(), SafeBuilderPojoField::getPojo);
   }
@@ -176,6 +177,7 @@ public class SafeBuilderGens {
                 String.format(
                     "Builder%d%s",
                     builderNumber.applyAsInt(p), p.getGenericTypeDeclarationSection()))
+        .noSuperClassAndInterface()
         .content(content)
         .append(RefsGen.genericRefs());
   }
@@ -205,6 +207,7 @@ public class SafeBuilderGens {
                 String.format(
                     "OptBuilder%d%s",
                     builderNumber.applyAsInt(p), p.getGenericTypeDeclarationSection()))
+        .noSuperClassAndInterface()
         .content(content)
         .append(RefsGen.genericRefs());
   }

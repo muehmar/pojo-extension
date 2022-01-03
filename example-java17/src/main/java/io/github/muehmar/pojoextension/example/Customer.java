@@ -7,7 +7,7 @@ import java.util.Optional;
 
 @PojoExtension
 @SuppressWarnings("java:S2160") // Not overriding equals and hashCode is fine
-public class Customer implements CustomerExtension {
+public class Customer extends CustomerBase {
   private final String id;
   private final String name;
   private final Optional<String> nickname;
@@ -65,7 +65,7 @@ public class Customer implements CustomerExtension {
   }
 
   @PojoExtension
-  public static class Address implements CustomerAddressExtension {
+  public static class Address extends CustomerAddressBase {
     private final String street;
     private final String city;
 

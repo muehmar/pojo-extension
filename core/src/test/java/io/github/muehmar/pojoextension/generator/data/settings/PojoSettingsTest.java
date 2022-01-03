@@ -102,6 +102,52 @@ class PojoSettingsTest {
   }
 
   @Test
+  void baseClassName_when_calledWithSamplePojo_then_correctBaseClassName() {
+    final Name name = PojoSettings.defaultSettings().baseClassName(Pojos.sample());
+    assertEquals("CustomerBase", name.asString());
+  }
+
+  @Test
+  void baseClassName_when_calledWithInnerClassName_then_correctBaseClassName() {
+    final Name name =
+        PojoSettings.defaultSettings()
+            .baseClassName(Pojos.sample().withName(Name.fromString("Customer.Address")));
+    assertEquals("CustomerAddressBase", name.asString());
+  }
+
+  @Test
+  void baseClassName_when_overriddenBaseClassName_then_useCustomBaseClassName() {
+    final Name name =
+        PojoSettings.defaultSettings()
+            .withBaseClassName(Name.fromString("MyBaseClass"))
+            .baseClassName(Pojos.sample());
+    assertEquals("MyBaseClass", name.asString());
+  }
+
+  @Test
+  void baseClassName_when_overriddenBaseClassNameWithClassname_then_customBaseClassNameCreated() {
+    final Name name =
+        PojoSettings.defaultSettings()
+            .withBaseClassName(Name.fromString("My{CLASSNAME}Base"))
+            .baseClassName(Pojos.sample());
+    assertEquals("MyCustomerBase", name.asString());
+  }
+
+  @Test
+  void qualifiedBaseClassName_when_calledWithSamplePojo_then_correctBaseClassName() {
+    final Name name = PojoSettings.defaultSettings().qualifiedBaseClassName(Pojos.sample());
+    assertEquals("io.github.muehmar.CustomerBase", name.asString());
+  }
+
+  @Test
+  void qualifiedBaseClassName_when_calledWithInnerClassName_then_correctBaseClassName() {
+    final Name name =
+        PojoSettings.defaultSettings()
+            .qualifiedBaseClassName(Pojos.sample().withName(Name.fromString("Customer.Address")));
+    assertEquals("io.github.muehmar.CustomerAddressBase", name.asString());
+  }
+
+  @Test
   void createExtension_when_everythingDisabled_then_false() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()

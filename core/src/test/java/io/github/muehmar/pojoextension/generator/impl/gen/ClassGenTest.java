@@ -25,6 +25,7 @@ class ClassGenTest {
             .packageGen(new PackageGen())
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> s.extensionName(p).asString())
+            .noSuperClassAndInterface()
             .content(Generator.ofWriterFunction(w -> w.println("Content")));
 
     final Writer writer =
@@ -47,6 +48,7 @@ class ClassGenTest {
             .packageGen(new PackageGen())
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> s.extensionName(p).asString())
+            .noSuperClassAndInterface()
             .content(Generator.ofWriterFunction(w -> w.println("Content")));
 
     final Writer writer =
@@ -69,6 +71,7 @@ class ClassGenTest {
             .packageGen(new PackageGen())
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> s.extensionName(p).asString())
+            .noSuperClassAndInterface()
             .content(Generator.ofWriterFunction(w -> w.ref("java.util.Optional")));
 
     final Writer writer =
@@ -90,6 +93,7 @@ class ClassGenTest {
             .nested()
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> s.extensionName(p).asString())
+            .noSuperClassAndInterface()
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
 
     final Writer writer =
@@ -106,11 +110,47 @@ class ClassGenTest {
             .nested()
             .modifiers(modifiers.toArray(JavaModifier.class))
             .className((p, s) -> s.extensionName(p).asString())
+            .noSuperClassAndInterface()
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
 
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals("public final class CustomerExtension {\n" + "}", writer.asString());
+  }
+
+  @Test
+  void generate_when_hasSuperClass_then_correctOutput() {
+    final ClassGen<Pojo, PojoSettings> generator =
+        ClassGen.<Pojo, PojoSettings>clazz()
+            .nested()
+            .modifiers(JavaModifier.PUBLIC)
+            .className((p, s) -> s.extensionName(p).asString())
+            .superClass((p, s) -> s.baseClassName(p))
+            .doesNotImplementInterfaces()
+            .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
+
+    final Writer writer =
+        generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
+    assertEquals(
+        "public class CustomerExtension extends CustomerBase {\n" + "}", writer.asString());
+  }
+
+  @Test
+  void generate_when_hasSuperClassAndInterfaces_then_correctOutput() {
+    final ClassGen<Pojo, PojoSettings> generator =
+        ClassGen.<Pojo, PojoSettings>clazz()
+            .nested()
+            .modifiers(JavaModifier.PUBLIC)
+            .className((p, s) -> p.getName().asString())
+            .superClass((p, s) -> s.baseClassName(p))
+            .singleInterface((p, s) -> s.extensionName(p).asString())
+            .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
+
+    final Writer writer =
+        generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
+    assertEquals(
+        "public class Customer extends CustomerBase implements CustomerExtension {\n" + "}",
+        writer.asString());
   }
 
   private static Stream<Arguments> publicAndFinalModifierUnordered() {

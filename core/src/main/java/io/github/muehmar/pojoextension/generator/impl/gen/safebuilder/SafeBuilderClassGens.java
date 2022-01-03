@@ -26,6 +26,7 @@ public class SafeBuilderClassGens {
         .packageGen(new PackageGen())
         .modifiers(PUBLIC, FINAL)
         .className((p, s) -> s.builderName(p).asString())
+        .noSuperClassAndInterface()
         .content(content());
   }
 
