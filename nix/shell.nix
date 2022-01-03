@@ -1,7 +1,7 @@
 let
 
   nixpkgs = import (import ./sources.nix).nixpkgs {};
-  java = nixpkgs.openjdk8;
+  java = nixpkgs.openjdk17;
 
 in
 

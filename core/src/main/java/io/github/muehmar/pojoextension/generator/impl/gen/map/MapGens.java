@@ -1,6 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.map;
 
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
+import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.DEFAULT;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_BIFUNCTION;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_FUNCTION;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
@@ -12,13 +12,14 @@ import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
 
 public class MapGens {
   private MapGens() {}
 
   public static Generator<Pojo, PojoSettings> mapMethod() {
     final Name preferred = Name.fromString("T");
-    return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+    return MethodGen.<Pojo, PojoSettings>modifiers(DEFAULT)
         .singleGenericType(p -> p.findUnusedTypeVariableName(preferred))
         .returnType(p -> p.findUnusedTypeVariableName(preferred).asString())
         .methodName("map")
@@ -27,13 +28,20 @@ public class MapGens {
                 String.format(
                     "Function<%s, %s> f",
                     p.getNameWithTypeVariables(), p.findUnusedTypeVariableName(preferred)))
-        .content("return f.apply(self());")
+        .content(mapMethodContent())
         .append(w -> w.ref(JAVA_UTIL_FUNCTION))
         .filter((p, s) -> s.getMappersAbility().isEnabled());
   }
 
+  public static Generator<Pojo, PojoSettings> mapMethodContent() {
+    return Generator.<Pojo, PojoSettings>of(
+            (p, s, w) -> w.println("final %s self =", p.getNameWithTypeVariables()))
+        .append(ConstructorCallGens.callWithNoFieldVariables("  "))
+        .append(w -> w.println("return f.apply(self);"));
+  }
+
   public static Generator<Pojo, PojoSettings> mapIfMethod() {
-    return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+    return MethodGen.<Pojo, PojoSettings>modifiers(DEFAULT)
         .noGenericTypes()
         .returnTypeName(Pojo::getNameWithTypeVariables)
         .methodName("mapIf")
@@ -42,14 +50,21 @@ public class MapGens {
                 PList.of(
                     "boolean shouldMap",
                     String.format("UnaryOperator<%s> f", p.getNameWithTypeVariables())))
-        .content("return shouldMap ? f.apply(self()) : self();")
+        .content(mapIfMethodContent())
         .append(w -> w.ref(JAVA_UTIL_UNARYOPERATOR))
         .filter((p, s) -> s.getMappersAbility().isEnabled());
   }
 
+  public static Generator<Pojo, PojoSettings> mapIfMethodContent() {
+    return Generator.<Pojo, PojoSettings>of(
+            (p, s, w) -> w.println("final %s self =", p.getNameWithTypeVariables()))
+        .append(ConstructorCallGens.callWithNoFieldVariables("  "))
+        .append(w -> w.println("return shouldMap ? f.apply(self) : self;"));
+  }
+
   public static Generator<Pojo, PojoSettings> mapIfPresentMethod() {
     final Name preferred = Name.fromString("T");
-    return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+    return MethodGen.<Pojo, PojoSettings>modifiers(DEFAULT)
         .singleGenericType(p -> p.findUnusedTypeVariableName(preferred))
         .returnTypeName(Pojo::getNameWithTypeVariables)
         .methodName("mapIfPresent")
@@ -62,8 +77,15 @@ public class MapGens {
                         p.getNameWithTypeVariables(),
                         p.findUnusedTypeVariableName(preferred),
                         p.getNameWithTypeVariables())))
-        .content("return value.map(v -> f.apply(self(), v)).orElseGet(this::self);")
+        .content(mapIfPresentMethodContent())
         .append(w -> w.ref(JAVA_UTIL_OPTIONAL).ref(JAVA_UTIL_BIFUNCTION))
         .filter((p, s) -> s.getMappersAbility().isEnabled());
+  }
+
+  public static Generator<Pojo, PojoSettings> mapIfPresentMethodContent() {
+    return Generator.<Pojo, PojoSettings>of(
+            (p, s, w) -> w.println("final %s self =", p.getNameWithTypeVariables()))
+        .append(ConstructorCallGens.callWithNoFieldVariables("  "))
+        .append(w -> w.println("return value.map(v -> f.apply(self, v)).orElse(self);"));
   }
 }

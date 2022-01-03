@@ -6,7 +6,7 @@ import java.util.Map;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
-public class GenericFieldClass extends GenericFieldClassExtension {
+public class GenericFieldClass extends GenericFieldClassBase {
   private final Map<String, List<Integer>> listMap;
 
   public GenericFieldClass(Map<String, List<Integer>> listMap) {

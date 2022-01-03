@@ -3,24 +3,21 @@
 
 # Pojo Extension
 
-Generates advanced boilerplate code for your immutable data classes. This annotation processor extends your data classes
-with simple, well known boilerplate code but also with more advanced features like the Safe Builder or allows to
-distinguish between required and optional fields in the class. The generated code follows the convention not
-using `null` to improve the compiler support.
+Generates advanced boilerplate code for your immutable data classes or Java 16 records.
 
-This annotation processor does intentionally not modify the AST of the pojo like Lombok. It uses the standard Java
-features of annotation processors which are designed to create new classes but not really modify existing ones. The
-features are added to the data classes by creating an extension class which the data class can inherit from. If your
-data classes cannot inherit from the extension class (or you dont want to use it this way), you can make use of some
-features by delegate the method calls to the extension class for which it contains static methods (i.e. Safe
-Builder, `equals` and `hashCode`).
+This annotation processor extends your data classes or records with simple, well known boilerplate code but also with
+more advanced features like the Safe Builder or allows to distinguish between required and optional fields in the class.
+The generated code follows the convention not using `null` to improve compiler support.
 
-The annotation processor can distinguish between optional and required fields in a data class, i.e. which fields must be
-present all times and which may be absent.
+This annotation processor does intentionally not modify the AST. The processor creates new classes or interfaces to add
+the features to your data classes or records.
 
-Currently, the extension class contains the following features:
+The annotation processor can distinguish between optional and required fields in a data class or a record, i.e. which
+fields must be present all times and which may be absent.
 
-* SafeBuilder - Special builder class which enforces setting all required attributes
+Currently, the following features are supported:
+
+* SafeBuilder - Special builder class which enforces (at compile time) setting all required attributes.
 * `equals()` and `hashCode()` methods
 * `toString()` method
 * `withXX()` method for each field
@@ -28,21 +25,25 @@ Currently, the extension class contains the following features:
 
 ## Usage
 
+### Dependency
+
 Add the `pojo-extension-annotations` module as compile-time dependency and register the `pojo-extension` module as
 annotation processor.In gradle this would look like the following:
 
 ```
 dependencies {
-    compileOnly "io.github.muehmar:pojo-extension-annotations:0.8.0"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.8.0"
+    compileOnly "io.github.muehmar:pojo-extension-annotations:0.9.0"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.9.0"
 }
 ```
+
+### Data class
 
 Annotate a simple data class:
 
 ```
 @PojoExtension
-public class Customer extends CustomerExtension {
+public class Customer extends CustomerBase {
 private final String name;
 private final String email;
 private final Optional<String> nickname;
@@ -57,14 +58,22 @@ private final Optional<String> nickname;
 }
 ```
 
-This will create the class `CustomerExtension` which provides the utilities for the `Customer` class. In case of the
-SafeBuilder one could now use the static method `Customer.newBuilder()` which is provided by the extension class.
+The processor will now create the abstract class `CustomerBase`, the interface `CustomerExtension` and the
+class `CustomerBuilder`:
 
-If one the data class does not extend the extension class, one could delegate the method call to the extension class:
+* `CustomerExtension`: This interface contains the generated methods as default methods. As methods
+  from `java.lang.Object` cannot be a default method in interfaces, the `equals`, `hashCode` and `toString` methods are
+  prefixed with `gen`.
+* `CustomerBase`: This abstract class implements the `CustomerExtension` interface and overrides `equals`, `hashCode`
+  and `toString`. Inherit from this class if you don't want to override the methods in the dataclass yourself and call
+  the generated methods in the interface.
+* `CustomerBuilder`: This class contains the SafeBuilder.
+
+If the abstract class `CustomerBase` is not used, one could use the interface `CustomerExtension` directly:
 
 ```
 @PojoExtension
-public class Customer {
+public class Customer implements CustomerExtension {
 private final String name;
 private final String email;
 private final Optional<String> nickname;
@@ -75,15 +84,43 @@ private final Optional<String> nickname;
         this.nickname = Optional.ofNullable(nickname);
     }
     
-    // Delegate the creation of the SafeBuilder
-    public static Builder0 newBuilder() {
-        return CustomerExtension.newBuilder();
+    @Override
+    public boolean equals(Object o) {
+        return genEquals(o);
+    }
+    
+    @Override
+    public int hashCode() {
+        return genHashCode();
+    }
+    
+    @Override
+    public String toString() {
+        return genToString();
     }
     
     // Remaing part omitted...
 }
 
 ```
+
+### Records
+
+Since Java 16 one can use records with a dedicated annotation `RecordExtension`:
+
+```
+@RecordExtension
+public records Customer(
+    String name, 
+    String email, 
+    Optional<String> nickname
+  ) implements CustomerExtension {
+
+}
+```
+
+No abstract class gets generated as records cannot inherit from another class/records and records already provides
+the `equals`, `hashCode` and `toString` methods.
 
 ## Features
 
@@ -161,31 +198,48 @@ example above, the builder provides methods with the following signature:
 
 ### Methods `equals` and `hashCode`
 
-The extension contains both methods which are automatically used in case the data class extends the extension.
-
-The extension also contains static methods which can be used in case the data class does not extend the extension. The
-static methods have the following signatures, the data class should pass itself to the methods in case of delegation:
+The extension contains the prefixed default methods:
 
 ```
-public static boolean equals(Customer o1, Object obj);
+default boolean genEquals(Object obj);
 
-public static int hashCode(Customer o);
+default int genHashCode();
+```
+
+The abstract class overrides the methods an calls the generated in the interface:
+
+```
+@Override
+public boolean equals(Object o) {
+    return genEquals(o);
+}
+
+@Override
+public int hashCode() {
+    return genHashCode();
+}
 ```
 
 ### Method `toString`
 
-The extension class contains the `toString` method which is automatically used in case the data class extends the
-extension.
-
-There is also a statically available method which can be used without extending the extension:
+The extension contains the prefixed default method:
 
 ```
-  public static String toString(Customer self) {
+  default String genToString();
+```
+
+The abstract class overrides the method and calls the generated in the interface:
+
+```
+@Override
+public String toString() {
+    return genToString(o);
+}
 ```
 
 ### Method `withXX`
 
-The extension contains with method for each field. The methods return a new instance of the data class where the
+The extension contains with methods for each field. The methods return a new instance of the data class where the
 corresponding property is set to the provided value.
 
 The method for the optional fields is overloaded, i.e. it accepts also the value wrapped into an Optional. This makes it
@@ -195,13 +249,13 @@ Optional.
 Utilizing the customer example above, the extension would create the following with methods:
 
 ```
-  public Customer withName(String name);
+  default Customer withName(String name);
 
-  public Customer withEmail(String email);
+  default Customer withEmail(String email);
 
-  public Customer withNickname(String nickname);
+  default Customer withNickname(String nickname);
 
-  public Customer withNickname(Optional<String> nickname);
+  default Customer withNickname(Optional<String> nickname);
 ```
 
 ### Method `mapXX`
@@ -210,11 +264,11 @@ The `map` methods allows one to 'update' the immutable data class in a fluent st
 of local variables, especially when the update should happen conditionally. There exists the following methods:
 
 ```
-  public <T> T map(Function<Customer, T> f);
+  default <T> T map(Function<Customer, T> f);
 
-  public Customer mapIf(boolean shouldMap, UnaryOperator<Customer> f);
+  default Customer mapIf(boolean shouldMap, UnaryOperator<Customer> f);
 
-  public <T> Customer mapIfPresent(Optional<T> value, BiFunction<Customer, T, Customer> f);
+  default <T> Customer mapIfPresent(Optional<T> value, BiFunction<Customer, T, Customer> f);
 ```
 
 Consider the case with a mutable data class, where a property should be updated based on some condition:
@@ -261,10 +315,11 @@ to declare a new local variable like in the example above.
 
 ## Pojo Requirements
 
-The extension class has no access to the fields of the data class, therefore the data class must provide a constructor
-with all fields as arguments and getters for each field. Reflection is not used intentionally. The extension class is
-created in the same package as the class, therefore the constructor as well as the getters can be package private if
-needd.
+A data class must provide a constructor with all fields as arguments and getters for each field. The new
+class/interfaces are created in the same package as the class, therefore the constructor as well as the getters can be
+package private if needed.
+
+A record provides already a constructor as well as getters and therefore satisfies all requirements automatically.
 
 ### Constructor
 
@@ -296,38 +351,51 @@ private final Optional<String> nickname;
 For each field a getter must be present. A getter is detected by the processor for the following cases:
 
 * The getter name is according to the java bean naming convention
+* The getter name is equally to the field name
 * The getter is annotated with `@Getter("fieldName")` where `fieldName` is the name of the corresponding field
 
 The return type for required fields must match exactly where a return type for optional fields can be (like for the
 constructor) either the actual type and nullable or wrapped into an `Optional`.
 
-## Annotation Parameters
+## Annotations
 
-The annotation contains the following parameters:
+The following annotations exists, where only one single annotation should be used.
 
-| Parameter | Default value | Description |
-| --- | --- | --- |
-|`optionalDetection`| [OPTIONAL_CLASS, NULLABLE_ANNOTATION] | Defines how optional fields in data class are detected by the processor. See the next section for details. |
-| `extensionName` | "{CLASSNAME}Extension" | Allows to override the default name of the created extension. `{CLASSNAME}` gets replaced by the name of the data class.
-| `enableSafeBuilder` | true | Allows to disable the generation of the safe builder
-| `builderName` | "{CLASSNAME}Builder" | Allows to override the default name of the discrete builder. `{CLASSNAME}` gets replaced by the name of the data class. Ignored if `discreteBuilder` is false.
-| `discreteBuilder` | true | Creates a discrete builder class if true. If set to false, the builder is part of the extension class.
-| `enableEqualsAndHashCode` | true | Allows to disable the generation the equals and hashCode method
-| `enableToString` | true | Allows to disable the generation the toString method
-| `enableWithers` | true | Allows to disable the generation the with methods
-| `enableMappers` | true | Allows to disable the generation the map methods
+* `@PojoExtension` Creates the extension interface, abstract base class and the builder class. Is parameterized and can
+  be used as meta annotation to create your custom annotations.
+* `@SafeBuilder` Creates the builder class
+* `@RecordExtension` Can be used for records, where no `equals`, `hashCode` and `toString` methods are generated, as
+  well as the abstract base class.
 
-### Parameter `optionalDetection`
+### Annotation Parameters
+
+The `@PojoExtension` annotation contains the following parameters. The other annotations may contain a subset thereof
+with different default values.
+
+| Parameter                 | Default value                         | Description                                                                                                                                                    |
+|---------------------------|---------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `optionalDetection`       | [OPTIONAL_CLASS, NULLABLE_ANNOTATION] | Defines how optional fields in data class are detected by the processor. See the next section for details.                                                     |
+| `extensionName`           | "{CLASSNAME}Extension"                | Allows to override the default name of the created extension. `{CLASSNAME}` gets replaced by the name of the data class.                                       |
+| `enableSafeBuilder`       | true                                  | Allows to disable the generation of the safe builder                                                                                                           |
+| `builderName`             | "{CLASSNAME}Builder"                  | Allows to override the default name of the discrete builder. `{CLASSNAME}` gets replaced by the name of the data class. Ignored if `discreteBuilder` is false. |
+| `enableEqualsAndHashCode` | true                                  | Allows to disable the generation the equals and hashCode method                                                                                                |
+| `enableToString`          | true                                  | Allows to disable the generation the toString method                                                                                                           |
+| `enableWithers`           | true                                  | Allows to disable the generation the with methods                                                                                                              |
+| `enableMappers`           | true                                  | Allows to disable the generation the map methods                                                                                                               |
+| `enableBaseClass`         | true                                  | Enables the generation of the abstract base class                                                                                                              |
+| `baseClassName`           | "{CLASSNAME}Base"                     | Allows to override the default name of the created base class. `{CLASSNAME}` gets replaced by the name of the data class.                                      |
+
+#### Parameter `optionalDetection`
 
 There are multiple ways to tell the processor which attributes of a pojo are required and which are not. The annotation
 has the parameter `optionalDetection` which is an array of `OptionalDetection` and allows customisation of each pojo if
 necessary:
 
-| OptionalDetection | Description |
-| --- | --- |
-| OptionalDetection.OPTIONAL_CLASS | In this case every field in the pojo which is wrapped in an Optional is considered as optional. |
-| OptionalDetection.NULLABLE_ANNOTATION | With this option a field in the pojo can be annotated with the `Nullable` annotation to mark it as optional. The `Nullable` annotation is delivered within this package, `javax.annotations.Nullable` (JSR305) is not yet supported.
-| OptionalDetection.NONE | All fields are treated as required. This setting gets ignored in case it is used in combination with one of the others. |
+| OptionalDetection                     | Description                                                                                                                                                                                                                          |
+|---------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| OptionalDetection.OPTIONAL_CLASS      | In this case every field in the pojo which is wrapped in an Optional is considered as optional.                                                                                                                                      |
+| OptionalDetection.NULLABLE_ANNOTATION | With this option a field in the pojo can be annotated with the `Nullable` annotation to mark it as optional. The `Nullable` annotation is delivered within this package, `javax.annotations.Nullable` (JSR305) is not yet supported. |
+| OptionalDetection.NONE                | All fields are treated as required. This setting gets ignored in case it is used in combination with one of the others.                                                                                                              |
 
 Both options are active as default.
 
@@ -361,6 +429,9 @@ public @interface AllRequiredExtension {
 
 ## Change Log
 
+* 0.9.0
+    * Support Java 16 records
+    * Use an interface instead of an abstract class
 * 0.8.0
     * Support generic data classes
     * Support newer Java versions

@@ -8,7 +8,6 @@ import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.annotations.SafeBuilder;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.settings.Ability;
-import io.github.muehmar.pojoextension.generator.data.settings.DiscreteBuilder;
 import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import java.util.ArrayList;
@@ -196,13 +195,13 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
   }
 
   @Test
-  void run_when_discreteBuilderDisabled_then_correctSettings() {
+  void run_when_disableBaseClass_then_correctSettings() {
     final Name className = randomClassName();
 
     final String classString =
         TestPojoComposer.ofPackage(PACKAGE)
             .withImport(PojoExtension.class)
-            .annotationBooleanParam(PojoExtension.class, "discreteBuilder", false)
+            .annotationBooleanParam(PojoExtension.class, "enableBaseClass", false)
             .className(className)
             .create();
 
@@ -212,7 +211,7 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
     assertEquals(
         PojoSettings.defaultSettings()
             .withExtensionUsage(ExtensionUsage.STATIC)
-            .withDiscreteBuilder(DiscreteBuilder.DISABLED),
+            .withBaseClassAbility(Ability.DISABLED),
         pojoAndSettings.getSettings());
   }
 
@@ -259,6 +258,27 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
   }
 
   @Test
+  void run_when_overrideBaseClassName_then_correctSettings() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotationStringParam(PojoExtension.class, "baseClassName", "CustomerBaseClass")
+            .className(className)
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    assertEquals(
+        PojoSettings.defaultSettings()
+            .withExtensionUsage(ExtensionUsage.STATIC)
+            .withBaseClassName(Name.fromString("CustomerBaseClass")),
+        pojoAndSettings.getSettings());
+  }
+
+  @Test
   void run_when_overrideOptionalDetection_then_correctSettings() {
     final Name className = randomClassName();
 
@@ -300,7 +320,6 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
     assertEquals(
         PojoSettings.defaultSettings()
             .withExtensionUsage(ExtensionUsage.STATIC)
-            .withDiscreteBuilder(DiscreteBuilder.ENABLED)
             .withWithersAbility(Ability.DISABLED)
             .withEqualsHashCodeAbility(Ability.DISABLED)
             .withToStringAbility(Ability.DISABLED)
@@ -325,7 +344,6 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
     assertEquals(
         PojoSettings.defaultSettings()
             .withExtensionUsage(ExtensionUsage.STATIC)
-            .withDiscreteBuilder(DiscreteBuilder.ENABLED)
             .withWithersAbility(Ability.DISABLED)
             .withEqualsHashCodeAbility(Ability.DISABLED)
             .withToStringAbility(Ability.DISABLED)

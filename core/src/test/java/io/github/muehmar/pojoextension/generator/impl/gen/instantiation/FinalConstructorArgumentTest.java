@@ -25,7 +25,7 @@ class FinalConstructorArgumentTest {
     final PojoField pojoField = new PojoField(name, Type.string(), OPTIONAL);
     final FieldGetter fieldGetter =
         FieldGetter.of(
-            new Getter(Getter.getterName(pojoField), Type.string(), noFieldName()),
+            new Getter(Getter.javaBeanGetterName(pojoField), Type.string(), noFieldName()),
             pojoField,
             SAME_TYPE);
     final FieldArgument fieldArgument =
@@ -36,7 +36,7 @@ class FinalConstructorArgumentTest {
     final FinalConstructorArgument finalConstructorArgument =
         FinalConstructorArgument.ofGetter(fieldGetter, fieldArgument);
 
-    assertEquals("self.getId()", finalConstructorArgument.getFieldString());
+    assertEquals("getId()", finalConstructorArgument.getFieldString());
     assertEquals(WRAP_INTO_OPTIONAL, finalConstructorArgument.getRelation());
   }
 
@@ -47,7 +47,7 @@ class FinalConstructorArgumentTest {
     final PojoField pojoField = new PojoField(name, Type.string(), OPTIONAL);
     final FieldGetter fieldGetter =
         FieldGetter.of(
-            new Getter(Getter.getterName(pojoField), Type.string(), noFieldName()),
+            new Getter(Getter.javaBeanGetterName(pojoField), Type.string(), noFieldName()),
             pojoField,
             UNWRAP_OPTIONAL);
     final FieldArgument fieldArgument =
@@ -57,7 +57,7 @@ class FinalConstructorArgumentTest {
     final FinalConstructorArgument finalConstructorArgument =
         FinalConstructorArgument.ofGetter(fieldGetter, fieldArgument);
 
-    assertEquals("self.getId()", finalConstructorArgument.getFieldString());
+    assertEquals("getId()", finalConstructorArgument.getFieldString());
     assertEquals(UNWRAP_OPTIONAL, finalConstructorArgument.getRelation());
   }
 
@@ -68,7 +68,7 @@ class FinalConstructorArgumentTest {
     final PojoField pojoField = new PojoField(name, Type.string(), OPTIONAL);
     final FieldGetter fieldGetter =
         FieldGetter.of(
-            new Getter(Getter.getterName(pojoField), Type.string(), noFieldName()),
+            new Getter(Getter.javaBeanGetterName(pojoField), Type.string(), noFieldName()),
             pojoField,
             UNWRAP_OPTIONAL);
     final FieldArgument fieldArgument =
@@ -79,7 +79,7 @@ class FinalConstructorArgumentTest {
     final FinalConstructorArgument finalConstructorArgument =
         FinalConstructorArgument.ofGetter(fieldGetter, fieldArgument);
 
-    assertEquals("self.getId()", finalConstructorArgument.getFieldString());
+    assertEquals("getId()", finalConstructorArgument.getFieldString());
     assertEquals(SAME_TYPE, finalConstructorArgument.getRelation());
   }
 

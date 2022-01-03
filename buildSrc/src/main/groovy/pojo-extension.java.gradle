@@ -9,7 +9,7 @@ repositories {
 
 spotless {
     java {
-        googleJavaFormat()
+        googleJavaFormat('1.12.0')
     }
 }
 

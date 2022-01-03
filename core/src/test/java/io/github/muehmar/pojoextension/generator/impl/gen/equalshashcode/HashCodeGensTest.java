@@ -2,9 +2,7 @@ package io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode;
 
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
-import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_STRING;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
-import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_LIST;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OBJECTS;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,8 +21,8 @@ import org.junit.jupiter.api.Test;
 class HashCodeGensTest {
 
   @Test
-  void staticHashCodeMethod_when_generatorUsedWithSamplePojoAndArrayField_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = HashCodeGens.staticHashCodeMethod();
+  void genHashCodeMethod_when_generatorUsedWithSamplePojoAndArrayField_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = HashCodeGens.genHashCodeMethod();
 
     final PList<PojoField> fields =
         Pojos.sample()
@@ -41,9 +39,9 @@ class HashCodeGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "private static int hashCode(Customer o) {\n"
-            + "  int result = Objects.hash(o.getId(), o.getUsername(), o.getNickname());\n"
-            + "  result = 31 * result + Arrays.hashCode(o.getByteArray());\n"
+        "default int genHashCode() {\n"
+            + "  int result = Objects.hash(getId(), getUsername(), getNickname());\n"
+            + "  result = 31 * result + Arrays.hashCode(getByteArray());\n"
             + "  return result;\n"
             + "}",
         writer.asString());
@@ -52,8 +50,8 @@ class HashCodeGensTest {
   }
 
   @Test
-  void staticHashCodeMethod_when_generatorUsedWithBooleanField_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = HashCodeGens.staticHashCodeMethod();
+  void genHashCodeMethod_when_generatorUsedWithBooleanField_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = HashCodeGens.genHashCodeMethod();
 
     final PList<PojoField> fields =
         PList.of(new PojoField(Name.fromString("flag"), Type.primitiveBoolean(), REQUIRED));
@@ -64,8 +62,8 @@ class HashCodeGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "private static int hashCode(Customer o) {\n"
-            + "  int result = Objects.hash(o.isFlag());\n"
+        "default int genHashCode() {\n"
+            + "  int result = Objects.hash(isFlag());\n"
             + "  return result;\n"
             + "}",
         writer.asString());
@@ -74,8 +72,8 @@ class HashCodeGensTest {
   }
 
   @Test
-  void staticHashCodeMethod_when_generatorUsedWithTwoByteArrays_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = HashCodeGens.staticHashCodeMethod();
+  void genHashCodeMethod_when_generatorUsedWithTwoByteArrays_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = HashCodeGens.genHashCodeMethod();
 
     final PList<PojoField> fields =
         PList.of(
@@ -90,9 +88,9 @@ class HashCodeGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "private static int hashCode(Customer o) {\n"
-            + "  int result = Arrays.hashCode(o.getByteArray());\n"
-            + "  result = 31 * result + Arrays.hashCode(o.getByteArray2());\n"
+        "default int genHashCode() {\n"
+            + "  int result = Arrays.hashCode(getByteArray());\n"
+            + "  result = 31 * result + Arrays.hashCode(getByteArray2());\n"
             + "  return result;\n"
             + "}",
         writer.asString());
@@ -100,21 +98,8 @@ class HashCodeGensTest {
   }
 
   @Test
-  void staticHashCodeMethod_when_disabled_then_noOutput() {
-    final Generator<Pojo, PojoSettings> generator = HashCodeGens.staticHashCodeMethod();
-
-    final Writer writer =
-        generator.generate(
-            Pojos.sample(),
-            PojoSettings.defaultSettings().withEqualsHashCodeAbility(DISABLED),
-            Writer.createDefault());
-    assertEquals("", writer.asString());
-    assertTrue(writer.getRefs().isEmpty());
-  }
-
-  @Test
-  void staticHashCodeMethod_when_genericSample_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = HashCodeGens.staticHashCodeMethod();
+  void genHashCodeMethod_when_genericSample_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = HashCodeGens.genHashCodeMethod();
 
     final PList<PojoField> fields =
         PList.of(new PojoField(Name.fromString("flag"), Type.primitiveBoolean(), REQUIRED));
@@ -125,30 +110,18 @@ class HashCodeGensTest {
             PojoSettings.defaultSettings(),
             Writer.createDefault());
     assertEquals(
-        "private static <T extends List<String>, S> int hashCode(Customer<T, S> o) {\n"
-            + "  int result = Objects.hash(o.isFlag());\n"
+        "default int genHashCode() {\n"
+            + "  int result = Objects.hash(isFlag());\n"
             + "  return result;\n"
             + "}",
         writer.asString());
-    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
-    assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OBJECTS::equals));
     assertFalse(writer.getRefs().exists(JAVA_UTIL_ARRAYS::equals));
   }
 
   @Test
-  void hashCodeMethod_when_generatorUsedWithSamplePojo_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> generator = HashCodeGens.hashCodeMethod();
-    final Writer writer =
-        generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
-    assertEquals(
-        "@Override\n" + "public int hashCode() {\n" + "  return hashCode(self());\n" + "}",
-        writer.asString());
-  }
-
-  @Test
-  void hashCodeMethod_when_disabled_then_noOutput() {
-    final Generator<Pojo, PojoSettings> generator = HashCodeGens.hashCodeMethod();
+  void genHashCodeMethod_when_disabled_then_noOutput() {
+    final Generator<Pojo, PojoSettings> generator = HashCodeGens.genHashCodeMethod();
 
     final Writer writer =
         generator.generate(

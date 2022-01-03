@@ -1,7 +1,7 @@
 package io.github.muehmar.pojoextension.example.customannotations;
 
 @DisabledToString
-public class DisabledToStringClass extends DisabledToStringClassExtension {
+public class DisabledToStringClass extends DisabledToStringClassBase {
   private final String prop1;
 
   public DisabledToStringClass(String prop1) {

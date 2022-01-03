@@ -3,9 +3,7 @@ package io.github.muehmar.pojoextension.generator.impl.gen.tostring;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
-import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_STRING;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
-import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_LIST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,34 +20,10 @@ import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
 class ToStringGensTest {
-  @Test
-  void toStringMethod_when_called_then_correctDelegatedCall() {
-    final Generator<Pojo, PojoSettings> gen = ToStringGens.toStringMethod();
-
-    final Writer writer =
-        gen.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
-
-    assertEquals(
-        "@Override\n" + "public String toString() {\n" + "  return toString(self());\n" + "}",
-        writer.asString());
-  }
 
   @Test
-  void toStringMethod_when_disabled_then_noOutput() {
-    final Generator<Pojo, PojoSettings> gen = ToStringGens.toStringMethod();
-    final Writer writer =
-        gen.generate(
-            Pojos.sample(),
-            PojoSettings.defaultSettings().withToStringAbility(DISABLED),
-            Writer.createDefault());
-
-    assertEquals("", writer.asString());
-    assertTrue(writer.getRefs().isEmpty());
-  }
-
-  @Test
-  void staticToStringMethod_when_calledWithRequiredStringField_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> gen = ToStringGens.staticToStringMethod();
+  void genToStringMethod_when_calledWithRequiredStringField_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = ToStringGens.genToStringMethod();
     final PList<PojoField> fields =
         PList.single(new PojoField(Name.fromString("username"), Type.string(), REQUIRED));
     final Pojo pojo =
@@ -59,17 +33,17 @@ class ToStringGensTest {
         gen.generate(pojo, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "private static String toString(Customer self) {\n"
+        "default String genToString() {\n"
             + "  return \"Customer{\"\n"
-            + "      + \"username='\" + self.getUsername() + '\\''\n"
+            + "      + \"username='\" + getUsername() + '\\''\n"
             + "      + '}';\n"
             + "}",
         writer.asString());
   }
 
   @Test
-  void staticToStringMethod_when_calledWithOptionalStringField_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> gen = ToStringGens.staticToStringMethod();
+  void genToStringMethod_when_calledWithOptionalStringField_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = ToStringGens.genToStringMethod();
     final PList<PojoField> fields =
         PList.single(new PojoField(Name.fromString("username"), Type.string(), OPTIONAL));
     final Pojo pojo =
@@ -79,17 +53,17 @@ class ToStringGensTest {
         gen.generate(pojo, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "private static String toString(Customer self) {\n"
+        "default String genToString() {\n"
             + "  return \"Customer{\"\n"
-            + "      + \"username=\" + self.getUsername()\n"
+            + "      + \"username=\" + getUsername()\n"
             + "      + '}';\n"
             + "}",
         writer.asString());
   }
 
   @Test
-  void staticToStringMethod_when_calledWithInteger_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> gen = ToStringGens.staticToStringMethod();
+  void genToStringMethod_when_calledWithInteger_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = ToStringGens.genToStringMethod();
     final PList<PojoField> fields =
         PList.single(new PojoField(Name.fromString("age"), Type.integer(), REQUIRED));
     final Pojo pojo =
@@ -99,17 +73,17 @@ class ToStringGensTest {
         gen.generate(pojo, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "private static String toString(Customer self) {\n"
+        "default String genToString() {\n"
             + "  return \"Customer{\"\n"
-            + "      + \"age=\" + self.getAge()\n"
+            + "      + \"age=\" + getAge()\n"
             + "      + '}';\n"
             + "}",
         writer.asString());
   }
 
   @Test
-  void staticToStringMethod_when_calledWithArray_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> gen = ToStringGens.staticToStringMethod();
+  void genToStringMethod_when_calledWithArray_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = ToStringGens.genToStringMethod();
     final PList<PojoField> fields =
         PList.single(
             new PojoField(Name.fromString("data"), Type.integer().withIsArray(true), REQUIRED));
@@ -120,9 +94,9 @@ class ToStringGensTest {
         gen.generate(pojo, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "private static String toString(Customer self) {\n"
+        "default String genToString() {\n"
             + "  return \"Customer{\"\n"
-            + "      + \"data=\" + Arrays.toString(self.getData())\n"
+            + "      + \"data=\" + Arrays.toString(getData())\n"
             + "      + '}';\n"
             + "}",
         writer.asString());
@@ -130,26 +104,26 @@ class ToStringGensTest {
   }
 
   @Test
-  void staticToStringMethod_when_calledWithSamplePojo_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> gen = ToStringGens.staticToStringMethod();
+  void genToStringMethod_when_calledWithSamplePojo_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = ToStringGens.genToStringMethod();
 
     final Writer writer =
         gen.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "private static String toString(Customer self) {\n"
+        "default String genToString() {\n"
             + "  return \"Customer{\"\n"
-            + "      + \"id=\" + self.getId()\n"
-            + "      + \", username='\" + self.getUsername() + '\\''\n"
-            + "      + \", nickname=\" + self.getNickname()\n"
+            + "      + \"id=\" + getId()\n"
+            + "      + \", username='\" + getUsername() + '\\''\n"
+            + "      + \", nickname=\" + getNickname()\n"
             + "      + '}';\n"
             + "}",
         writer.asString());
   }
 
   @Test
-  void staticToStringMethod_when_disabled_then_noOutput() {
-    final Generator<Pojo, PojoSettings> gen = ToStringGens.staticToStringMethod();
+  void genToStringMethod_when_disabled_then_noOutput() {
+    final Generator<Pojo, PojoSettings> gen = ToStringGens.genToStringMethod();
     final Writer writer =
         gen.generate(
             Pojos.sample(),
@@ -161,22 +135,20 @@ class ToStringGensTest {
   }
 
   @Test
-  void staticToStringMethod_when_genericSample_then_correctOutput() {
-    final Generator<Pojo, PojoSettings> gen = ToStringGens.staticToStringMethod();
+  void genToStringMethod_when_genericSample_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> gen = ToStringGens.genToStringMethod();
 
     final Writer writer =
         gen.generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "private static <T extends List<String>, S> String toString(Customer<T, S> self) {\n"
+        "default String genToString() {\n"
             + "  return \"Customer{\"\n"
-            + "      + \"id='\" + self.getId() + '\\''\n"
-            + "      + \", data=\" + self.getData()\n"
-            + "      + \", additionalData=\" + self.getAdditionalData()\n"
+            + "      + \"id='\" + getId() + '\\''\n"
+            + "      + \", data=\" + getData()\n"
+            + "      + \", additionalData=\" + getAdditionalData()\n"
             + "      + '}';\n"
             + "}",
         writer.asString());
-    assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
-    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
   }
 }

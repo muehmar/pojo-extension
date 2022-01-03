@@ -4,7 +4,7 @@ import io.github.muehmar.pojoextension.annotations.PojoExtension;
 
 @PojoExtension(extensionName = "{CLASSNAME}Class")
 @SuppressWarnings("java:S2160") // Not overriding equals and hashCode is fine
-public class CustomExtensionName extends CustomExtensionNameClass {
+public class CustomExtensionName extends CustomExtensionNameBase {
   private final String name;
 
   public CustomExtensionName(String name) {

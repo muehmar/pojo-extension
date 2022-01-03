@@ -1,0 +1,73 @@
+package io.github.muehmar;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
+
+public interface CustomerExtension<T extends List<String>, S> {
+
+  String getId();
+
+  T getData();
+
+  Optional<S> getAdditionalData();
+
+  default Customer<T, S> withId(String id) {
+    return new Customer<>(id, getData(), getAdditionalData().orElse(null));
+  }
+
+  default Customer<T, S> withData(T data) {
+    return new Customer<>(getId(), data, getAdditionalData().orElse(null));
+  }
+
+  default Customer<T, S> withAdditionalData(S additionalData) {
+    return new Customer<>(getId(), getData(), additionalData);
+  }
+
+  default Customer<T, S> withAdditionalData(Optional<S> additionalData) {
+    return new Customer<>(getId(), getData(), additionalData.orElse(null));
+  }
+
+  default <A> A map(Function<Customer<T, S>, A> f) {
+    final Customer<T, S> self =
+      new Customer<>(getId(), getData(), getAdditionalData().orElse(null));
+    return f.apply(self);
+  }
+
+  default Customer<T, S> mapIf(boolean shouldMap, UnaryOperator<Customer<T, S>> f) {
+    final Customer<T, S> self =
+      new Customer<>(getId(), getData(), getAdditionalData().orElse(null));
+    return shouldMap ? f.apply(self) : self;
+  }
+
+  default <A> Customer<T, S> mapIfPresent(Optional<A> value, BiFunction<Customer<T, S>, A, Customer<T, S>> f) {
+    final Customer<T, S> self =
+      new Customer<>(getId(), getData(), getAdditionalData().orElse(null));
+    return value.map(v -> f.apply(self, v)).orElse(self);
+  }
+
+  default boolean genEquals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null || this.getClass() != obj.getClass()) return false;
+    final Customer<?, ?> other = (Customer<?, ?>) obj;
+    return Objects.equals(getId(), other.getId())
+        && Objects.equals(getData(), other.getData())
+        && Objects.equals(getAdditionalData(), other.getAdditionalData());
+  }
+
+  default int genHashCode() {
+    int result = Objects.hash(getId(), getData(), getAdditionalData());
+    return result;
+  }
+
+  default String genToString() {
+    return "Customer{"
+        + "id='" + getId() + '\''
+        + ", data=" + getData()
+        + ", additionalData=" + getAdditionalData()
+        + '}';
+  }
+}

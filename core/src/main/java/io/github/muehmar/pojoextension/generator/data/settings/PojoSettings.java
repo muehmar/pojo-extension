@@ -8,7 +8,6 @@ import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import java.util.Optional;
 
 @PojoExtension
@@ -16,39 +15,43 @@ import java.util.Optional;
 public class PojoSettings extends PojoSettingsExtension {
   private static final Name CLASS_NAME_PLACEHOLDER = Name.fromString("{CLASSNAME}");
   public static final Name BUILDER_CLASS_POSTFIX = Name.fromString("Builder");
-  public static final Name EXTENSION_CLASS_POSTFIX = Name.fromString("Extension");
+  public static final Name EXTENSION_IFC_POSTFIX = Name.fromString("Extension");
+  public static final Name BASE_CLASS_POSTFIX = Name.fromString("Base");
   private final PList<OptionalDetection> optionalDetections;
   private final ExtensionUsage extensionUsage;
   private final Optional<Name> extensionName;
   private final Optional<Name> builderName;
+  private final Optional<Name> baseClassName;
   private final Ability safeBuilderAbility;
-  private final DiscreteBuilder discreteBuilder;
   private final Ability equalsHashCodeAbility;
   private final Ability toStringAbility;
   private final Ability withersAbility;
   private final Ability mappersAbility;
+  private final Ability baseClassAbility;
 
   PojoSettings(
       PList<OptionalDetection> optionalDetections,
       ExtensionUsage extensionUsage,
       Optional<Name> extensionName,
       Optional<Name> builderName,
+      Optional<Name> baseClassName,
       Ability safeBuilderAbility,
-      DiscreteBuilder discreteBuilder,
       Ability equalsHashCodeAbility,
       Ability toStringAbility,
       Ability withAbility,
-      Ability mapAbility) {
+      Ability mapAbility,
+      Ability baseClassAbility) {
     this.optionalDetections = optionalDetections;
     this.extensionUsage = extensionUsage;
     this.extensionName = extensionName;
     this.builderName = builderName;
+    this.baseClassName = baseClassName;
     this.safeBuilderAbility = safeBuilderAbility;
-    this.discreteBuilder = discreteBuilder;
     this.equalsHashCodeAbility = equalsHashCodeAbility;
     this.toStringAbility = toStringAbility;
     this.withersAbility = withAbility;
     this.mappersAbility = mapAbility;
+    this.baseClassAbility = baseClassAbility;
   }
 
   public static PojoSettings defaultSettings() {
@@ -57,14 +60,15 @@ public class PojoSettings extends PojoSettingsExtension {
             PList.of(OptionalDetection.OPTIONAL_CLASS, OptionalDetection.NULLABLE_ANNOTATION))
         .setExtensionUsage(INHERITED)
         .setSafeBuilderAbility(ENABLED)
-        .setDiscreteBuilder(DiscreteBuilder.ENABLED)
         .setEqualsHashCodeAbility(ENABLED)
         .setToStringAbility(ENABLED)
         .setWithersAbility(ENABLED)
         .setMappersAbility(ENABLED)
+        .setBaseClassAbility(ENABLED)
         .andAllOptionals()
-        .setExtensionName(Optional.of(CLASS_NAME_PLACEHOLDER.append(EXTENSION_CLASS_POSTFIX)))
+        .setExtensionName(Optional.of(CLASS_NAME_PLACEHOLDER.append(EXTENSION_IFC_POSTFIX)))
         .setBuilderName(Optional.of(CLASS_NAME_PLACEHOLDER.append(BUILDER_CLASS_POSTFIX)))
+        .setBaseClassName(Optional.of(CLASS_NAME_PLACEHOLDER.append(BASE_CLASS_POSTFIX)))
         .build();
   }
 
@@ -84,12 +88,12 @@ public class PojoSettings extends PojoSettingsExtension {
     return builderName;
   }
 
-  public Ability getSafeBuilderAbility() {
-    return safeBuilderAbility;
+  public Optional<Name> getBaseClassName() {
+    return baseClassName;
   }
 
-  public DiscreteBuilder getDiscreteBuilder() {
-    return discreteBuilder;
+  public Ability getSafeBuilderAbility() {
+    return safeBuilderAbility;
   }
 
   public Ability getEqualsHashCodeAbility() {
@@ -108,12 +112,16 @@ public class PojoSettings extends PojoSettingsExtension {
     return mappersAbility;
   }
 
+  public Ability getBaseClassAbility() {
+    return baseClassAbility;
+  }
+
   public Name qualifiedExtensionName(Pojo pojo) {
     return pojo.getPackage().qualifiedName(extensionName(pojo));
   }
 
   public Name extensionName(Pojo pojo) {
-    return getNameOrAppend(extensionName, EXTENSION_CLASS_POSTFIX, pojo);
+    return getNameOrAppend(extensionName, EXTENSION_IFC_POSTFIX, pojo);
   }
 
   public Name qualifiedBuilderName(Pojo pojo) {
@@ -122,6 +130,14 @@ public class PojoSettings extends PojoSettingsExtension {
 
   public Name builderName(Pojo pojo) {
     return getNameOrAppend(builderName, BUILDER_CLASS_POSTFIX, pojo);
+  }
+
+  public Name qualifiedBaseClassName(Pojo pojo) {
+    return pojo.getPackage().qualifiedName(baseClassName(pojo));
+  }
+
+  public Name baseClassName(Pojo pojo) {
+    return getNameOrAppend(baseClassName, BASE_CLASS_POSTFIX, pojo);
   }
 
   private Name getNameOrAppend(Optional<Name> name, Name postfix, Pojo pojo) {
@@ -133,19 +149,19 @@ public class PojoSettings extends PojoSettingsExtension {
     return pojo.getName().map(n -> n.replace(".", ""));
   }
 
-  public JavaModifier getStaticMethodAccessModifier() {
-    return extensionUsage.isStatic() ? JavaModifier.PUBLIC : JavaModifier.PRIVATE;
-  }
-
   public boolean createDiscreteBuilder() {
-    return safeBuilderAbility.isEnabled() && discreteBuilder.isEnabled();
+    return safeBuilderAbility.isEnabled();
   }
 
   public boolean createExtension() {
-    return (safeBuilderAbility.isEnabled() && discreteBuilder.isDisabled())
-        || equalsHashCodeAbility.isEnabled()
+    return equalsHashCodeAbility.isEnabled()
         || toStringAbility.isEnabled()
         || withersAbility.isEnabled()
         || mappersAbility.isEnabled();
+  }
+
+  public boolean createBaseClass() {
+    return (equalsHashCodeAbility.isEnabled() || toStringAbility.isEnabled())
+        && baseClassAbility.isEnabled();
   }
 }

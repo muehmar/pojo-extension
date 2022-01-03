@@ -24,7 +24,11 @@ class MapGensTest {
         gen.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "public <T> T map(Function<Customer, T> f) {\n" + "  return f.apply(self());\n" + "}",
+        "default <T> T map(Function<Customer, T> f) {\n"
+            + "  final Customer self =\n"
+            + "    new Customer(getId(), getUsername(), getNickname().orElse(null));\n"
+            + "  return f.apply(self);\n"
+            + "}",
         writer.asString());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_FUNCTION::equals));
   }
@@ -49,7 +53,11 @@ class MapGensTest {
         gen.generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "public <A> A map(Function<Customer<T, S>, A> f) {\n" + "  return f.apply(self());\n" + "}",
+        "default <A> A map(Function<Customer<T, S>, A> f) {\n"
+            + "  final Customer<T, S> self =\n"
+            + "    new Customer<>(getId(), getData(), getAdditionalData().orElse(null));\n"
+            + "  return f.apply(self);\n"
+            + "}",
         writer.asString());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_FUNCTION::equals));
   }
@@ -61,8 +69,10 @@ class MapGensTest {
         gen.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "public Customer mapIf(boolean shouldMap, UnaryOperator<Customer> f) {\n"
-            + "  return shouldMap ? f.apply(self()) : self();\n"
+        "default Customer mapIf(boolean shouldMap, UnaryOperator<Customer> f) {\n"
+            + "  final Customer self =\n"
+            + "    new Customer(getId(), getUsername(), getNickname().orElse(null));\n"
+            + "  return shouldMap ? f.apply(self) : self;\n"
             + "}",
         writer.asString());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_UNARYOPERATOR::equals));
@@ -88,8 +98,10 @@ class MapGensTest {
         gen.generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "public Customer<T, S> mapIf(boolean shouldMap, UnaryOperator<Customer<T, S>> f) {\n"
-            + "  return shouldMap ? f.apply(self()) : self();\n"
+        "default Customer<T, S> mapIf(boolean shouldMap, UnaryOperator<Customer<T, S>> f) {\n"
+            + "  final Customer<T, S> self =\n"
+            + "    new Customer<>(getId(), getData(), getAdditionalData().orElse(null));\n"
+            + "  return shouldMap ? f.apply(self) : self;\n"
             + "}",
         writer.asString());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_UNARYOPERATOR::equals));
@@ -102,8 +114,10 @@ class MapGensTest {
         gen.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "public <T> Customer mapIfPresent(Optional<T> value, BiFunction<Customer, T, Customer> f) {\n"
-            + "  return value.map(v -> f.apply(self(), v)).orElseGet(this::self);\n"
+        "default <T> Customer mapIfPresent(Optional<T> value, BiFunction<Customer, T, Customer> f) {\n"
+            + "  final Customer self =\n"
+            + "    new Customer(getId(), getUsername(), getNickname().orElse(null));\n"
+            + "  return value.map(v -> f.apply(self, v)).orElse(self);\n"
             + "}",
         writer.asString());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_BIFUNCTION::equals));
@@ -130,8 +144,10 @@ class MapGensTest {
         gen.generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals(
-        "public <A> Customer<T, S> mapIfPresent(Optional<A> value, BiFunction<Customer<T, S>, A, Customer<T, S>> f) {\n"
-            + "  return value.map(v -> f.apply(self(), v)).orElseGet(this::self);\n"
+        "default <A> Customer<T, S> mapIfPresent(Optional<A> value, BiFunction<Customer<T, S>, A, Customer<T, S>> f) {\n"
+            + "  final Customer<T, S> self =\n"
+            + "    new Customer<>(getId(), getData(), getAdditionalData().orElse(null));\n"
+            + "  return value.map(v -> f.apply(self, v)).orElse(self);\n"
             + "}",
         writer.asString());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_BIFUNCTION::equals));

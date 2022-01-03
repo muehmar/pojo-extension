@@ -1,7 +1,7 @@
 package io.github.muehmar.pojoextension.example.customannotations;
 
 @DisabledWithers
-public class DisabledWithersClass extends DisabledWithersClassExtension {
+public class DisabledWithersClass extends DisabledWithersClassBase {
   private final String prop1;
 
   public DisabledWithersClass(String prop1) {

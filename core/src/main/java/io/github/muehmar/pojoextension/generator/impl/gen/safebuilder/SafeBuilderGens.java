@@ -27,9 +27,11 @@ public class SafeBuilderGens {
   private SafeBuilderGens() {}
 
   public static Generator<SafeBuilderPojoField, PojoSettings> fieldBuilderClass() {
-    return ClassGen.<SafeBuilderPojoField, PojoSettings>nested()
+    return ClassGen.<SafeBuilderPojoField, PojoSettings>clazz()
+        .nested()
         .modifiers(PUBLIC, STATIC, FINAL)
         .className(SafeBuilderGens::classDeclaration)
+        .noSuperClassAndInterface()
         .content(builderClassContent())
         .append(RefsGen.genericRefs(), SafeBuilderPojoField::getPojo);
   }
@@ -167,13 +169,15 @@ public class SafeBuilderGens {
             .append(newLine())
             .append(buildMethod());
 
-    return ClassGen.<Pojo, PojoSettings>nested()
+    return ClassGen.<Pojo, PojoSettings>clazz()
+        .nested()
         .modifiers(PUBLIC, STATIC, FINAL)
         .className(
             (p, s) ->
                 String.format(
                     "Builder%d%s",
                     builderNumber.applyAsInt(p), p.getGenericTypeDeclarationSection()))
+        .noSuperClassAndInterface()
         .content(content)
         .append(RefsGen.genericRefs());
   }
@@ -195,13 +199,15 @@ public class SafeBuilderGens {
             .append(newLine())
             .append(buildMethod());
 
-    return ClassGen.<Pojo, PojoSettings>nested()
+    return ClassGen.<Pojo, PojoSettings>clazz()
+        .nested()
         .modifiers(PUBLIC, STATIC, FINAL)
         .className(
             (p, s) ->
                 String.format(
                     "OptBuilder%d%s",
                     builderNumber.applyAsInt(p), p.getGenericTypeDeclarationSection()))
+        .noSuperClassAndInterface()
         .content(content)
         .append(RefsGen.genericRefs());
   }

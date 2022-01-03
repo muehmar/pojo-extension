@@ -24,7 +24,7 @@ public class Getter extends GetterExtension {
     return Optional.empty();
   }
 
-  public static Name getterName(PojoField field) {
+  public static Name javaBeanGetterName(PojoField field) {
     if (field.getType().equals(Type.primitiveBoolean())) {
       return primitiveBooleanGetterName(field);
     }
@@ -57,7 +57,8 @@ public class Getter extends GetterExtension {
 
   public Optional<FieldGetter> getFieldGetter(PojoField field) {
     final boolean fieldNameMatches = fieldName.map(n -> n.equals(field.getName())).orElse(false);
-    final boolean methodNameMatches = name.equals(getterName(field));
+    final boolean methodNameMatches =
+        name.equals(javaBeanGetterName(field)) || name.equals(field.getName());
 
     if (not(methodNameMatches) && not(fieldNameMatches)) {
       return Optional.empty();

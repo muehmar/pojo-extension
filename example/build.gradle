@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'pojo-extension.java-conventions'
+    id 'pojo-extension.java'
 }
 
 dependencies {

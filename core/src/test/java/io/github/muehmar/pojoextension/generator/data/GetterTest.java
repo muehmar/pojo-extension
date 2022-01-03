@@ -19,10 +19,10 @@ class GetterTest {
 
   @ParameterizedTest
   @MethodSource("getterNames")
-  void getterName_when_calledWithField_then_correctJavaBeansName(
+  void javaBeanGetterName_when_calledWithField_then_correctJavaBeansName(
       String fieldName, Type type, String expectedGetterName) {
     final PojoField field = new PojoField(Name.fromString(fieldName), type, REQUIRED);
-    assertEquals(expectedGetterName, Getter.getterName(field).asString());
+    assertEquals(expectedGetterName, Getter.javaBeanGetterName(field).asString());
   }
 
   private static Stream<Arguments> getterNames() {
@@ -37,8 +37,21 @@ class GetterTest {
 
   @ParameterizedTest
   @EnumSource(Necessity.class)
-  void getFieldGetter_when_nameAndTypeMatches_then_returnsFieldGetter(Necessity necessity) {
+  void getFieldGetter_when_getterNameAndTypeMatches_then_returnsFieldGetter(Necessity necessity) {
     final Getter getter = new Getter(Name.fromString("getId"), Type.string(), noFieldName());
+    final PojoField field = new PojoField(Name.fromString("id"), Type.string(), necessity);
+
+    final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
+
+    final FieldGetter expected = new FieldGetter(getter, field, SAME_TYPE);
+
+    assertEquals(Optional.of(expected), fieldGetter);
+  }
+
+  @ParameterizedTest
+  @EnumSource(Necessity.class)
+  void getFieldGetter_when_fieldNameAndTypeMatches_then_returnsFieldGetter(Necessity necessity) {
+    final Getter getter = new Getter(Name.fromString("id"), Type.string(), noFieldName());
     final PojoField field = new PojoField(Name.fromString("id"), Type.string(), necessity);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);

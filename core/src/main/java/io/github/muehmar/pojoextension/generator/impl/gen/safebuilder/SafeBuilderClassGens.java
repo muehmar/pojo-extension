@@ -21,10 +21,12 @@ public class SafeBuilderClassGens {
   private SafeBuilderClassGens() {}
 
   public static Generator<Pojo, PojoSettings> safeBuilderClass() {
-    return ClassGen.<Pojo, PojoSettings>topLevel()
+    return ClassGen.<Pojo, PojoSettings>clazz()
+        .topLevel()
         .packageGen(new PackageGen())
         .modifiers(PUBLIC, FINAL)
         .className((p, s) -> s.builderName(p).asString())
+        .noSuperClassAndInterface()
         .content(content());
   }
 

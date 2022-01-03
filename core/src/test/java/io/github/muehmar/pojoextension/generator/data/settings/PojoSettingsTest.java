@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Name;
-import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import org.junit.jupiter.api.Test;
 
 class PojoSettingsTest {
@@ -103,47 +102,55 @@ class PojoSettingsTest {
   }
 
   @Test
-  void getStaticMethodAccessModifier_when_extensionUsageIsStatic_then_accessModifierIsPublic() {
-    final PojoSettings settings =
-        PojoSettings.defaultSettings().withExtensionUsage(ExtensionUsage.STATIC);
-    assertEquals(JavaModifier.PUBLIC, settings.getStaticMethodAccessModifier());
+  void baseClassName_when_calledWithSamplePojo_then_correctBaseClassName() {
+    final Name name = PojoSettings.defaultSettings().baseClassName(Pojos.sample());
+    assertEquals("CustomerBase", name.asString());
   }
 
   @Test
-  void getStaticMethodAccessModifier_when_extensionUsageIsInherited_then_accessModifierIsPrivate() {
-    final PojoSettings settings =
-        PojoSettings.defaultSettings().withExtensionUsage(ExtensionUsage.INHERITED);
-    assertEquals(JavaModifier.PRIVATE, settings.getStaticMethodAccessModifier());
+  void baseClassName_when_calledWithInnerClassName_then_correctBaseClassName() {
+    final Name name =
+        PojoSettings.defaultSettings()
+            .baseClassName(Pojos.sample().withName(Name.fromString("Customer.Address")));
+    assertEquals("CustomerAddressBase", name.asString());
   }
 
   @Test
-  void createDiscreteBuilder_when_safeBuilderDisabled_then_false() {
-    final PojoSettings settings =
-        PojoSettings.defaultSettings().withSafeBuilderAbility(Ability.DISABLED);
-    assertFalse(settings.createDiscreteBuilder());
+  void baseClassName_when_overriddenBaseClassName_then_useCustomBaseClassName() {
+    final Name name =
+        PojoSettings.defaultSettings()
+            .withBaseClassName(Name.fromString("MyBaseClass"))
+            .baseClassName(Pojos.sample());
+    assertEquals("MyBaseClass", name.asString());
   }
 
   @Test
-  void createDiscreteBuilder_when_safeBuilderNotDiscrete_then_false() {
-    final PojoSettings settings =
-        PojoSettings.defaultSettings().withDiscreteBuilder(DiscreteBuilder.DISABLED);
-    assertFalse(settings.createDiscreteBuilder());
+  void baseClassName_when_overriddenBaseClassNameWithClassname_then_customBaseClassNameCreated() {
+    final Name name =
+        PojoSettings.defaultSettings()
+            .withBaseClassName(Name.fromString("My{CLASSNAME}Base"))
+            .baseClassName(Pojos.sample());
+    assertEquals("MyCustomerBase", name.asString());
   }
 
   @Test
-  void createDiscreteBuilder_when_safeBuilderAndDiscreteBuilderEnabled_then_true() {
+  void qualifiedBaseClassName_when_calledWithSamplePojo_then_correctBaseClassName() {
+    final Name name = PojoSettings.defaultSettings().qualifiedBaseClassName(Pojos.sample());
+    assertEquals("io.github.muehmar.CustomerBase", name.asString());
+  }
+
+  @Test
+  void qualifiedBaseClassName_when_calledWithInnerClassName_then_correctBaseClassName() {
+    final Name name =
+        PojoSettings.defaultSettings()
+            .qualifiedBaseClassName(Pojos.sample().withName(Name.fromString("Customer.Address")));
+    assertEquals("io.github.muehmar.CustomerAddressBase", name.asString());
+  }
+
+  @Test
+  void createExtension_when_everythingDisabled_then_false() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withDiscreteBuilder(DiscreteBuilder.ENABLED)
-            .withSafeBuilderAbility(Ability.ENABLED);
-    assertTrue(settings.createDiscreteBuilder());
-  }
-
-  @Test
-  void createDiscreteBuilder_when_everythingDisabled_then_false() {
-    final PojoSettings settings =
-        PojoSettings.defaultSettings()
-            .withDiscreteBuilder(DiscreteBuilder.DISABLED)
             .withSafeBuilderAbility(Ability.DISABLED)
             .withEqualsHashCodeAbility(Ability.DISABLED)
             .withToStringAbility(Ability.DISABLED)
@@ -153,36 +160,9 @@ class PojoSettingsTest {
   }
 
   @Test
-  void createDiscreteBuilder_when_everythingDisabledAndSafeBuilderEnabledButDiscrete_then_false() {
+  void createExtension_when_everythingExceptEqualsAndHashCodeDisabled_then_true() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withDiscreteBuilder(DiscreteBuilder.ENABLED)
-            .withSafeBuilderAbility(Ability.ENABLED)
-            .withEqualsHashCodeAbility(Ability.DISABLED)
-            .withToStringAbility(Ability.DISABLED)
-            .withMappersAbility(Ability.DISABLED)
-            .withWithersAbility(Ability.DISABLED);
-    assertFalse(settings.createExtension());
-  }
-
-  @Test
-  void createDiscreteBuilder_when_everythingExceptSafeBuilderDisabled_then_true() {
-    final PojoSettings settings =
-        PojoSettings.defaultSettings()
-            .withDiscreteBuilder(DiscreteBuilder.DISABLED)
-            .withSafeBuilderAbility(Ability.ENABLED)
-            .withEqualsHashCodeAbility(Ability.DISABLED)
-            .withToStringAbility(Ability.DISABLED)
-            .withMappersAbility(Ability.DISABLED)
-            .withWithersAbility(Ability.DISABLED);
-    assertTrue(settings.createExtension());
-  }
-
-  @Test
-  void createDiscreteBuilder_when_everythingExceptEqualsAndHashCodeDisabled_then_true() {
-    final PojoSettings settings =
-        PojoSettings.defaultSettings()
-            .withDiscreteBuilder(DiscreteBuilder.DISABLED)
             .withSafeBuilderAbility(Ability.DISABLED)
             .withEqualsHashCodeAbility(Ability.ENABLED)
             .withToStringAbility(Ability.DISABLED)
@@ -192,10 +172,9 @@ class PojoSettingsTest {
   }
 
   @Test
-  void createDiscreteBuilder_when_everythingExceptToStringDisabled_then_true() {
+  void createExtension_when_everythingExceptToStringDisabled_then_true() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withDiscreteBuilder(DiscreteBuilder.DISABLED)
             .withSafeBuilderAbility(Ability.DISABLED)
             .withEqualsHashCodeAbility(Ability.DISABLED)
             .withToStringAbility(Ability.ENABLED)
@@ -205,10 +184,9 @@ class PojoSettingsTest {
   }
 
   @Test
-  void createDiscreteBuilder_when_everythingExceptMappersDisabled_then_true() {
+  void createExtension_when_everythingExceptMappersDisabled_then_true() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withDiscreteBuilder(DiscreteBuilder.DISABLED)
             .withSafeBuilderAbility(Ability.DISABLED)
             .withEqualsHashCodeAbility(Ability.DISABLED)
             .withToStringAbility(Ability.DISABLED)
@@ -218,15 +196,79 @@ class PojoSettingsTest {
   }
 
   @Test
-  void createDiscreteBuilder_when_everythingExceptWithersDisabled_then_true() {
+  void createExtension_when_everythingExceptWithersDisabled_then_true() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withDiscreteBuilder(DiscreteBuilder.DISABLED)
             .withSafeBuilderAbility(Ability.DISABLED)
             .withEqualsHashCodeAbility(Ability.DISABLED)
             .withToStringAbility(Ability.DISABLED)
             .withMappersAbility(Ability.DISABLED)
             .withWithersAbility(Ability.ENABLED);
     assertTrue(settings.createExtension());
+  }
+
+  @Test
+  void createBaseClass_when_everythingDisabled_then_false() {
+    final PojoSettings settings =
+        PojoSettings.defaultSettings()
+            .withSafeBuilderAbility(Ability.DISABLED)
+            .withEqualsHashCodeAbility(Ability.DISABLED)
+            .withToStringAbility(Ability.DISABLED)
+            .withMappersAbility(Ability.DISABLED)
+            .withWithersAbility(Ability.DISABLED)
+            .withBaseClassAbility(Ability.DISABLED);
+    assertFalse(settings.createBaseClass());
+  }
+
+  @Test
+  void createBaseClass_when_baseClassEnabledButNoEqualsHashCodeOrToString_then_false() {
+    final PojoSettings settings =
+        PojoSettings.defaultSettings()
+            .withSafeBuilderAbility(Ability.DISABLED)
+            .withEqualsHashCodeAbility(Ability.DISABLED)
+            .withToStringAbility(Ability.DISABLED)
+            .withMappersAbility(Ability.DISABLED)
+            .withWithersAbility(Ability.DISABLED)
+            .withBaseClassAbility(Ability.ENABLED);
+    assertFalse(settings.createBaseClass());
+  }
+
+  @Test
+  void createBaseClass_when_baseClassEnabledAndEqualsHashCode_then_true() {
+    final PojoSettings settings =
+        PojoSettings.defaultSettings()
+            .withSafeBuilderAbility(Ability.DISABLED)
+            .withEqualsHashCodeAbility(Ability.ENABLED)
+            .withToStringAbility(Ability.DISABLED)
+            .withMappersAbility(Ability.DISABLED)
+            .withWithersAbility(Ability.DISABLED)
+            .withBaseClassAbility(Ability.ENABLED);
+    assertTrue(settings.createBaseClass());
+  }
+
+  @Test
+  void createBaseClass_when_baseClassEnabledAndToString_then_true() {
+    final PojoSettings settings =
+        PojoSettings.defaultSettings()
+            .withSafeBuilderAbility(Ability.DISABLED)
+            .withEqualsHashCodeAbility(Ability.DISABLED)
+            .withToStringAbility(Ability.ENABLED)
+            .withMappersAbility(Ability.DISABLED)
+            .withWithersAbility(Ability.DISABLED)
+            .withBaseClassAbility(Ability.ENABLED);
+    assertTrue(settings.createBaseClass());
+  }
+
+  @Test
+  void createBaseClass_when_equalsHashCodeAndToStringEnabledButBaseClassDisabled_then_false() {
+    final PojoSettings settings =
+        PojoSettings.defaultSettings()
+            .withSafeBuilderAbility(Ability.DISABLED)
+            .withEqualsHashCodeAbility(Ability.ENABLED)
+            .withToStringAbility(Ability.ENABLED)
+            .withMappersAbility(Ability.DISABLED)
+            .withWithersAbility(Ability.DISABLED)
+            .withBaseClassAbility(Ability.DISABLED);
+    assertFalse(settings.createBaseClass());
   }
 }

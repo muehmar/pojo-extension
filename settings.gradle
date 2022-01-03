@@ -3,6 +3,7 @@ rootProject.name = "pojo-extension"
 include 'core'
 include 'core-annotations'
 include 'example'
+include 'example-java17'
 
 enableFeaturePreview('VERSION_CATALOGS')
 

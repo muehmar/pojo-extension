@@ -1,0 +1,10 @@
+plugins {
+    id 'pojo-extension.java-17'
+}
+
+dependencies {
+    implementation project(':core-annotations')
+    annotationProcessor project(':core')
+
+    testImplementation libs.bundles.junit
+}

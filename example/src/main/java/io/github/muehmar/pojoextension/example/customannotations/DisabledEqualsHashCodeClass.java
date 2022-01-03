@@ -1,7 +1,7 @@
 package io.github.muehmar.pojoextension.example.customannotations;
 
 @DisabledEqualsHashCode
-public class DisabledEqualsHashCodeClass extends DisabledEqualsHashCodeClassExtension {
+public class DisabledEqualsHashCodeClass extends DisabledEqualsHashCodeClassBase {
   private final String prop1;
 
   public DisabledEqualsHashCodeClass(String prop1) {

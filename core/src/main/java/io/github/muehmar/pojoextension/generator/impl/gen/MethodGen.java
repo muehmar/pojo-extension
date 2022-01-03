@@ -7,6 +7,7 @@ import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -17,7 +18,7 @@ public class MethodGen<A, B> implements Generator<A, B> {
   private final BiFunction<A, B, String> createReturnType;
   private final BiFunction<A, B, String> createMethodName;
   private final BiFunction<A, B, PList<String>> createArguments;
-  private final Generator<A, B> contentGenerator;
+  private final Optional<Generator<A, B>> contentGenerator;
 
   public MethodGen(
       BiFunction<A, B, JavaModifiers> createModifiers,
@@ -25,7 +26,7 @@ public class MethodGen<A, B> implements Generator<A, B> {
       BiFunction<A, B, String> createReturnType,
       BiFunction<A, B, String> createMethodName,
       BiFunction<A, B, PList<String>> createArguments,
-      Generator<A, B> contentGenerator) {
+      Optional<Generator<A, B>> contentGenerator) {
     this.createModifiers = createModifiers;
     this.createGenericTypeParameters = createGenericTypeParameters;
     this.createReturnType = createReturnType;
@@ -45,16 +46,18 @@ public class MethodGen<A, B> implements Generator<A, B> {
               final String returnType = createReturnType.apply(data, settings);
               final String methodName = createMethodName.apply(data, settings);
               final String arguments = createArguments.apply(data, settings).mkString(", ");
+              final String openingBracket = contentGenerator.isPresent() ? " {" : ";";
               return w.print(
-                  "%s%s%s %s(%s) {",
+                  "%s%s%s %s(%s)%s",
                   modifiers.asStringTrailingWhitespace(),
                   genericTypeParameters,
                   returnType,
                   methodName,
-                  arguments);
+                  arguments,
+                  openingBracket);
             })
-        .append(contentGenerator, 1)
-        .append(w -> w.println("}"))
+        .append(contentGenerator.orElse(Generator.emptyGen()), 1)
+        .append(w -> contentGenerator.isPresent() ? w.println("}") : w)
         .generate(data, settings, writer);
   }
 
@@ -221,7 +224,17 @@ public class MethodGen<A, B> implements Generator<A, B> {
           createReturnType,
           createMethodName,
           createArguments,
-          content);
+          Optional.of(content));
+    }
+
+    public MethodGen<A, B> noBody() {
+      return new MethodGen<>(
+          createModifiers,
+          createGenericTypeParameters,
+          createReturnType,
+          createMethodName,
+          createArguments,
+          Optional.empty());
     }
 
     public MethodGen<A, B> contentWriter(UnaryOperator<Writer> content) {

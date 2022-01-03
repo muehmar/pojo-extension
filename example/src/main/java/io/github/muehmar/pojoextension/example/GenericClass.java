@@ -6,7 +6,7 @@ import java.util.Optional;
 
 @PojoExtension
 public class GenericClass<T extends List<String> & Comparable<T>, S>
-    extends GenericClassExtension<T, S> {
+    extends GenericClassBase<T, S> {
   private final String prop1;
   private final T data;
   private final Optional<S> additionalData;

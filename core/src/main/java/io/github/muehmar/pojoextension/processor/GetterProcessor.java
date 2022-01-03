@@ -1,5 +1,7 @@
 package io.github.muehmar.pojoextension.processor;
 
+import static io.github.muehmar.pojoextension.Booleans.not;
+
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.data.Getter;
 import io.github.muehmar.pojoextension.generator.data.GetterBuilder;
@@ -15,25 +17,24 @@ public class GetterProcessor {
 
   public static PList<Getter> process(Element pojo) {
     return PList.fromIter(pojo.getEnclosedElements())
-        .filter(e -> e.getKind().equals(ElementKind.METHOD) && e instanceof ExecutableElement)
+        .filter(e -> e.getKind().equals(ElementKind.METHOD))
+        .filter(ExecutableElement.class::isInstance)
         .map(ExecutableElement.class::cast)
         .filter(e -> e.getParameters().isEmpty())
-        .map(
-            e -> {
-              final Optional<Name> fieldName = extractFieldName(e);
-              final Name methodName = Name.fromString(e.getSimpleName().toString());
-              final Type returnType = TypeMirrorMapper.map(e.getReturnType());
-              return GetterBuilder.create()
-                  .setName(methodName)
-                  .setReturnType(returnType)
-                  .andAllOptionals()
-                  .setFieldName(fieldName)
-                  .build();
-            })
-        .filter(
-            g ->
-                g.getName().asString().startsWith("get")
-                    || g.getName().asString().startsWith("is"));
+        .map(GetterProcessor::mapToGetter)
+        .filter(g -> not(g.getReturnType().equals(Type.voidType())));
+  }
+
+  private static Getter mapToGetter(ExecutableElement e) {
+    final Optional<Name> fieldName = extractFieldName(e);
+    final Name methodName = Name.fromString(e.getSimpleName().toString());
+    final Type returnType = TypeMirrorMapper.map(e.getReturnType());
+    return GetterBuilder.create()
+        .setName(methodName)
+        .setReturnType(returnType)
+        .andAllOptionals()
+        .setFieldName(fieldName)
+        .build();
   }
 
   private static Optional<Name> extractFieldName(ExecutableElement e) {

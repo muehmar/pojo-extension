@@ -1,7 +1,7 @@
 package io.github.muehmar.pojoextension.example.customannotations;
 
 @DisabledMappers
-public class DisabledMappersClass extends DisabledMappersClassExtension {
+public class DisabledMappersClass extends DisabledMappersClassBase {
   private final String prop1;
 
   public DisabledMappersClass(String prop1) {

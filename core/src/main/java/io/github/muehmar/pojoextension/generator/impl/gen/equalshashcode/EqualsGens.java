@@ -1,7 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode;
 
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
+import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.DEFAULT;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OBJECTS;
 
@@ -12,71 +11,50 @@ import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
-import io.github.muehmar.pojoextension.generator.impl.gen.Annotations;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 public class EqualsGens {
   private EqualsGens() {}
 
-  public static Generator<Pojo, PojoSettings> equalsMethod() {
+  public static Generator<Pojo, PojoSettings> genEqualsMethod() {
     final Generator<Pojo, PojoSettings> method =
-        MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+        MethodGen.<Pojo, PojoSettings>modifiers(DEFAULT)
             .noGenericTypes()
             .returnType("boolean")
-            .methodName("equals")
+            .methodName("genEquals")
             .singleArgument(pojo -> "Object obj")
-            .content("return equals(self(), obj);");
-    return Annotations.<Pojo, PojoSettings>overrideAnnotation()
-        .append(method)
-        .filter((p, s) -> s.getEqualsHashCodeAbility().isEnabled());
+            .content(genEqualsMethodContent());
+    return method.filter((p, s) -> s.getEqualsHashCodeAbility().isEnabled());
   }
 
-  public static Generator<Pojo, PojoSettings> staticEqualsMethod() {
-    final Function<Pojo, PList<String>> arguments =
-        p -> PList.of(String.format("%s o1", p.getNameWithTypeVariables()), "Object obj");
-
-    return MethodGen.<Pojo, PojoSettings>modifiers(
-            (p, s) -> JavaModifiers.of(s.getStaticMethodAccessModifier(), STATIC))
-        .genericTypes(Pojo::getGenericTypeDeclarations)
-        .returnType("boolean")
-        .methodName("equals")
-        .arguments(arguments)
-        .content(staticEqualsMethodContent())
-        .append(RefsGen.genericRefs())
-        .filter((p, s) -> s.getEqualsHashCodeAbility().isEnabled());
+  private static Generator<Pojo, PojoSettings> genEqualsMethodContent() {
+    return genEqualsCheckIdentity()
+        .append(genEqualsCheckNullAndSameClass())
+        .append(genEqualsCastObjectToCompare())
+        .append(genEqualsCompareFields(), Pojo::getAllGettersOrThrow);
   }
 
-  private static Generator<Pojo, PojoSettings> staticEqualsMethodContent() {
-    return staticEqualsCheckIdentity()
-        .append(staticEqualsCheckNullAndSameClass())
-        .append(staticEqualsCastObjectToCompare())
-        .append(staticEqualsCompareFields(), Pojo::getAllGettersOrThrow);
+  private static Generator<Pojo, PojoSettings> genEqualsCheckIdentity() {
+    return Generator.ofWriterFunction(w -> w.println("if (this == obj) return true;"));
   }
 
-  private static Generator<Pojo, PojoSettings> staticEqualsCheckIdentity() {
-    return Generator.ofWriterFunction(w -> w.println("if (o1 == obj) return true;"));
+  private static UnaryOperator<Writer> genEqualsCheckNullAndSameClass() {
+    return w -> w.println("if (obj == null || this.getClass() != obj.getClass()) return false;");
   }
 
-  private static UnaryOperator<Writer> staticEqualsCheckNullAndSameClass() {
-    return w -> w.println("if (obj == null || o1.getClass() != obj.getClass()) return false;");
-  }
-
-  private static Generator<Pojo, PojoSettings> staticEqualsCastObjectToCompare() {
+  private static Generator<Pojo, PojoSettings> genEqualsCastObjectToCompare() {
     return (p, s, w) ->
         w.println(
-            "final %s%s o2 = (%s%s) obj;",
+            "final %s%s other = (%s%s) obj;",
             p.getName(),
             p.getTypeVariablesWildcardSection(),
             p.getName(),
             p.getTypeVariablesWildcardSection());
   }
 
-  private static Generator<PList<FieldGetter>, PojoSettings> staticEqualsCompareFields() {
+  private static Generator<PList<FieldGetter>, PojoSettings> genEqualsCompareFields() {
     return (fields, s, w) -> {
       final Writer writerAfterFirstField =
           fields
@@ -98,14 +76,14 @@ public class EqualsGens {
     return (fg, s, w) -> {
       final Name getterName = fg.getGetter().getName();
       if (fg.getField().getType().isArray()) {
-        return w.print("Arrays.equals(o1.%s(), o2.%s())", getterName, getterName)
+        return w.print("Arrays.equals(%s(), other.%s())", getterName, getterName)
             .ref(JAVA_UTIL_ARRAYS);
       } else if (fg.getField().getType().equals(Type.primitiveDouble())) {
-        return w.print("Double.compare(o1.%s(), o2.%s()) == 0", getterName, getterName);
+        return w.print("Double.compare(%s(), other.%s()) == 0", getterName, getterName);
       } else if (fg.getField().getType().isPrimitive()) {
-        return w.print("o1.%s() == o2.%s()", getterName, getterName);
+        return w.print("%s() == other.%s()", getterName, getterName);
       } else {
-        return w.print("Objects.equals(o1.%s(), o2.%s())", getterName, getterName)
+        return w.print("Objects.equals(%s(), other.%s())", getterName, getterName)
             .ref(JAVA_UTIL_OBJECTS);
       }
     };

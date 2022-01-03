@@ -27,7 +27,7 @@ class FinalConstructorArgument {
     final OptionalFieldRelation relation =
         fieldGetter.getRelation().andThen(fieldArgument.getRelation());
     return new FinalConstructorArgument(
-        fieldGetter.getGetter().getName().prefix("self.").append("()").asString(), relation);
+        fieldGetter.getGetter().getName().append("()").asString(), relation);
   }
 
   public String getFieldString() {
