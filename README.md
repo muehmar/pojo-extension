@@ -330,7 +330,7 @@ which case is used, there can also be a mix for the optional fields in case you 
 
 ```
 @PojoExtension
-public class Customer extends CustomerExtension {
+public class Customer extends CustomerBase {
 private final String name;
 private final String email;
 private final Optional<String> nickname;
