@@ -36,8 +36,12 @@ public @interface PojoExtension {
    * genEquals} and {@code genHashCode} are generated.
    *
    * <p>There are two possible ways to use the methods:
-   * <li>Delegate the call in the concrete data class to these methods.
-   * <li>Enable the generation of the base class which overrides these methods and inherit from it.
+   *
+   * <ul>
+   *   <li>Delegate the call in the concrete data class to these methods.
+   *   <li>Enable the generation of the base class which overrides these methods and inherit from
+   *       it.
+   * </ul>
    */
   boolean enableEqualsAndHashCode() default true;
 
@@ -47,8 +51,11 @@ public @interface PojoExtension {
    * generated.
    *
    * <p>There are two possible ways to use the method:
-   * <li>Delegate the call in the concrete data class to this method in the interface.
-   * <li>Enable the generation of the base class which overrides this method and inherit from it.
+   *
+   * <ul>
+   *   <li>Delegate the call in the concrete data class to this method in the interface.
+   *   <li>Enable the generation of the base class which overrides this method and inherit from it.
+   * </ul>
    */
   boolean enableToString() default true;
 
