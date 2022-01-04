@@ -9,7 +9,7 @@ import java.util.function.UnaryOperator;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
-public class Getter extends GetterExtension {
+public class Getter extends GetterBase {
   private final Name name;
   private final Type returnType;
   private final Optional<Name> fieldName;

@@ -5,7 +5,7 @@ import io.github.muehmar.pojoextension.Strings;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 
 @PojoExtension
-public class Generic extends GenericExtension {
+public class Generic extends GenericBase {
   private final Name typeVariable;
   private final PList<Type> upperBounds;
 

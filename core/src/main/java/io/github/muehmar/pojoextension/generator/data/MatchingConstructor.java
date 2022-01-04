@@ -5,7 +5,7 @@ import io.github.muehmar.pojoextension.annotations.PojoExtension;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
-public class MatchingConstructor extends MatchingConstructorExtension {
+public class MatchingConstructor extends MatchingConstructorBase {
   private final Constructor constructor;
   private final PList<FieldArgument> fieldArguments;
 

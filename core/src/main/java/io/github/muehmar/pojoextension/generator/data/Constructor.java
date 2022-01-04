@@ -6,7 +6,7 @@ import java.util.Optional;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
-public class Constructor extends ConstructorExtension {
+public class Constructor extends ConstructorBase {
   private final Name name;
   private final PList<Argument> arguments;
 

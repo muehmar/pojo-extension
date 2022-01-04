@@ -4,7 +4,7 @@ import io.github.muehmar.pojoextension.annotations.PojoExtension;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
-public class FieldGetter extends FieldGetterExtension {
+public class FieldGetter extends FieldGetterBase {
   private final Getter getter;
   private final PojoField field;
   private final OptionalFieldRelation relation;

@@ -4,7 +4,7 @@ import io.github.muehmar.pojoextension.annotations.PojoExtension;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
-public class PojoField extends PojoFieldExtension {
+public class PojoField extends PojoFieldBase {
   private final Name name;
   private final Type type;
   private final Necessity necessity;

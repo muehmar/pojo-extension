@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
-public class PojoSettings extends PojoSettingsExtension {
+public class PojoSettings extends PojoSettingsBase {
   private static final Name CLASS_NAME_PLACEHOLDER = Name.fromString("{CLASSNAME}");
   public static final Name BUILDER_CLASS_POSTFIX = Name.fromString("Builder");
   public static final Name EXTENSION_IFC_POSTFIX = Name.fromString("Extension");

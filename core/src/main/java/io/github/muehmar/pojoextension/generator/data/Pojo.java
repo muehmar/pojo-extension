@@ -7,9 +7,9 @@ import io.github.muehmar.pojoextension.Strings;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.Optional;
 
-@PojoExtension(extensionName = "{CLASSNAME}Ext")
+@PojoExtension
 @SuppressWarnings("java:S2160")
-public class Pojo extends PojoExt {
+public class Pojo extends PojoBase {
   private static final PList<Name> LETTERS_AZ =
       PList.range(65, 91).map(n -> Character.toString((char) n.intValue())).map(Name::fromString);
 

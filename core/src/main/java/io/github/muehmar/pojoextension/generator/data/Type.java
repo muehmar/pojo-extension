@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
-public class Type extends TypeExtension {
+public class Type extends TypeBase {
   private final Name name;
   private final Optional<PackageName> pkg;
   private final PList<Type> typeParameters;

@@ -6,7 +6,7 @@ import io.github.muehmar.pojoextension.generator.data.PojoAndField;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 
 @PojoExtension
-public class SafeBuilderPojoField extends SafeBuilderPojoFieldExtension {
+public class SafeBuilderPojoField extends SafeBuilderPojoFieldBase {
   private final PojoAndField pojoAndField;
   private final int index;
 

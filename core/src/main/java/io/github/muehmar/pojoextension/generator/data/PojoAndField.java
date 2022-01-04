@@ -3,7 +3,7 @@ package io.github.muehmar.pojoextension.generator.data;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 
 @PojoExtension
-public class PojoAndField extends PojoAndFieldExtension {
+public class PojoAndField extends PojoAndFieldBase {
   private final Pojo pojo;
   private final PojoField field;
 

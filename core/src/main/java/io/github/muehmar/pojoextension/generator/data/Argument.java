@@ -7,7 +7,7 @@ import java.util.Optional;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
-public class Argument extends ArgumentExtension {
+public class Argument extends ArgumentBase {
   private final Name name;
   private final Type type;
 
