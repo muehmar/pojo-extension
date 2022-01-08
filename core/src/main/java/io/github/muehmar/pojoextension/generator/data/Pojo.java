@@ -106,7 +106,7 @@ public class Pojo extends PojoBase {
 
   private String noMatchingConstructorMessage() {
     return String.format(
-        "No matching constructor found for class %s."
+        "No matching constructor found for class/record %s."
             + " A constructor should have all the fields as arguments in the order of declaration and matching type,"
             + " where the actual type of a non-required field can be wrapped into an java.util.Optional",
         getName());
@@ -132,12 +132,13 @@ public class Pojo extends PojoBase {
             ? "The the actual type of this non-required field can be wrapped into an java.util.Optional."
             : "";
     return String.format(
-        "Unable to find the getter for field '%s'.\n"
+        "Unable to find the getter for field '%s' in class/record %s.\n"
             + "The method name should be '%s' and the returnType should match the field type %s.\n"
-            + "In case the method cannot be renamed you can use the @@Getter(\"%s\") annotation to mark\n"
+            + "In case the method cannot be renamed you can use the @Getter(\"%s\") annotation to mark\n"
             + "the method as getter for the field '%s'.\n"
             + "%s",
         field.getName(),
+        getName(),
         Getter.javaBeanGetterName(field),
         field.getType().getTypeDeclaration(),
         field.getName(),
