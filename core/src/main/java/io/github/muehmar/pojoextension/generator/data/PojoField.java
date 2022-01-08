@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.generator.data;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
@@ -35,18 +36,10 @@ public class PojoField extends PojoFieldBase {
     return necessity.isOptional();
   }
 
-  @FunctionalInterface
-  public interface OnExactMatch<T> {
-    T apply(PojoField field, Argument argument);
-  }
-
-  @FunctionalInterface
-  public interface OnOptionalMatch<T> {
-    T apply(PojoField field, Argument argument);
-  }
-
-  @FunctionalInterface
-  public interface OnNoMatch<T> {
-    T apply(PojoField field, Argument argument);
+  public Name builderSetMethodName(PojoSettings settings) {
+    return settings
+        .getBuilderSetMethodPrefix()
+        .map(prefix -> prefix.append(name.toPascalCase()))
+        .orElse(name);
   }
 }

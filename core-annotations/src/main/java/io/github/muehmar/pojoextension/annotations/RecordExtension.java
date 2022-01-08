@@ -18,6 +18,9 @@ public @interface RecordExtension {
    */
   String builderName() default "{CLASSNAME}Builder";
 
+  /** Prefix which is used for the setter methods of the builder. */
+  String builderSetMethodPrefix() default "";
+
   /**
    * Override the default name which is used for the extension interface. `{CLASSNAME}` gets
    * replaced by the classname of the annotated class.
@@ -33,8 +36,8 @@ public @interface RecordExtension {
   boolean enableWithers() default true;
 
   /**
-   * Enables or disables the generation of the convenience getters for optional fields with a default
-   * value if not present.
+   * Enables or disables the generation of the convenience getters for optional fields with a
+   * default value if not present.
    */
   boolean enableOptionalGetters() default true;
 

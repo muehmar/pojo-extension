@@ -12,7 +12,7 @@ class GenericClassTest {
     data.add("Hello World!");
 
     final GenericClass<Data, String> genericClass =
-        GenericClassBuilder.<Data, String>create().setProp1("prop1").setData(data).build();
+        GenericClassBuilder.<Data, String>create().prop1("prop1").data(data).build();
 
     assertEquals("Hello World!", genericClass.getData().get(0));
     assertEquals("prop1", genericClass.getProp1());
@@ -58,10 +58,10 @@ class GenericClassTest {
     final Data data = new Data();
     data.add("Hello World!");
     return GenericClassBuilder.<Data, String>create()
-        .setProp1("prop1")
-        .setData(data)
+        .prop1("prop1")
+        .data(data)
         .andAllOptionals()
-        .setAdditionalData("additionalData")
+        .additionalData("additionalData")
         .build();
   }
 }

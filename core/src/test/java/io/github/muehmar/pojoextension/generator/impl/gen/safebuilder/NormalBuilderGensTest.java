@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.Pojos;
+import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoAndField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
@@ -78,8 +79,24 @@ class NormalBuilderGensTest {
 
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
     assertEquals(
-        "private Builder setId(Integer id) {\n" + "  this.id = id;\n" + "  return this;\n" + "}",
+        "private Builder id(Integer id) {\n" + "  this.id = id;\n" + "  return this;\n" + "}",
         output);
+  }
+
+  @Test
+  void setMethod_when_builderSetMethodPrefix_then_correctSetMethod() {
+    final Generator<PojoAndField, PojoSettings> generator = NormalBuilderGens.setMethod();
+
+    final PojoAndField pojoAndField = new PojoAndField(Pojos.sample(), PojoFields.requiredId());
+    final PojoSettings settings =
+        PojoSettings.defaultSettings().withBuilderSetMethodPrefix(Name.fromString("set"));
+
+    final Writer writer = generator.generate(pojoAndField, settings, Writer.createDefault());
+
+    assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
+    assertEquals(
+        "private Builder setId(Integer id) {\n" + "  this.id = id;\n" + "  return this;\n" + "}",
+        writer.asString());
   }
 
   @Test
@@ -109,7 +126,7 @@ class NormalBuilderGensTest {
 
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
     assertEquals(
-        "public Builder setId(Integer id) {\n" + "  this.id = id;\n" + "  return this;\n" + "}",
+        "public Builder id(Integer id) {\n" + "  this.id = id;\n" + "  return this;\n" + "}",
         output);
   }
 
@@ -126,10 +143,7 @@ class NormalBuilderGensTest {
 
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
     assertEquals(
-        "public Builder<T, S> setId(Integer id) {\n"
-            + "  this.id = id;\n"
-            + "  return this;\n"
-            + "}",
+        "public Builder<T, S> id(Integer id) {\n" + "  this.id = id;\n" + "  return this;\n" + "}",
         output);
   }
 
@@ -142,6 +156,29 @@ class NormalBuilderGensTest {
 
     final Writer writer =
         generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
+
+    final String output = writer.asString();
+
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
+    assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
+    assertEquals(
+        "public Builder id(Optional<Integer> id) {\n"
+            + "  this.id = id.orElse(null);\n"
+            + "  return this;\n"
+            + "}",
+        output);
+  }
+
+  @Test
+  void setMethodOptional_when_builderSetMethodePrefix_then_correctPublicMethodGenerated() {
+    final Generator<PojoAndField, PojoSettings> generator = NormalBuilderGens.setMethodOptional();
+
+    final PojoAndField pojoAndField =
+        new PojoAndField(Pojos.sample(), PojoFields.requiredId().withNecessity(OPTIONAL));
+    final PojoSettings settings =
+        PojoSettings.defaultSettings().withBuilderSetMethodPrefix(Name.fromString("set"));
+
+    final Writer writer = generator.generate(pojoAndField, settings, Writer.createDefault());
 
     final String output = writer.asString();
 
@@ -186,7 +223,7 @@ class NormalBuilderGensTest {
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
     assertEquals(
-        "public Builder<T, S> setId(Optional<Integer> id) {\n"
+        "public Builder<T, S> id(Optional<Integer> id) {\n"
             + "  this.id = id.orElse(null);\n"
             + "  return this;\n"
             + "}",
@@ -210,22 +247,22 @@ class NormalBuilderGensTest {
             + "  private String username;\n"
             + "  private String nickname;\n"
             + "\n"
-            + "  private Builder setId(Integer id) {\n"
+            + "  private Builder id(Integer id) {\n"
             + "    this.id = id;\n"
             + "    return this;\n"
             + "  }\n"
             + "\n"
-            + "  private Builder setUsername(String username) {\n"
+            + "  private Builder username(String username) {\n"
             + "    this.username = username;\n"
             + "    return this;\n"
             + "  }\n"
             + "\n"
-            + "  public Builder setNickname(String nickname) {\n"
+            + "  public Builder nickname(String nickname) {\n"
             + "    this.nickname = nickname;\n"
             + "    return this;\n"
             + "  }\n"
             + "\n"
-            + "  public Builder setNickname(Optional<String> nickname) {\n"
+            + "  public Builder nickname(Optional<String> nickname) {\n"
             + "    this.nickname = nickname.orElse(null);\n"
             + "    return this;\n"
             + "  }\n"
@@ -254,22 +291,22 @@ class NormalBuilderGensTest {
             + "  private T data;\n"
             + "  private S additionalData;\n"
             + "\n"
-            + "  private Builder<T, S> setId(String id) {\n"
+            + "  private Builder<T, S> id(String id) {\n"
             + "    this.id = id;\n"
             + "    return this;\n"
             + "  }\n"
             + "\n"
-            + "  private Builder<T, S> setData(T data) {\n"
+            + "  private Builder<T, S> data(T data) {\n"
             + "    this.data = data;\n"
             + "    return this;\n"
             + "  }\n"
             + "\n"
-            + "  public Builder<T, S> setAdditionalData(S additionalData) {\n"
+            + "  public Builder<T, S> additionalData(S additionalData) {\n"
             + "    this.additionalData = additionalData;\n"
             + "    return this;\n"
             + "  }\n"
             + "\n"
-            + "  public Builder<T, S> setAdditionalData(Optional<S> additionalData) {\n"
+            + "  public Builder<T, S> additionalData(Optional<S> additionalData) {\n"
             + "    this.additionalData = additionalData.orElse(null);\n"
             + "    return this;\n"
             + "  }\n"

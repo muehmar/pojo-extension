@@ -79,7 +79,7 @@ public class NormalBuilderGens {
                     paf.getField().isRequired() ? JavaModifier.PRIVATE : JavaModifier.PUBLIC))
         .noGenericTypes()
         .returnType(paf -> BUILDER_CLASSNAME + paf.getPojo().getTypeVariablesSection())
-        .methodName(paf -> String.format("set%s", paf.getField().getName().toPascalCase()))
+        .methodName((paf, s) -> paf.getField().builderSetMethodName(s).asString())
         .singleArgument(
             paf ->
                 String.format(
@@ -101,7 +101,7 @@ public class NormalBuilderGens {
     return MethodGen.<PojoAndField, PojoSettings>modifiers(PUBLIC)
         .noGenericTypes()
         .returnType(paf -> BUILDER_CLASSNAME + paf.getPojo().getTypeVariablesSection())
-        .methodName(paf -> String.format("set%s", paf.getField().getName().toPascalCase()))
+        .methodName((paf, s) -> paf.getField().builderSetMethodName(s).asString())
         .singleArgument(
             paf ->
                 String.format(

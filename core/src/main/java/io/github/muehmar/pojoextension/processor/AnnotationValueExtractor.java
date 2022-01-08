@@ -45,6 +45,11 @@ public class AnnotationValueExtractor {
     return getValue(annotationMirror, new ExtensionValue<>("builderName", String.class::cast));
   }
 
+  public static Optional<String> getBuilderSetMethodPrefix(AnnotationMirror annotationMirror) {
+    return getValue(
+        annotationMirror, new ExtensionValue<>("builderSetMethodPrefix", String.class::cast));
+  }
+
   public static Optional<String> getBaseClassName(AnnotationMirror annotationMirror) {
     return getValue(annotationMirror, new ExtensionValue<>("baseClassName", String.class::cast));
   }

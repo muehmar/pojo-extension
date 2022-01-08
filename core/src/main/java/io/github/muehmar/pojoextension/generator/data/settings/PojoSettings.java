@@ -2,6 +2,7 @@ package io.github.muehmar.pojoextension.generator.data.settings;
 
 import static io.github.muehmar.pojoextension.generator.data.settings.Ability.ENABLED;
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.INHERITED;
+import static java.util.Optional.empty;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
@@ -21,6 +22,7 @@ public class PojoSettings extends PojoSettingsBase {
   private final ExtensionUsage extensionUsage;
   private final Optional<Name> extensionName;
   private final Optional<Name> builderName;
+  private final Optional<Name> builderSetMethodPrefix;
   private final Optional<Name> baseClassName;
   private final Ability safeBuilderAbility;
   private final Ability equalsHashCodeAbility;
@@ -36,6 +38,7 @@ public class PojoSettings extends PojoSettingsBase {
       ExtensionUsage extensionUsage,
       Optional<Name> extensionName,
       Optional<Name> builderName,
+      Optional<Name> builderSetMethodPrefix,
       Optional<Name> baseClassName,
       Ability safeBuilderAbility,
       Ability equalsHashCodeAbility,
@@ -48,6 +51,7 @@ public class PojoSettings extends PojoSettingsBase {
     this.extensionUsage = extensionUsage;
     this.extensionName = extensionName;
     this.builderName = builderName;
+    this.builderSetMethodPrefix = builderSetMethodPrefix;
     this.baseClassName = baseClassName;
     this.safeBuilderAbility = safeBuilderAbility;
     this.equalsHashCodeAbility = equalsHashCodeAbility;
@@ -73,6 +77,7 @@ public class PojoSettings extends PojoSettingsBase {
         .andAllOptionals()
         .setExtensionName(Optional.of(CLASS_NAME_PLACEHOLDER.append(EXTENSION_IFC_POSTFIX)))
         .setBuilderName(Optional.of(CLASS_NAME_PLACEHOLDER.append(BUILDER_CLASS_POSTFIX)))
+        .setBuilderSetMethodPrefix(empty())
         .setBaseClassName(Optional.of(CLASS_NAME_PLACEHOLDER.append(BASE_CLASS_POSTFIX)))
         .build();
   }
@@ -91,6 +96,10 @@ public class PojoSettings extends PojoSettingsBase {
 
   public Optional<Name> getBuilderName() {
     return builderName;
+  }
+
+  public Optional<Name> getBuilderSetMethodPrefix() {
+    return builderSetMethodPrefix;
   }
 
   public Optional<Name> getBaseClassName() {

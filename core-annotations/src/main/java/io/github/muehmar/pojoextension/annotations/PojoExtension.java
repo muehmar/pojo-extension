@@ -30,6 +30,9 @@ public @interface PojoExtension {
    */
   String builderName() default "{CLASSNAME}Builder";
 
+  /** Prefix which is used for the setter methods of the builder. */
+  String builderSetMethodPrefix() default "";
+
   /**
    * Enables or disables the generation of the equals and hashCode methods. As equals and hashCode
    * methods are not allowed as default methods in interfaces, the methods with the name {@code
@@ -63,8 +66,8 @@ public @interface PojoExtension {
   boolean enableWithers() default true;
 
   /**
-   * Enables or disables the generation of the convenience getters for optional fields with a default
-   * value if not present.
+   * Enables or disables the generation of the convenience getters for optional fields with a
+   * default value if not present.
    */
   boolean enableOptionalGetters() default true;
 

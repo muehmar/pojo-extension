@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.Pojos;
+import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
@@ -40,8 +41,8 @@ class SafeBuilderGensTest {
             + "    this.builder = builder;\n"
             + "  }\n"
             + "\n"
-            + "  public Builder3 setId(Integer id) {\n"
-            + "    return new Builder3(builder.setId(id));\n"
+            + "  public Builder3 id(Integer id) {\n"
+            + "    return new Builder3(builder.id(id));\n"
             + "  }\n"
             + "}",
         output);
@@ -67,12 +68,12 @@ class SafeBuilderGensTest {
             + "    this.builder = builder;\n"
             + "  }\n"
             + "\n"
-            + "  public OptBuilder3 setId(Integer id) {\n"
-            + "    return new OptBuilder3(builder.setId(id));\n"
+            + "  public OptBuilder3 id(Integer id) {\n"
+            + "    return new OptBuilder3(builder.id(id));\n"
             + "  }\n"
             + "\n"
-            + "  public OptBuilder3 setId(Optional<Integer> id) {\n"
-            + "    return new OptBuilder3(id.map(builder::setId).orElse(builder));\n"
+            + "  public OptBuilder3 id(Optional<Integer> id) {\n"
+            + "    return new OptBuilder3(id.map(builder::id).orElse(builder));\n"
             + "  }\n"
             + "}",
         output);
@@ -95,8 +96,8 @@ class SafeBuilderGensTest {
             + "    this.builder = builder;\n"
             + "  }\n"
             + "\n"
-            + "  public Builder3<T, S> setId(Integer id) {\n"
-            + "    return new Builder3<>(builder.setId(id));\n"
+            + "  public Builder3<T, S> id(Integer id) {\n"
+            + "    return new Builder3<>(builder.id(id));\n"
             + "  }\n"
             + "}",
         writer.asString());
@@ -123,12 +124,12 @@ class SafeBuilderGensTest {
             + "    this.builder = builder;\n"
             + "  }\n"
             + "\n"
-            + "  public OptBuilder3<T, S> setId(Integer id) {\n"
-            + "    return new OptBuilder3<>(builder.setId(id));\n"
+            + "  public OptBuilder3<T, S> id(Integer id) {\n"
+            + "    return new OptBuilder3<>(builder.id(id));\n"
             + "  }\n"
             + "\n"
-            + "  public OptBuilder3<T, S> setId(Optional<Integer> id) {\n"
-            + "    return new OptBuilder3<>(id.map(builder::setId).orElse(builder));\n"
+            + "  public OptBuilder3<T, S> id(Optional<Integer> id) {\n"
+            + "    return new OptBuilder3<>(id.map(builder::id).orElse(builder));\n"
             + "  }\n"
             + "}",
         writer.asString());
@@ -155,8 +156,8 @@ class SafeBuilderGensTest {
             + "  this.builder = builder;\n"
             + "}\n"
             + "\n"
-            + "public Builder3 setId(Integer id) {\n"
-            + "  return new Builder3(builder.setId(id));\n"
+            + "public Builder3 id(Integer id) {\n"
+            + "  return new Builder3(builder.id(id));\n"
             + "}",
         output);
   }
@@ -180,12 +181,12 @@ class SafeBuilderGensTest {
             + "  this.builder = builder;\n"
             + "}\n"
             + "\n"
-            + "public OptBuilder3<T, S> setId(Integer id) {\n"
-            + "  return new OptBuilder3<>(builder.setId(id));\n"
+            + "public OptBuilder3<T, S> id(Integer id) {\n"
+            + "  return new OptBuilder3<>(builder.id(id));\n"
             + "}\n"
             + "\n"
-            + "public OptBuilder3<T, S> setId(Optional<Integer> id) {\n"
-            + "  return new OptBuilder3<>(id.map(builder::setId).orElse(builder));\n"
+            + "public OptBuilder3<T, S> id(Optional<Integer> id) {\n"
+            + "  return new OptBuilder3<>(id.map(builder::id).orElse(builder));\n"
             + "}",
         output);
   }
@@ -208,8 +209,8 @@ class SafeBuilderGensTest {
             + "  this.builder = builder;\n"
             + "}\n"
             + "\n"
-            + "public Builder3<T, S> setId(Integer id) {\n"
-            + "  return new Builder3<>(builder.setId(id));\n"
+            + "public Builder3<T, S> id(Integer id) {\n"
+            + "  return new Builder3<>(builder.id(id));\n"
             + "}",
         output);
   }
@@ -387,7 +388,7 @@ class SafeBuilderGensTest {
   }
 
   @Test
-  void setMethod_when_generatorUsedWithOptionalField_then_correctClassOutput() {
+  void setMethod_when_generatorUsedWithOptionalField_then_correctOutput() {
     final Generator<SafeBuilderPojoField, PojoSettings> generator = SafeBuilderGens.setMethod();
     final SafeBuilderPojoField field =
         new SafeBuilderPojoField(
@@ -398,14 +399,14 @@ class SafeBuilderGensTest {
 
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
     assertEquals(
-        "public OptBuilder3 setId(Integer id) {\n"
-            + "  return new OptBuilder3(builder.setId(id));\n"
+        "public OptBuilder3 id(Integer id) {\n"
+            + "  return new OptBuilder3(builder.id(id));\n"
             + "}",
         output);
   }
 
   @Test
-  void setMethod_when_generatorUsedWithRequiredField_then_correctClassOutput() {
+  void setMethod_when_generatorUsedWithRequiredField_then_correctOutput() {
     final Generator<SafeBuilderPojoField, PojoSettings> generator = SafeBuilderGens.setMethod();
     final SafeBuilderPojoField field =
         new SafeBuilderPojoField(Pojos.sample(), PojoFields.requiredId(), 2);
@@ -415,14 +416,12 @@ class SafeBuilderGensTest {
 
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
     assertEquals(
-        "public Builder3 setId(Integer id) {\n"
-            + "  return new Builder3(builder.setId(id));\n"
-            + "}",
+        "public Builder3 id(Integer id) {\n" + "  return new Builder3(builder.id(id));\n" + "}",
         output);
   }
 
   @Test
-  void setMethod_when_genericSampleWithOptionalField_then_correctClassOutput() {
+  void setMethod_when_genericSampleWithOptionalField_then_correctOutput() {
     final Generator<SafeBuilderPojoField, PojoSettings> generator = SafeBuilderGens.setMethod();
     final SafeBuilderPojoField field =
         new SafeBuilderPojoField(
@@ -433,19 +432,38 @@ class SafeBuilderGensTest {
 
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
     assertEquals(
-        "public OptBuilder3<T, S> setId(Integer id) {\n"
-            + "  return new OptBuilder3<>(builder.setId(id));\n"
+        "public OptBuilder3<T, S> id(Integer id) {\n"
+            + "  return new OptBuilder3<>(builder.id(id));\n"
             + "}",
         output);
   }
 
   @Test
-  void setMethod_when_genericSampleWithRequiredField_then_correctClassOutput() {
+  void setMethod_when_genericSampleWithRequiredField_then_correctOutput() {
     final Generator<SafeBuilderPojoField, PojoSettings> generator = SafeBuilderGens.setMethod();
     final SafeBuilderPojoField field =
         new SafeBuilderPojoField(Pojos.genericSample(), PojoFields.requiredId(), 2);
     final Writer writer =
         generator.generate(field, PojoSettings.defaultSettings(), Writer.createDefault());
+    final String output = writer.asString();
+
+    assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
+    assertEquals(
+        "public Builder3<T, S> id(Integer id) {\n"
+            + "  return new Builder3<>(builder.id(id));\n"
+            + "}",
+        output);
+  }
+
+  @Test
+  void setMethod_when_builderSetMethodPrefix_then_correctOutput() {
+    final Generator<SafeBuilderPojoField, PojoSettings> generator = SafeBuilderGens.setMethod();
+    final SafeBuilderPojoField field =
+        new SafeBuilderPojoField(Pojos.genericSample(), PojoFields.requiredId(), 2);
+    final PojoSettings settings =
+        PojoSettings.defaultSettings().withBuilderSetMethodPrefix(Name.fromString("set"));
+
+    final Writer writer = generator.generate(field, settings, Writer.createDefault());
     final String output = writer.asString();
 
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
@@ -470,7 +488,7 @@ class SafeBuilderGensTest {
   }
 
   @Test
-  void setMethodOptional_when_generatorUsedWithOptionalField_then_correctClassOutput() {
+  void setMethodOptional_when_generatorUsedWithOptionalField_then_correctOutput() {
     final Generator<SafeBuilderPojoField, PojoSettings> generator =
         SafeBuilderGens.setMethodOptional();
     final SafeBuilderPojoField field =
@@ -478,7 +496,27 @@ class SafeBuilderGensTest {
             Pojos.sample(), PojoFields.requiredId().withNecessity(OPTIONAL), 2);
     final Writer writer =
         generator.generate(field, PojoSettings.defaultSettings(), Writer.createDefault());
-    final String output = writer.asString();
+
+    assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
+    assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
+    assertEquals(
+        "public OptBuilder3 id(Optional<Integer> id) {\n"
+            + "  return new OptBuilder3(id.map(builder::id).orElse(builder));\n"
+            + "}",
+        writer.asString());
+  }
+
+  @Test
+  void setMethodOptional_when_builderSetMethodPrefix_then_correctOutput() {
+    final Generator<SafeBuilderPojoField, PojoSettings> generator =
+        SafeBuilderGens.setMethodOptional();
+    final SafeBuilderPojoField field =
+        new SafeBuilderPojoField(
+            Pojos.sample(), PojoFields.requiredId().withNecessity(OPTIONAL), 2);
+    final PojoSettings settings =
+        PojoSettings.defaultSettings().withBuilderSetMethodPrefix(Name.fromString("set"));
+
+    final Writer writer = generator.generate(field, settings, Writer.createDefault());
 
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
@@ -486,11 +524,11 @@ class SafeBuilderGensTest {
         "public OptBuilder3 setId(Optional<Integer> id) {\n"
             + "  return new OptBuilder3(id.map(builder::setId).orElse(builder));\n"
             + "}",
-        output);
+        writer.asString());
   }
 
   @Test
-  void setMethodOptional_when_genericSampleWithOptionalField_then_correctClassOutput() {
+  void setMethodOptional_when_genericSampleWithOptionalField_then_correctOutput() {
     final Generator<SafeBuilderPojoField, PojoSettings> generator =
         SafeBuilderGens.setMethodOptional();
     final SafeBuilderPojoField field =
@@ -503,8 +541,8 @@ class SafeBuilderGensTest {
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
     assertEquals(
-        "public OptBuilder3<T, S> setId(Optional<Integer> id) {\n"
-            + "  return new OptBuilder3<>(id.map(builder::setId).orElse(builder));\n"
+        "public OptBuilder3<T, S> id(Optional<Integer> id) {\n"
+            + "  return new OptBuilder3<>(id.map(builder::id).orElse(builder));\n"
             + "}",
         output);
   }

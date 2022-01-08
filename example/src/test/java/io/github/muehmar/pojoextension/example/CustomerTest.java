@@ -86,8 +86,8 @@ class CustomerTest {
   void newBuilder_when_calledForAddress_then_correctInstanceCreated() {
     final Customer.Address address =
         CustomerAddressBuilder.create()
-            .setStreet("Waldweg 10")
-            .setCity("Winterthur")
+            .street("Waldweg 10")
+            .city("Winterthur")
             .andAllOptionals()
             .build();
 

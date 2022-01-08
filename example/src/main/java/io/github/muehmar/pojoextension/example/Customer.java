@@ -5,7 +5,7 @@ import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.Optional;
 
-@PojoExtension
+@PojoExtension(builderSetMethodPrefix = "set")
 @SuppressWarnings("java:S2160") // Not overriding equals and hashCode is fine
 public class Customer extends CustomerBase {
   private final String id;

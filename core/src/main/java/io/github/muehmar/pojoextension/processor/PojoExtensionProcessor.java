@@ -7,6 +7,7 @@ import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionU
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.STATIC;
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getBaseClassName;
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getBuilderName;
+import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getBuilderSetMethodPrefix;
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableBaseClass;
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableEqualsAndHashCode;
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableMappers;
@@ -222,11 +223,23 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     return currentSettings
         .mapIfPresent(getOptionalDetection(annotation), PojoSettings::withOptionalDetections)
         .mapIfPresent(
-            getExtensionName(annotation).filter(s -> s.length() > 0).map(Name::fromString),
+            getExtensionName(annotation)
+                .map(String::trim)
+                .filter(s -> s.length() > 0)
+                .map(Name::fromString),
             PojoSettings::withExtensionName)
         .mapIfPresent(
-            getBuilderName(annotation).filter(s -> s.length() > 0).map(Name::fromString),
+            getBuilderName(annotation)
+                .map(String::trim)
+                .filter(s -> s.length() > 0)
+                .map(Name::fromString),
             PojoSettingsExtension::withBuilderName)
+        .mapIfPresent(
+            getBuilderSetMethodPrefix(annotation)
+                .map(String::trim)
+                .filter(s -> s.length() > 0)
+                .map(Name::fromString),
+            PojoSettingsExtension::withBuilderSetMethodPrefix)
         .mapIfPresent(
             getEnableSafeBuilder(annotation).map(Ability::fromBoolean),
             PojoSettings::withSafeBuilderAbility)

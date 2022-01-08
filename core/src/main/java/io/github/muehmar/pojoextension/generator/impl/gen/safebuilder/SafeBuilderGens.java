@@ -112,13 +112,13 @@ public class SafeBuilderGens {
     final Generator<SafeBuilderPojoField, PojoSettings> content =
         (f, s, w) ->
             w.println(
-                "return new %s(builder.set%s(%s));",
-                nextClassDiamond(f), f.getField().getName().toPascalCase(), f.getField().getName());
+                "return new %s(builder.%s(%s));",
+                nextClassDiamond(f), f.getField().builderSetMethodName(s), f.getField().getName());
 
     return MethodGen.<SafeBuilderPojoField, PojoSettings>modifiers(PUBLIC)
         .noGenericTypes()
         .returnType(SafeBuilderGens::nextClassTypeVariables)
-        .methodName(f -> String.format("set%s", f.getField().getName().toPascalCase()))
+        .methodName((f, s) -> f.getField().builderSetMethodName(s).asString())
         .singleArgument(
             f ->
                 String.format(
@@ -131,13 +131,13 @@ public class SafeBuilderGens {
     final Generator<SafeBuilderPojoField, PojoSettings> content =
         (f, s, w) ->
             w.println(
-                "return new %s(%s.map(builder::set%s).orElse(builder));",
-                nextClassDiamond(f), f.getField().getName(), f.getField().getName().toPascalCase());
+                "return new %s(%s.map(builder::%s).orElse(builder));",
+                nextClassDiamond(f), f.getField().getName(), f.getField().builderSetMethodName(s));
 
     return MethodGen.<SafeBuilderPojoField, PojoSettings>modifiers(PUBLIC)
         .noGenericTypes()
         .returnType(SafeBuilderGens::nextClassTypeVariables)
-        .methodName(f -> String.format("set%s", f.getField().getName().toPascalCase()))
+        .methodName((f, s) -> f.getField().builderSetMethodName(s).asString())
         .singleArgument(
             f ->
                 String.format(

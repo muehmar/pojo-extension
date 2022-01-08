@@ -11,9 +11,9 @@ class AllRequiredClassTest {
   void newBuilder_when_used_then_noOptionalFieldsPresent() {
     final AllRequiredClass allRequiredClass =
         AllRequiredClassBuilder.create()
-            .setId("id")
-            .setFlag(Optional.of(true))
-            .setAge(30)
+            .id("id")
+            .flag(Optional.of(true))
+            .age(30)
             .andAllOptionals()
             .build();
 

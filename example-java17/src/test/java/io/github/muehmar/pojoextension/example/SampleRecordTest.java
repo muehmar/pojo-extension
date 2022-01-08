@@ -10,10 +10,10 @@ class SampleRecordTest {
   void create_when_populateBuilder_then_correctInstanceCreated() {
     final SampleRecord sampleRecord =
         SampleRecordBuilder.create()
-            .setId(12L)
-            .setName("name")
+            .id(12L)
+            .name("name")
             .andAllOptionals()
-            .setData("Hello World!")
+            .data("Hello World!")
             .build();
 
     assertEquals(12L, sampleRecord.id());

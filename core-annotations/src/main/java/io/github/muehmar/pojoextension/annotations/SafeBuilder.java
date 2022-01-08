@@ -24,4 +24,7 @@ public @interface SafeBuilder {
    * the classname of the annotated class.
    */
   String builderName() default "{CLASSNAME}Builder";
+
+  /** Prefix which is used for the setter methods of the builder. */
+  String builderSetMethodPrefix() default "";
 }
