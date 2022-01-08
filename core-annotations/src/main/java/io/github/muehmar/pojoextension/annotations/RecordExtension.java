@@ -32,6 +32,12 @@ public @interface RecordExtension {
   /** Enables or disables the generation of the with methods. */
   boolean enableWithers() default true;
 
+  /**
+   * Enables or disables the generation of the convenience getters for optional fields with a default
+   * value if not present.
+   */
+  boolean enableOptionalGetters() default true;
+
   /** Enables or disables the generation of the map methods. */
   boolean enableMappers() default true;
 }

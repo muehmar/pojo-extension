@@ -3,6 +3,7 @@ package io.github.muehmar.pojoextension.generator.data;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 
 @PojoExtension
+@SuppressWarnings("java:S2160")
 public class PojoAndField extends PojoAndFieldBase {
   private final Pojo pojo;
   private final PojoField field;
@@ -22,5 +23,9 @@ public class PojoAndField extends PojoAndFieldBase {
 
   public PojoField getField() {
     return field;
+  }
+
+  public FieldGetter getMatchingGetterOrThrow() {
+    return pojo.getMatchingGetterOrThrow(field);
   }
 }

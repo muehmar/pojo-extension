@@ -10,6 +10,7 @@ import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableBaseClass;
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableEqualsAndHashCode;
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableMappers;
+import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableOptionalGetters;
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableSafeBuilder;
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableToString;
 import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableWithers;
@@ -238,6 +239,9 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .mapIfPresent(
             getEnableWithers(annotation).map(Ability::fromBoolean),
             PojoSettings::withWithersAbility)
+        .mapIfPresent(
+            getEnableOptionalGetters(annotation).map(Ability::fromBoolean),
+            PojoSettings::withOptionalGettersAbility)
         .mapIfPresent(
             getEnableMappers(annotation).map(Ability::fromBoolean),
             PojoSettings::withMappersAbility)

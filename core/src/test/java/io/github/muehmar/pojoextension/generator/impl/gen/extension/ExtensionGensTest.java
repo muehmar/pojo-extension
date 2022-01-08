@@ -51,6 +51,7 @@ class ExtensionGensTest {
                     .withToStringAbility(DISABLED)
                     .withSafeBuilderAbility(DISABLED)
                     .withWithersAbility(DISABLED)
+                    .withOptionalGettersAbility(DISABLED)
                     .withMappersAbility(DISABLED),
                 Writer.createDefault())
             .asString();

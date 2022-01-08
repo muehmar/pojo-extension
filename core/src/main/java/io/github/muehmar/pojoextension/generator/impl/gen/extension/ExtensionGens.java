@@ -14,6 +14,7 @@ import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.EqualsGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.HashCodeGens;
+import io.github.muehmar.pojoextension.generator.impl.gen.getter.GetterGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.map.MapGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.tostring.ToStringGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.WithGens;
@@ -47,6 +48,8 @@ public class ExtensionGens {
         .appendList(getterMethod().appendNewLine(), toFieldGetter)
         .appendList(WithGens.withMethod().appendNewLine(), Pojo::getPojoAndFields)
         .appendList(WithGens.optionalWithMethod().append(optionalNewLine), Pojo::getPojoAndFields)
+        .appendList(
+            GetterGens.optionalGetterMethod().append(optionalNewLine), Pojo::getPojoAndFields)
         .append(MapGens.mapMethod())
         .appendNewLine()
         .append(MapGens.mapIfMethod())

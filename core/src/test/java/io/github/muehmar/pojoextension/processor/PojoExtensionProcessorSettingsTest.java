@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.processor;
 
+import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.bluecare.commons.data.PList;
@@ -7,7 +8,6 @@ import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.annotations.SafeBuilder;
 import io.github.muehmar.pojoextension.generator.data.Name;
-import io.github.muehmar.pojoextension.generator.data.settings.Ability;
 import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import java.util.ArrayList;
@@ -106,7 +106,7 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
     assertEquals(
         PojoSettings.defaultSettings()
             .withExtensionUsage(ExtensionUsage.STATIC)
-            .withSafeBuilderAbility(Ability.DISABLED),
+            .withSafeBuilderAbility(DISABLED),
         pojoAndSettings.getSettings());
   }
 
@@ -127,7 +127,7 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
     assertEquals(
         PojoSettings.defaultSettings()
             .withExtensionUsage(ExtensionUsage.STATIC)
-            .withEqualsHashCodeAbility(Ability.DISABLED),
+            .withEqualsHashCodeAbility(DISABLED),
         pojoAndSettings.getSettings());
   }
 
@@ -148,7 +148,7 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
     assertEquals(
         PojoSettings.defaultSettings()
             .withExtensionUsage(ExtensionUsage.STATIC)
-            .withToStringAbility(Ability.DISABLED),
+            .withToStringAbility(DISABLED),
         pojoAndSettings.getSettings());
   }
 
@@ -169,7 +169,7 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
     assertEquals(
         PojoSettings.defaultSettings()
             .withExtensionUsage(ExtensionUsage.STATIC)
-            .withWithersAbility(Ability.DISABLED),
+            .withWithersAbility(DISABLED),
         pojoAndSettings.getSettings());
   }
 
@@ -190,7 +190,7 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
     assertEquals(
         PojoSettings.defaultSettings()
             .withExtensionUsage(ExtensionUsage.STATIC)
-            .withMappersAbility(Ability.DISABLED),
+            .withMappersAbility(DISABLED),
         pojoAndSettings.getSettings());
   }
 
@@ -211,7 +211,7 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
     assertEquals(
         PojoSettings.defaultSettings()
             .withExtensionUsage(ExtensionUsage.STATIC)
-            .withBaseClassAbility(Ability.DISABLED),
+            .withBaseClassAbility(DISABLED),
         pojoAndSettings.getSettings());
   }
 
@@ -320,10 +320,11 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
     assertEquals(
         PojoSettings.defaultSettings()
             .withExtensionUsage(ExtensionUsage.STATIC)
-            .withWithersAbility(Ability.DISABLED)
-            .withEqualsHashCodeAbility(Ability.DISABLED)
-            .withToStringAbility(Ability.DISABLED)
-            .withMappersAbility(Ability.DISABLED),
+            .withWithersAbility(DISABLED)
+            .withOptionalGettersAbility(DISABLED)
+            .withEqualsHashCodeAbility(DISABLED)
+            .withToStringAbility(DISABLED)
+            .withMappersAbility(DISABLED),
         pojoAndSettings.getSettings());
   }
 
@@ -344,10 +345,11 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
     assertEquals(
         PojoSettings.defaultSettings()
             .withExtensionUsage(ExtensionUsage.STATIC)
-            .withWithersAbility(Ability.DISABLED)
-            .withEqualsHashCodeAbility(Ability.DISABLED)
-            .withToStringAbility(Ability.DISABLED)
-            .withMappersAbility(Ability.DISABLED)
+            .withWithersAbility(DISABLED)
+            .withOptionalGettersAbility(DISABLED)
+            .withEqualsHashCodeAbility(DISABLED)
+            .withToStringAbility(DISABLED)
+            .withMappersAbility(DISABLED)
             .withBuilderName(Name.fromString("SafeBuilder")),
         pojoAndSettings.getSettings());
   }

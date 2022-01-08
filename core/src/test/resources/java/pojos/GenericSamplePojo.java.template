@@ -31,6 +31,10 @@ public interface CustomerExtension<T extends List<String>, S> {
     return new Customer<>(getId(), getData(), additionalData.orElse(null));
   }
 
+  default S getAdditionalDataOr(S additionalData) {
+    return getAdditionalData().orElse(additionalData);
+  }
+
   default <A> A map(Function<Customer<T, S>, A> f) {
     final Customer<T, S> self =
       new Customer<>(getId(), getData(), getAdditionalData().orElse(null));

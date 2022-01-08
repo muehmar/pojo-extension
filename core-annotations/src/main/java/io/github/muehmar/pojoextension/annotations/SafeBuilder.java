@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 @PojoExtension(
     enableWithers = false,
+    enableOptionalGetters = false,
     enableMappers = false,
     enableToString = false,
     enableEqualsAndHashCode = false)

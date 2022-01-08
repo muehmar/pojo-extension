@@ -30,6 +30,10 @@ public interface CustomerExtension {
     return new Customer(getId(), getUsername(), nickname.orElse(null));
   }
 
+  default String getNicknameOr(String nickname) {
+    return getNickname().orElse(nickname);
+  }
+
   default <T> T map(Function<Customer, T> f) {
     final Customer self =
       new Customer(getId(), getUsername(), getNickname().orElse(null));

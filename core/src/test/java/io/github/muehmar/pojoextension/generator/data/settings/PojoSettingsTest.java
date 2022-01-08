@@ -1,5 +1,7 @@
 package io.github.muehmar.pojoextension.generator.data.settings;
 
+import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
+import static io.github.muehmar.pojoextension.generator.data.settings.Ability.ENABLED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -151,11 +153,12 @@ class PojoSettingsTest {
   void createExtension_when_everythingDisabled_then_false() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withSafeBuilderAbility(Ability.DISABLED)
-            .withEqualsHashCodeAbility(Ability.DISABLED)
-            .withToStringAbility(Ability.DISABLED)
-            .withMappersAbility(Ability.DISABLED)
-            .withWithersAbility(Ability.DISABLED);
+            .withSafeBuilderAbility(DISABLED)
+            .withEqualsHashCodeAbility(DISABLED)
+            .withToStringAbility(DISABLED)
+            .withMappersAbility(DISABLED)
+            .withOptionalGettersAbility(DISABLED)
+            .withWithersAbility(DISABLED);
     assertFalse(settings.createExtension());
   }
 
@@ -163,11 +166,12 @@ class PojoSettingsTest {
   void createExtension_when_everythingExceptEqualsAndHashCodeDisabled_then_true() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withSafeBuilderAbility(Ability.DISABLED)
-            .withEqualsHashCodeAbility(Ability.ENABLED)
-            .withToStringAbility(Ability.DISABLED)
-            .withMappersAbility(Ability.DISABLED)
-            .withWithersAbility(Ability.DISABLED);
+            .withSafeBuilderAbility(DISABLED)
+            .withEqualsHashCodeAbility(ENABLED)
+            .withToStringAbility(DISABLED)
+            .withMappersAbility(DISABLED)
+            .withOptionalGettersAbility(DISABLED)
+            .withWithersAbility(DISABLED);
     assertTrue(settings.createExtension());
   }
 
@@ -175,11 +179,12 @@ class PojoSettingsTest {
   void createExtension_when_everythingExceptToStringDisabled_then_true() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withSafeBuilderAbility(Ability.DISABLED)
-            .withEqualsHashCodeAbility(Ability.DISABLED)
-            .withToStringAbility(Ability.ENABLED)
-            .withMappersAbility(Ability.DISABLED)
-            .withWithersAbility(Ability.DISABLED);
+            .withSafeBuilderAbility(DISABLED)
+            .withEqualsHashCodeAbility(DISABLED)
+            .withToStringAbility(ENABLED)
+            .withMappersAbility(DISABLED)
+            .withOptionalGettersAbility(DISABLED)
+            .withWithersAbility(DISABLED);
     assertTrue(settings.createExtension());
   }
 
@@ -187,11 +192,25 @@ class PojoSettingsTest {
   void createExtension_when_everythingExceptMappersDisabled_then_true() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withSafeBuilderAbility(Ability.DISABLED)
-            .withEqualsHashCodeAbility(Ability.DISABLED)
-            .withToStringAbility(Ability.DISABLED)
-            .withMappersAbility(Ability.ENABLED)
-            .withWithersAbility(Ability.DISABLED);
+            .withSafeBuilderAbility(DISABLED)
+            .withEqualsHashCodeAbility(DISABLED)
+            .withToStringAbility(DISABLED)
+            .withMappersAbility(ENABLED)
+            .withOptionalGettersAbility(DISABLED)
+            .withWithersAbility(DISABLED);
+    assertTrue(settings.createExtension());
+  }
+
+  @Test
+  void createExtension_when_everythingExceptOptionalGettersDisabled_then_true() {
+    final PojoSettings settings =
+        PojoSettings.defaultSettings()
+            .withSafeBuilderAbility(DISABLED)
+            .withEqualsHashCodeAbility(DISABLED)
+            .withToStringAbility(DISABLED)
+            .withMappersAbility(DISABLED)
+            .withOptionalGettersAbility(ENABLED)
+            .withWithersAbility(DISABLED);
     assertTrue(settings.createExtension());
   }
 
@@ -199,11 +218,12 @@ class PojoSettingsTest {
   void createExtension_when_everythingExceptWithersDisabled_then_true() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withSafeBuilderAbility(Ability.DISABLED)
-            .withEqualsHashCodeAbility(Ability.DISABLED)
-            .withToStringAbility(Ability.DISABLED)
-            .withMappersAbility(Ability.DISABLED)
-            .withWithersAbility(Ability.ENABLED);
+            .withSafeBuilderAbility(DISABLED)
+            .withEqualsHashCodeAbility(DISABLED)
+            .withToStringAbility(DISABLED)
+            .withMappersAbility(DISABLED)
+            .withOptionalGettersAbility(DISABLED)
+            .withWithersAbility(ENABLED);
     assertTrue(settings.createExtension());
   }
 
@@ -211,12 +231,12 @@ class PojoSettingsTest {
   void createBaseClass_when_everythingDisabled_then_false() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withSafeBuilderAbility(Ability.DISABLED)
-            .withEqualsHashCodeAbility(Ability.DISABLED)
-            .withToStringAbility(Ability.DISABLED)
-            .withMappersAbility(Ability.DISABLED)
-            .withWithersAbility(Ability.DISABLED)
-            .withBaseClassAbility(Ability.DISABLED);
+            .withSafeBuilderAbility(DISABLED)
+            .withEqualsHashCodeAbility(DISABLED)
+            .withToStringAbility(DISABLED)
+            .withMappersAbility(DISABLED)
+            .withWithersAbility(DISABLED)
+            .withBaseClassAbility(DISABLED);
     assertFalse(settings.createBaseClass());
   }
 
@@ -224,12 +244,12 @@ class PojoSettingsTest {
   void createBaseClass_when_baseClassEnabledButNoEqualsHashCodeOrToString_then_false() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withSafeBuilderAbility(Ability.DISABLED)
-            .withEqualsHashCodeAbility(Ability.DISABLED)
-            .withToStringAbility(Ability.DISABLED)
-            .withMappersAbility(Ability.DISABLED)
-            .withWithersAbility(Ability.DISABLED)
-            .withBaseClassAbility(Ability.ENABLED);
+            .withSafeBuilderAbility(DISABLED)
+            .withEqualsHashCodeAbility(DISABLED)
+            .withToStringAbility(DISABLED)
+            .withMappersAbility(DISABLED)
+            .withWithersAbility(DISABLED)
+            .withBaseClassAbility(ENABLED);
     assertFalse(settings.createBaseClass());
   }
 
@@ -237,12 +257,12 @@ class PojoSettingsTest {
   void createBaseClass_when_baseClassEnabledAndEqualsHashCode_then_true() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withSafeBuilderAbility(Ability.DISABLED)
-            .withEqualsHashCodeAbility(Ability.ENABLED)
-            .withToStringAbility(Ability.DISABLED)
-            .withMappersAbility(Ability.DISABLED)
-            .withWithersAbility(Ability.DISABLED)
-            .withBaseClassAbility(Ability.ENABLED);
+            .withSafeBuilderAbility(DISABLED)
+            .withEqualsHashCodeAbility(ENABLED)
+            .withToStringAbility(DISABLED)
+            .withMappersAbility(DISABLED)
+            .withWithersAbility(DISABLED)
+            .withBaseClassAbility(ENABLED);
     assertTrue(settings.createBaseClass());
   }
 
@@ -250,12 +270,12 @@ class PojoSettingsTest {
   void createBaseClass_when_baseClassEnabledAndToString_then_true() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withSafeBuilderAbility(Ability.DISABLED)
-            .withEqualsHashCodeAbility(Ability.DISABLED)
-            .withToStringAbility(Ability.ENABLED)
-            .withMappersAbility(Ability.DISABLED)
-            .withWithersAbility(Ability.DISABLED)
-            .withBaseClassAbility(Ability.ENABLED);
+            .withSafeBuilderAbility(DISABLED)
+            .withEqualsHashCodeAbility(DISABLED)
+            .withToStringAbility(ENABLED)
+            .withMappersAbility(DISABLED)
+            .withWithersAbility(DISABLED)
+            .withBaseClassAbility(ENABLED);
     assertTrue(settings.createBaseClass());
   }
 
@@ -263,12 +283,12 @@ class PojoSettingsTest {
   void createBaseClass_when_equalsHashCodeAndToStringEnabledButBaseClassDisabled_then_false() {
     final PojoSettings settings =
         PojoSettings.defaultSettings()
-            .withSafeBuilderAbility(Ability.DISABLED)
-            .withEqualsHashCodeAbility(Ability.ENABLED)
-            .withToStringAbility(Ability.ENABLED)
-            .withMappersAbility(Ability.DISABLED)
-            .withWithersAbility(Ability.DISABLED)
-            .withBaseClassAbility(Ability.DISABLED);
+            .withSafeBuilderAbility(DISABLED)
+            .withEqualsHashCodeAbility(ENABLED)
+            .withToStringAbility(ENABLED)
+            .withMappersAbility(DISABLED)
+            .withWithersAbility(DISABLED)
+            .withBaseClassAbility(DISABLED);
     assertFalse(settings.createBaseClass());
   }
 }

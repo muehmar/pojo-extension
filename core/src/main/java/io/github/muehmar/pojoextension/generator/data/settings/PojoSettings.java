@@ -26,9 +26,11 @@ public class PojoSettings extends PojoSettingsBase {
   private final Ability equalsHashCodeAbility;
   private final Ability toStringAbility;
   private final Ability withersAbility;
+  private final Ability optionalGettersAbility;
   private final Ability mappersAbility;
   private final Ability baseClassAbility;
 
+  @SuppressWarnings("java:S107")
   PojoSettings(
       PList<OptionalDetection> optionalDetections,
       ExtensionUsage extensionUsage,
@@ -39,6 +41,7 @@ public class PojoSettings extends PojoSettingsBase {
       Ability equalsHashCodeAbility,
       Ability toStringAbility,
       Ability withAbility,
+      Ability optionalGettersAbility,
       Ability mapAbility,
       Ability baseClassAbility) {
     this.optionalDetections = optionalDetections;
@@ -50,6 +53,7 @@ public class PojoSettings extends PojoSettingsBase {
     this.equalsHashCodeAbility = equalsHashCodeAbility;
     this.toStringAbility = toStringAbility;
     this.withersAbility = withAbility;
+    this.optionalGettersAbility = optionalGettersAbility;
     this.mappersAbility = mapAbility;
     this.baseClassAbility = baseClassAbility;
   }
@@ -63,6 +67,7 @@ public class PojoSettings extends PojoSettingsBase {
         .setEqualsHashCodeAbility(ENABLED)
         .setToStringAbility(ENABLED)
         .setWithersAbility(ENABLED)
+        .setOptionalGettersAbility(ENABLED)
         .setMappersAbility(ENABLED)
         .setBaseClassAbility(ENABLED)
         .andAllOptionals()
@@ -106,6 +111,10 @@ public class PojoSettings extends PojoSettingsBase {
 
   public Ability getWithersAbility() {
     return withersAbility;
+  }
+
+  public Ability getOptionalGettersAbility() {
+    return optionalGettersAbility;
   }
 
   public Ability getMappersAbility() {
@@ -157,6 +166,7 @@ public class PojoSettings extends PojoSettingsBase {
     return equalsHashCodeAbility.isEnabled()
         || toStringAbility.isEnabled()
         || withersAbility.isEnabled()
+        || optionalGettersAbility.isEnabled()
         || mappersAbility.isEnabled();
   }
 

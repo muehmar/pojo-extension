@@ -66,6 +66,11 @@ public class AnnotationValueExtractor {
     return getValue(annotationMirror, new ExtensionValue<>("enableWithers", Boolean.class::cast));
   }
 
+  public static Optional<Boolean> getEnableOptionalGetters(AnnotationMirror annotationMirror) {
+    return getValue(
+        annotationMirror, new ExtensionValue<>("enableOptionalGetters", Boolean.class::cast));
+  }
+
   public static Optional<Boolean> getEnableMappers(AnnotationMirror annotationMirror) {
     return getValue(annotationMirror, new ExtensionValue<>("enableMappers", Boolean.class::cast));
   }
