@@ -13,24 +13,22 @@ public @interface RecordExtension {
   OptionalDetection[] optionalDetection() default {OptionalDetection.OPTIONAL_CLASS};
 
   /**
-   * Override the default name which is used for the discrete builder class. `{CLASSNAME}` gets by
-   * the classname of the annotated class.
-   */
-  String builderName() default "{CLASSNAME}Builder";
-
-  /** Prefix which is used for the setter methods of the builder. */
-  String builderSetMethodPrefix() default "";
-
-  /**
    * Override the default name which is used for the extension interface. `{CLASSNAME}` gets
    * replaced by the classname of the annotated class.
    */
   String extensionName() default "{CLASSNAME}Extension";
 
+  /** Enables or disables the generation of the SafeBuilder. */
+  boolean enableSafeBuilder() default true;
+
   /**
-   * Creates a discrete builder class. If set to false, the builder is part of the extension class.
+   * Override the default name which is used for the discrete builder class. `{CLASSNAME}` gets
+   * replaced by the classname of the annotated class.
    */
-  boolean discreteBuilder() default true;
+  String builderName() default "{CLASSNAME}Builder";
+
+  /** Prefix which is used for the setter methods of the builder. */
+  String builderSetMethodPrefix() default "";
 
   /** Enables or disables the generation of the with methods. */
   boolean enableWithers() default true;

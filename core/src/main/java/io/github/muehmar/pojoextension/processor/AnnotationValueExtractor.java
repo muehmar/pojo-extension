@@ -13,6 +13,20 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 
 public class AnnotationValueExtractor {
+
+  public static final String OPTIONAL_DETECTION = "optionalDetection";
+  public static final String EXTENSION_NAME = "extensionName";
+  public static final String ENABLE_SAFE_BUILDER = "enableSafeBuilder";
+  public static final String BUILDER_NAME = "builderName";
+  public static final String BUILDER_SET_METHOD_PREFIX = "builderSetMethodPrefix";
+  public static final String BASE_CLASS_NAME = "baseClassName";
+  public static final String ENABLE_BASE_CLASS = "enableBaseClass";
+  public static final String ENABLE_EQUALS_AND_HASH_CODE = "enableEqualsAndHashCode";
+  public static final String ENABLE_TO_STRING = "enableToString";
+  public static final String ENABLE_WITHERS = "enableWithers";
+  public static final String ENABLE_OPTIONAL_GETTERS = "enableOptionalGetters";
+  public static final String ENABLE_MAPPERS = "enableMappers";
+
   private AnnotationValueExtractor() {}
 
   public static Optional<PList<OptionalDetection>> getOptionalDetection(
@@ -20,7 +34,7 @@ public class AnnotationValueExtractor {
     return getValue(
         annotationMirror,
         new ExtensionValue<>(
-            "optionalDetection",
+            OPTIONAL_DETECTION,
             v ->
                 PList.fromIter((Iterable<Object>) v)
                     .flatMapOptional(
@@ -33,51 +47,51 @@ public class AnnotationValueExtractor {
   }
 
   public static Optional<String> getExtensionName(AnnotationMirror annotationMirror) {
-    return getValue(annotationMirror, new ExtensionValue<>("extensionName", String.class::cast));
+    return getValue(annotationMirror, new ExtensionValue<>(EXTENSION_NAME, String.class::cast));
   }
 
   public static Optional<Boolean> getEnableSafeBuilder(AnnotationMirror annotationMirror) {
     return getValue(
-        annotationMirror, new ExtensionValue<>("enableSafeBuilder", Boolean.class::cast));
+        annotationMirror, new ExtensionValue<>(ENABLE_SAFE_BUILDER, Boolean.class::cast));
   }
 
   public static Optional<String> getBuilderName(AnnotationMirror annotationMirror) {
-    return getValue(annotationMirror, new ExtensionValue<>("builderName", String.class::cast));
+    return getValue(annotationMirror, new ExtensionValue<>(BUILDER_NAME, String.class::cast));
   }
 
   public static Optional<String> getBuilderSetMethodPrefix(AnnotationMirror annotationMirror) {
     return getValue(
-        annotationMirror, new ExtensionValue<>("builderSetMethodPrefix", String.class::cast));
+        annotationMirror, new ExtensionValue<>(BUILDER_SET_METHOD_PREFIX, String.class::cast));
   }
 
   public static Optional<String> getBaseClassName(AnnotationMirror annotationMirror) {
-    return getValue(annotationMirror, new ExtensionValue<>("baseClassName", String.class::cast));
+    return getValue(annotationMirror, new ExtensionValue<>(BASE_CLASS_NAME, String.class::cast));
   }
 
   public static Optional<Boolean> getEnableBaseClass(AnnotationMirror annotationMirror) {
-    return getValue(annotationMirror, new ExtensionValue<>("enableBaseClass", Boolean.class::cast));
+    return getValue(annotationMirror, new ExtensionValue<>(ENABLE_BASE_CLASS, Boolean.class::cast));
   }
 
   public static Optional<Boolean> getEnableEqualsAndHashCode(AnnotationMirror annotationMirror) {
     return getValue(
-        annotationMirror, new ExtensionValue<>("enableEqualsAndHashCode", Boolean.class::cast));
+        annotationMirror, new ExtensionValue<>(ENABLE_EQUALS_AND_HASH_CODE, Boolean.class::cast));
   }
 
   public static Optional<Boolean> getEnableToString(AnnotationMirror annotationMirror) {
-    return getValue(annotationMirror, new ExtensionValue<>("enableToString", Boolean.class::cast));
+    return getValue(annotationMirror, new ExtensionValue<>(ENABLE_TO_STRING, Boolean.class::cast));
   }
 
   public static Optional<Boolean> getEnableWithers(AnnotationMirror annotationMirror) {
-    return getValue(annotationMirror, new ExtensionValue<>("enableWithers", Boolean.class::cast));
+    return getValue(annotationMirror, new ExtensionValue<>(ENABLE_WITHERS, Boolean.class::cast));
   }
 
   public static Optional<Boolean> getEnableOptionalGetters(AnnotationMirror annotationMirror) {
     return getValue(
-        annotationMirror, new ExtensionValue<>("enableOptionalGetters", Boolean.class::cast));
+        annotationMirror, new ExtensionValue<>(ENABLE_OPTIONAL_GETTERS, Boolean.class::cast));
   }
 
   public static Optional<Boolean> getEnableMappers(AnnotationMirror annotationMirror) {
-    return getValue(annotationMirror, new ExtensionValue<>("enableMappers", Boolean.class::cast));
+    return getValue(annotationMirror, new ExtensionValue<>(ENABLE_MAPPERS, Boolean.class::cast));
   }
 
   private static <T> Optional<T> getValue(
