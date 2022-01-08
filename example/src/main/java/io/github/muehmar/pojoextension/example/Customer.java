@@ -6,7 +6,7 @@ import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.Optional;
 
 @PojoExtension(builderSetMethodPrefix = "set")
-@SuppressWarnings("java:S2160") // Not overriding equals and hashCode is fine
+@SuppressWarnings("java:S2160")
 public class Customer extends CustomerBase {
   private final String id;
   private final String name;
@@ -16,7 +16,6 @@ public class Customer extends CustomerBase {
   private final byte[] key;
   private final boolean flag;
 
-  // This constructor is used to allow instance creation for the safe builder
   Customer(
       String id,
       String name,

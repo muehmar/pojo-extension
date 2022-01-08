@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.example;
 
+import static java.util.Optional.empty;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -22,7 +23,7 @@ class CustomerTest {
             .setFlag(true)
             .andAllOptionals()
             .setNickname("Dex")
-            .setAge(Optional.empty())
+            .setAge(empty())
             .build();
 
     assertEquals(SAMPLE_ID, customer.getIdentification());
@@ -30,7 +31,7 @@ class CustomerTest {
     assertEquals(12.5d, customer.getRandom());
     assertArrayEquals(new byte[] {0x15}, customer.getKey());
     assertEquals(Optional.of("Dex"), customer.getNick());
-    assertEquals(Optional.empty(), customer.getAge());
+    assertEquals(empty(), customer.getAge());
   }
 
   @Test
@@ -96,6 +97,18 @@ class CustomerTest {
   }
 
   @Test
+  void getAgeOr_when_noAgePresent_then_defaultValueReturned() {
+    final Customer customer = sampleCustomer().withAge(empty());
+    assertEquals(55, customer.getAgeOr(55));
+  }
+
+  @Test
+  void getAgeOr_when_agePresent_then_actualAgeReturned() {
+    final Customer customer = sampleCustomer().withAge(28);
+    assertEquals(28, customer.getAgeOr(55));
+  }
+
+  @Test
   void map_when_calledForCustomer_then_mapFunctionApplied() {
     final Customer customer = sampleCustomer().map(c -> c.withId(SAMPLE_ID + "99"));
     assertEquals(SAMPLE_ID + "99", customer.getIdentification());
@@ -144,7 +157,7 @@ class CustomerTest {
         .setFlag(true)
         .andAllOptionals()
         .setNickname("Dex")
-        .setAge(Optional.empty())
+        .setAge(empty())
         .build();
   }
 }
