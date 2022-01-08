@@ -11,90 +11,93 @@ import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Generic;
 import io.github.muehmar.pojoextension.generator.data.Name;
+import io.github.muehmar.pojoextension.generator.data.PojoAndField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.FieldVariable;
-import io.github.muehmar.pojoextension.generator.impl.gen.withers.data.WithField;
 import java.util.function.Function;
 
 public class WithGens {
   private WithGens() {}
 
-  public static Generator<WithField, PojoSettings> withMethod() {
-    return MethodGen.<WithField, PojoSettings>modifiers(DEFAULT)
+  public static Generator<PojoAndField, PojoSettings> withMethod() {
+    return MethodGen.<PojoAndField, PojoSettings>modifiers(DEFAULT)
         .noGenericTypes()
-        .returnTypeName(wf -> wf.getPojo().getNameWithTypeVariables())
-        .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
+        .returnTypeName(paf -> paf.getPojo().getNameWithTypeVariables())
+        .methodName(paf -> "with" + paf.getField().getName().toPascalCase())
         .singleArgument(
-            wf ->
+            paf ->
                 String.format(
-                    "%s %s", wf.getField().getType().getTypeDeclaration(), wf.getField().getName()))
+                    "%s %s",
+                    paf.getField().getType().getTypeDeclaration(), paf.getField().getName()))
         .content(withMethodContent())
-        .append(RefsGen.fieldRefs(), WithField::getField)
+        .append(RefsGen.fieldRefs(), PojoAndField::getField)
         .filter((p, s) -> s.getWithersAbility().isEnabled());
   }
 
-  private static Generator<WithField, PojoSettings> withMethodContent() {
-    return Generator.<WithField, PojoSettings>emptyGen()
+  private static Generator<PojoAndField, PojoSettings> withMethodContent() {
+    return Generator.<PojoAndField, PojoSettings>emptyGen()
         .append(
             ConstructorCallGens.callWithSingleFieldVariable("return "),
-            withField -> new FieldVariable(withField.getPojo(), withField.getField(), SAME_TYPE));
+            paf -> new FieldVariable(paf.getPojo(), paf.getField(), SAME_TYPE));
   }
 
-  public static Generator<WithField, PojoSettings> optionalWithMethod() {
-    final Generator<WithField, PojoSettings> method =
-        MethodGen.<WithField, PojoSettings>modifiers(DEFAULT)
+  public static Generator<PojoAndField, PojoSettings> optionalWithMethod() {
+    final Generator<PojoAndField, PojoSettings> method =
+        MethodGen.<PojoAndField, PojoSettings>modifiers(DEFAULT)
             .noGenericTypes()
-            .returnTypeName(wf -> wf.getPojo().getNameWithTypeVariables())
-            .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
+            .returnTypeName(paf -> paf.getPojo().getNameWithTypeVariables())
+            .methodName(paf -> "with" + paf.getField().getName().toPascalCase())
             .singleArgument(
-                wf ->
+                paf ->
                     String.format(
                         "Optional<%s> %s",
-                        wf.getField().getType().getTypeDeclaration(), wf.getField().getName()))
+                        paf.getField().getType().getTypeDeclaration(), paf.getField().getName()))
             .content(optionalWithMethodContent())
             .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
-            .append(RefsGen.fieldRefs(), WithField::getField);
+            .append(RefsGen.fieldRefs(), PojoAndField::getField);
 
-    return Generator.<WithField, PojoSettings>emptyGen()
-        .appendConditionally(wf -> wf.getField().isOptional(), method)
+    return Generator.<PojoAndField, PojoSettings>emptyGen()
+        .appendConditionally(paf -> paf.getField().isOptional(), method)
         .filter((f, s) -> s.getWithersAbility().isEnabled());
   }
 
-  public static Generator<WithField, PojoSettings> staticOptionalWithMethod() {
-    final Function<WithField, PList<String>> arguments =
-        wf ->
+  public static Generator<PojoAndField, PojoSettings> staticOptionalWithMethod() {
+    final Function<PojoAndField, PList<String>> arguments =
+        paf ->
             PList.of(
-                String.format("%s self", wf.getPojo().getNameWithTypeVariables()),
+                String.format("%s self", paf.getPojo().getNameWithTypeVariables()),
                 String.format(
                     "Optional<%s> %s",
-                    wf.getField().getType().getTypeDeclaration(), wf.getField().getName()));
+                    paf.getField().getType().getTypeDeclaration(), paf.getField().getName()));
 
-    final Generator<WithField, PojoSettings> method =
-        MethodGen.<WithField, PojoSettings>modifiers(PUBLIC, STATIC)
+    final Generator<PojoAndField, PojoSettings> method =
+        MethodGen.<PojoAndField, PojoSettings>modifiers(PUBLIC, STATIC)
             .genericTypes(
-                wf ->
-                    wf.getPojo().getGenerics().map(Generic::getTypeDeclaration).map(Name::asString))
-            .returnTypeName(wf -> wf.getPojo().getNameWithTypeVariables())
-            .methodName(wf -> "with" + wf.getField().getName().toPascalCase())
+                paf ->
+                    paf.getPojo()
+                        .getGenerics()
+                        .map(Generic::getTypeDeclaration)
+                        .map(Name::asString))
+            .returnTypeName(paf -> paf.getPojo().getNameWithTypeVariables())
+            .methodName(paf -> "with" + paf.getField().getName().toPascalCase())
             .arguments(arguments)
             .content(optionalWithMethodContent())
             .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
-            .append(RefsGen.genericRefs(), WithField::getPojo)
-            .append(RefsGen.fieldRefs(), WithField::getField);
+            .append(RefsGen.genericRefs(), PojoAndField::getPojo)
+            .append(RefsGen.fieldRefs(), PojoAndField::getField);
 
-    return Generator.<WithField, PojoSettings>emptyGen()
-        .appendConditionally(wf -> wf.getField().isOptional(), method)
+    return Generator.<PojoAndField, PojoSettings>emptyGen()
+        .appendConditionally(paf -> paf.getField().isOptional(), method)
         .filter((f, s) -> s.getWithersAbility().isEnabled());
   }
 
-  private static Generator<WithField, PojoSettings> optionalWithMethodContent() {
-    return Generator.<WithField, PojoSettings>emptyGen()
+  private static Generator<PojoAndField, PojoSettings> optionalWithMethodContent() {
+    return Generator.<PojoAndField, PojoSettings>emptyGen()
         .append(
             ConstructorCallGens.callWithSingleFieldVariable("return "),
-            withField ->
-                new FieldVariable(withField.getPojo(), withField.getField(), UNWRAP_OPTIONAL));
+            paf -> new FieldVariable(paf.getPojo(), paf.getField(), UNWRAP_OPTIONAL));
   }
 }

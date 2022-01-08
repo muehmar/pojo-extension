@@ -14,21 +14,21 @@ import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
+import io.github.muehmar.pojoextension.generator.data.PojoAndField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.gen.withers.data.WithField;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
 class WithGensTest {
   @Test
   void withMethod_when_genericType_then_correctRefs() {
-    final Generator<WithField, PojoSettings> generator = WithGens.withMethod();
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.withMethod();
 
     final Pojo pojo = Pojos.sample();
-    final WithField withField = WithField.of(pojo, PojoFields.requiredMap());
+    final PojoAndField pojoAndField = PojoAndField.of(pojo, PojoFields.requiredMap());
 
     final Writer writer =
-        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
     assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
     assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
@@ -36,11 +36,11 @@ class WithGensTest {
 
   @Test
   void withMethod_when_disabled_then_noOutput() {
-    final Generator<WithField, PojoSettings> generator = WithGens.withMethod();
-    final WithField withField = WithField.of(Pojos.sample(), PojoFields.requiredMap());
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.withMethod();
+    final PojoAndField pojoAndField = PojoAndField.of(Pojos.sample(), PojoFields.requiredMap());
     final Writer writer =
         generator.generate(
-            withField,
+            pojoAndField,
             PojoSettings.defaultSettings().withWithersAbility(DISABLED),
             Writer.createDefault());
 
@@ -50,13 +50,13 @@ class WithGensTest {
 
   @Test
   void withMethod_when_forRequiredFieldAndNullableArguments_then_correctOutput() {
-    final Generator<WithField, PojoSettings> generator = WithGens.withMethod();
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.withMethod();
 
     final Pojo pojo = Pojos.sample();
-    final WithField withField = WithField.of(pojo, pojo.getFields().head());
+    final PojoAndField pojoAndField = PojoAndField.of(pojo, pojo.getFields().head());
 
     final Writer writer =
-        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
         "default Customer withId(Integer id) {\n"
             + "  return new Customer(id, getUsername(), getNickname().orElse(null));\n"
@@ -67,13 +67,13 @@ class WithGensTest {
 
   @Test
   void withMethod_when_forOptionalFieldAndNullableArguments_then_correctOutput() {
-    final Generator<WithField, PojoSettings> generator = WithGens.withMethod();
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.withMethod();
 
     final Pojo pojo = Pojos.sample();
-    final WithField withField = WithField.of(pojo, pojo.getFields().apply(2));
+    final PojoAndField pojoAndField = PojoAndField.of(pojo, pojo.getFields().apply(2));
 
     final Writer writer =
-        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
         "default Customer withNickname(String nickname) {\n"
             + "  return new Customer(getId(), getUsername(), nickname);\n"
@@ -84,13 +84,13 @@ class WithGensTest {
 
   @Test
   void withMethod_when_forRequiredFieldAndOptionalArguments_then_correctOutput() {
-    final Generator<WithField, PojoSettings> generator = WithGens.withMethod();
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.withMethod();
 
     final Pojo pojo = Pojos.sampleWithConstructorWithOptionalArgument();
-    final WithField withField = WithField.of(pojo, pojo.getFields().head());
+    final PojoAndField pojoAndField = PojoAndField.of(pojo, pojo.getFields().head());
 
     final Writer writer =
-        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
         "default Customer withId(Integer id) {\n"
             + "  return new Customer(id, getUsername(), getNickname());\n"
@@ -101,13 +101,13 @@ class WithGensTest {
 
   @Test
   void withMethod_when_forOptionalFieldAndOptionalArguments_then_correctOutput() {
-    final Generator<WithField, PojoSettings> generator = WithGens.withMethod();
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.withMethod();
 
     final Pojo pojo = Pojos.sampleWithConstructorWithOptionalArgument();
-    final WithField withField = WithField.of(pojo, pojo.getFields().apply(2));
+    final PojoAndField pojoAndField = PojoAndField.of(pojo, pojo.getFields().apply(2));
 
     final Writer writer =
-        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
         "default Customer withNickname(String nickname) {\n"
             + "  return new Customer(getId(), getUsername(), Optional.ofNullable(nickname));\n"
@@ -118,13 +118,13 @@ class WithGensTest {
 
   @Test
   void withMethod_when_forFieldWithGenericType_then_correctRefs() {
-    final Generator<WithField, PojoSettings> generator = WithGens.withMethod();
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.withMethod();
 
     final Pojo pojo = Pojos.sampleWithConstructorWithOptionalArgument();
-    final WithField withField = WithField.of(pojo, PojoFields.requiredMap());
+    final PojoAndField pojoAndField = PojoAndField.of(pojo, PojoFields.requiredMap());
 
     final Writer writer =
-        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
     assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
     assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
@@ -132,13 +132,13 @@ class WithGensTest {
 
   @Test
   void withMethod_when_genericSampleAndField_then_correctOutput() {
-    final Generator<WithField, PojoSettings> generator = WithGens.withMethod();
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.withMethod();
 
     final Pojo pojo = Pojos.genericSample();
-    final WithField withField = WithField.of(pojo, pojo.getFields().apply(2));
+    final PojoAndField pojoAndField = PojoAndField.of(pojo, pojo.getFields().apply(2));
 
     final Writer writer =
-        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
         "default Customer<T, S> withAdditionalData(S additionalData) {\n"
             + "  return new Customer<>(getId(), getData(), additionalData);\n"
@@ -148,14 +148,14 @@ class WithGensTest {
 
   @Test
   void optionalWithMethod_when_genericType_then_correctRefs() {
-    final Generator<WithField, PojoSettings> generator = WithGens.optionalWithMethod();
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.optionalWithMethod();
 
     final Pojo pojo = Pojos.sample();
-    final WithField withField =
-        WithField.of(pojo, PojoFields.requiredMap().withNecessity(OPTIONAL));
+    final PojoAndField pojoAndField =
+        PojoAndField.of(pojo, PojoFields.requiredMap().withNecessity(OPTIONAL));
 
     final Writer writer =
-        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
     assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
     assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
@@ -164,26 +164,26 @@ class WithGensTest {
 
   @Test
   void optionalWithMethod_when_forRequiredFieldAndNullableArguments_then_noContentGenerated() {
-    final Generator<WithField, PojoSettings> generator = WithGens.optionalWithMethod();
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.optionalWithMethod();
 
     final Pojo pojo = Pojos.sample();
-    final WithField withField = WithField.of(pojo, pojo.getFields().head());
+    final PojoAndField pojoAndField = PojoAndField.of(pojo, pojo.getFields().head());
 
     final Writer writer =
-        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals("", writer.asString());
     assertFalse(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
   }
 
   @Test
   void optionalWithMethod_when_forOptionalFieldAndNullableArguments_then_correctOutput() {
-    final Generator<WithField, PojoSettings> generator = WithGens.optionalWithMethod();
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.optionalWithMethod();
 
     final Pojo pojo = Pojos.sample();
-    final WithField withField = WithField.of(pojo, pojo.getFields().apply(2));
+    final PojoAndField pojoAndField = PojoAndField.of(pojo, pojo.getFields().apply(2));
 
     final Writer writer =
-        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
         "default Customer withNickname(Optional<String> nickname) {\n"
             + "  return new Customer(getId(), getUsername(), nickname.orElse(null));\n"
@@ -194,13 +194,13 @@ class WithGensTest {
 
   @Test
   void optionalWithMethod_when_forOptionalFieldAndOptionalArguments_then_correctOutput() {
-    final Generator<WithField, PojoSettings> generator = WithGens.optionalWithMethod();
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.optionalWithMethod();
 
     final Pojo pojo = Pojos.sampleWithConstructorWithOptionalArgument();
-    final WithField withField = WithField.of(pojo, pojo.getFields().apply(2));
+    final PojoAndField pojoAndField = PojoAndField.of(pojo, pojo.getFields().apply(2));
 
     final Writer writer =
-        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
         "default Customer withNickname(Optional<String> nickname) {\n"
             + "  return new Customer(getId(), getUsername(), nickname);\n"
@@ -211,14 +211,14 @@ class WithGensTest {
 
   @Test
   void optionalWithMethod_when_forFieldWithGenericType_then_correctRefs() {
-    final Generator<WithField, PojoSettings> generator = WithGens.optionalWithMethod();
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.optionalWithMethod();
 
     final Pojo pojo = Pojos.sampleWithConstructorWithOptionalArgument();
-    final WithField withField =
-        WithField.of(pojo, PojoFields.requiredMap().withNecessity(OPTIONAL));
+    final PojoAndField pojoAndField =
+        PojoAndField.of(pojo, PojoFields.requiredMap().withNecessity(OPTIONAL));
 
     final Writer writer =
-        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
     assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
@@ -228,11 +228,11 @@ class WithGensTest {
 
   @Test
   void optionalWithMethod_when_disabled_then_noOutput() {
-    final Generator<WithField, PojoSettings> generator = WithGens.optionalWithMethod();
-    final WithField withField = WithField.of(Pojos.sample(), PojoFields.requiredMap());
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.optionalWithMethod();
+    final PojoAndField pojoAndField = PojoAndField.of(Pojos.sample(), PojoFields.requiredMap());
     final Writer writer =
         generator.generate(
-            withField,
+            pojoAndField,
             PojoSettings.defaultSettings().withWithersAbility(DISABLED),
             Writer.createDefault());
 
@@ -242,13 +242,13 @@ class WithGensTest {
 
   @Test
   void optionalWithMethod_when_genericSample_then_correctOutput() {
-    final Generator<WithField, PojoSettings> generator = WithGens.optionalWithMethod();
+    final Generator<PojoAndField, PojoSettings> generator = WithGens.optionalWithMethod();
 
     final Pojo pojo = Pojos.genericSample();
-    final WithField withField = WithField.of(pojo, pojo.getFields().apply(2));
+    final PojoAndField pojoAndField = PojoAndField.of(pojo, pojo.getFields().apply(2));
 
     final Writer writer =
-        generator.generate(withField, PojoSettings.defaultSettings(), Writer.createDefault());
+        generator.generate(pojoAndField, PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
         "default Customer<T, S> withAdditionalData(Optional<S> additionalData) {\n"
             + "  return new Customer<>(getId(), getData(), additionalData.orElse(null));\n"

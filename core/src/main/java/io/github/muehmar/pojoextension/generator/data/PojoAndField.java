@@ -12,6 +12,10 @@ public class PojoAndField extends PojoAndFieldBase {
     this.field = field;
   }
 
+  public static PojoAndField of(Pojo pojo, PojoField field) {
+    return new PojoAndField(pojo, field);
+  }
+
   public Pojo getPojo() {
     return pojo;
   }

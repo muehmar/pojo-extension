@@ -6,6 +6,7 @@ import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
+import io.github.muehmar.pojoextension.generator.data.PojoAndField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
@@ -16,7 +17,6 @@ import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.HashCod
 import io.github.muehmar.pojoextension.generator.impl.gen.map.MapGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.tostring.ToStringGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.WithGens;
-import io.github.muehmar.pojoextension.generator.impl.gen.withers.data.WithField;
 import java.util.function.Function;
 
 public class ExtensionGens {
@@ -34,22 +34,19 @@ public class ExtensionGens {
   }
 
   private static Generator<Pojo, PojoSettings> content() {
-    final Function<Pojo, PList<WithField>> toWithFields =
-        pojo -> pojo.getFields().map(field -> WithField.of(pojo, field));
-
     final Function<Pojo, PList<FieldGetter>> toFieldGetter =
         pojo -> pojo.getFields().map(pojo::getMatchingGetterOrThrow);
 
-    final Generator<WithField, PojoSettings> optionalNewLine =
-        Generator.<WithField, PojoSettings>emptyGen()
+    final Generator<PojoAndField, PojoSettings> optionalNewLine =
+        Generator.<PojoAndField, PojoSettings>emptyGen()
             .appendConditionally(
                 wf -> wf.getField().isOptional(), ((data, settings, writer) -> writer.println()));
 
     return Generator.<Pojo, PojoSettings>emptyGen()
         .appendNewLine()
         .appendList(getterMethod().appendNewLine(), toFieldGetter)
-        .appendList(WithGens.withMethod().appendNewLine(), toWithFields)
-        .appendList(WithGens.optionalWithMethod().append(optionalNewLine), toWithFields)
+        .appendList(WithGens.withMethod().appendNewLine(), Pojo::getPojoAndFields)
+        .appendList(WithGens.optionalWithMethod().append(optionalNewLine), Pojo::getPojoAndFields)
         .append(MapGens.mapMethod())
         .appendNewLine()
         .append(MapGens.mapIfMethod())
