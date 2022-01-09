@@ -22,6 +22,7 @@ Currently, the following features are supported:
 * `toString()` method
 * `withXX()` method for each field
 * `mapXX()` methods for fluent 'updates'
+* Convenience getters for optional fields
 
 ## Usage
 
@@ -32,8 +33,8 @@ annotation processor.In gradle this would look like the following:
 
 ```
 dependencies {
-    compileOnly "io.github.muehmar:pojo-extension-annotations:0.9.0"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.9.0"
+    compileOnly "io.github.muehmar:pojo-extension-annotations:0.10.0"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.10.0"
 }
 ```
 
@@ -162,17 +163,17 @@ will lead to a builder which can be used like the following:
 
 ```
   Customer.newBuilder()
-    .setName("Dexter")
-    .setEmail("dexter@miami-metro.us")
+    .name("Dexter")
+    .email("dexter@miami-metro.us")
     .andAllOptionals()
-    .setNickname("Dex")
+    .nickname("Dex")
     .build();
 ```
 
 This does not seem to be very different from the normal builder pattern at a first glance but calling `newBuilder()`
-will return a class which has only a single method `setName()`, i.e. the compiler enforces one to set the name. The
-returned class after setting the name has again one single method `setEmail()`. As the property `email` is the last
-required property in this example the returned class for `setEmail()` offers three methods:
+will return a class which has only a single method `name()`, i.e. the compiler enforces one to set the name. The
+returned class after setting the name has again one single method `email()`. As the property `email` is the last
+required property in this example the returned class for `email()` offers three methods:
 
 * `build()` As all required properties are set at that time, building the instance is allowed here.
 * `andOptionals()` Returns the normal builder allowing one to set certain optional properties before creating the
@@ -186,14 +187,29 @@ Setting all required properties in a class could theoretically also be achieved 
 properties as arguments, but the pattern used here is safer in terms of refactoring, i.e. adding or removing properties,
 changing the required properties or changing the order of the properties.
 
-When using `andAllOptionals()` or `andOptinoals()` after all required properties are set, the builder provides
+When using `andAllOptionals()` or `andOptionals()` after all required properties are set, the builder provides
 overloaded methods to add the optional properties. The property can be set directly or wrapped in an `Optional`. In the
 example above, the builder provides methods with the following signature:
 
 ```
-  public Builder setNickname(String nickname);
+  public Builder nickname(String nickname);
   
-  public Builder setNickname(Optional<String> nickname);
+  public Builder nickname(Optional<String> nickname);
+```
+
+#### Prefix for the setter method
+
+You could configure a prefix with `builderSetMethodPrefix` for the setter methods like `set` which is used for the
+generation
+(see [Annotation Parameters](#annotation-parameters)):
+
+```
+  Customer.newBuilder()
+    .setName("Dexter")
+    .setEmail("dexter@miami-metro.us")
+    .andAllOptionals()
+    .setNickname("Dex")
+    .build();
 ```
 
 ### Methods `equals` and `hashCode`
@@ -256,6 +272,22 @@ Utilizing the customer example above, the extension would create the following w
   default Customer withNickname(String nickname);
 
   default Customer withNickname(Optional<String> nickname);
+```
+
+### Convenience getters for optional fields
+
+Getters for optional fields may return the value wrapped into an `Optional.` If one wants to use a default value in case
+the field is not present, one can write the following:
+
+```
+  customer.getNickname().orElse("NoNickname");
+```
+
+The generated optional getter provides this functionality directly where you could provide the default value. The method
+name is equal to the existing getter suffixed with `Or`:
+
+```
+default String getNicknameOr(String nickname);
 ```
 
 ### Method `mapXX`
@@ -378,9 +410,11 @@ with different default values.
 | `extensionName`           | "{CLASSNAME}Extension"                | Allows to override the default name of the created extension. `{CLASSNAME}` gets replaced by the name of the data class.                                       |
 | `enableSafeBuilder`       | true                                  | Allows to disable the generation of the safe builder                                                                                                           |
 | `builderName`             | "{CLASSNAME}Builder"                  | Allows to override the default name of the discrete builder. `{CLASSNAME}` gets replaced by the name of the data class. Ignored if `discreteBuilder` is false. |
-| `enableEqualsAndHashCode` | true                                  | Allows to disable the generation the equals and hashCode method                                                                                                |
-| `enableToString`          | true                                  | Allows to disable the generation the toString method                                                                                                           |
-| `enableWithers`           | true                                  | Allows to disable the generation the with methods                                                                                                              |
+| `builderSetMethodPrefix`  | ""                                    | Prefix which is used for the setter methods of the builder.                                                                                                    |
+| `enableEqualsAndHashCode` | true                                  | Allows to disable the generation of the equals and hashCode method                                                                                             |
+| `enableToString`          | true                                  | Allows to disable the generation of the toString method                                                                                                        |
+| `enableWithers`           | true                                  | Allows to disable the generation of the with methods                                                                                                           |
+| `enableOptionalGetters`   | true                                  | Allows to disable the generation of the optional getters                                                                                                       |                                                                                                      |
 | `enableMappers`           | true                                  | Allows to disable the generation the map methods                                                                                                               |
 | `enableBaseClass`         | true                                  | Enables the generation of the abstract base class                                                                                                              |
 | `baseClassName`           | "{CLASSNAME}Base"                     | Allows to override the default name of the created base class. `{CLASSNAME}` gets replaced by the name of the data class.                                      |
@@ -429,6 +463,9 @@ public @interface AllRequiredExtension {
 
 ## Change Log
 
+* 0.10.0
+    * Add configurable prefix for the builder set methods
+    * Generate convenience getters for optional fields
 * 0.9.0
     * Support Java 16 records
     * Use an interface instead of an abstract class
