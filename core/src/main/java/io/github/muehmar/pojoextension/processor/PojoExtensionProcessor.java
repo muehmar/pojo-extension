@@ -178,12 +178,12 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             .map(e -> convertToPojoField(e, detectionSettings));
 
     return PojoBuilder.create()
-        .setName(className)
-        .setPkg(classPackage)
-        .setFields(fields)
-        .setConstructors(constructors)
-        .setGetters(getters)
-        .setGenerics(generics)
+        .name(className)
+        .pkg(classPackage)
+        .fields(fields)
+        .constructors(constructors)
+        .getters(getters)
+        .generics(generics)
         .andAllOptionals()
         .build();
   }

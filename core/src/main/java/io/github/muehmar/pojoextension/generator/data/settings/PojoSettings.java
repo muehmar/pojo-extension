@@ -64,21 +64,21 @@ public class PojoSettings extends PojoSettingsBase {
 
   public static PojoSettings defaultSettings() {
     return PojoSettingsBuilder.create()
-        .setOptionalDetections(
+        .optionalDetections(
             PList.of(OptionalDetection.OPTIONAL_CLASS, OptionalDetection.NULLABLE_ANNOTATION))
-        .setExtensionUsage(INHERITED)
-        .setSafeBuilderAbility(ENABLED)
-        .setEqualsHashCodeAbility(ENABLED)
-        .setToStringAbility(ENABLED)
-        .setWithersAbility(ENABLED)
-        .setOptionalGettersAbility(ENABLED)
-        .setMappersAbility(ENABLED)
-        .setBaseClassAbility(ENABLED)
+        .extensionUsage(INHERITED)
+        .safeBuilderAbility(ENABLED)
+        .equalsHashCodeAbility(ENABLED)
+        .toStringAbility(ENABLED)
+        .withersAbility(ENABLED)
+        .optionalGettersAbility(ENABLED)
+        .mappersAbility(ENABLED)
+        .baseClassAbility(ENABLED)
         .andAllOptionals()
-        .setExtensionName(Optional.of(CLASS_NAME_PLACEHOLDER.append(EXTENSION_IFC_POSTFIX)))
-        .setBuilderName(Optional.of(CLASS_NAME_PLACEHOLDER.append(BUILDER_CLASS_POSTFIX)))
-        .setBuilderSetMethodPrefix(empty())
-        .setBaseClassName(Optional.of(CLASS_NAME_PLACEHOLDER.append(BASE_CLASS_POSTFIX)))
+        .extensionName(Optional.of(CLASS_NAME_PLACEHOLDER.append(EXTENSION_IFC_POSTFIX)))
+        .builderName(Optional.of(CLASS_NAME_PLACEHOLDER.append(BUILDER_CLASS_POSTFIX)))
+        .builderSetMethodPrefix(empty())
+        .baseClassName(Optional.of(CLASS_NAME_PLACEHOLDER.append(BASE_CLASS_POSTFIX)))
         .build();
   }
 

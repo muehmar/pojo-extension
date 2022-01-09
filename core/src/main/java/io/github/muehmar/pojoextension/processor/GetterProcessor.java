@@ -30,10 +30,10 @@ public class GetterProcessor {
     final Name methodName = Name.fromString(e.getSimpleName().toString());
     final Type returnType = TypeMirrorMapper.map(e.getReturnType());
     return GetterBuilder.create()
-        .setName(methodName)
-        .setReturnType(returnType)
+        .name(methodName)
+        .returnType(returnType)
         .andAllOptionals()
-        .setFieldName(fieldName)
+        .fieldName(fieldName)
         .build();
   }
 

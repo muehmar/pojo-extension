@@ -31,12 +31,12 @@ public class Pojos {
 
     final Pojo pojo =
         PojoBuilder.create()
-            .setName(Name.fromString("Customer"))
-            .setPkg(PACKAGE_NAME)
-            .setFields(fields)
-            .setConstructors(PList.empty())
-            .setGetters(getters)
-            .setGenerics(PList.empty())
+            .name(Name.fromString("Customer"))
+            .pkg(PACKAGE_NAME)
+            .fields(fields)
+            .constructors(PList.empty())
+            .getters(getters)
+            .generics(PList.empty())
             .andAllOptionals()
             .build();
     return pojo.withConstructors(PList.single(deviateStandardConstructor(pojo)));
@@ -76,12 +76,12 @@ public class Pojos {
 
     final Pojo pojo =
         PojoBuilder.create()
-            .setName(Name.fromString("Customer"))
-            .setPkg(PACKAGE_NAME)
-            .setFields(fields)
-            .setConstructors(PList.empty())
-            .setGetters(getters)
-            .setGenerics(generics)
+            .name(Name.fromString("Customer"))
+            .pkg(PACKAGE_NAME)
+            .fields(fields)
+            .constructors(PList.empty())
+            .getters(getters)
+            .generics(generics)
             .andAllOptionals()
             .build();
     return pojo.withConstructors(PList.single(deviateStandardConstructor(pojo)));

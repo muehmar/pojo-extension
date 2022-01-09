@@ -52,13 +52,13 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
-            .setName(className)
-            .setPkg(PACKAGE)
-            .setFields(fields)
-            .setConstructors(
+            .name(className)
+            .pkg(PACKAGE)
+            .fields(fields)
+            .constructors(
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
-            .setGetters(PList.empty())
-            .setGenerics(PList.empty())
+            .getters(PList.empty())
+            .generics(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -85,13 +85,13 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
-            .setName(className)
-            .setPkg(PACKAGE)
-            .setFields(fields)
-            .setConstructors(
+            .name(className)
+            .pkg(PACKAGE)
+            .fields(fields)
+            .constructors(
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
-            .setGetters(PList.empty())
-            .setGenerics(PList.empty())
+            .getters(PList.empty())
+            .generics(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -118,13 +118,13 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
-            .setName(className)
-            .setPkg(PACKAGE)
-            .setFields(fields)
-            .setConstructors(
+            .name(className)
+            .pkg(PACKAGE)
+            .fields(fields)
+            .constructors(
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
-            .setGetters(PList.empty())
-            .setGenerics(PList.empty())
+            .getters(PList.empty())
+            .generics(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -160,13 +160,13 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
-            .setName(className)
-            .setPkg(PackageName.fromString("io.github.muehmar"))
-            .setFields(fields)
-            .setConstructors(
+            .name(className)
+            .pkg(PackageName.fromString("io.github.muehmar"))
+            .fields(fields)
+            .constructors(
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
-            .setGetters(PList.empty())
-            .setGenerics(PList.empty())
+            .getters(PList.empty())
+            .generics(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -204,16 +204,16 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
-            .setName(className)
-            .setPkg(PACKAGE)
-            .setFields(fields)
-            .setConstructors(
+            .name(className)
+            .pkg(PACKAGE)
+            .fields(fields)
+            .constructors(
                 PList.single(
                     new Constructor(
                         className,
                         PList.single(new Argument(Name.fromString("id"), Type.string())))))
-            .setGetters(PList.empty())
-            .setGenerics(PList.empty())
+            .getters(PList.empty())
+            .generics(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -253,13 +253,13 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PList<PojoField> fields = PList.of(f1, f2, f3, f4, f5, f6, f7, f8);
     final Pojo expected =
         PojoBuilder.create()
-            .setName(className)
-            .setPkg(PACKAGE)
-            .setFields(fields)
-            .setConstructors(
+            .name(className)
+            .pkg(PACKAGE)
+            .fields(fields)
+            .constructors(
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
-            .setGetters(PList.empty())
-            .setGenerics(PList.empty())
+            .getters(PList.empty())
+            .generics(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -291,13 +291,13 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PList<PojoField> fields = PList.of(f1, f2);
     final Pojo expected =
         PojoBuilder.create()
-            .setName(className)
-            .setPkg(PACKAGE)
-            .setFields(fields)
-            .setConstructors(
+            .name(className)
+            .pkg(PACKAGE)
+            .fields(fields)
+            .constructors(
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
-            .setGetters(PList.empty())
-            .setGenerics(PList.empty())
+            .getters(PList.empty())
+            .generics(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -328,16 +328,13 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PList<Getter> expected =
         PList.of(
             GetterBuilder.create()
-                .setName(Name.fromString("getData"))
-                .setReturnType(Type.optional(string()))
+                .name(Name.fromString("getData"))
+                .returnType(Type.optional(string()))
                 .build(),
+            GetterBuilder.create().name(Name.fromString("getKey")).returnType(integer()).build(),
             GetterBuilder.create()
-                .setName(Name.fromString("getKey"))
-                .setReturnType(integer())
-                .build(),
-            GetterBuilder.create()
-                .setName(Name.fromString("isFlag"))
-                .setReturnType(primitiveBoolean())
+                .name(Name.fromString("isFlag"))
+                .returnType(primitiveBoolean())
                 .build());
 
     assertEquals(expected, pojoAndSettings.getPojo().getGetters());
@@ -364,10 +361,10 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PList<Getter> expected =
         PList.of(
             GetterBuilder.create()
-                .setName(Name.fromString("getKey"))
-                .setReturnType(Type.integer())
+                .name(Name.fromString("getKey"))
+                .returnType(Type.integer())
                 .andOptionals()
-                .setFieldName(Name.fromString("key"))
+                .fieldName(Name.fromString("key"))
                 .build());
 
     assertEquals(expected, pojoAndSettings.getPojo().getGetters());
@@ -394,13 +391,13 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
-            .setName(className)
-            .setPkg(PACKAGE)
-            .setFields(fields)
-            .setConstructors(
+            .name(className)
+            .pkg(PACKAGE)
+            .fields(fields)
+            .constructors(
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
-            .setGetters(PList.empty())
-            .setGenerics(PList.empty())
+            .getters(PList.empty())
+            .generics(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -447,13 +444,13 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
 
     final Pojo expected =
         PojoBuilder.create()
-            .setName(className)
-            .setPkg(PACKAGE)
-            .setFields(fields)
-            .setConstructors(
+            .name(className)
+            .pkg(PACKAGE)
+            .fields(fields)
+            .constructors(
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
-            .setGetters(PList.empty())
-            .setGenerics(PList.single(generic))
+            .getters(PList.empty())
+            .generics(PList.single(generic))
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());

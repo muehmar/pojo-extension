@@ -11,8 +11,8 @@ class GenericTest {
   void getTypeDeclaration_when_called_then_correctFormatted() {
     final Generic generic =
         GenericBuilder.create()
-            .setTypeVariable(Name.fromString("T"))
-            .setUpperBounds(
+            .typeVariable(Name.fromString("T"))
+            .upperBounds(
                 PList.of(
                     Type.list(Type.string()),
                     Type.comparable(Type.typeVariable(Name.fromString("T")))))

@@ -26,8 +26,8 @@ class PojoTest {
             .map(p -> new FieldArgument(p.first(), p.second(), SAME_TYPE));
     final MatchingConstructor expected =
         MatchingConstructorBuilder.create()
-            .setConstructor(pojo.getConstructors().head())
-            .setFieldArguments(fieldArguments)
+            .constructor(pojo.getConstructors().head())
+            .fieldArguments(fieldArguments)
             .build();
 
     final Optional<MatchingConstructor> matchingConstructor = pojo.findMatchingConstructor();
