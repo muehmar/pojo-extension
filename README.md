@@ -33,8 +33,8 @@ annotation processor.In gradle this would look like the following:
 
 ```
 dependencies {
-    compileOnly "io.github.muehmar:pojo-extension-annotations:0.10.0"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.10.0"
+    compileOnly "io.github.muehmar:pojo-extension-annotations:0.10.1"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.10.1"
 }
 ```
 
@@ -463,6 +463,7 @@ public @interface AllRequiredExtension {
 
 ## Change Log
 
+* 0.10.1 - Make the base class and the extension interface package private
 * 0.10.0
     * Add configurable prefix for the builder set methods
     * Generate convenience getters for optional fields
