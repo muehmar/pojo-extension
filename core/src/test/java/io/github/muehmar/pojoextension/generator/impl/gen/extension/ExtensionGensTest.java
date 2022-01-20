@@ -1,12 +1,12 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.extension;
 
+import static io.github.muehmar.pojoextension.TemplateTestUtil.assertTemplateEqualsOrUpdate;
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 import static io.github.muehmar.pojoextension.generator.data.settings.Ability.DISABLED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.Pojos;
-import io.github.muehmar.pojoextension.generator.Resources;
 import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
@@ -23,7 +23,7 @@ class ExtensionGensTest {
             .generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault())
             .asString();
 
-    assertEquals(readResourcePojoTemplate("SamplePojo"), output);
+    assertTemplateEqualsOrUpdate("SamplePojo", output);
   }
 
   @Test
@@ -35,7 +35,7 @@ class ExtensionGensTest {
             .generate(Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault())
             .asString();
 
-    assertEquals(readResourcePojoTemplate("GenericSamplePojo"), output);
+    assertTemplateEqualsOrUpdate("GenericSamplePojo", output);
   }
 
   @Test
@@ -56,7 +56,7 @@ class ExtensionGensTest {
                 Writer.createDefault())
             .asString();
 
-    assertEquals(readResourcePojoTemplate("AllDisabledSamplePojo"), output);
+    assertTemplateEqualsOrUpdate("AllDisabledSamplePojo", output);
   }
 
   @Test
@@ -95,9 +95,5 @@ class ExtensionGensTest {
             .generate(fieldGetter, PojoSettings.defaultSettings(), Writer.createDefault());
 
     assertEquals("T getData();", writer.asString());
-  }
-
-  private static String readResourcePojoTemplate(String template) {
-    return Resources.readString("/java/pojos/" + template + ".java.template");
   }
 }

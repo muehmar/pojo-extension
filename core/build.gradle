@@ -15,5 +15,10 @@ dependencies {
     testImplementation libs.bundles.junit
 
     testImplementation libs.joor
+}
 
+test {
+    doFirst {
+        systemProperties.put("extension.test.updateTemplates", project.properties["updateTemplates"])
+    }
 }
