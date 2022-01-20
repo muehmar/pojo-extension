@@ -19,7 +19,7 @@ public class BaseClassGens {
     return ClassGen.<Pojo, PojoSettings>clazz()
         .topLevel()
         .packageGen(new PackageGen())
-        .modifiers(PUBLIC, ABSTRACT)
+        .modifiers(ABSTRACT)
         .className((p, s) -> s.baseClassName(p).asString() + p.getGenericTypeDeclarationSection())
         .noSuperClass()
         .singleInterface((p, s) -> s.extensionName(p).asString() + p.getTypeVariablesSection())
