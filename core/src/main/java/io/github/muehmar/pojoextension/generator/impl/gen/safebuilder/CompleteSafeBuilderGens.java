@@ -11,9 +11,11 @@ import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.SafeBuilderPojoField;
+import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.BuilderField;
+import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FullBuilderField;
 
 public class CompleteSafeBuilderGens {
+
   private CompleteSafeBuilderGens() {}
 
   public static Generator<Pojo, PojoSettings> completeSafeBuilder() {
@@ -31,18 +33,22 @@ public class CompleteSafeBuilderGens {
         .filter((p, s) -> s.getSafeBuilderAbility().isEnabled());
   }
 
-  private static PList<SafeBuilderPojoField> requiredPojoFields(Pojo pojo) {
+  private static PList<FullBuilderField> requiredPojoFields(Pojo pojo) {
     return pojo.getFields()
         .filter(PojoField::isRequired)
         .zipWithIndex()
-        .map(p -> new SafeBuilderPojoField(pojo, p.first(), p.second()));
+        .map(
+            p ->
+                new FullBuilderField(new BuilderField(pojo, p.first(), p.second()), PList.empty()));
   }
 
-  private static PList<SafeBuilderPojoField> optionalPojoFields(Pojo pojo) {
+  private static PList<FullBuilderField> optionalPojoFields(Pojo pojo) {
     return pojo.getFields()
         .filter(PojoField::isOptional)
         .zipWithIndex()
-        .map(p -> new SafeBuilderPojoField(pojo, p.first(), p.second()));
+        .map(
+            p ->
+                new FullBuilderField(new BuilderField(pojo, p.first(), p.second()), PList.empty()));
   }
 
   public static Generator<Pojo, PojoSettings> newBuilderMethod() {

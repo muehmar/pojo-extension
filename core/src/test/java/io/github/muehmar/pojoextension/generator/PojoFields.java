@@ -1,5 +1,6 @@
 package io.github.muehmar.pojoextension.generator;
 
+import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.data.Type.string;
 
@@ -15,6 +16,10 @@ public class PojoFields {
 
   public static PojoField requiredId() {
     return new PojoField(Name.fromString("id"), Type.integer(), REQUIRED);
+  }
+
+  public static PojoField optionalName() {
+    return new PojoField(Name.fromString("name"), Type.string(), OPTIONAL);
   }
 
   public static PojoField requiredMap() {
