@@ -6,6 +6,7 @@ import static io.github.muehmar.pojoextension.generator.data.Type.optional;
 import static io.github.muehmar.pojoextension.generator.data.Type.string;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import io.github.muehmar.pojoextension.generator.Names;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,7 +17,7 @@ class ArgumentTest {
   @ParameterizedTest
   @EnumSource(Necessity.class)
   void getRelation_when_typesAreTheSame_then_sameType(Necessity necessity) {
-    final Argument argument = new Argument(Name.fromString("id"), string());
+    final Argument argument = new Argument(Names.id(), string());
     final PojoField field = new PojoField(Name.fromString("extId"), string(), necessity);
 
     assertEquals(
@@ -26,7 +27,7 @@ class ArgumentTest {
   @Test
   void
       getRelation_when_argumentTypeWrappedIntoOptionalAndFieldNotRequired_then_relationIsWrappedIntoOptional() {
-    final Argument argument = new Argument(Name.fromString("id"), optional(string()));
+    final Argument argument = new Argument(Names.id(), optional(string()));
     final PojoField field = new PojoField(Name.fromString("extId"), string(), OPTIONAL);
 
     assertEquals(
@@ -36,7 +37,7 @@ class ArgumentTest {
 
   @Test
   void getRelation_when_argumentTypeWrappedIntoOptionalAndFieldRequired_then_noRelation() {
-    final Argument argument = new Argument(Name.fromString("id"), optional(string()));
+    final Argument argument = new Argument(Names.id(), optional(string()));
     final PojoField field = new PojoField(Name.fromString("extId"), string(), REQUIRED);
 
     assertEquals(Optional.empty(), argument.getRelationFromField(field));
@@ -45,7 +46,7 @@ class ArgumentTest {
   @Test
   void
       getRelation_when_fieldTypeWrappedIntoOptionalAndFieldNoRequired_then_relationIsUnwrapOptional() {
-    final Argument argument = new Argument(Name.fromString("id"), string());
+    final Argument argument = new Argument(Names.id(), string());
     final PojoField field = new PojoField(Name.fromString("extId"), optional(string()), OPTIONAL);
 
     assertEquals(
@@ -54,7 +55,7 @@ class ArgumentTest {
 
   @Test
   void getRelation_when_fieldTypeWrappedIntoOptionalAndFieldRequired_then_noRelation() {
-    final Argument argument = new Argument(Name.fromString("id"), string());
+    final Argument argument = new Argument(Names.id(), string());
     final PojoField field = new PojoField(Name.fromString("extId"), optional(string()), REQUIRED);
 
     assertEquals(Optional.empty(), argument.getRelationFromField(field));
@@ -62,7 +63,7 @@ class ArgumentTest {
 
   @Test
   void formatted_when_calledForSimpleArgument_then_correctFormatted() {
-    final Argument argument = new Argument(Name.fromString("id"), string());
+    final Argument argument = new Argument(Names.id(), string());
     assertEquals("String id", argument.formatted());
   }
 

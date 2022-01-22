@@ -15,7 +15,7 @@ public class PojoFields {
   private PojoFields() {}
 
   public static PojoField requiredId() {
-    return new PojoField(Name.fromString("id"), Type.integer(), REQUIRED);
+    return new PojoField(Names.id(), Type.integer(), REQUIRED);
   }
 
   public static PojoField optionalName() {

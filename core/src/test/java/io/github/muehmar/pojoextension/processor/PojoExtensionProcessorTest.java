@@ -11,6 +11,7 @@ import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import io.github.muehmar.pojoextension.generator.Names;
 import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.data.Argument;
 import io.github.muehmar.pojoextension.generator.data.Constructor;
@@ -48,7 +49,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className), classString);
 
-    final PojoField m1 = new PojoField(Name.fromString("id"), string(), REQUIRED);
+    final PojoField m1 = new PojoField(Names.id(), string(), REQUIRED);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
@@ -81,7 +82,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className), classString);
 
-    final PojoField m1 = new PojoField(Name.fromString("id"), string(), OPTIONAL);
+    final PojoField m1 = new PojoField(Names.id(), string(), OPTIONAL);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
@@ -114,7 +115,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className), classString);
 
-    final PojoField m1 = new PojoField(Name.fromString("id"), string(), OPTIONAL);
+    final PojoField m1 = new PojoField(Names.id(), string(), OPTIONAL);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
@@ -156,7 +157,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
 
     final Necessity necessity =
         optionalDetection.equals(OptionalDetection.NULLABLE_ANNOTATION) ? OPTIONAL : REQUIRED;
-    final PojoField m1 = new PojoField(Name.fromString("id"), string(), necessity);
+    final PojoField m1 = new PojoField(Names.id(), string(), necessity);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
@@ -200,7 +201,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
         optionalDetection.equals(OptionalDetection.OPTIONAL_CLASS) ? OPTIONAL : REQUIRED;
     final Type type = required.isRequired() ? Type.optional(string()) : string();
 
-    final PojoField m1 = new PojoField(Name.fromString("id"), type, required);
+    final PojoField m1 = new PojoField(Names.id(), type, required);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
@@ -210,8 +211,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
             .constructors(
                 PList.single(
                     new Constructor(
-                        className,
-                        PList.single(new Argument(Name.fromString("id"), Type.string())))))
+                        className, PList.single(new Argument(Names.id(), Type.string())))))
             .getters(PList.empty())
             .generics(PList.empty())
             .build();
@@ -387,7 +387,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className), classString);
 
-    final PojoField m1 = new PojoField(Name.fromString("id"), string(), REQUIRED);
+    final PojoField m1 = new PojoField(Names.id(), string(), REQUIRED);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
