@@ -2,18 +2,25 @@ package io.github.muehmar.pojoextension.generator.data;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import java.util.Optional;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
 public class FieldBuilderMethod extends FieldBuilderMethodBase {
   private final Name fieldName;
+  private final Optional<Name> innerClassName;
   private final Name methodName;
   private final Type returnType;
   private final PList<Argument> arguments;
 
   public FieldBuilderMethod(
-      Name fieldName, Name methodName, Type returnType, PList<Argument> arguments) {
+      Name fieldName,
+      Optional<Name> innerClassName,
+      Name methodName,
+      Type returnType,
+      PList<Argument> arguments) {
     this.fieldName = fieldName;
+    this.innerClassName = innerClassName;
     this.methodName = methodName;
     this.returnType = returnType;
     this.arguments = arguments;
@@ -21,6 +28,10 @@ public class FieldBuilderMethod extends FieldBuilderMethodBase {
 
   public Name getFieldName() {
     return fieldName;
+  }
+
+  public Optional<Name> getInnerClassName() {
+    return innerClassName;
   }
 
   public Name getMethodName() {

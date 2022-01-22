@@ -644,4 +644,32 @@ class SafeBuilderGensTest {
             + "}",
         output);
   }
+
+  @Test
+  void fieldBuilderMethods_when_singleMethodWithInnerClass_then_correctOutput() {
+    final Generator<FullBuilderField, PojoSettings> generator =
+        SafeBuilderGens.fieldBuilderMethods();
+
+    final FieldBuilderMethod fieldBuilderMethod =
+        FieldBuilderMethods.forField(
+                PojoFields.optionalName(),
+                Name.fromString("customRandomName"),
+                new Argument(Name.fromString("value"), Type.string()))
+            .withInnerClassName(Name.fromString("NameBuilder"));
+
+    final FullBuilderField field =
+        FullBuilderFields.of(Pojos.sample(), PojoFields.optionalName(), 2)
+            .withFieldBuilderMethods(PList.single(fieldBuilderMethod));
+
+    final Writer writer =
+        generator.generate(field, PojoSettings.defaultSettings(), Writer.createDefault());
+    final String output = writer.asString();
+
+    assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
+    assertEquals(
+        "public OptBuilder3 customRandomName(String value) {\n"
+            + "  return new OptBuilder3(builder.name(Customer.NameBuilder.customRandomName(value)));\n"
+            + "}",
+        output);
+  }
 }

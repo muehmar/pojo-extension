@@ -172,10 +172,14 @@ public class SafeBuilderGens {
     final Generator<FieldBuilderField, PojoSettings> content =
         (f, s, w) ->
             w.println(
-                "return new %s(builder.%s(%s.%s(%s)));",
+                "return new %s(builder.%s(%s%s.%s(%s)));",
                 nextClassDiamond(f.getBuilderField()),
                 f.getField().builderSetMethodName(s),
                 f.getPojo().getName(),
+                f.getFieldBuilderMethod()
+                    .getInnerClassName()
+                    .map(name -> name.prefix(".").asString())
+                    .orElse(""),
                 f.getFieldBuilderMethod().getMethodName(),
                 f.getFieldBuilderMethod().getArgumentNames().mkString(", "));
 
