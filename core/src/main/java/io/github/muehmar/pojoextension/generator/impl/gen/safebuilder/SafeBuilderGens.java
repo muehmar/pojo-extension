@@ -8,6 +8,7 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newL
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 
 import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.pojoextension.generator.data.Argument;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
@@ -186,14 +187,7 @@ public class SafeBuilderGens {
             .noGenericTypes()
             .returnType(nextClassTypeVariables)
             .methodName((f, s) -> f.getFieldBuilderMethod().getMethodName().asString())
-            .arguments(
-                f ->
-                    f.getFieldBuilderMethod()
-                        .getArguments()
-                        .map(
-                            arg ->
-                                String.format(
-                                    "%s %s", arg.getType().getTypeDeclaration(), arg.getName())))
+            .arguments(f -> f.getFieldBuilderMethod().getArguments().map(Argument::formatted))
             .content(content)
             .append(RefsGen.fieldBuilderMethodRefs(), FieldBuilderField::getFieldBuilderMethod);
 

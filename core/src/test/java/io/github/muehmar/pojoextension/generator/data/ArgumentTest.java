@@ -59,4 +59,19 @@ class ArgumentTest {
 
     assertEquals(Optional.empty(), argument.getRelationFromField(field));
   }
+
+  @Test
+  void formatted_when_calledForSimpleArgument_then_correctFormatted() {
+    final Argument argument = new Argument(Name.fromString("id"), string());
+    assertEquals("String id", argument.formatted());
+  }
+
+  @Test
+  void formatted_when_calledForComplexArgumentType_then_correctFormatted() {
+    final Argument argument =
+        new Argument(
+            Name.fromString("map"),
+            Type.map(Type.typeVariable(Name.fromString("T")), Type.optional(string())));
+    assertEquals("Map<T,Optional<String>> map", argument.formatted());
+  }
 }
