@@ -10,4 +10,8 @@ public class Strings {
       return String.format("%s%s%s", prefix, content, suffix);
     }
   }
+
+  public static boolean nonEmpty(String str) {
+    return str.length() > 0;
+  }
 }

@@ -5,22 +5,23 @@ import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.INHERITED;
 import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.STATIC;
-import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getBaseClassName;
-import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getBuilderName;
-import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getBuilderSetMethodPrefix;
-import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableBaseClass;
-import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableEqualsAndHashCode;
-import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableMappers;
-import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableOptionalGetters;
-import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableSafeBuilder;
-import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableToString;
-import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getEnableWithers;
-import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getExtensionName;
-import static io.github.muehmar.pojoextension.processor.AnnotationValueExtractor.getOptionalDetection;
+import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getBaseClassName;
+import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getBuilderName;
+import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getBuilderSetMethodPrefix;
+import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableBaseClass;
+import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableEqualsAndHashCode;
+import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableMappers;
+import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableOptionalGetters;
+import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableSafeBuilder;
+import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableToString;
+import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableWithers;
+import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getExtensionName;
+import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getOptionalDetection;
 
 import ch.bluecare.commons.data.PList;
 import com.google.auto.service.AutoService;
 import io.github.muehmar.pojoextension.Optionals;
+import io.github.muehmar.pojoextension.Strings;
 import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
@@ -225,19 +226,19 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .mapIfPresent(
             getExtensionName(annotation)
                 .map(String::trim)
-                .filter(s -> s.length() > 0)
+                .filter(Strings::nonEmpty)
                 .map(Name::fromString),
             PojoSettings::withExtensionName)
         .mapIfPresent(
             getBuilderName(annotation)
                 .map(String::trim)
-                .filter(s -> s.length() > 0)
+                .filter(Strings::nonEmpty)
                 .map(Name::fromString),
             PojoSettingsExtension::withBuilderName)
         .mapIfPresent(
             getBuilderSetMethodPrefix(annotation)
                 .map(String::trim)
-                .filter(s -> s.length() > 0)
+                .filter(Strings::nonEmpty)
                 .map(Name::fromString),
             PojoSettingsExtension::withBuilderSetMethodPrefix)
         .mapIfPresent(
