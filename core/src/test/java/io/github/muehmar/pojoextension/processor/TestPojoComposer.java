@@ -248,8 +248,13 @@ public class TestPojoComposer {
 
     public PojoMethod methodWithAnnotation(
         String returnType, String methodName, String content, String annotation) {
+      return methodWithAnnotation(returnType, methodName, content, annotation, "");
+    }
+
+    public PojoMethod methodWithAnnotation(
+        String returnType, String methodName, String content, String annotation, String arguments) {
       builder.append(String.format("  %s\n", annotation));
-      builder.append(String.format("  public %s %s() {\n", returnType, methodName));
+      builder.append(String.format("  public %s %s(%s) {\n", returnType, methodName, arguments));
       builder.append(String.format("    %s;\n", content));
       builder.append("  }\n");
       return new PojoMethod(builder);
