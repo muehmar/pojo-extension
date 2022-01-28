@@ -56,11 +56,20 @@ public interface Generator<A, B> {
   }
 
   default <C> Generator<A, B> appendList(Generator<C, B> gen, Function<A, PList<C>> f) {
+    return appendList(gen, f, Generator.emptyGen());
+  }
+
+  default <C> Generator<A, B> appendList(
+      Generator<C, B> gen, Function<A, PList<C>> f, Generator<A, B> separator) {
     final Generator<A, B> self = this;
-    return (data, settings, writer) ->
-        f.apply(data)
-            .foldLeft(self, (g, e) -> g.append(gen, ignore -> e))
-            .generate(data, settings, writer);
+    return (data, settings, writer) -> {
+      final Writer selfWriter = self.generate(data, settings, writer);
+      return f.apply(data)
+          .<UnaryOperator<Writer>>map(e -> w -> gen.generate(e, settings, w))
+          .reduce((f1, f2) -> w -> f2.apply(separator.generate(data, settings, f1.apply(w))))
+          .map(f1 -> f1.apply(selfWriter))
+          .orElse(selfWriter);
+    };
   }
 
   default Generator<A, B> appendConditionally(BiPredicate<A, B> predicate, Generator<A, B> append) {

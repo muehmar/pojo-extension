@@ -20,6 +20,7 @@ import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.BuilderField;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FieldBuilderField;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FullBuilderField;
+import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
@@ -80,6 +81,9 @@ public class SafeBuilderGens {
         .append(constructor())
         .append(newLine())
         .append(setMethod())
+        .appendConditionally(
+            f -> f.getFieldBuilderFields().nonEmpty(),
+            Generators.<FullBuilderField, PojoSettings>newLine().append(fieldBuilderMethods()))
         .appendConditionally(
             (f, s) -> f.getField().isOptional(),
             Generators.<FullBuilderField, PojoSettings>newLine().append(setMethodOptional()));
@@ -196,7 +200,10 @@ public class SafeBuilderGens {
             .append(RefsGen.fieldBuilderMethodRefs(), FieldBuilderField::getFieldBuilderMethod);
 
     return Generator.<FullBuilderField, PojoSettings>emptyGen()
-        .appendList(singleMethod, FullBuilderField::getFieldBuilderFields);
+        .appendList(
+            singleMethod,
+            FullBuilderField::getFieldBuilderFields,
+            Generator.ofWriterFunction(Writer::println));
   }
 
   public static Generator<Pojo, PojoSettings> finalRequiredBuilder() {

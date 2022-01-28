@@ -24,6 +24,7 @@ import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FullBuilderField;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 class SafeBuilderGensTest {
@@ -210,6 +211,53 @@ class SafeBuilderGensTest {
             + "\n"
             + "public Builder3<T, S> id(Integer id) {\n"
             + "  return new Builder3<>(builder.id(id));\n"
+            + "}",
+        output);
+  }
+
+  @Test
+  void builderClassContent_when_generatorUsedWithFieldBuilderMethods_then_correctOutput() {
+    final Generator<FullBuilderField, PojoSettings> generator =
+        SafeBuilderGens.builderClassContent();
+    final FieldBuilderMethod fieldBuilderMethod1 =
+        new FieldBuilderMethod(
+            Name.fromString("id"),
+            Optional.empty(),
+            Name.fromString("customMethod1"),
+            Type.integer(),
+            PList.empty());
+    final FieldBuilderMethod fieldBuilderMethod2 =
+        new FieldBuilderMethod(
+            Name.fromString("id"),
+            Optional.empty(),
+            Name.fromString("customMethod2"),
+            Type.integer(),
+            PList.of(new Argument(Name.fromString("val"), Type.integer())));
+    final FullBuilderField field =
+        FullBuilderFields.of(Pojos.sample(), PojoFields.requiredId(), 2)
+            .withFieldBuilderMethods(PList.of(fieldBuilderMethod1, fieldBuilderMethod2));
+    final String output =
+        generator
+            .generate(field, PojoSettings.defaultSettings(), Writer.createDefault())
+            .asString();
+
+    assertEquals(
+        "private final Builder builder;\n"
+            + "\n"
+            + "private Builder2(Builder builder) {\n"
+            + "  this.builder = builder;\n"
+            + "}\n"
+            + "\n"
+            + "public Builder3 id(Integer id) {\n"
+            + "  return new Builder3(builder.id(id));\n"
+            + "}\n"
+            + "\n"
+            + "public Builder3 customMethod1() {\n"
+            + "  return new Builder3(builder.id(Customer.customMethod1()));\n"
+            + "}\n"
+            + "\n"
+            + "public Builder3 customMethod2(Integer val) {\n"
+            + "  return new Builder3(builder.id(Customer.customMethod2(val)));\n"
             + "}",
         output);
   }
