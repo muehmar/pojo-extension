@@ -8,12 +8,16 @@ import static io.github.muehmar.pojoextension.generator.data.Type.string;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.annotations.FieldBuilder;
 import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import io.github.muehmar.pojoextension.generator.Names;
 import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.data.Argument;
 import io.github.muehmar.pojoextension.generator.data.Constructor;
+import io.github.muehmar.pojoextension.generator.data.FieldBuilderMethod;
+import io.github.muehmar.pojoextension.generator.data.FieldBuilderMethodBuilder;
 import io.github.muehmar.pojoextension.generator.data.Generic;
 import io.github.muehmar.pojoextension.generator.data.Getter;
 import io.github.muehmar.pojoextension.generator.data.GetterBuilder;
@@ -48,7 +52,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className), classString);
 
-    final PojoField m1 = new PojoField(Name.fromString("id"), string(), REQUIRED);
+    final PojoField m1 = new PojoField(Names.id(), string(), REQUIRED);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
@@ -59,6 +63,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.empty())
+            .fieldBuilderMethods(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -81,7 +86,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className), classString);
 
-    final PojoField m1 = new PojoField(Name.fromString("id"), string(), OPTIONAL);
+    final PojoField m1 = new PojoField(Names.id(), string(), OPTIONAL);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
@@ -92,6 +97,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.empty())
+            .fieldBuilderMethods(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -114,7 +120,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className), classString);
 
-    final PojoField m1 = new PojoField(Name.fromString("id"), string(), OPTIONAL);
+    final PojoField m1 = new PojoField(Names.id(), string(), OPTIONAL);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
@@ -125,6 +131,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.empty())
+            .fieldBuilderMethods(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -156,7 +163,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
 
     final Necessity necessity =
         optionalDetection.equals(OptionalDetection.NULLABLE_ANNOTATION) ? OPTIONAL : REQUIRED;
-    final PojoField m1 = new PojoField(Name.fromString("id"), string(), necessity);
+    final PojoField m1 = new PojoField(Names.id(), string(), necessity);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
@@ -167,6 +174,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.empty())
+            .fieldBuilderMethods(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -200,7 +208,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
         optionalDetection.equals(OptionalDetection.OPTIONAL_CLASS) ? OPTIONAL : REQUIRED;
     final Type type = required.isRequired() ? Type.optional(string()) : string();
 
-    final PojoField m1 = new PojoField(Name.fromString("id"), type, required);
+    final PojoField m1 = new PojoField(Names.id(), type, required);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
@@ -210,10 +218,10 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
             .constructors(
                 PList.single(
                     new Constructor(
-                        className,
-                        PList.single(new Argument(Name.fromString("id"), Type.string())))))
+                        className, PList.single(new Argument(Names.id(), Type.string())))))
             .getters(PList.empty())
             .generics(PList.empty())
+            .fieldBuilderMethods(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -260,6 +268,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.empty())
+            .fieldBuilderMethods(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -298,6 +307,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.empty())
+            .fieldBuilderMethods(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -387,7 +397,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className), classString);
 
-    final PojoField m1 = new PojoField(Name.fromString("id"), string(), REQUIRED);
+    final PojoField m1 = new PojoField(Names.id(), string(), REQUIRED);
     final PList<PojoField> fields = PList.single(m1);
     final Pojo expected =
         PojoBuilder.create()
@@ -398,6 +408,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.empty())
+            .fieldBuilderMethods(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -451,8 +462,107 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.single(generic))
+            .fieldBuilderMethods(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
+  }
+
+  @Test
+  void run_when_fieldBuilderAnnotationOnMethod_then_extractFieldBuilderMethod() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .withImport(FieldBuilder.class)
+            .annotation(PojoExtension.class)
+            .className(className)
+            .withField("Integer", "key")
+            .constructor()
+            .getter("Integer", "key")
+            .methodWithAnnotation(
+                "static Integer",
+                "sumKey",
+                "return Integer.parseInt(a) + b",
+                "@FieldBuilder(fieldName=\"key\")",
+                "String a, int b")
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    final PList<FieldBuilderMethod> expected =
+        PList.of(
+            FieldBuilderMethodBuilder.create()
+                .fieldName(Name.fromString("key"))
+                .methodName(Name.fromString("sumKey"))
+                .returnType(Type.integer())
+                .arguments(
+                    PList.of(
+                        new Argument(Name.fromString("a"), Type.string()),
+                        new Argument(Name.fromString("b"), Type.primitive("int"))))
+                .andAllOptionals()
+                .innerClassName(Optional.empty())
+                .build());
+
+    assertEquals(expected, pojoAndSettings.getPojo().getFieldBuilderMethods());
+  }
+
+  @Test
+  void run_when_fieldBuilderAnnotationOnClass_then_extractFieldBuilderMethod() {
+    final Name className = randomClassName();
+
+    final String classString =
+        "package "
+            + PACKAGE
+            + ";\n"
+            + "import io.github.muehmar.pojoextension.annotations.PojoExtension;\n"
+            + "import io.github.muehmar.pojoextension.annotations.FieldBuilder;\n"
+            + "@PojoExtension\n"
+            + "public class "
+            + className
+            + " {\n"
+            + "  private final String id;\n"
+            + "  public "
+            + className
+            + "(String id) {\n"
+            + "    this.id = id;\n"
+            + "  }\n"
+            + "\n"
+            + "  @FieldBuilder(fieldName = \"id\")\n"
+            + "  static class CustomIdBuilder {\n"
+            + "    static String randomId(int seed) {\n"
+            + "      return \"random\" + seed;\n"
+            + "    } \n"
+            + "    static String constant() {\n"
+            + "      return \"constant\";\n"
+            + "    } \n"
+            + "  }\n"
+            + "}";
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    final PList<FieldBuilderMethod> expected =
+        PList.of(
+            FieldBuilderMethodBuilder.create()
+                .fieldName(Name.fromString("id"))
+                .methodName(Name.fromString("randomId"))
+                .returnType(Type.string())
+                .arguments(PList.of(new Argument(Name.fromString("seed"), Type.primitive("int"))))
+                .andAllOptionals()
+                .innerClassName(Optional.of(Name.fromString("CustomIdBuilder")))
+                .build(),
+            FieldBuilderMethodBuilder.create()
+                .fieldName(Name.fromString("id"))
+                .methodName(Name.fromString("constant"))
+                .returnType(Type.string())
+                .arguments(PList.empty())
+                .andAllOptionals()
+                .innerClassName(Optional.of(Name.fromString("CustomIdBuilder")))
+                .build());
+
+    assertEquals(expected, pojoAndSettings.getPojo().getFieldBuilderMethods());
   }
 }

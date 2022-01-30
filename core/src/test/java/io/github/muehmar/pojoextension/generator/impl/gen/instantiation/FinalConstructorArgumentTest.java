@@ -7,6 +7,7 @@ import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelati
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.WRAP_INTO_OPTIONAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import io.github.muehmar.pojoextension.generator.Names;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Argument;
 import io.github.muehmar.pojoextension.generator.data.FieldArgument;
@@ -21,7 +22,7 @@ class FinalConstructorArgumentTest {
   @Test
   void
       ofGetter_when_getterReturnsSameTypeAndConstructorArgumentIsWrappedIntoOptional_then_correctResult() {
-    final Name name = Name.fromString("id");
+    final Name name = Names.id();
     final PojoField pojoField = new PojoField(name, Type.string(), OPTIONAL);
     final FieldGetter fieldGetter =
         FieldGetter.of(
@@ -43,7 +44,7 @@ class FinalConstructorArgumentTest {
   @Test
   void
       ofGetter_when_getterReturnsWrappedIntoOptionalAndConstructorArgumentIsSameType_then_correctResult() {
-    final Name name = Name.fromString("id");
+    final Name name = Names.id();
     final PojoField pojoField = new PojoField(name, Type.string(), OPTIONAL);
     final FieldGetter fieldGetter =
         FieldGetter.of(
@@ -64,7 +65,7 @@ class FinalConstructorArgumentTest {
   @Test
   void
       ofGetter_when_getterReturnsWrappedIntoOptionalAndConstructorArgumentIsWrappedIntoOptional_then_correctResult() {
-    final Name name = Name.fromString("id");
+    final Name name = Names.id();
     final PojoField pojoField = new PojoField(name, Type.string(), OPTIONAL);
     final FieldGetter fieldGetter =
         FieldGetter.of(
@@ -86,7 +87,7 @@ class FinalConstructorArgumentTest {
   @Test
   void
       ofFieldVariable_when_variableIsWrappedIntoOptionalAndArgumentIsWrappedIntoOptional_then_correctResult() {
-    final Name name = Name.fromString("id");
+    final Name name = Names.id();
     final PojoField pojoField = new PojoField(name, Type.string(), OPTIONAL);
     final FieldVariable fieldVariable =
         new FieldVariable(Pojos.sample(), pojoField, UNWRAP_OPTIONAL);
@@ -105,7 +106,7 @@ class FinalConstructorArgumentTest {
   @Test
   void
       ofFieldVariable_when_variableIsSameTypeAndArgumentIsWrappedIntoOptional_then_correctResult() {
-    final Name name = Name.fromString("id");
+    final Name name = Names.id();
     final PojoField pojoField = new PojoField(name, Type.string(), OPTIONAL);
     final FieldVariable fieldVariable = new FieldVariable(Pojos.sample(), pojoField, SAME_TYPE);
     final FieldArgument fieldArgument =
@@ -122,7 +123,7 @@ class FinalConstructorArgumentTest {
 
   @Test
   void ofFieldVariable_when_variableIsSameTypeAndArgumentIsSameType_then_correctResult() {
-    final Name name = Name.fromString("id");
+    final Name name = Names.id();
     final PojoField pojoField = new PojoField(name, Type.string(), OPTIONAL);
     final FieldVariable fieldVariable =
         new FieldVariable(Pojos.sample(), pojoField, UNWRAP_OPTIONAL);

@@ -23,7 +23,7 @@ public class Pojos {
   public static Pojo sample() {
     final PList<PojoField> fields =
         PList.of(
-            new PojoField(Name.fromString("id"), Type.integer(), REQUIRED),
+            new PojoField(Names.id(), Type.integer(), REQUIRED),
             new PojoField(Name.fromString("username"), Type.string(), REQUIRED),
             new PojoField(Name.fromString("nickname"), Type.string(), OPTIONAL));
 
@@ -37,6 +37,7 @@ public class Pojos {
             .constructors(PList.empty())
             .getters(getters)
             .generics(PList.empty())
+            .fieldBuilderMethods(PList.empty())
             .andAllOptionals()
             .build();
     return pojo.withConstructors(PList.single(deviateStandardConstructor(pojo)));
@@ -59,7 +60,7 @@ public class Pojos {
   public static Pojo genericSample() {
     final PList<PojoField> fields =
         PList.of(
-            new PojoField(Name.fromString("id"), Type.string(), REQUIRED),
+            new PojoField(Names.id(), Type.string(), REQUIRED),
             new PojoField(
                 Name.fromString("data"), Type.typeVariable(Name.fromString("T")), REQUIRED),
             new PojoField(
@@ -82,6 +83,7 @@ public class Pojos {
             .constructors(PList.empty())
             .getters(getters)
             .generics(generics)
+            .fieldBuilderMethods(PList.empty())
             .andAllOptionals()
             .build();
     return pojo.withConstructors(PList.single(deviateStandardConstructor(pojo)));

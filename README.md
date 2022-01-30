@@ -18,6 +18,7 @@ fields must be present all times and which may be absent.
 Currently, the following features are supported:
 
 * SafeBuilder - Special builder class which enforces (at compile time) setting all required attributes.
+    * User defined methods for fields in SageBuilder
 * `equals()` and `hashCode()` methods
 * `toString()` method
 * `withXX()` method for each field
@@ -33,8 +34,8 @@ annotation processor.In gradle this would look like the following:
 
 ```
 dependencies {
-    compileOnly "io.github.muehmar:pojo-extension-annotations:0.10.1"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.10.1"
+    compileOnly "io.github.muehmar:pojo-extension-annotations:0.11.0"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.11.0"
 }
 ```
 
@@ -162,7 +163,7 @@ private final Optional<String> nickname;
 will lead to a builder which can be used like the following:
 
 ```
-  Customer.newBuilder()
+  CustomerBuilder.create()
     .name("Dexter")
     .email("dexter@miami-metro.us")
     .andAllOptionals()
@@ -170,7 +171,7 @@ will lead to a builder which can be used like the following:
     .build();
 ```
 
-This does not seem to be very different from the normal builder pattern at a first glance but calling `newBuilder()`
+This does not seem to be very different from the normal builder pattern at a first glance but calling `create()`
 will return a class which has only a single method `name()`, i.e. the compiler enforces one to set the name. The
 returned class after setting the name has again one single method `email()`. As the property `email` is the last
 required property in this example the returned class for `email()` offers three methods:
@@ -211,6 +212,58 @@ generation
     .setNickname("Dex")
     .build();
 ```
+
+The first character of the field name is automatically converted to uppercase if a prefix is used.
+
+### Custom methods in SafeBuilder
+
+It is possible define custom methods for the SafeBuilder for a specific field which can be used to populate the
+corresponding field when using the builder. One could define one or more methods which return an instance of the
+corresponding field, where the methods must be static and at least package private:
+
+```
+@FieldBuilder(fieldName = "name")
+static String fromObject(Object o) {
+  return o.toString();
+}
+```
+
+The builder now contains also a method `fromObject` for populating the `name` field which accepts an `Object`.
+
+If more than one custom method is defined for a field, all methods will be present when the corresponding field must be
+populated. One could also annotate a static class with `@FieldBuilder`, where all methods are used for the builder:
+
+```
+@FieldBuilder(fieldName = "name")
+static class FieldBuilder {
+  private FieldBuilder(){}
+  
+  static String fromObject(Object o) {
+    return o.toString();
+  } 
+  
+  static String unknown() {
+    return "unknown";
+  }
+}
+```
+
+This enables one to create convenience methods to reduce code and/or make the call of the builder more readable.
+
+#### Generic
+
+To create a custom method for a generic field of the class, the method needs to be declared with the same type parameter
+name as the type parameter. For example if your class has a type parameter `T` and a field is a `List<T>` you have to
+declare the custom method like following:
+
+```
+@FieldBuilder(fieldName = "items")
+static <T> List<T> singleItem(T item) {
+  return Collections.singletonList(item);
+}
+```
+
+Other generic methods are not yet supported (it will lead currently to a compile error when used).
 
 ### Methods `equals` and `hashCode`
 
@@ -398,6 +451,8 @@ The following annotations exists, where only one single annotation should be use
 * `@SafeBuilder` Creates the builder class
 * `@RecordExtension` Can be used for records, where no `equals`, `hashCode` and `toString` methods are generated, as
   well as the abstract base class.
+* `@FieldBuilder` Used to mark custom methods used in the SafeBuilder. `fieldName` is required and defines the field for
+  which the custom method should be used.
 
 ### Annotation Parameters
 
@@ -463,6 +518,7 @@ public @interface AllRequiredExtension {
 
 ## Change Log
 
+* 0.11.0 - Add `@FieldBuilder` annotation to create custom methods for the SafeBuilder
 * 0.10.1 - Make the base class and the extension interface package private
 * 0.10.0
     * Add configurable prefix for the builder set methods

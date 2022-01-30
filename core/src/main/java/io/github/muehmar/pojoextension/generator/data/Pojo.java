@@ -19,6 +19,7 @@ public class Pojo extends PojoBase {
   private final PList<Constructor> constructors;
   private final PList<Getter> getters;
   private final PList<Generic> generics;
+  private final PList<FieldBuilderMethod> fieldBuilderMethods;
 
   public Pojo(
       Name name,
@@ -26,13 +27,15 @@ public class Pojo extends PojoBase {
       PList<PojoField> fields,
       PList<Constructor> constructors,
       PList<Getter> getters,
-      PList<Generic> generics) {
+      PList<Generic> generics,
+      PList<FieldBuilderMethod> fieldBuilderMethods) {
     this.name = name;
     this.pkg = pkg;
     this.fields = fields;
     this.constructors = constructors;
     this.getters = getters;
     this.generics = generics;
+    this.fieldBuilderMethods = fieldBuilderMethods;
   }
 
   public Name getName() {
@@ -62,6 +65,10 @@ public class Pojo extends PojoBase {
 
   public PList<Generic> getGenerics() {
     return generics;
+  }
+
+  public PList<FieldBuilderMethod> getFieldBuilderMethods() {
+    return fieldBuilderMethods;
   }
 
   public PList<Name> getGenericImports() {

@@ -28,6 +28,10 @@ public class Argument extends ArgumentBase {
     return type;
   }
 
+  public String formatted() {
+    return String.format("%s %s", type.getTypeDeclaration(), name);
+  }
+
   /** Returns the relation from the field to the argument */
   public Optional<OptionalFieldRelation> getRelationFromField(PojoField field) {
     if (field.isRequired()) {

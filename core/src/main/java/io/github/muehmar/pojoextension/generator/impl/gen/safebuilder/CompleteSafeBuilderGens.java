@@ -4,16 +4,15 @@ import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newLine;
 
-import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.SafeBuilderPojoField;
+import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FullBuilderField;
 
 public class CompleteSafeBuilderGens {
+
   private CompleteSafeBuilderGens() {}
 
   public static Generator<Pojo, PojoSettings> completeSafeBuilder() {
@@ -21,28 +20,14 @@ public class CompleteSafeBuilderGens {
         .append(newLine())
         .appendList(
             SafeBuilderGens.fieldBuilderClass().append(newLine()),
-            CompleteSafeBuilderGens::requiredPojoFields)
+            FullBuilderField::requiredFromPojo)
         .append(SafeBuilderGens.finalRequiredBuilder())
         .append(newLine())
         .appendList(
             SafeBuilderGens.fieldBuilderClass().append(newLine()),
-            CompleteSafeBuilderGens::optionalPojoFields)
+            FullBuilderField::optionalFromPojo)
         .append(SafeBuilderGens.finalOptionalBuilder())
         .filter((p, s) -> s.getSafeBuilderAbility().isEnabled());
-  }
-
-  private static PList<SafeBuilderPojoField> requiredPojoFields(Pojo pojo) {
-    return pojo.getFields()
-        .filter(PojoField::isRequired)
-        .zipWithIndex()
-        .map(p -> new SafeBuilderPojoField(pojo, p.first(), p.second()));
-  }
-
-  private static PList<SafeBuilderPojoField> optionalPojoFields(Pojo pojo) {
-    return pojo.getFields()
-        .filter(PojoField::isOptional)
-        .zipWithIndex()
-        .map(p -> new SafeBuilderPojoField(pojo, p.first(), p.second()));
   }
 
   public static Generator<Pojo, PojoSettings> newBuilderMethod() {

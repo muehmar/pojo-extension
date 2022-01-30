@@ -11,4 +11,8 @@ public class DisabledToStringClass extends DisabledToStringClassBase {
   public String getProp1() {
     return prop1;
   }
+
+  static String emptyProp() {
+    return "";
+  }
 }

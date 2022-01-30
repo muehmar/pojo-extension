@@ -10,6 +10,7 @@ import static io.github.muehmar.pojoextension.example.MethodHelper.MAP_IF;
 import static io.github.muehmar.pojoextension.example.MethodHelper.MAP_IF_PRESENT;
 import static io.github.muehmar.pojoextension.example.MethodHelper.TO_STRING;
 import static io.github.muehmar.pojoextension.example.MethodHelper.hasMethod;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -40,5 +41,12 @@ class DisabledToStringClassTest {
     assertTrue(hasMethod(clazz, HASH_CODE));
 
     assertFalse(hasMethod(clazz, TO_STRING));
+  }
+
+  @Test
+  void test() {
+    final DisabledToStringClass disabledToStringClass =
+        DisabledToStringClassFieldBuilder.create().noProp().build();
+    assertEquals("", disabledToStringClass.getProp1());
   }
 }
