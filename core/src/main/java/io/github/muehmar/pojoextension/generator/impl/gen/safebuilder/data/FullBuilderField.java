@@ -37,8 +37,7 @@ public class FullBuilderField extends FullBuilderFieldBase {
               final Integer index = p.second();
               final BuilderField builderField = new BuilderField(pojo, field, index);
               final PList<FieldBuilderMethod> fieldBuilderMethods =
-                  pojo.getFieldBuilderMethods()
-                      .filter(fbm -> fbm.getFieldName().equals(p.first().getName()));
+                  pojo.getFieldBuilderMethods().filter(field::isFieldBuilderMethod);
               return new FullBuilderField(builderField, fieldBuilderMethods);
             });
   }
