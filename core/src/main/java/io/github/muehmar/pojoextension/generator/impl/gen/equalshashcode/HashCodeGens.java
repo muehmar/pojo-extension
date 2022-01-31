@@ -10,7 +10,7 @@ import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.BiFunction;
 
@@ -20,12 +20,14 @@ public class HashCodeGens {
 
   public static Generator<Pojo, PojoSettings> genHashCodeMethod() {
     final Generator<Pojo, PojoSettings> method =
-        MethodGen.<Pojo, PojoSettings>modifiers(DEFAULT)
+        MethodGenBuilder.<Pojo, PojoSettings>create()
+            .modifiers(DEFAULT)
             .noGenericTypes()
             .returnType("int")
             .methodName("genHashCode")
             .noArguments()
-            .content(genHashCodeMethodContent());
+            .content(genHashCodeMethodContent())
+            .build();
     return method.filter((d, s) -> s.getEqualsHashCodeAbility().isEnabled());
   }
 

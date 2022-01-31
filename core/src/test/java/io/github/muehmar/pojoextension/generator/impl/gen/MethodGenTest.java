@@ -13,12 +13,14 @@ class MethodGenTest {
   @Test
   void generate_when_minimalGeneratorCreated_then_outputCorrect() {
     final MethodGen<PList<String>, Void> generator =
-        MethodGen.<PList<String>, Void>modifiers(PUBLIC, FINAL)
+        MethodGenBuilder.<PList<String>, Void>create()
+            .modifiers(PUBLIC, FINAL)
             .noGenericTypes()
             .returnType(l -> l.apply(0))
             .methodName(l -> l.apply(1))
             .arguments(l -> l.drop(2))
-            .contentWriter(w -> w.println("System.out.println(\"Hello World\");"));
+            .contentWriter(w -> w.println("System.out.println(\"Hello World\");"))
+            .build();
 
     final PList<String> data = PList.of("void", "getXY", "String a", "int b");
 
@@ -33,12 +35,14 @@ class MethodGenTest {
   @Test
   void generate_when_methodWithGenerics_then_outputCorrect() {
     final MethodGen<String, Void> generator =
-        MethodGen.<String, Void>modifiers(PUBLIC, FINAL)
+        MethodGenBuilder.<String, Void>create()
+            .modifiers(PUBLIC, FINAL)
             .genericTypes("T, S")
             .returnType("T")
             .methodName("doSomething")
             .singleArgument(ignore -> "S s")
-            .contentWriter(w -> w.println("return s.getT();"));
+            .contentWriter(w -> w.println("return s.getT();"))
+            .build();
 
     final String output =
         generator.generate("data", noSettings(), Writer.createDefault()).asString();

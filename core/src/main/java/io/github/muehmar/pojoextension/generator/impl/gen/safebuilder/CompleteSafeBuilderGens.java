@@ -7,7 +7,7 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newL
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FullBuilderField;
 
@@ -31,7 +31,8 @@ public class CompleteSafeBuilderGens {
   }
 
   public static Generator<Pojo, PojoSettings> newBuilderMethod() {
-    return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC, STATIC)
+    return MethodGenBuilder.<Pojo, PojoSettings>create()
+        .modifiers(PUBLIC, STATIC)
         .genericTypes(Pojo::getGenericTypeDeclarations)
         .returnType(p -> "Builder0" + p.getTypeVariablesSection())
         .methodName("newBuilder")
@@ -41,6 +42,7 @@ public class CompleteSafeBuilderGens {
                 String.format(
                     "return new Builder0%s(new Builder%s());",
                     p.getDiamond(), p.getTypeVariablesSection()))
+        .build()
         .filter((p, s) -> s.getSafeBuilderAbility().isEnabled())
         .append(RefsGen.genericRefs());
   }

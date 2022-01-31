@@ -7,7 +7,7 @@ import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoAndField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.EqualsGens;
@@ -62,11 +62,13 @@ public class ExtensionGens {
   }
 
   public static Generator<FieldGetter, PojoSettings> getterMethod() {
-    return MethodGen.<FieldGetter, PojoSettings>modifiers()
+    return MethodGenBuilder.<FieldGetter, PojoSettings>create()
+        .modifiers()
         .noGenericTypes()
         .returnType(fg -> fg.getGetter().getReturnType().getTypeDeclaration().asString())
         .methodName(fg -> fg.getGetter().getName().asString())
         .noArguments()
-        .noBody();
+        .noBody()
+        .build();
   }
 }

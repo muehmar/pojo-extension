@@ -13,7 +13,7 @@ import io.github.muehmar.pojoextension.generator.data.Generic;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.PojoAndField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.FieldVariable;
@@ -23,7 +23,8 @@ public class WithGens {
   private WithGens() {}
 
   public static Generator<PojoAndField, PojoSettings> withMethod() {
-    return MethodGen.<PojoAndField, PojoSettings>modifiers(DEFAULT)
+    return MethodGenBuilder.<PojoAndField, PojoSettings>create()
+        .modifiers(DEFAULT)
         .noGenericTypes()
         .returnTypeName(paf -> paf.getPojo().getNameWithTypeVariables())
         .methodName(paf -> "with" + paf.getField().getName().toPascalCase())
@@ -33,6 +34,7 @@ public class WithGens {
                     "%s %s",
                     paf.getField().getType().getTypeDeclaration(), paf.getField().getName()))
         .content(withMethodContent())
+        .build()
         .append(RefsGen.fieldRefs(), PojoAndField::getField)
         .filter((p, s) -> s.getWithersAbility().isEnabled());
   }
@@ -46,7 +48,8 @@ public class WithGens {
 
   public static Generator<PojoAndField, PojoSettings> optionalWithMethod() {
     final Generator<PojoAndField, PojoSettings> method =
-        MethodGen.<PojoAndField, PojoSettings>modifiers(DEFAULT)
+        MethodGenBuilder.<PojoAndField, PojoSettings>create()
+            .modifiers(DEFAULT)
             .noGenericTypes()
             .returnTypeName(paf -> paf.getPojo().getNameWithTypeVariables())
             .methodName(paf -> "with" + paf.getField().getName().toPascalCase())
@@ -56,6 +59,7 @@ public class WithGens {
                         "Optional<%s> %s",
                         paf.getField().getType().getTypeDeclaration(), paf.getField().getName()))
             .content(optionalWithMethodContent())
+            .build()
             .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
             .append(RefsGen.fieldRefs(), PojoAndField::getField);
 
@@ -74,7 +78,8 @@ public class WithGens {
                     paf.getField().getType().getTypeDeclaration(), paf.getField().getName()));
 
     final Generator<PojoAndField, PojoSettings> method =
-        MethodGen.<PojoAndField, PojoSettings>modifiers(PUBLIC, STATIC)
+        MethodGenBuilder.<PojoAndField, PojoSettings>create()
+            .modifiers(PUBLIC, STATIC)
             .genericTypes(
                 paf ->
                     paf.getPojo()
@@ -85,6 +90,7 @@ public class WithGens {
             .methodName(paf -> "with" + paf.getField().getName().toPascalCase())
             .arguments(arguments)
             .content(optionalWithMethodContent())
+            .build()
             .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
             .append(RefsGen.genericRefs(), PojoAndField::getPojo)
             .append(RefsGen.fieldRefs(), PojoAndField::getField);

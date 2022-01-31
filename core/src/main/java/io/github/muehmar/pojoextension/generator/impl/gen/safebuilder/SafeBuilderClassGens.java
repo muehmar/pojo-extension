@@ -12,7 +12,7 @@ import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import java.util.function.Function;
@@ -52,12 +52,14 @@ public class SafeBuilderClassGens {
             String.format(
                 "return new Builder0%s(new Builder%s());",
                 p.getDiamond(), p.getTypeVariablesSection());
-    return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC, STATIC)
+    return MethodGenBuilder.<Pojo, PojoSettings>create()
+        .modifiers(PUBLIC, STATIC)
         .genericTypes(p -> p.getGenerics().map(Generic::getTypeDeclaration).map(Name::asString))
         .returnType(returnType)
         .methodName("create")
         .noArguments()
         .content(content)
+        .build()
         .append(RefsGen.genericRefs());
   }
 }

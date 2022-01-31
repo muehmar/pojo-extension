@@ -39,7 +39,6 @@ import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.Ability;
 import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.data.settings.PojoSettingsExtension;
 import io.github.muehmar.pojoextension.generator.impl.gen.baseclass.BaseClassGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.SafeBuilderClassGens;
@@ -237,13 +236,13 @@ public class PojoExtensionProcessor extends AbstractProcessor {
                 .map(String::trim)
                 .filter(Strings::nonEmpty)
                 .map(Name::fromString),
-            PojoSettingsExtension::withBuilderName)
+            PojoSettings::withBuilderName)
         .mapIfPresent(
             getBuilderSetMethodPrefix(annotation)
                 .map(String::trim)
                 .filter(Strings::nonEmpty)
                 .map(Name::fromString),
-            PojoSettingsExtension::withBuilderSetMethodPrefix)
+            PojoSettings::withBuilderSetMethodPrefix)
         .mapIfPresent(
             getEnableSafeBuilder(annotation).map(Ability::fromBoolean),
             PojoSettings::withSafeBuilderAbility)

@@ -18,7 +18,7 @@ import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.FieldDeclarationGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
 
@@ -58,12 +58,14 @@ public class NormalBuilderGens {
   }
 
   public static Generator<Pojo, PojoSettings> buildMethod() {
-    return MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+    return MethodGenBuilder.<Pojo, PojoSettings>create()
+        .modifiers(PUBLIC)
         .noGenericTypes()
         .returnTypeName(Pojo::getNameWithTypeVariables)
         .methodName("build")
         .noArguments()
-        .content(ConstructorCallGens.callWithAllLocalVariables("return "));
+        .content(ConstructorCallGens.callWithAllLocalVariables("return "))
+        .build();
   }
 
   public static Generator<PojoAndField, PojoSettings> setMethod() {
@@ -73,7 +75,8 @@ public class NormalBuilderGens {
                 .println("this.%s = %s;", paf.getField().getName(), paf.getField().getName())
                 .println("return this;");
 
-    return MethodGen.<PojoAndField, PojoSettings>modifiers(
+    return MethodGenBuilder.<PojoAndField, PojoSettings>create()
+        .createModifiers(
             (paf, s) ->
                 JavaModifiers.of(
                     paf.getField().isRequired() ? JavaModifier.PRIVATE : JavaModifier.PUBLIC))
@@ -86,6 +89,7 @@ public class NormalBuilderGens {
                     "%s %s",
                     paf.getField().getType().getTypeDeclaration(), paf.getField().getName()))
         .content(content)
+        .build()
         .append(RefsGen.fieldRefs(), PojoAndField::getField);
   }
 
@@ -98,7 +102,8 @@ public class NormalBuilderGens {
                     paf.getField().getName(), paf.getField().getName())
                 .println("return this;");
 
-    return MethodGen.<PojoAndField, PojoSettings>modifiers(PUBLIC)
+    return MethodGenBuilder.<PojoAndField, PojoSettings>create()
+        .modifiers(PUBLIC)
         .noGenericTypes()
         .returnType(paf -> BUILDER_CLASSNAME + paf.getPojo().getTypeVariablesSection())
         .methodName((paf, s) -> paf.getField().builderSetMethodName(s).asString())
@@ -108,6 +113,7 @@ public class NormalBuilderGens {
                     "Optional<%s> %s",
                     paf.getField().getType().getTypeDeclaration(), paf.getField().getName()))
         .content(content)
+        .build()
         .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
         .append(RefsGen.fieldRefs(), PojoAndField::getField);
   }
