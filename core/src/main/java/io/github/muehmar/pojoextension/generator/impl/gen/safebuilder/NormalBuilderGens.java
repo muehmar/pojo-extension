@@ -1,6 +1,5 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder;
 
-import static io.github.muehmar.pojoextension.generator.Generator.emptyGen;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.FINAL;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PRIVATE;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
@@ -17,6 +16,7 @@ import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.FieldDeclarationGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
@@ -34,10 +34,12 @@ public class NormalBuilderGens {
 
   public static Generator<Pojo, PojoSettings> builderClass() {
     final ConstructorGen<Pojo, PojoSettings> constructor =
-        ConstructorGen.<Pojo, PojoSettings>modifiers(PRIVATE)
+        ConstructorGenBuilder.<Pojo, PojoSettings>create()
+            .modifiers(PRIVATE)
             .className(BUILDER_CLASSNAME)
             .noArguments()
-            .content(emptyGen());
+            .noContent()
+            .build();
     final Generator<Pojo, PojoSettings> content =
         constructor
             .append(newLine())

@@ -1,6 +1,8 @@
 package io.github.muehmar.pojoextension.generator.impl.gen;
 
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.annotations.FieldBuilder;
+import io.github.muehmar.pojoextension.annotations.SafeBuilder;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
@@ -9,13 +11,14 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+@SafeBuilder
 public class ConstructorGen<A, B> implements Generator<A, B> {
   private final BiFunction<A, B, JavaModifiers> createModifiers;
   private final BiFunction<A, B, String> createClassName;
   private final BiFunction<A, B, PList<String>> createArguments;
   private final Generator<A, B> contentGenerator;
 
-  private ConstructorGen(
+  ConstructorGen(
       BiFunction<A, B, JavaModifiers> createModifiers,
       BiFunction<A, B, String> createClassName,
       BiFunction<A, B, PList<String>> createArguments,
@@ -41,89 +44,86 @@ public class ConstructorGen<A, B> implements Generator<A, B> {
         .generate(data, settings, writer);
   }
 
-  public static <A, B> Builder1<A, B> modifiers(JavaModifier... modifiers) {
-    return new Builder1<>((d, s) -> JavaModifiers.of(modifiers));
-  }
+  @FieldBuilder(fieldName = "createModifiers")
+  static class ModifiersGen {
+    private ModifiersGen() {}
 
-  public static <A, B> Builder1<A, B> modifiers(BiFunction<A, B, JavaModifiers> createModifiers) {
-    return new Builder1<>(createModifiers);
-  }
-
-  public static class Builder1<A, B> {
-    private final BiFunction<A, B, JavaModifiers> createModifiers;
-
-    private Builder1(BiFunction<A, B, JavaModifiers> createModifiers) {
-      this.createModifiers = createModifiers;
+    static <A, B> BiFunction<A, B, JavaModifiers> modifiers() {
+      return (d, s) -> JavaModifiers.of();
     }
 
-    public Builder2<A, B> className(BiFunction<A, B, String> createClassName) {
-      return new Builder2<>(createModifiers, createClassName);
+    static <A, B> BiFunction<A, B, JavaModifiers> modifiers(JavaModifier modifier) {
+      return (d, s) -> JavaModifiers.of(modifier);
     }
 
-    public Builder2<A, B> className(Function<A, String> createClassName) {
-      return className((data, settings) -> createClassName.apply(data));
-    }
-
-    public Builder2<A, B> className(String className) {
-      return className((data, settings) -> className);
+    static <A, B> BiFunction<A, B, JavaModifiers> modifiers(JavaModifier m1, JavaModifier m2) {
+      return (d, s) -> JavaModifiers.of(m1, m2);
     }
   }
 
-  public static class Builder2<A, B> {
-    private final BiFunction<A, B, JavaModifiers> createModifiers;
-    private final BiFunction<A, B, String> createClassName;
+  @FieldBuilder(fieldName = "createClassName")
+  static class ClassNameBuilder {
+    private ClassNameBuilder() {}
 
-    private Builder2(
-        BiFunction<A, B, JavaModifiers> createModifiers, BiFunction<A, B, String> createClassName) {
-      this.createModifiers = createModifiers;
-      this.createClassName = createClassName;
+    static <A, B> BiFunction<A, B, String> className(BiFunction<A, B, String> createClassName) {
+      return createClassName;
     }
 
-    public Builder3<A, B> arguments(BiFunction<A, B, PList<String>> createArguments) {
-      return new Builder3<>(createModifiers, createClassName, createArguments);
+    static <A, B> BiFunction<A, B, String> className(Function<A, String> createClassName) {
+      return (d, s) -> createClassName.apply(d);
     }
 
-    public Builder3<A, B> arguments(Function<A, PList<String>> createArguments) {
-      return arguments((data, settings) -> createArguments.apply(data));
-    }
-
-    public Builder3<A, B> singleArgument(Function<A, String> createArgument) {
-      return arguments((data, settings) -> PList.single(createArgument.apply(data)));
-    }
-
-    public Builder3<A, B> singleArgument(String argument) {
-      return arguments((data, settings) -> PList.single(argument));
-    }
-
-    public Builder3<A, B> noArguments() {
-      return arguments((data, settings) -> PList.empty());
+    static <A, B> BiFunction<A, B, String> className(String className) {
+      return (d, s) -> className;
     }
   }
 
-  public static class Builder3<A, B> {
-    private final BiFunction<A, B, JavaModifiers> createModifiers;
-    private final BiFunction<A, B, String> createClassName;
-    private final BiFunction<A, B, PList<String>> createArguments;
+  @FieldBuilder(fieldName = "createArguments")
+  static class ArgumentsBuilder {
+    private ArgumentsBuilder() {}
 
-    private Builder3(
-        BiFunction<A, B, JavaModifiers> createModifiers,
-        BiFunction<A, B, String> createClassName,
+    static <A, B> BiFunction<A, B, PList<String>> arguments(
         BiFunction<A, B, PList<String>> createArguments) {
-      this.createModifiers = createModifiers;
-      this.createClassName = createClassName;
-      this.createArguments = createArguments;
+      return createArguments;
     }
 
-    public ConstructorGen<A, B> content(String content) {
-      return content((data, settings, writer) -> writer.println(content));
+    static <A, B> BiFunction<A, B, PList<String>> arguments(
+        Function<A, PList<String>> createArguments) {
+      return (d, s) -> createArguments.apply(d);
     }
 
-    public ConstructorGen<A, B> content(Generator<A, B> content) {
-      return new ConstructorGen<>(createModifiers, createClassName, createArguments, content);
+    static <A, B> BiFunction<A, B, PList<String>> singleArgument(
+        Function<A, String> createArgument) {
+      return (d, s) -> PList.single(createArgument.apply(d));
     }
 
-    public ConstructorGen<A, B> content(UnaryOperator<Writer> content) {
-      return content((data, settings, writer) -> content.apply(writer));
+    static <A, B> BiFunction<A, B, PList<String>> singleArgument(String argument) {
+      return (d, s) -> PList.single(argument);
+    }
+
+    static <A, B> BiFunction<A, B, PList<String>> noArguments() {
+      return (d, s) -> PList.empty();
+    }
+  }
+
+  @FieldBuilder(fieldName = "contentGenerator")
+  static class ContentBuilder {
+    private ContentBuilder() {}
+
+    static <A, B> Generator<A, B> content(String content) {
+      return (data, settings, writer) -> writer.println(content);
+    }
+
+    static <A, B> Generator<A, B> content(Generator<A, B> content) {
+      return content;
+    }
+
+    static <A, B> Generator<A, B> content(UnaryOperator<Writer> content) {
+      return (data, settings, writer) -> content.apply(writer);
+    }
+
+    static <A, B> Generator<A, B> noContent() {
+      return (data, settings, writer) -> writer;
     }
   }
 }

@@ -12,6 +12,7 @@ import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
@@ -32,10 +33,12 @@ public class SafeBuilderClassGens {
 
   private static Generator<Pojo, PojoSettings> content() {
     final ConstructorGen<Pojo, PojoSettings> constructor =
-        ConstructorGen.<Pojo, PojoSettings>modifiers(PRIVATE)
+        ConstructorGenBuilder.<Pojo, PojoSettings>create()
+            .modifiers(PRIVATE)
             .className((p, s) -> s.builderName(p).asString())
             .noArguments()
-            .content("");
+            .noContent()
+            .build();
     return Generator.<Pojo, PojoSettings>emptyGen()
         .appendNewLine()
         .append(constructor)

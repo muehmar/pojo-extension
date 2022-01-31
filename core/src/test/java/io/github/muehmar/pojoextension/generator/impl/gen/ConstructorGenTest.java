@@ -11,10 +11,12 @@ class ConstructorGenTest {
   @Test
   void generate_when_minimalGeneratorCreated_then_outputCorrect() {
     final ConstructorGen<PList<String>, Void> generator =
-        ConstructorGen.<PList<String>, Void>modifiers(JavaModifier.PUBLIC)
+        ConstructorGenBuilder.<PList<String>, Void>create()
+            .modifiers(JavaModifier.PUBLIC)
             .className(l -> l.apply(0))
             .arguments(l -> l.drop(1))
-            .content("System.out.println(\"Hello World\");");
+            .content("System.out.println(\"Hello World\");")
+            .build();
 
     final PList<String> data = PList.of("Customer", "String a", "int b");
 

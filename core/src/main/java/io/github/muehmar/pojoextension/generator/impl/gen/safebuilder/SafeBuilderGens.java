@@ -13,7 +13,7 @@ import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.Generators;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
@@ -94,11 +94,13 @@ public class SafeBuilderGens {
   }
 
   public static Generator<FullBuilderField, PojoSettings> constructor() {
-    return ConstructorGen.<FullBuilderField, PojoSettings>modifiers(PRIVATE)
+    return ConstructorGenBuilder.<FullBuilderField, PojoSettings>create()
+        .modifiers(PRIVATE)
         .className(SafeBuilderGens::rawClassName)
         .singleArgument(
             f -> String.format("Builder%s builder", f.getPojo().getTypeVariablesSection()))
-        .content(BUILDER_ASSIGNMENT);
+        .content(BUILDER_ASSIGNMENT)
+        .build();
   }
 
   public static <A> Generator<Pojo, A> andAllOptionalsMethod() {
@@ -223,10 +225,12 @@ public class SafeBuilderGens {
         pojo -> pojo.getFields().filter(PojoField::isRequired).size();
 
     final Generator<Pojo, PojoSettings> constructor =
-        ConstructorGen.<Pojo, PojoSettings>modifiers(PRIVATE)
+        ConstructorGenBuilder.<Pojo, PojoSettings>create()
+            .modifiers(PRIVATE)
             .className(p -> String.format("Builder%d", builderNumber.applyAsInt(p)))
             .singleArgument(p -> String.format("Builder%s builder", p.getTypeVariablesSection()))
-            .content(BUILDER_ASSIGNMENT);
+            .content(BUILDER_ASSIGNMENT)
+            .build();
 
     final Generator<Pojo, PojoSettings> content =
         SafeBuilderGens.<PojoSettings>fieldDeclaration()
@@ -257,10 +261,12 @@ public class SafeBuilderGens {
         pojo -> pojo.getFields().filter(PojoField::isOptional).size();
 
     final Generator<Pojo, PojoSettings> constructor =
-        ConstructorGen.<Pojo, PojoSettings>modifiers(PRIVATE)
+        ConstructorGenBuilder.<Pojo, PojoSettings>create()
+            .modifiers(PRIVATE)
             .className(p -> String.format("OptBuilder%d", builderNumber.applyAsInt(p)))
             .singleArgument(p -> String.format("Builder%s builder", p.getTypeVariablesSection()))
-            .content(BUILDER_ASSIGNMENT);
+            .content(BUILDER_ASSIGNMENT)
+            .build();
 
     final Generator<Pojo, PojoSettings> content =
         SafeBuilderGens.<PojoSettings>fieldDeclaration()
