@@ -12,7 +12,7 @@ import io.github.muehmar.pojoextension.generator.data.Argument;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.ClassGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.Generators;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
@@ -32,12 +32,16 @@ public class SafeBuilderGens {
   private SafeBuilderGens() {}
 
   public static Generator<FullBuilderField, PojoSettings> fieldBuilderClass() {
-    return ClassGen.<FullBuilderField, PojoSettings>clazz()
+    return ClassGenBuilder.<FullBuilderField, PojoSettings>create()
+        .clazz()
         .nested()
+        .packageGen(Generator.emptyGen())
         .modifiers(PUBLIC, STATIC, FINAL)
         .className(SafeBuilderGens::classDeclaration)
-        .noSuperClassAndInterface()
+        .noSuperClass()
+        .noInterfaces()
         .content(builderClassContent())
+        .build()
         .append(RefsGen.genericRefs(), FullBuilderField::getPojo);
   }
 
@@ -243,16 +247,20 @@ public class SafeBuilderGens {
             .append(newLine())
             .append(buildMethod());
 
-    return ClassGen.<Pojo, PojoSettings>clazz()
+    return ClassGenBuilder.<Pojo, PojoSettings>create()
+        .clazz()
         .nested()
+        .packageGen(Generator.emptyGen())
         .modifiers(PUBLIC, STATIC, FINAL)
         .className(
             (p, s) ->
                 String.format(
                     "Builder%d%s",
                     builderNumber.applyAsInt(p), p.getGenericTypeDeclarationSection()))
-        .noSuperClassAndInterface()
+        .noSuperClass()
+        .noInterfaces()
         .content(content)
+        .build()
         .append(RefsGen.genericRefs());
   }
 
@@ -275,16 +283,20 @@ public class SafeBuilderGens {
             .append(newLine())
             .append(buildMethod());
 
-    return ClassGen.<Pojo, PojoSettings>clazz()
+    return ClassGenBuilder.<Pojo, PojoSettings>create()
+        .clazz()
         .nested()
+        .packageGen(Generator.emptyGen())
         .modifiers(PUBLIC, STATIC, FINAL)
         .className(
             (p, s) ->
                 String.format(
                     "OptBuilder%d%s",
                     builderNumber.applyAsInt(p), p.getGenericTypeDeclarationSection()))
-        .noSuperClassAndInterface()
+        .noSuperClass()
+        .noInterfaces()
         .content(content)
+        .build()
         .append(RefsGen.genericRefs());
   }
 }

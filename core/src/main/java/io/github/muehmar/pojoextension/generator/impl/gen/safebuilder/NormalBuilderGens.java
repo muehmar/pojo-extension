@@ -14,11 +14,12 @@ import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
-import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.ClassGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.FieldDeclarationGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
+import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
 
@@ -51,12 +52,16 @@ public class NormalBuilderGens {
                 p -> p.getFields().filter(PojoField::isOptional).map(f -> new PojoAndField(p, f)))
             .append(buildMethod());
 
-    return ClassGen.<Pojo, PojoSettings>clazz()
+    return ClassGenBuilder.<Pojo, PojoSettings>create()
+        .clazz()
         .nested()
+        .packageGen(new PackageGen())
         .modifiers(PUBLIC, STATIC, FINAL)
         .className(p -> BUILDER_CLASSNAME + p.getGenericTypeDeclarationSection())
-        .noSuperClassAndInterface()
-        .content(content);
+        .noSuperClass()
+        .noInterfaces()
+        .content(content)
+        .build();
   }
 
   public static Generator<Pojo, PojoSettings> buildMethod() {

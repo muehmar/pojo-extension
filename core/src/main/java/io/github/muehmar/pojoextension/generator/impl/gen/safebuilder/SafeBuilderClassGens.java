@@ -10,7 +10,7 @@ import io.github.muehmar.pojoextension.generator.data.Generic;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.ClassGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
@@ -22,13 +22,16 @@ public class SafeBuilderClassGens {
   private SafeBuilderClassGens() {}
 
   public static Generator<Pojo, PojoSettings> safeBuilderClass() {
-    return ClassGen.<Pojo, PojoSettings>clazz()
+    return ClassGenBuilder.<Pojo, PojoSettings>create()
+        .clazz()
         .topLevel()
         .packageGen(new PackageGen())
         .modifiers(PUBLIC, FINAL)
         .className((p, s) -> s.builderName(p).asString())
-        .noSuperClassAndInterface()
-        .content(content());
+        .noSuperClass()
+        .noInterfaces()
+        .content(content())
+        .build();
   }
 
   private static Generator<Pojo, PojoSettings> content() {

@@ -7,7 +7,7 @@ import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.Annotations;
-import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.ClassGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
@@ -17,7 +17,8 @@ public class BaseClassGens {
   private BaseClassGens() {}
 
   public static Generator<Pojo, PojoSettings> baseClass() {
-    return ClassGen.<Pojo, PojoSettings>clazz()
+    return ClassGenBuilder.<Pojo, PojoSettings>create()
+        .clazz()
         .topLevel()
         .packageGen(new PackageGen())
         .modifiers(ABSTRACT)
@@ -25,6 +26,7 @@ public class BaseClassGens {
         .noSuperClass()
         .singleInterface((p, s) -> s.extensionName(p).asString() + p.getTypeVariablesSection())
         .content(baseClassContent())
+        .build()
         .append(RefsGen.genericRefs());
   }
 
