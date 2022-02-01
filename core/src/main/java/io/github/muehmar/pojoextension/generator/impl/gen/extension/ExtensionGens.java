@@ -6,8 +6,8 @@ import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoAndField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.ClassGenBuilder;
+import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.EqualsGens;
@@ -22,13 +22,16 @@ public class ExtensionGens {
   private ExtensionGens() {}
 
   public static Generator<Pojo, PojoSettings> extensionInterface() {
-    return ClassGen.<Pojo, PojoSettings>ifc()
+    return ClassGenBuilder.<Pojo, PojoSettings>create()
+        .ifc()
         .topLevel()
         .packageGen(new PackageGen())
-        .modifiers()
+        .noModifiers()
         .className((p, s) -> s.extensionName(p).asString() + p.getGenericTypeDeclarationSection())
-        .noSuperClassAndInterface()
+        .noSuperClass()
+        .noInterfaces()
         .content(content())
+        .build()
         .append(RefsGen.genericRefs());
   }
 
@@ -62,11 +65,13 @@ public class ExtensionGens {
   }
 
   public static Generator<FieldGetter, PojoSettings> getterMethod() {
-    return MethodGen.<FieldGetter, PojoSettings>modifiers()
+    return MethodGenBuilder.<FieldGetter, PojoSettings>create()
+        .modifiers()
         .noGenericTypes()
         .returnType(fg -> fg.getGetter().getReturnType().getTypeDeclaration().asString())
         .methodName(fg -> fg.getGetter().getName().asString())
         .noArguments()
-        .noBody();
+        .noBody()
+        .build();
   }
 }

@@ -10,7 +10,7 @@ import io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.OnUn
 import io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.OnWrapOptional;
 import io.github.muehmar.pojoextension.generator.data.PojoAndField;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.Refs;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 
@@ -19,7 +19,8 @@ public class GetterGens {
   private GetterGens() {}
 
   public static Generator<PojoAndField, PojoSettings> optionalGetterMethod() {
-    return MethodGen.<PojoAndField, PojoSettings>modifiers(DEFAULT)
+    return MethodGenBuilder.<PojoAndField, PojoSettings>create()
+        .modifiers(DEFAULT)
         .noGenericTypes()
         .returnTypeName(paf -> paf.getField().getType().getTypeDeclaration())
         .methodName(GetterGens::optionalGetterMethodName)
@@ -29,6 +30,7 @@ public class GetterGens {
                     "%s %s",
                     paf.getField().getType().getTypeDeclaration(), paf.getField().getName()))
         .content(optionalGetterMethodContent())
+        .build()
         .filter((paf, s) -> paf.getField().isOptional())
         .filter((paf, s) -> s.getOptionalGettersAbility().isEnabled());
   }

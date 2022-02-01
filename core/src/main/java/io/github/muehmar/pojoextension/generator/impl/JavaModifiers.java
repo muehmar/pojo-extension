@@ -12,6 +12,10 @@ public class JavaModifiers {
     this.modifiers = modifiers;
   }
 
+  public static JavaModifiers empty() {
+    return new JavaModifiers(PList.empty());
+  }
+
   public static JavaModifiers of(JavaModifier... modifiers) {
     return new JavaModifiers(PList.fromArray(modifiers));
   }

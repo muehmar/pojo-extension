@@ -4,6 +4,8 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newL
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.Strings;
+import io.github.muehmar.pojoextension.annotations.FieldBuilder;
+import io.github.muehmar.pojoextension.annotations.SafeBuilder;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
@@ -13,6 +15,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+@SafeBuilder
 public class ClassGen<A, B> implements Generator<A, B> {
   private final ClassType type;
   private final Declaration declaration;
@@ -23,7 +26,8 @@ public class ClassGen<A, B> implements Generator<A, B> {
   private final BiFunction<A, B, PList<String>> interfaces;
   private final PList<Generator<A, B>> content;
 
-  private ClassGen(
+  @SuppressWarnings("java:S107")
+  ClassGen(
       ClassType type,
       Declaration declaration,
       Generator<A, B> packageGen,
@@ -91,217 +95,121 @@ public class ClassGen<A, B> implements Generator<A, B> {
     return writer.println("}");
   }
 
-  public static <A, B> DeclarationBuilder<A, B> ifc() {
-    return new DeclarationBuilder<>(ClassType.INTERFACE);
-  }
+  @FieldBuilder(fieldName = "type")
+  static class TypeBuilder {
+    private TypeBuilder() {}
 
-  public static <A, B> DeclarationBuilder<A, B> clazz() {
-    return new DeclarationBuilder<>(ClassType.CLASS);
-  }
-
-  public static final class DeclarationBuilder<A, B> {
-    private final ClassType type;
-
-    public DeclarationBuilder(ClassType type) {
-      this.type = type;
+    static ClassType ifc() {
+      return ClassType.INTERFACE;
     }
 
-    public Builder1<A, B> topLevel() {
-      return new Builder1<>(type, Declaration.TOP_LEVEL);
-    }
-
-    public Builder2<A, B> nested() {
-      return new Builder2<>(type, Declaration.NESTED, Generator.emptyGen());
+    static ClassType clazz() {
+      return ClassType.CLASS;
     }
   }
 
-  public static final class Builder1<A, B> {
-    private final ClassType type;
-    private final Declaration declaration;
+  @FieldBuilder(fieldName = "declaration")
+  static class DeclarationBuilder1 {
+    private DeclarationBuilder1() {}
 
-    private Builder1(ClassType type, Declaration declaration) {
-      this.type = type;
-      this.declaration = declaration;
+    static Declaration topLevel() {
+      return Declaration.TOP_LEVEL;
     }
 
-    public Builder2<A, B> packageGen(Generator<A, B> packageGen) {
-      return new Builder2<>(type, declaration, packageGen);
-    }
-  }
-
-  public static final class Builder2<A, B> {
-    private final ClassType type;
-    private final Declaration declaration;
-    private final Generator<A, B> packageGen;
-
-    public Builder2(ClassType type, Declaration declaration, Generator<A, B> packageGen) {
-      this.type = type;
-      this.declaration = declaration;
-      this.packageGen = packageGen;
-    }
-
-    public Builder3<A, B> modifiers(JavaModifier... modifiers) {
-      return new Builder3<>(type, declaration, packageGen, JavaModifiers.of(modifiers));
+    static Declaration nested() {
+      return Declaration.NESTED;
     }
   }
 
-  public static final class Builder3<A, B> {
-    private final ClassType type;
-    private final Declaration declaration;
-    private final Generator<A, B> packageGen;
-    private final JavaModifiers modifiers;
+  @FieldBuilder(fieldName = "packageGen")
+  static class PackageBuilder {
+    private PackageBuilder() {}
+  }
 
-    public Builder3(
-        ClassType type,
-        Declaration declaration,
-        Generator<A, B> packageGen,
-        JavaModifiers modifiers) {
-      this.type = type;
-      this.declaration = declaration;
-      this.packageGen = packageGen;
-      this.modifiers = modifiers;
+  @FieldBuilder(fieldName = "modifiers")
+  static class ModifierBuilder {
+    private ModifierBuilder() {}
+
+    static JavaModifiers noModifiers() {
+      return JavaModifiers.empty();
     }
 
-    public SuperClassBuilder<A, B> className(BiFunction<A, B, String> createClassName) {
-      return new SuperClassBuilder<>(type, declaration, packageGen, modifiers, createClassName);
+    static JavaModifiers modifiers(JavaModifier m1) {
+      return JavaModifiers.of(m1);
     }
 
-    public SuperClassBuilder<A, B> className(Function<A, String> className) {
-      return className((data, settings) -> className.apply(data));
+    static JavaModifiers modifiers(JavaModifier m1, JavaModifier m2) {
+      return JavaModifiers.of(m1, m2);
     }
 
-    public SuperClassBuilder<A, B> className(String className) {
-      return className((data, settings) -> className);
+    static JavaModifiers modifiers(JavaModifier m1, JavaModifier m2, JavaModifier m3) {
+      return JavaModifiers.of(m1, m2, m3);
+    }
+
+    static JavaModifiers modifiers(PList<JavaModifier> modifiers) {
+      return JavaModifiers.of(modifiers);
     }
   }
 
-  public static final class SuperClassBuilder<A, B> {
-    private final ClassType type;
-    private final Declaration declaration;
-    private final Generator<A, B> packageGen;
-    private final JavaModifiers modifiers;
-    private final BiFunction<A, B, String> createClassName;
+  @FieldBuilder(fieldName = "createClassName")
+  static class ClassNameBuilder {
+    private ClassNameBuilder() {}
 
-    public SuperClassBuilder(
-        ClassType type,
-        Declaration declaration,
-        Generator<A, B> packageGen,
-        JavaModifiers modifiers,
-        BiFunction<A, B, String> createClassName) {
-      this.type = type;
-      this.declaration = declaration;
-      this.packageGen = packageGen;
-      this.modifiers = modifiers;
-      this.createClassName = createClassName;
+    static <A, B> BiFunction<A, B, String> className(BiFunction<A, B, String> createClassName) {
+      return createClassName;
     }
 
-    public InterfacesBuilder<A, B> noSuperClass() {
-      return superClassInt((data, settings) -> Optional.empty());
+    static <A, B> BiFunction<A, B, String> className(Function<A, String> className) {
+      return (data, settings) -> className.apply(data);
     }
 
-    public ContentBuilder<A, B> noSuperClassAndInterface() {
-      return new ContentBuilder<>(
-          type,
-          declaration,
-          packageGen,
-          modifiers,
-          createClassName,
-          (d, s) -> Optional.<String>empty(),
-          (d, s) -> PList.<String>empty());
-    }
-
-    private InterfacesBuilder<A, B> superClassInt(BiFunction<A, B, Optional<String>> superClass) {
-      return new InterfacesBuilder<>(
-          type, declaration, packageGen, modifiers, createClassName, superClass);
-    }
-
-    public InterfacesBuilder<A, B> superClass(BiFunction<A, B, Name> superClass) {
-      return superClassInt((d, s) -> Optional.of(superClass.apply(d, s).asString()));
-    }
-
-    public InterfacesBuilder<A, B> superClass(Function<A, String> superClass) {
-      return superClassInt((data, settings) -> Optional.of(superClass.apply(data)));
+    static <A, B> BiFunction<A, B, String> className(String className) {
+      return (data, settings) -> className;
     }
   }
 
-  public static final class InterfacesBuilder<A, B> {
-    private final ClassType type;
-    private final Declaration declaration;
-    private final Generator<A, B> packageGen;
-    private final JavaModifiers modifiers;
-    private final BiFunction<A, B, String> createClassName;
-    private final BiFunction<A, B, Optional<String>> superClass;
+  @FieldBuilder(fieldName = "superClass")
+  static class SuperClassBuilder1 {
+    private SuperClassBuilder1() {}
 
-    public InterfacesBuilder(
-        ClassType type,
-        Declaration declaration,
-        Generator<A, B> packageGen,
-        JavaModifiers modifiers,
-        BiFunction<A, B, String> createClassName,
-        BiFunction<A, B, Optional<String>> superClass) {
-      this.type = type;
-      this.declaration = declaration;
-      this.packageGen = packageGen;
-      this.modifiers = modifiers;
-      this.createClassName = createClassName;
-      this.superClass = superClass;
+    static <A, B> BiFunction<A, B, Optional<String>> noSuperClass() {
+      return (data, settings) -> Optional.empty();
     }
 
-    public ContentBuilder<A, B> doesNotImplementInterfaces() {
-      return interfaces((d, s) -> PList.empty());
-    }
-
-    public ContentBuilder<A, B> interfaces(BiFunction<A, B, PList<String>> interfaces) {
-      return new ContentBuilder<>(
-          type, declaration, packageGen, modifiers, createClassName, superClass, interfaces);
-    }
-
-    public ContentBuilder<A, B> singleInterface(Function<A, String> interfaceName) {
-      return interfaces((data, settings) -> PList.single(interfaceName.apply(data)));
-    }
-
-    public ContentBuilder<A, B> singleInterface(BiFunction<A, B, String> interfaceName) {
-      return interfaces((data, settings) -> PList.single(interfaceName.apply(data, settings)));
+    static <A, B> BiFunction<A, B, Optional<String>> superClassName(
+        BiFunction<A, B, Name> superClass) {
+      return (data, settings) -> Optional.of(superClass.apply(data, settings).asString());
     }
   }
 
-  public static final class ContentBuilder<A, B> {
-    private final ClassType type;
-    private final Declaration declaration;
-    private final Generator<A, B> packageGen;
-    private final JavaModifiers modifiers;
-    private final BiFunction<A, B, String> createClassName;
-    private final BiFunction<A, B, Optional<String>> superClass;
-    private final BiFunction<A, B, PList<String>> interfaces;
+  @FieldBuilder(fieldName = "interfaces")
+  static class InterfacesBuilder1 {
+    private InterfacesBuilder1() {}
 
-    public ContentBuilder(
-        ClassType type,
-        Declaration declaration,
-        Generator<A, B> packageGen,
-        JavaModifiers modifiers,
-        BiFunction<A, B, String> createClassName,
-        BiFunction<A, B, Optional<String>> superClass,
-        BiFunction<A, B, PList<String>> interfaces) {
-      this.type = type;
-      this.declaration = declaration;
-      this.packageGen = packageGen;
-      this.modifiers = modifiers;
-      this.createClassName = createClassName;
-      this.superClass = superClass;
-      this.interfaces = interfaces;
+    static <A, B> BiFunction<A, B, PList<String>> noInterfaces() {
+      return (data, settings) -> PList.empty();
     }
 
-    @SafeVarargs
-    public final ClassGen<A, B> content(Generator<A, B>... generators) {
-      return new ClassGen<>(
-          type,
-          declaration,
-          packageGen,
-          modifiers,
-          createClassName,
-          superClass,
-          interfaces,
-          PList.fromArray(generators));
+    static <A, B> BiFunction<A, B, PList<String>> singleInterface(
+        BiFunction<A, B, String> interfaceName) {
+      return (data, settings) -> PList.of(interfaceName.apply(data, settings));
+    }
+  }
+
+  @FieldBuilder(fieldName = "content")
+  static class ContentBuilder1 {
+    private ContentBuilder1() {}
+
+    static <A, B> PList<Generator<A, B>> noContent() {
+      return PList.empty();
+    }
+
+    static <A, B> PList<Generator<A, B>> content(Generator<A, B> c1) {
+      return PList.single(c1);
+    }
+
+    static <A, B> PList<Generator<A, B>> content(Generator<A, B> c1, Generator<A, B> c2) {
+      return PList.of(c1, c2);
     }
   }
 

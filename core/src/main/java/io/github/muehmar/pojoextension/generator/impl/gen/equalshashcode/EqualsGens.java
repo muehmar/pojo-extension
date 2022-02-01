@@ -11,7 +11,7 @@ import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.UnaryOperator;
 
@@ -20,12 +20,14 @@ public class EqualsGens {
 
   public static Generator<Pojo, PojoSettings> genEqualsMethod() {
     final Generator<Pojo, PojoSettings> method =
-        MethodGen.<Pojo, PojoSettings>modifiers(DEFAULT)
+        MethodGenBuilder.<Pojo, PojoSettings>create()
+            .modifiers(DEFAULT)
             .noGenericTypes()
             .returnType("boolean")
             .methodName("genEquals")
             .singleArgument(pojo -> "Object obj")
-            .content(genEqualsMethodContent());
+            .content(genEqualsMethodContent())
+            .build();
     return method.filter((p, s) -> s.getEqualsHashCodeAbility().isEnabled());
   }
 

@@ -2,6 +2,9 @@ package io.github.muehmar.pojoextension.generator.impl.gen;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.Strings;
+import io.github.muehmar.pojoextension.annotations.FieldBuilder;
+import io.github.muehmar.pojoextension.annotations.OptionalDetection;
+import io.github.muehmar.pojoextension.annotations.SafeBuilder;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
@@ -12,6 +15,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+@SafeBuilder(optionalDetection = OptionalDetection.NONE)
 public class MethodGen<A, B> implements Generator<A, B> {
   private final BiFunction<A, B, JavaModifiers> createModifiers;
   private final BiFunction<A, B, PList<String>> createGenericTypeParameters;
@@ -61,184 +65,123 @@ public class MethodGen<A, B> implements Generator<A, B> {
         .generate(data, settings, writer);
   }
 
-  public static <A, B> BuilderTP<A, B> modifiers(JavaModifier... modifiers) {
-    return modifiers((d, s) -> JavaModifiers.of(modifiers));
-  }
+  @FieldBuilder(fieldName = "createModifiers")
+  static class ModifiersGen {
+    private ModifiersGen() {}
 
-  public static <A, B> BuilderTP<A, B> modifiers(BiFunction<A, B, JavaModifiers> createModifiers) {
-    return new BuilderTP<>(createModifiers);
-  }
-
-  public static class BuilderTP<A, B> {
-    private final BiFunction<A, B, JavaModifiers> createModifiers;
-
-    private BuilderTP(BiFunction<A, B, JavaModifiers> createModifiers) {
-      this.createModifiers = createModifiers;
+    static <A, B> BiFunction<A, B, JavaModifiers> modifiers() {
+      return (d, s) -> JavaModifiers.of();
     }
 
-    public Builder1<A, B> noGenericTypes() {
-      return genericTypes();
+    static <A, B> BiFunction<A, B, JavaModifiers> modifiers(JavaModifier modifier) {
+      return (d, s) -> JavaModifiers.of(modifier);
     }
 
-    public Builder1<A, B> genericTypes(String... types) {
-      return new Builder1<>(createModifiers, (data, settings) -> PList.fromArray(types));
-    }
-
-    public Builder1<A, B> genericTypes(Function<A, PList<String>> types) {
-      return new Builder1<>(createModifiers, (data, settings) -> types.apply(data));
-    }
-
-    public Builder1<A, B> singleGenericType(Function<A, Name> type) {
-      return new Builder1<>(
-          createModifiers, (data, settings) -> PList.single(type.apply(data)).map(Name::asString));
+    static <A, B> BiFunction<A, B, JavaModifiers> modifiers(JavaModifier m1, JavaModifier m2) {
+      return (d, s) -> JavaModifiers.of(m1, m2);
     }
   }
 
-  public static class Builder1<A, B> {
-    private final BiFunction<A, B, JavaModifiers> createModifiers;
-    private final BiFunction<A, B, PList<String>> createGenericTypeParameters;
+  @FieldBuilder(fieldName = "createGenericTypeParameters")
+  static class GenericTypeParametersBuilder {
+    private GenericTypeParametersBuilder() {}
 
-    private Builder1(
-        BiFunction<A, B, JavaModifiers> createModifiers,
-        BiFunction<A, B, PList<String>> createGenericTypeParameters) {
-      this.createModifiers = createModifiers;
-      this.createGenericTypeParameters = createGenericTypeParameters;
+    static <A, B> BiFunction<A, B, PList<String>> singleGenericType(Function<A, Name> type) {
+      return (data, settings) -> PList.single(type.apply(data)).map(Name::asString);
     }
 
-    public Builder2<A, B> returnType(BiFunction<A, B, String> createReturnType) {
-      return new Builder2<>(createModifiers, createGenericTypeParameters, createReturnType);
+    static <A, B> BiFunction<A, B, PList<String>> genericTypes(String t1) {
+      return (d, s) -> PList.single(t1);
     }
 
-    public Builder2<A, B> returnType(Function<A, String> createReturnType) {
-      return returnType((data, settings) -> createReturnType.apply(data));
+    static <A, B> BiFunction<A, B, PList<String>> genericTypes(String t1, String t2) {
+      return (d, s) -> PList.of(t1, t2);
     }
 
-    public Builder2<A, B> returnTypeName(Function<A, Name> createReturnType) {
-      return returnType((data, settings) -> createReturnType.apply(data).asString());
+    static <A, B> BiFunction<A, B, PList<String>> genericTypes(Function<A, PList<String>> types) {
+      return (d, s) -> types.apply(d);
     }
 
-    public Builder2<A, B> returnType(String returnType) {
-      return returnType((data, settings) -> returnType);
+    static <A, B> BiFunction<A, B, PList<String>> noGenericTypes() {
+      return (d, s) -> PList.empty();
     }
   }
 
-  public static class Builder2<A, B> {
-    private final BiFunction<A, B, JavaModifiers> createModifiers;
-    private final BiFunction<A, B, PList<String>> createGenericTypeParameters;
-    private final BiFunction<A, B, String> createReturnType;
+  @FieldBuilder(fieldName = "createReturnType")
+  static class ReturnTypeBuilder {
+    private ReturnTypeBuilder() {}
 
-    private Builder2(
-        BiFunction<A, B, JavaModifiers> createModifiers,
-        BiFunction<A, B, PList<String>> createGenericTypeParameters,
-        BiFunction<A, B, String> createReturnType) {
-      this.createModifiers = createModifiers;
-      this.createGenericTypeParameters = createGenericTypeParameters;
-      this.createReturnType = createReturnType;
+    static <A, B> BiFunction<A, B, String> returnType(Function<A, String> createReturnType) {
+      return (data, settings) -> createReturnType.apply(data);
     }
 
-    public Builder3<A, B> methodName(BiFunction<A, B, String> createMethodName) {
-      return new Builder3<>(
-          createModifiers, createGenericTypeParameters, createReturnType, createMethodName);
+    static <A, B> BiFunction<A, B, String> returnTypeName(Function<A, Name> createReturnType) {
+      return (d, s) -> createReturnType.apply(d).asString();
     }
 
-    public Builder3<A, B> methodName(Function<A, String> createMethodName) {
-      return methodName((data, settings) -> createMethodName.apply(data));
-    }
-
-    public Builder3<A, B> methodName(String methodName) {
-      return methodName((data, settings) -> methodName);
+    static <A, B> BiFunction<A, B, String> returnType(String returnType) {
+      return (d, s) -> returnType;
     }
   }
 
-  public static class Builder3<A, B> {
-    private final BiFunction<A, B, JavaModifiers> createModifiers;
-    private final BiFunction<A, B, PList<String>> createGenericTypeParameters;
-    private final BiFunction<A, B, String> createReturnType;
-    private final BiFunction<A, B, String> createMethodName;
+  @FieldBuilder(fieldName = "createMethodName")
+  static class MethodNameBuilder {
+    private MethodNameBuilder() {}
 
-    private Builder3(
-        BiFunction<A, B, JavaModifiers> createModifiers,
-        BiFunction<A, B, PList<String>> createGenericTypeParameters,
-        BiFunction<A, B, String> createReturnType,
-        BiFunction<A, B, String> createMethodName) {
-      this.createModifiers = createModifiers;
-      this.createGenericTypeParameters = createGenericTypeParameters;
-      this.createReturnType = createReturnType;
-      this.createMethodName = createMethodName;
+    static <A, B> BiFunction<A, B, String> methodName(BiFunction<A, B, String> methodName) {
+      return methodName;
     }
 
-    public Builder4<A, B> arguments(BiFunction<A, B, PList<String>> createArguments) {
-      return new Builder4<>(
-          createModifiers,
-          createGenericTypeParameters,
-          createReturnType,
-          createMethodName,
-          createArguments);
+    static <A, B> BiFunction<A, B, String> methodName(Function<A, String> methodName) {
+      return (data, settings) -> methodName.apply(data);
     }
 
-    public Builder4<A, B> arguments(Function<A, PList<String>> createArguments) {
-      return arguments((data, settings) -> createArguments.apply(data));
-    }
-
-    public Builder4<A, B> singleArgument(Function<A, String> createArgument) {
-      return arguments((data, settings) -> PList.single(createArgument.apply(data)));
-    }
-
-    public Builder4<A, B> noArguments() {
-      return arguments((data, settings) -> PList.empty());
+    static <A, B> BiFunction<A, B, String> methodName(String methodName) {
+      return (d, s) -> methodName;
     }
   }
 
-  public static class Builder4<A, B> {
-    private final BiFunction<A, B, JavaModifiers> createModifiers;
-    private final BiFunction<A, B, PList<String>> createGenericTypeParameters;
-    private final BiFunction<A, B, String> createReturnType;
-    private final BiFunction<A, B, String> createMethodName;
-    private final BiFunction<A, B, PList<String>> createArguments;
+  @FieldBuilder(fieldName = "createArguments")
+  static class ArgumentsBuilder {
+    private ArgumentsBuilder() {}
 
-    private Builder4(
-        BiFunction<A, B, JavaModifiers> createModifiers,
-        BiFunction<A, B, PList<String>> createGenericTypeParameters,
-        BiFunction<A, B, String> createReturnType,
-        BiFunction<A, B, String> createMethodName,
-        BiFunction<A, B, PList<String>> createArguments) {
-      this.createModifiers = createModifiers;
-      this.createGenericTypeParameters = createGenericTypeParameters;
-      this.createReturnType = createReturnType;
-      this.createMethodName = createMethodName;
-      this.createArguments = createArguments;
+    static <A, B> BiFunction<A, B, PList<String>> arguments(
+        Function<A, PList<String>> createArguments) {
+      return (data, settings) -> createArguments.apply(data);
     }
 
-    public MethodGen<A, B> content(String content) {
-      return content((data, settings, writer) -> writer.println(content));
+    static <A, B> BiFunction<A, B, PList<String>> singleArgument(
+        Function<A, String> createArgument) {
+      return (d, s) -> PList.single(createArgument.apply(d));
     }
 
-    public MethodGen<A, B> content(Function<A, String> content) {
-      return content((data, settings, writer) -> writer.println(content.apply(data)));
+    static <A, B> BiFunction<A, B, PList<String>> noArguments() {
+      return (d, s) -> PList.empty();
+    }
+  }
+
+  @FieldBuilder(fieldName = "contentGenerator")
+  static class ContentBuilder {
+    private ContentBuilder() {}
+
+    static <A, B> Optional<Generator<A, B>> content(String content) {
+      return Optional.of((data, settings, writer) -> writer.println(content));
     }
 
-    public MethodGen<A, B> content(Generator<A, B> content) {
-      return new MethodGen<>(
-          createModifiers,
-          createGenericTypeParameters,
-          createReturnType,
-          createMethodName,
-          createArguments,
-          Optional.of(content));
+    static <A, B> Optional<Generator<A, B>> content(Function<A, String> content) {
+      return Optional.of((data, settings, writer) -> writer.println(content.apply(data)));
     }
 
-    public MethodGen<A, B> noBody() {
-      return new MethodGen<>(
-          createModifiers,
-          createGenericTypeParameters,
-          createReturnType,
-          createMethodName,
-          createArguments,
-          Optional.empty());
+    static <A, B> Optional<Generator<A, B>> noBody() {
+      return Optional.empty();
     }
 
-    public MethodGen<A, B> contentWriter(UnaryOperator<Writer> content) {
-      return content((data, settings, writer) -> content.apply(writer));
+    static <A, B> Optional<Generator<A, B>> contentWriter(UnaryOperator<Writer> content) {
+      return Optional.of((data, settings, writer) -> content.apply(writer));
+    }
+
+    static <A, B> Optional<Generator<A, B>> content(Generator<A, B> content) {
+      return Optional.of(content);
     }
   }
 }

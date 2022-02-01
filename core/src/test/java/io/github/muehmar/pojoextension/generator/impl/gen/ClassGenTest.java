@@ -20,13 +20,16 @@ class ClassGenTest {
   @Test
   void generate_when_simplePojoAndSingleContent_then_correctGeneratedString() {
     final ClassGen<Pojo, PojoSettings> generator =
-        ClassGen.<Pojo, PojoSettings>clazz()
+        ClassGenBuilder.<Pojo, PojoSettings>create()
+            .clazz()
             .topLevel()
             .packageGen(new PackageGen())
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> s.extensionName(p).asString())
-            .noSuperClassAndInterface()
-            .content(Generator.ofWriterFunction(w -> w.println("Content")));
+            .noSuperClass()
+            .noInterfaces()
+            .content(Generator.ofWriterFunction(w -> w.println("Content")))
+            .build();
 
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
@@ -43,13 +46,16 @@ class ClassGenTest {
   @Test
   void generate_when_interface_then_correctOutput() {
     final ClassGen<Pojo, PojoSettings> generator =
-        ClassGen.<Pojo, PojoSettings>ifc()
+        ClassGenBuilder.<Pojo, PojoSettings>create()
+            .ifc()
             .topLevel()
             .packageGen(new PackageGen())
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> s.extensionName(p).asString())
-            .noSuperClassAndInterface()
-            .content(Generator.ofWriterFunction(w -> w.println("Content")));
+            .noSuperClass()
+            .noInterfaces()
+            .content(Generator.ofWriterFunction(w -> w.println("Content")))
+            .build();
 
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
@@ -66,13 +72,16 @@ class ClassGenTest {
   @Test
   void generate_when_refAddedInContent_then_refPrinted() {
     final ClassGen<Pojo, PojoSettings> generator =
-        ClassGen.<Pojo, PojoSettings>clazz()
+        ClassGenBuilder.<Pojo, PojoSettings>create()
+            .clazz()
             .topLevel()
             .packageGen(new PackageGen())
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> s.extensionName(p).asString())
-            .noSuperClassAndInterface()
-            .content(Generator.ofWriterFunction(w -> w.ref("java.util.Optional")));
+            .noSuperClass()
+            .noInterfaces()
+            .content(Generator.ofWriterFunction(w -> w.ref("java.util.Optional")))
+            .build();
 
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
@@ -89,12 +98,16 @@ class ClassGenTest {
   @Test
   void generate_when_nestedClass_then_noRefsAndPackagePrinted() {
     final ClassGen<Pojo, PojoSettings> generator =
-        ClassGen.<Pojo, PojoSettings>clazz()
+        ClassGenBuilder.<Pojo, PojoSettings>create()
+            .clazz()
             .nested()
+            .packageGen(Generator.emptyGen())
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> s.extensionName(p).asString())
-            .noSuperClassAndInterface()
-            .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
+            .noSuperClass()
+            .noInterfaces()
+            .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")))
+            .build();
 
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
@@ -106,12 +119,16 @@ class ClassGenTest {
   void generate_when_privateAndFinalModifierUnordered_then_correctOutputWithOrderedModifiers(
       PList<JavaModifier> modifiers) {
     final ClassGen<Pojo, PojoSettings> generator =
-        ClassGen.<Pojo, PojoSettings>clazz()
+        ClassGenBuilder.<Pojo, PojoSettings>create()
+            .clazz()
             .nested()
-            .modifiers(modifiers.toArray(JavaModifier.class))
+            .packageGen(Generator.emptyGen())
+            .modifiers(modifiers)
             .className((p, s) -> s.extensionName(p).asString())
-            .noSuperClassAndInterface()
-            .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
+            .noSuperClass()
+            .noInterfaces()
+            .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")))
+            .build();
 
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
@@ -121,13 +138,16 @@ class ClassGenTest {
   @Test
   void generate_when_hasSuperClass_then_correctOutput() {
     final ClassGen<Pojo, PojoSettings> generator =
-        ClassGen.<Pojo, PojoSettings>clazz()
+        ClassGenBuilder.<Pojo, PojoSettings>create()
+            .clazz()
             .nested()
+            .packageGen(Generator.emptyGen())
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> s.extensionName(p).asString())
-            .superClass((p, s) -> s.baseClassName(p))
-            .doesNotImplementInterfaces()
-            .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
+            .superClassName((p, s) -> s.baseClassName(p))
+            .noInterfaces()
+            .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")))
+            .build();
 
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
@@ -138,13 +158,16 @@ class ClassGenTest {
   @Test
   void generate_when_hasSuperClassAndInterfaces_then_correctOutput() {
     final ClassGen<Pojo, PojoSettings> generator =
-        ClassGen.<Pojo, PojoSettings>clazz()
+        ClassGenBuilder.<Pojo, PojoSettings>create()
+            .clazz()
             .nested()
+            .packageGen(Generator.emptyGen())
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> p.getName().asString())
-            .superClass((p, s) -> s.baseClassName(p))
+            .superClassName((p, s) -> s.baseClassName(p))
             .singleInterface((p, s) -> s.extensionName(p).asString())
-            .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")));
+            .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")))
+            .build();
 
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());

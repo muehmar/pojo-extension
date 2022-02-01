@@ -7,8 +7,9 @@ import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.Annotations;
-import io.github.muehmar.pojoextension.generator.impl.gen.ClassGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.ClassGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 
@@ -16,7 +17,8 @@ public class BaseClassGens {
   private BaseClassGens() {}
 
   public static Generator<Pojo, PojoSettings> baseClass() {
-    return ClassGen.<Pojo, PojoSettings>clazz()
+    return ClassGenBuilder.<Pojo, PojoSettings>create()
+        .clazz()
         .topLevel()
         .packageGen(new PackageGen())
         .modifiers(ABSTRACT)
@@ -24,6 +26,7 @@ public class BaseClassGens {
         .noSuperClass()
         .singleInterface((p, s) -> s.extensionName(p).asString() + p.getTypeVariablesSection())
         .content(baseClassContent())
+        .build()
         .append(RefsGen.genericRefs());
   }
 
@@ -38,34 +41,40 @@ public class BaseClassGens {
 
   private static Generator<Pojo, PojoSettings> equalsMethod() {
     final MethodGen<Pojo, PojoSettings> method =
-        MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+        MethodGenBuilder.<Pojo, PojoSettings>create()
+            .modifiers(PUBLIC)
             .noGenericTypes()
             .returnType("boolean")
             .methodName("equals")
             .singleArgument(ignore -> "Object o")
-            .content("return genEquals(o);");
+            .content("return genEquals(o);")
+            .build();
     return Annotations.<Pojo, PojoSettings>overrideAnnotation().append(method);
   }
 
   private static Generator<Pojo, PojoSettings> hashCodeMethod() {
     final MethodGen<Pojo, PojoSettings> method =
-        MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+        MethodGenBuilder.<Pojo, PojoSettings>create()
+            .modifiers(PUBLIC)
             .noGenericTypes()
             .returnType("int")
             .methodName("hashCode")
             .noArguments()
-            .content("return genHashCode();");
+            .content("return genHashCode();")
+            .build();
     return Annotations.<Pojo, PojoSettings>overrideAnnotation().append(method);
   }
 
   private static Generator<Pojo, PojoSettings> toStringMethod() {
     final MethodGen<Pojo, PojoSettings> method =
-        MethodGen.<Pojo, PojoSettings>modifiers(PUBLIC)
+        MethodGenBuilder.<Pojo, PojoSettings>create()
+            .modifiers(PUBLIC)
             .noGenericTypes()
             .returnType("String")
             .methodName("toString")
             .noArguments()
-            .content("return genToString();");
+            .content("return genToString();")
+            .build();
     return Annotations.<Pojo, PojoSettings>overrideAnnotation().append(method);
   }
 }

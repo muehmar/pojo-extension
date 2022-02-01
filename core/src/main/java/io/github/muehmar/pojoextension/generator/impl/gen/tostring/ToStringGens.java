@@ -12,19 +12,21 @@ import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGen;
+import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 
 public class ToStringGens {
   private ToStringGens() {}
 
   public static Generator<Pojo, PojoSettings> genToStringMethod() {
     final Generator<Pojo, PojoSettings> method =
-        MethodGen.<Pojo, PojoSettings>modifiers(DEFAULT)
+        MethodGenBuilder.<Pojo, PojoSettings>create()
+            .modifiers(DEFAULT)
             .noGenericTypes()
             .returnType("String")
             .methodName("genToString")
             .noArguments()
-            .content(genToStringContent());
+            .content(genToStringContent())
+            .build();
     return method.filter((p, s) -> s.getToStringAbility().isEnabled());
   }
 
