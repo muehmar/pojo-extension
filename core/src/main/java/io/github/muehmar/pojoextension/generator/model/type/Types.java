@@ -75,6 +75,10 @@ public class Types {
     return new Type(ArrayType.fromItemType(itemType));
   }
 
+  public static Type varargs(Type itemType) {
+    return new Type(ArrayType.varargs(itemType));
+  }
+
   public static Type comparable(Type objType) {
     return new Type(
         DeclaredType.of(Name.fromString("Comparable"), PackageName.javaLang(), objType));

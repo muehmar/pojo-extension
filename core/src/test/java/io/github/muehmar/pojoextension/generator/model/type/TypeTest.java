@@ -157,4 +157,25 @@ class TypeTest {
         Types.typeVariable(Name.fromString("T")).onDeclaredType(getTypeDeclaration).isPresent());
     assertFalse(Types.primitiveBoolean().onDeclaredType(getTypeDeclaration).isPresent());
   }
+
+  @Test
+  void onArrayType_when_arrayType_then_functionExecuted() {
+    final Type type = Types.array(Types.string());
+
+    final Function<ArrayType, String> getItemType =
+        arrayType -> arrayType.getItemType().getTypeDeclaration().asString();
+
+    final Optional<String> result = type.onArrayType(getItemType);
+    assertEquals(Optional.of("String"), result);
+  }
+
+  @Test
+  void onArrayType_when_nonArrayType_then_returnsEmptyOptional() {
+    final Function<ArrayType, String> getItemType =
+        arrayType -> arrayType.getItemType().getTypeDeclaration().asString();
+
+    assertFalse(Types.string().onArrayType(getItemType).isPresent());
+    assertFalse(Types.typeVariable(Name.fromString("T")).onArrayType(getItemType).isPresent());
+    assertFalse(Types.primitiveBoolean().onArrayType(getItemType).isPresent());
+  }
 }

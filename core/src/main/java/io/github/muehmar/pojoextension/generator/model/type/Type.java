@@ -85,6 +85,14 @@ public class Type extends TypeBase {
         ignore -> Optional.empty());
   }
 
+  public <T> Optional<T> onArrayType(Function<ArrayType, T> onArrayType) {
+    return fold(
+        ignore -> Optional.empty(),
+        arrayType -> Optional.of(onArrayType.apply(arrayType)),
+        ignore -> Optional.empty(),
+        ignore -> Optional.empty());
+  }
+
   public Optional<OptionalFieldRelation> getRelation(Type other) {
     if (this.equals(other)) {
       return Optional.of(OptionalFieldRelation.SAME_TYPE);

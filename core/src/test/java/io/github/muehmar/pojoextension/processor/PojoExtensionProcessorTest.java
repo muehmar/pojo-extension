@@ -539,6 +539,9 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
             + "    static String constant() {\n"
             + "      return \"constant\";\n"
             + "    } \n"
+            + "    static String varargs(String... args) {\n"
+            + "      return String.join(\"\", args);\n"
+            + "    } \n"
             + "  }\n"
             + "}";
 
@@ -560,6 +563,16 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 .methodName(Name.fromString("constant"))
                 .returnType(Types.string())
                 .arguments(PList.empty())
+                .andAllOptionals()
+                .innerClassName(Optional.of(Name.fromString("CustomIdBuilder")))
+                .build(),
+            FieldBuilderMethodBuilder.create()
+                .fieldName(Name.fromString("id"))
+                .methodName(Name.fromString("varargs"))
+                .returnType(Types.string())
+                .arguments(
+                    PList.single(
+                        new Argument(Name.fromString("args"), Types.varargs(Types.string()))))
                 .andAllOptionals()
                 .innerClassName(Optional.of(Name.fromString("CustomIdBuilder")))
                 .build());

@@ -16,9 +16,21 @@ class ArrayTypeTest {
   }
 
   @Test
+  void getTypeDeclaration_when_stringVarargs_then_correctDeclaration() {
+    final ArrayType arrayType = ArrayType.varargs(Types.string());
+    assertEquals("String...", arrayType.getTypeDeclaration().asString());
+  }
+
+  @Test
   void getName_when_stringArray_then_correctName() {
     final ArrayType arrayType = ArrayType.fromItemType(Types.string());
     assertEquals("String[]", arrayType.getName().asString());
+  }
+
+  @Test
+  void getName_when_stringVarargs_then_correctName() {
+    final ArrayType arrayType = ArrayType.varargs(Types.string());
+    assertEquals("String...", arrayType.getName().asString());
   }
 
   @Test

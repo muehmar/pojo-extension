@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.processor;
 
 import static io.github.muehmar.pojoextension.Booleans.not;
+import static io.github.muehmar.pojoextension.Functions.mapFirst;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.FieldBuilder;
@@ -9,7 +10,9 @@ import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;
 import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethodBuilder;
 import io.github.muehmar.pojoextension.generator.model.Name;
 import io.github.muehmar.pojoextension.generator.model.type.Type;
+import io.github.muehmar.pojoextension.generator.model.type.Types;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -69,8 +72,7 @@ public class FieldBuilderProcessor {
     }
 
     final Type returnType = TypeMirrorMapper.map(method.getReturnType());
-    final PList<Argument> arguments =
-        PList.fromIter(method.getParameters()).map(ArgumentMapper::toArgument);
+    final PList<Argument> arguments = extractArgumentsFromMethod(method);
 
     return FieldBuilderMethodBuilder.create()
         .fieldName(Name.fromString(fieldBuilder.fieldName()))
@@ -80,6 +82,22 @@ public class FieldBuilderProcessor {
         .andAllOptionals()
         .innerClassName(innerClassName)
         .build();
+  }
+
+  private static PList<Argument> extractArgumentsFromMethod(ExecutableElement method) {
+    final PList<Argument> arguments =
+        PList.fromIter(method.getParameters()).map(ArgumentMapper::toArgument);
+    if (method.isVarArgs()) {
+      UnaryOperator<Argument> mapToVarargs =
+          arg ->
+              arg.getType()
+                  .onArrayType(arrayType -> arg.withType(Types.varargs(arrayType.getItemType())))
+                  .orElse(arg);
+
+      return arguments.reverse().zipWithIndex().map(mapFirst(mapToVarargs));
+    } else {
+      return arguments;
+    }
   }
 
   private static void throwMethodNotStaticException(ExecutableElement method) {

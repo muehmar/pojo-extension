@@ -8,13 +8,19 @@ import io.github.muehmar.pojoextension.generator.model.Name;
 @SuppressWarnings("java:S2160")
 public class ArrayType extends ArrayTypeBase implements SpecificType {
   private final Type itemType;
+  private final boolean isVarargs;
 
-  ArrayType(Type itemType) {
+  ArrayType(Type itemType, boolean isVarargs) {
     this.itemType = itemType;
+    this.isVarargs = isVarargs;
   }
 
   public static ArrayType fromItemType(Type itemType) {
-    return new ArrayType(itemType);
+    return new ArrayType(itemType, false);
+  }
+
+  public static ArrayType varargs(Type itemType) {
+    return new ArrayType(itemType, true);
   }
 
   @Override
@@ -29,7 +35,8 @@ public class ArrayType extends ArrayTypeBase implements SpecificType {
 
   @Override
   public Name getTypeDeclaration() {
-    return itemType.getTypeDeclaration().append("[]");
+    final String suffix = isVarargs ? "..." : "[]";
+    return itemType.getTypeDeclaration().append(suffix);
   }
 
   @Override
@@ -39,5 +46,9 @@ public class ArrayType extends ArrayTypeBase implements SpecificType {
 
   public Type getItemType() {
     return itemType;
+  }
+
+  public boolean isVarargs() {
+    return isVarargs;
   }
 }
