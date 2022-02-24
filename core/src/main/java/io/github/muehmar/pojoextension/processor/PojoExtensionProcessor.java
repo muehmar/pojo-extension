@@ -360,11 +360,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             Optional.of(classType)
                 .filter(DeclaredType::isOptional)
                 .flatMap(t -> t.getTypeParameters().headOption());
-    return type.fold(
-        getOptionalType,
-        ignore -> Optional.empty(),
-        ignore -> Optional.empty(),
-        ignore -> Optional.empty());
+    return type.onDeclaredType(getOptionalType).flatMap(Function.identity());
   }
 
   private Optional<PojoField> mapNullablePojoField(

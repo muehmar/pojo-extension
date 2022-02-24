@@ -81,6 +81,14 @@ public class Type extends TypeBase {
     }
   }
 
+  public <T> Optional<T> onDeclaredType(Function<DeclaredType, T> onDeclaredType) {
+    return fold(
+        decType -> Optional.of(onDeclaredType.apply(decType)),
+        ignore -> Optional.empty(),
+        ignore -> Optional.empty(),
+        ignore -> Optional.empty());
+  }
+
   public Optional<OptionalFieldRelation> getRelation(Type other) {
     if (this.equals(other)) {
       return Optional.of(SAME_TYPE);

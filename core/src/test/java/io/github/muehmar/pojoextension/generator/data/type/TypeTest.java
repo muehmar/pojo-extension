@@ -135,4 +135,26 @@ class TypeTest {
     assertTrue(
         type.fold(ignore -> false, ignore -> false, ignore -> false, compareTypeVariableName));
   }
+
+  @Test
+  void onDeclaredType_when_declaredType_then_functionExecuted() {
+    final Type type = Types.optional(Types.string());
+
+    final Function<DeclaredType, String> getTypeDeclaration =
+        declaredType -> declaredType.getTypeDeclaration().asString();
+
+    final Optional<String> result = type.onDeclaredType(getTypeDeclaration);
+    assertEquals(Optional.of("Optional<String>"), result);
+  }
+
+  @Test
+  void onDeclaredType_when_nonDeclaredType_then_returnsEmptyOptional() {
+    final Function<DeclaredType, String> getTypeDeclaration =
+        declaredType -> declaredType.getTypeDeclaration().asString();
+
+    assertFalse(Types.array(Types.string()).onDeclaredType(getTypeDeclaration).isPresent());
+    assertFalse(
+        Types.typeVariable(Name.fromString("T")).onDeclaredType(getTypeDeclaration).isPresent());
+    assertFalse(Types.primitiveBoolean().onDeclaredType(getTypeDeclaration).isPresent());
+  }
 }
