@@ -2,9 +2,9 @@ package io.github.muehmar.pojoextension.processor;
 
 import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
-import static io.github.muehmar.pojoextension.generator.data.Type.integer;
-import static io.github.muehmar.pojoextension.generator.data.Type.primitiveBoolean;
-import static io.github.muehmar.pojoextension.generator.data.Type.string;
+import static io.github.muehmar.pojoextension.generator.data.type.Types.integer;
+import static io.github.muehmar.pojoextension.generator.data.type.Types.primitiveBoolean;
+import static io.github.muehmar.pojoextension.generator.data.type.Types.string;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.bluecare.commons.data.PList;
@@ -27,7 +27,8 @@ import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoBuilder;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.Type;
+import io.github.muehmar.pojoextension.generator.data.type.Type;
+import io.github.muehmar.pojoextension.generator.data.type.Types;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -206,7 +207,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
 
     final Necessity required =
         optionalDetection.equals(OptionalDetection.OPTIONAL_CLASS) ? OPTIONAL : REQUIRED;
-    final Type type = required.isRequired() ? Type.optional(string()) : string();
+    final Type type = required.isRequired() ? Types.optional(string()) : string();
 
     final PojoField m1 = new PojoField(Names.id(), type, required);
     final PList<PojoField> fields = PList.single(m1);
@@ -218,7 +219,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
             .constructors(
                 PList.single(
                     new Constructor(
-                        className, PList.single(new Argument(Names.id(), Type.string())))))
+                        className, PList.single(new Argument(Names.id(), Types.string())))))
             .getters(PList.empty())
             .generics(PList.empty())
             .fieldBuilderMethods(PList.empty())
@@ -250,14 +251,14 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className), classString);
 
-    final PojoField f1 = new PojoField(Name.fromString("b"), Type.primitive("boolean"), REQUIRED);
-    final PojoField f2 = new PojoField(Name.fromString("i"), Type.primitive("int"), REQUIRED);
-    final PojoField f3 = new PojoField(Name.fromString("s"), Type.primitive("short"), REQUIRED);
-    final PojoField f4 = new PojoField(Name.fromString("l"), Type.primitive("long"), REQUIRED);
-    final PojoField f5 = new PojoField(Name.fromString("f"), Type.primitive("float"), REQUIRED);
-    final PojoField f6 = new PojoField(Name.fromString("d"), Type.primitive("double"), REQUIRED);
-    final PojoField f7 = new PojoField(Name.fromString("by"), Type.primitive("byte"), REQUIRED);
-    final PojoField f8 = new PojoField(Name.fromString("c"), Type.primitive("char"), REQUIRED);
+    final PojoField f1 = new PojoField(Name.fromString("b"), Types.primitiveBoolean(), REQUIRED);
+    final PojoField f2 = new PojoField(Name.fromString("i"), Types.primitiveInt(), REQUIRED);
+    final PojoField f3 = new PojoField(Name.fromString("s"), Types.primitiveShort(), REQUIRED);
+    final PojoField f4 = new PojoField(Name.fromString("l"), Types.primitiveLong(), REQUIRED);
+    final PojoField f5 = new PojoField(Name.fromString("f"), Types.primitiveFloat(), REQUIRED);
+    final PojoField f6 = new PojoField(Name.fromString("d"), Types.primitiveDouble(), REQUIRED);
+    final PojoField f7 = new PojoField(Name.fromString("by"), Types.primitiveByte(), REQUIRED);
+    final PojoField f8 = new PojoField(Name.fromString("c"), Types.primitiveChar(), REQUIRED);
     final PList<PojoField> fields = PList.of(f1, f2, f3, f4, f5, f6, f7, f8);
     final Pojo expected =
         PojoBuilder.create()
@@ -294,9 +295,9 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
 
     final PojoField f1 =
         new PojoField(
-            Name.fromString("data"), Type.map(string(), integer()).withIsArray(true), REQUIRED);
+            Name.fromString("data"), Types.array(Types.map(string(), integer())), REQUIRED);
     final PojoField f2 =
-        new PojoField(Name.fromString("key"), Type.primitive("byte").withIsArray(true), REQUIRED);
+        new PojoField(Name.fromString("key"), Types.array(Types.primitiveByte()), REQUIRED);
     final PList<PojoField> fields = PList.of(f1, f2);
     final Pojo expected =
         PojoBuilder.create()
@@ -339,7 +340,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
         PList.of(
             GetterBuilder.create()
                 .name(Name.fromString("getData"))
-                .returnType(Type.optional(string()))
+                .returnType(Types.optional(string()))
                 .build(),
             GetterBuilder.create().name(Name.fromString("getKey")).returnType(integer()).build(),
             GetterBuilder.create()
@@ -372,7 +373,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
         PList.of(
             GetterBuilder.create()
                 .name(Name.fromString("getKey"))
-                .returnType(Type.integer())
+                .returnType(Types.integer())
                 .andOptionals()
                 .fieldName(Name.fromString("key"))
                 .build());
@@ -444,14 +445,14 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
 
     final PojoField f1 = new PojoField(Name.fromString("prop1"), string(), REQUIRED);
     final PojoField f2 =
-        new PojoField(Name.fromString("data"), Type.typeVariable(Name.fromString("T")), REQUIRED);
+        new PojoField(Name.fromString("data"), Types.typeVariable(Name.fromString("T")), REQUIRED);
     final PList<PojoField> fields = PList.of(f1, f2);
 
     final Generic generic =
         new Generic(
             Name.fromString("T"),
             PList.of(
-                Type.list(string()), Type.comparable(Type.typeVariable(Name.fromString("T")))));
+                Types.list(string()), Types.comparable(Types.typeVariable(Name.fromString("T")))));
 
     final Pojo expected =
         PojoBuilder.create()
@@ -497,11 +498,11 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
             FieldBuilderMethodBuilder.create()
                 .fieldName(Name.fromString("key"))
                 .methodName(Name.fromString("sumKey"))
-                .returnType(Type.integer())
+                .returnType(Types.integer())
                 .arguments(
                     PList.of(
-                        new Argument(Name.fromString("a"), Type.string()),
-                        new Argument(Name.fromString("b"), Type.primitive("int"))))
+                        new Argument(Name.fromString("a"), Types.string()),
+                        new Argument(Name.fromString("b"), Types.primitiveInt())))
                 .andAllOptionals()
                 .innerClassName(Optional.empty())
                 .build());
@@ -549,15 +550,15 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
             FieldBuilderMethodBuilder.create()
                 .fieldName(Name.fromString("id"))
                 .methodName(Name.fromString("randomId"))
-                .returnType(Type.string())
-                .arguments(PList.of(new Argument(Name.fromString("seed"), Type.primitive("int"))))
+                .returnType(Types.string())
+                .arguments(PList.of(new Argument(Name.fromString("seed"), Types.primitiveInt())))
                 .andAllOptionals()
                 .innerClassName(Optional.of(Name.fromString("CustomIdBuilder")))
                 .build(),
             FieldBuilderMethodBuilder.create()
                 .fieldName(Name.fromString("id"))
                 .methodName(Name.fromString("constant"))
-                .returnType(Type.string())
+                .returnType(Types.string())
                 .arguments(PList.empty())
                 .andAllOptionals()
                 .innerClassName(Optional.of(Name.fromString("CustomIdBuilder")))

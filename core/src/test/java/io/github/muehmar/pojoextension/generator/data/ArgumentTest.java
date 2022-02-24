@@ -2,11 +2,12 @@ package io.github.muehmar.pojoextension.generator.data;
 
 import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
-import static io.github.muehmar.pojoextension.generator.data.Type.optional;
-import static io.github.muehmar.pojoextension.generator.data.Type.string;
+import static io.github.muehmar.pojoextension.generator.data.type.Types.optional;
+import static io.github.muehmar.pojoextension.generator.data.type.Types.string;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.muehmar.pojoextension.generator.Names;
+import io.github.muehmar.pojoextension.generator.data.type.Types;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -72,7 +73,7 @@ class ArgumentTest {
     final Argument argument =
         new Argument(
             Name.fromString("map"),
-            Type.map(Type.typeVariable(Name.fromString("T")), Type.optional(string())));
+            Types.map(Types.typeVariable(Name.fromString("T")), Types.optional(string())));
     assertEquals("Map<T,Optional<String>> map", argument.formatted());
   }
 }

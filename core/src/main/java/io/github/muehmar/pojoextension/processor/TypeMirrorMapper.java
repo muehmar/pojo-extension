@@ -12,7 +12,9 @@ import static javax.lang.model.type.TypeKind.VOID;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.data.Name;
-import io.github.muehmar.pojoextension.generator.data.Type;
+import io.github.muehmar.pojoextension.generator.data.type.ClassnameParser;
+import io.github.muehmar.pojoextension.generator.data.type.Type;
+import io.github.muehmar.pojoextension.generator.data.type.Types;
 import java.util.function.Function;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
@@ -43,15 +45,15 @@ public class TypeMirrorMapper {
         declaredTypeMapper(),
         arrayTypeMapper(),
         typeVariableMapper(),
-        Mapper.forFixMapping(BOOLEAN, Type.primitive("boolean")),
-        Mapper.forFixMapping(CHAR, Type.primitive("char")),
-        Mapper.forFixMapping(INT, Type.primitive("int")),
-        Mapper.forFixMapping(FLOAT, Type.primitive("float")),
-        Mapper.forFixMapping(DOUBLE, Type.primitive("double")),
-        Mapper.forFixMapping(LONG, Type.primitive("long")),
-        Mapper.forFixMapping(SHORT, Type.primitive("short")),
-        Mapper.forFixMapping(BYTE, Type.primitive("byte")),
-        Mapper.forFixMapping(VOID, Type.voidType()));
+        Mapper.forFixMapping(BOOLEAN, Types.primitiveBoolean()),
+        Mapper.forFixMapping(CHAR, Types.primitiveChar()),
+        Mapper.forFixMapping(INT, Types.primitiveInt()),
+        Mapper.forFixMapping(FLOAT, Types.primitiveFloat()),
+        Mapper.forFixMapping(DOUBLE, Types.primitiveDouble()),
+        Mapper.forFixMapping(LONG, Types.primitiveLong()),
+        Mapper.forFixMapping(SHORT, Types.primitiveShort()),
+        Mapper.forFixMapping(BYTE, Types.primitiveByte()),
+        Mapper.forFixMapping(VOID, Types.voidType()));
   }
 
   private static Mapper declaredTypeMapper() {
@@ -59,10 +61,12 @@ public class TypeMirrorMapper {
         TypeKind.DECLARED,
         DeclaredType.class,
         declaredType -> {
+          final ClassnameParser.NameAndPackage nameAndPackage =
+              ClassnameParser.parseThrowing(declaredType.toString());
           final PList<Type> typeParameters =
               PList.fromIter(declaredType.getTypeArguments()).map(TypeMirrorMapper::map);
-
-          return Type.fromClassName(declaredType.toString()).withTypeParameters(typeParameters);
+          return Types.declaredType(
+              nameAndPackage.getName(), nameAndPackage.getPkg(), typeParameters);
         });
   }
 
@@ -70,14 +74,14 @@ public class TypeMirrorMapper {
     return Mapper.forKindAndClass(
         TypeKind.ARRAY,
         ArrayType.class,
-        arrayType -> map(arrayType.getComponentType()).withIsArray(true));
+        arrayType -> Types.array(map(arrayType.getComponentType())));
   }
 
   private static Mapper typeVariableMapper() {
     return Mapper.forKindAndClass(
         TypeKind.TYPEVAR,
         TypeVariable.class,
-        typeVariable -> Type.typeVariable(Name.fromString(typeVariable.toString())));
+        typeVariable -> Types.typeVariable(Name.fromString(typeVariable.toString())));
   }
 
   private static class Mapper {

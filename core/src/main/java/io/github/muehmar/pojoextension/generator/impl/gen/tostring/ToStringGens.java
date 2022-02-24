@@ -10,8 +10,8 @@ import io.github.muehmar.pojoextension.Mapper;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.data.FieldGetter;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.type.Types;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 
 public class ToStringGens {
@@ -73,7 +73,7 @@ public class ToStringGens {
   }
 
   private static Pair<String, String> getWrapper(FieldGetter fg) {
-    return fg.getField().getType().equals(Type.string()) && fg.getRelation().equals(SAME_TYPE)
+    return fg.getField().getType().equals(Types.string()) && fg.getRelation().equals(SAME_TYPE)
         ? Pair.of("'", " + '\\''")
         : Pair.of("", "");
   }

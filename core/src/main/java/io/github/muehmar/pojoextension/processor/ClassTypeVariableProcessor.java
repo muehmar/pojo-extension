@@ -3,7 +3,7 @@ package io.github.muehmar.pojoextension.processor;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.data.Generic;
 import io.github.muehmar.pojoextension.generator.data.Name;
-import io.github.muehmar.pojoextension.generator.data.Type;
+import io.github.muehmar.pojoextension.generator.data.type.Type;
 import javax.lang.model.element.TypeElement;
 
 /** Processes type variables of classes, this means only upper bounds are considered. */

@@ -17,8 +17,8 @@ import io.github.muehmar.pojoextension.generator.data.FieldBuilderMethod;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.type.Types;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
@@ -62,7 +62,7 @@ class RefsGenTest {
         FieldBuilderMethods.forField(
             PojoFields.optionalName(),
             Name.fromString("customMethod"),
-            new Argument(Name.fromString("val"), Type.map(Type.string(), Type.integer())));
+            new Argument(Name.fromString("val"), Types.map(Types.string(), Types.integer())));
     final Writer writer =
         gen.generate(fieldBuilderMethod, PojoSettings.defaultSettings(), Writer.createDefault());
 

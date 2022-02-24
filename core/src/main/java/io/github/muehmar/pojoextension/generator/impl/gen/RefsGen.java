@@ -7,8 +7,8 @@ import io.github.muehmar.pojoextension.generator.data.FieldBuilderMethod;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.type.Type;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 
 public class RefsGen {

@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Names;
+import io.github.muehmar.pojoextension.generator.data.type.Types;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
@@ -18,13 +19,13 @@ class ConstructorTest {
         new Constructor(
             Name.fromString("Customer"),
             PList.of(
-                new Argument(Names.id(), Type.string()),
-                new Argument(Names.zip(), Type.integer())));
+                new Argument(Names.id(), Types.string()),
+                new Argument(Names.zip(), Types.integer())));
 
     final PList<PojoField> fields =
         PList.of(
-            new PojoField(Names.id(), Type.string(), REQUIRED),
-            new PojoField(Names.zip(), Type.integer(), OPTIONAL));
+            new PojoField(Names.id(), Types.string(), REQUIRED),
+            new PojoField(Names.zip(), Types.integer(), OPTIONAL));
 
     // method call
     final Optional<PList<FieldArgument>> result = constructor.matchFields(fields);
@@ -43,13 +44,13 @@ class ConstructorTest {
         new Constructor(
             Name.fromString("Customer"),
             PList.of(
-                new Argument(Names.id(), Type.string()),
-                new Argument(Names.zip(), Type.integer())));
+                new Argument(Names.id(), Types.string()),
+                new Argument(Names.zip(), Types.integer())));
 
     final PList<PojoField> fields =
         PList.of(
-            new PojoField(Names.zip(), Type.integer(), REQUIRED),
-            new PojoField(Names.id(), Type.string(), OPTIONAL));
+            new PojoField(Names.zip(), Types.integer(), REQUIRED),
+            new PojoField(Names.id(), Types.string(), OPTIONAL));
 
     // method call
     final Optional<PList<FieldArgument>> result = constructor.matchFields(fields);
@@ -64,13 +65,13 @@ class ConstructorTest {
         new Constructor(
             Name.fromString("Customer"),
             PList.of(
-                new Argument(Names.id(), Type.string()),
-                new Argument(Names.zip(), Type.optional(Type.integer()))));
+                new Argument(Names.id(), Types.string()),
+                new Argument(Names.zip(), Types.optional(Types.integer()))));
 
     final PList<PojoField> fields =
         PList.of(
-            new PojoField(Names.id(), Type.string(), REQUIRED),
-            new PojoField(Names.zip(), Type.integer(), OPTIONAL));
+            new PojoField(Names.id(), Types.string(), REQUIRED),
+            new PojoField(Names.zip(), Types.integer(), OPTIONAL));
 
     // method call
     final Optional<PList<FieldArgument>> result = constructor.matchFields(fields);
@@ -94,13 +95,13 @@ class ConstructorTest {
         new Constructor(
             Name.fromString("Customer"),
             PList.of(
-                new Argument(Names.id(), Type.optional(Type.string())),
-                new Argument(Names.zip(), Type.integer())));
+                new Argument(Names.id(), Types.optional(Types.string())),
+                new Argument(Names.zip(), Types.integer())));
 
     final PList<PojoField> fields =
         PList.of(
-            new PojoField(Names.id(), Type.string(), REQUIRED),
-            new PojoField(Names.zip(), Type.integer(), OPTIONAL));
+            new PojoField(Names.id(), Types.string(), REQUIRED),
+            new PojoField(Names.zip(), Types.integer(), OPTIONAL));
 
     // method call
     final Optional<PList<FieldArgument>> result = constructor.matchFields(fields);
@@ -114,10 +115,10 @@ class ConstructorTest {
         new Constructor(
             Name.fromString("Customer"),
             PList.of(
-                new Argument(Names.id(), Type.string()),
-                new Argument(Names.zip(), Type.optional(Type.integer()))));
+                new Argument(Names.id(), Types.string()),
+                new Argument(Names.zip(), Types.optional(Types.integer()))));
 
-    final PList<PojoField> fields = PList.of(new PojoField(Names.id(), Type.string(), REQUIRED));
+    final PList<PojoField> fields = PList.of(new PojoField(Names.id(), Types.string(), REQUIRED));
 
     // method call
     final Optional<PList<FieldArgument>> result = constructor.matchFields(fields);

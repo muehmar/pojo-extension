@@ -15,8 +15,10 @@ import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.type.PrimitiveType;
+import io.github.muehmar.pojoextension.generator.data.type.Type;
+import io.github.muehmar.pojoextension.generator.data.type.Types;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
@@ -68,7 +70,8 @@ class EqualsGensTest {
     final Generator<Pojo, PojoSettings> generator = EqualsGens.genEqualsMethod();
 
     final PList<PojoField> primitiveFields =
-        Type.allPrimitives().map(t -> new PojoField(t.getName().prefix("p"), t, REQUIRED));
+        PList.of(PrimitiveType.values())
+            .map(t -> new PojoField(t.getName().prefix("p"), Type.fromSpecificType(t), REQUIRED));
 
     final Writer writer =
         generator.generate(
@@ -105,9 +108,7 @@ class EqualsGensTest {
             .getFields()
             .cons(
                 new PojoField(
-                    Name.fromString("byteArray"),
-                    Type.primitive("byte").withIsArray(true),
-                    REQUIRED));
+                    Name.fromString("byteArray"), Types.array(Types.primitiveByte()), REQUIRED));
 
     final Writer writer =
         generator.generate(

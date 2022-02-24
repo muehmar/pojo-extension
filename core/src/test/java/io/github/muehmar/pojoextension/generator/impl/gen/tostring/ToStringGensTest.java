@@ -14,8 +14,8 @@ import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.type.Types;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +25,7 @@ class ToStringGensTest {
   void genToStringMethod_when_calledWithRequiredStringField_then_correctOutput() {
     final Generator<Pojo, PojoSettings> gen = ToStringGens.genToStringMethod();
     final PList<PojoField> fields =
-        PList.single(new PojoField(Name.fromString("username"), Type.string(), REQUIRED));
+        PList.single(new PojoField(Name.fromString("username"), Types.string(), REQUIRED));
     final Pojo pojo =
         Pojos.sample().withFields(fields).withGetters(fields.map(PojoFields::toGetter));
 
@@ -45,7 +45,7 @@ class ToStringGensTest {
   void genToStringMethod_when_calledWithOptionalStringField_then_correctOutput() {
     final Generator<Pojo, PojoSettings> gen = ToStringGens.genToStringMethod();
     final PList<PojoField> fields =
-        PList.single(new PojoField(Name.fromString("username"), Type.string(), OPTIONAL));
+        PList.single(new PojoField(Name.fromString("username"), Types.string(), OPTIONAL));
     final Pojo pojo =
         Pojos.sample().withFields(fields).withGetters(fields.map(PojoFields::toGetter));
 
@@ -65,7 +65,7 @@ class ToStringGensTest {
   void genToStringMethod_when_calledWithInteger_then_correctOutput() {
     final Generator<Pojo, PojoSettings> gen = ToStringGens.genToStringMethod();
     final PList<PojoField> fields =
-        PList.single(new PojoField(Name.fromString("age"), Type.integer(), REQUIRED));
+        PList.single(new PojoField(Name.fromString("age"), Types.integer(), REQUIRED));
     final Pojo pojo =
         Pojos.sample().withFields(fields).withGetters(fields.map(PojoFields::toGetter));
 
@@ -86,7 +86,7 @@ class ToStringGensTest {
     final Generator<Pojo, PojoSettings> gen = ToStringGens.genToStringMethod();
     final PList<PojoField> fields =
         PList.single(
-            new PojoField(Name.fromString("data"), Type.integer().withIsArray(true), REQUIRED));
+            new PojoField(Name.fromString("data"), Types.array(Types.integer()), REQUIRED));
     final Pojo pojo =
         Pojos.sample().withFields(fields).withGetters(fields.map(PojoFields::toGetter));
 

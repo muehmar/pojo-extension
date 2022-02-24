@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Pojos;
+import io.github.muehmar.pojoextension.generator.data.type.Types;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -78,7 +79,7 @@ class PojoTest {
     final Pojo pojo = Pojos.sample();
     final Optional<FieldGetter> fieldGetter =
         pojo.findMatchingGetter(
-            new PojoField(Name.fromString("notAFieldInTheSamplePojo"), Type.string(), REQUIRED));
+            new PojoField(Name.fromString("notAFieldInTheSamplePojo"), Types.string(), REQUIRED));
 
     assertEquals(Optional.empty(), fieldGetter);
   }

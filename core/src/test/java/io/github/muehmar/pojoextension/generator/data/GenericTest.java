@@ -3,6 +3,7 @@ package io.github.muehmar.pojoextension.generator.data;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.generator.data.type.Types;
 import org.junit.jupiter.api.Test;
 
 class GenericTest {
@@ -14,8 +15,8 @@ class GenericTest {
             .typeVariable(Name.fromString("T"))
             .upperBounds(
                 PList.of(
-                    Type.list(Type.string()),
-                    Type.comparable(Type.typeVariable(Name.fromString("T")))))
+                    Types.list(Types.string()),
+                    Types.comparable(Types.typeVariable(Name.fromString("T")))))
             .build();
 
     assertEquals("T extends List<String> & Comparable<T>", generic.getTypeDeclaration().asString());

@@ -8,6 +8,8 @@ import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelati
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.muehmar.pojoextension.generator.Names;
+import io.github.muehmar.pojoextension.generator.data.type.Type;
+import io.github.muehmar.pojoextension.generator.data.type.Types;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -28,19 +30,19 @@ class GetterTest {
 
   private static Stream<Arguments> getterNames() {
     return Stream.of(
-        Arguments.of("id", Type.string(), "getId"),
-        Arguments.of("flag", Type.primitiveBoolean(), "isFlag"),
-        Arguments.of("xIndex", Type.integer(), "getxIndex"),
-        Arguments.of("isFlag", Type.primitiveBoolean(), "isFlag"),
-        Arguments.of("istio", Type.primitiveBoolean(), "isIstio"),
-        Arguments.of("flag", Type.booleanClass(), "getFlag"));
+        Arguments.of("id", Types.string(), "getId"),
+        Arguments.of("flag", Types.primitiveBoolean(), "isFlag"),
+        Arguments.of("xIndex", Types.integer(), "getxIndex"),
+        Arguments.of("isFlag", Types.primitiveBoolean(), "isFlag"),
+        Arguments.of("istio", Types.primitiveBoolean(), "isIstio"),
+        Arguments.of("flag", Types.booleanClass(), "getFlag"));
   }
 
   @ParameterizedTest
   @EnumSource(Necessity.class)
   void getFieldGetter_when_getterNameAndTypeMatches_then_returnsFieldGetter(Necessity necessity) {
-    final Getter getter = new Getter(Name.fromString("getId"), Type.string(), noFieldName());
-    final PojoField field = new PojoField(Names.id(), Type.string(), necessity);
+    final Getter getter = new Getter(Name.fromString("getId"), Types.string(), noFieldName());
+    final PojoField field = new PojoField(Names.id(), Types.string(), necessity);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
 
@@ -52,8 +54,8 @@ class GetterTest {
   @ParameterizedTest
   @EnumSource(Necessity.class)
   void getFieldGetter_when_fieldNameAndTypeMatches_then_returnsFieldGetter(Necessity necessity) {
-    final Getter getter = new Getter(Names.id(), Type.string(), noFieldName());
-    final PojoField field = new PojoField(Names.id(), Type.string(), necessity);
+    final Getter getter = new Getter(Names.id(), Types.string(), noFieldName());
+    final PojoField field = new PojoField(Names.id(), Types.string(), necessity);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
 
@@ -65,8 +67,8 @@ class GetterTest {
   @ParameterizedTest
   @EnumSource(Necessity.class)
   void getFieldGetter_when_nameDoesNotMatch_then_returnsEmpty(Necessity necessity) {
-    final Getter getter = new Getter(Name.fromString("getName"), Type.string(), noFieldName());
-    final PojoField field = new PojoField(Names.id(), Type.string(), necessity);
+    final Getter getter = new Getter(Name.fromString("getName"), Types.string(), noFieldName());
+    final PojoField field = new PojoField(Names.id(), Types.string(), necessity);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
 
@@ -78,8 +80,8 @@ class GetterTest {
   void getFieldGetter_when_nameDoesNotMatchButFieldNameMatches_then_returnsFieldGetter(
       Necessity necessity) {
     final Getter getter =
-        new Getter(Name.fromString("getIdentification"), Type.string(), Optional.of(Names.id()));
-    final PojoField field = new PojoField(Names.id(), Type.string(), necessity);
+        new Getter(Name.fromString("getIdentification"), Types.string(), Optional.of(Names.id()));
+    final PojoField field = new PojoField(Names.id(), Types.string(), necessity);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
 
@@ -93,9 +95,9 @@ class GetterTest {
     final Getter getter =
         new Getter(
             Name.fromString("getIdentification"),
-            Type.optional(Type.string()),
+            Types.optional(Types.string()),
             Optional.of(Names.id()));
-    final PojoField field = new PojoField(Names.id(), Type.string(), OPTIONAL);
+    final PojoField field = new PojoField(Names.id(), Types.string(), OPTIONAL);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
 
@@ -109,9 +111,9 @@ class GetterTest {
     final Getter getter =
         new Getter(
             Name.fromString("getIdentification"),
-            Type.optional(Type.string()),
+            Types.optional(Types.string()),
             Optional.of(Names.id()));
-    final PojoField field = new PojoField(Names.id(), Type.string(), REQUIRED);
+    final PojoField field = new PojoField(Names.id(), Types.string(), REQUIRED);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
 
@@ -121,8 +123,8 @@ class GetterTest {
   @Test
   void getFieldGetter_when_returnTypeWrappedInOptionalAndFieldRequired_then_returnsEmpty() {
     final Getter getter =
-        new Getter(Name.fromString("getId"), Type.optional(Type.string()), noFieldName());
-    final PojoField field = new PojoField(Names.id(), Type.string(), REQUIRED);
+        new Getter(Name.fromString("getId"), Types.optional(Types.string()), noFieldName());
+    final PojoField field = new PojoField(Names.id(), Types.string(), REQUIRED);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
 
@@ -133,8 +135,8 @@ class GetterTest {
   void
       getFieldGetter_when_returnTypeWrappedInOptionalAndFieldNotRequired_then_returnsFieldGetter() {
     final Getter getter =
-        new Getter(Name.fromString("getId"), Type.optional(Type.string()), noFieldName());
-    final PojoField field = new PojoField(Names.id(), Type.string(), OPTIONAL);
+        new Getter(Name.fromString("getId"), Types.optional(Types.string()), noFieldName());
+    final PojoField field = new PojoField(Names.id(), Types.string(), OPTIONAL);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
 
@@ -146,8 +148,8 @@ class GetterTest {
   @ParameterizedTest
   @EnumSource(Necessity.class)
   void getFieldGetter_when_typeDoesNotMatch_then_returnsEmpty(Necessity necessity) {
-    final Getter getter = new Getter(Name.fromString("getId"), Type.integer(), noFieldName());
-    final PojoField field = new PojoField(Names.id(), Type.string(), necessity);
+    final Getter getter = new Getter(Name.fromString("getId"), Types.integer(), noFieldName());
+    final PojoField field = new PojoField(Names.id(), Types.string(), necessity);
 
     final Optional<FieldGetter> fieldGetter = getter.getFieldGetter(field);
 

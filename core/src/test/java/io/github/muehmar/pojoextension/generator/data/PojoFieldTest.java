@@ -10,6 +10,7 @@ import io.github.muehmar.pojoextension.FieldBuilderMethods;
 import io.github.muehmar.pojoextension.exception.PojoExtensionException;
 import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.type.Types;
 import org.junit.jupiter.api.Test;
 
 class PojoFieldTest {
@@ -37,7 +38,7 @@ class PojoFieldTest {
     final PojoField field = PojoFields.requiredId();
     final FieldBuilderMethod fieldBuilderMethod =
         FieldBuilderMethods.forField(
-            field, Name.fromString("method"), Argument.of(Name.fromString("val"), Type.string()));
+            field, Name.fromString("method"), Argument.of(Name.fromString("val"), Types.string()));
 
     assertTrue(field.isFieldBuilderMethod(fieldBuilderMethod));
   }
@@ -49,7 +50,7 @@ class PojoFieldTest {
         FieldBuilderMethods.forField(
                 field,
                 Name.fromString("method"),
-                Argument.of(Name.fromString("val"), Type.string()))
+                Argument.of(Name.fromString("val"), Types.string()))
             .withFieldName(Name.fromString("anyOtherName"));
 
     assertFalse(field.isFieldBuilderMethod(fieldBuilderMethod));
@@ -63,9 +64,9 @@ class PojoFieldTest {
         FieldBuilderMethods.forField(
                 field,
                 Name.fromString("method"),
-                Argument.of(Name.fromString("val"), Type.string()))
+                Argument.of(Name.fromString("val"), Types.string()))
             .withFieldName(Name.fromString("anyOtherName"))
-            .withReturnType(Type.voidType());
+            .withReturnType(Types.voidType());
 
     assertFalse(field.isFieldBuilderMethod(fieldBuilderMethod));
   }
@@ -77,8 +78,8 @@ class PojoFieldTest {
         FieldBuilderMethods.forField(
                 field,
                 Name.fromString("method"),
-                Argument.of(Name.fromString("val"), Type.string()))
-            .withReturnType(Type.string());
+                Argument.of(Name.fromString("val"), Types.string()))
+            .withReturnType(Types.string());
 
     assertThrows(
         PojoExtensionException.class, () -> field.isFieldBuilderMethod(fieldBuilderMethod));
@@ -91,8 +92,8 @@ class PojoFieldTest {
         FieldBuilderMethods.forField(
                 field,
                 Name.fromString("method"),
-                Argument.of(Name.fromString("val"), Type.string()))
-            .withReturnType(Type.optional(field.getType()));
+                Argument.of(Name.fromString("val"), Types.string()))
+            .withReturnType(Types.optional(field.getType()));
 
     assertThrows(
         PojoExtensionException.class, () -> field.isFieldBuilderMethod(fieldBuilderMethod));
@@ -105,8 +106,8 @@ class PojoFieldTest {
         FieldBuilderMethods.forField(
                 field,
                 Name.fromString("method"),
-                Argument.of(Name.fromString("val"), Type.string()))
-            .withReturnType(Type.integer());
+                Argument.of(Name.fromString("val"), Types.string()))
+            .withReturnType(Types.integer());
 
     assertThrows(
         PojoExtensionException.class, () -> field.isFieldBuilderMethod(fieldBuilderMethod));
@@ -119,8 +120,8 @@ class PojoFieldTest {
         FieldBuilderMethods.forField(
                 field,
                 Name.fromString("method"),
-                Argument.of(Name.fromString("val"), Type.string()))
-            .withReturnType(Type.optional(field.getType()));
+                Argument.of(Name.fromString("val"), Types.string()))
+            .withReturnType(Types.optional(field.getType()));
 
     assertTrue(field.isFieldBuilderMethod(fieldBuilderMethod));
   }

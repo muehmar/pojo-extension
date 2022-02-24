@@ -3,8 +3,10 @@ package io.github.muehmar.pojoextension.generator.data;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.Strings;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import io.github.muehmar.pojoextension.generator.data.type.Type;
 
 @PojoExtension
+@SuppressWarnings("java:S2160")
 public class Generic extends GenericBase {
   private final Name typeVariable;
   private final PList<Type> upperBounds;

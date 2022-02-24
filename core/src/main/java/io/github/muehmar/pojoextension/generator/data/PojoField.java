@@ -5,7 +5,9 @@ import static io.github.muehmar.pojoextension.Booleans.not;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.exception.PojoExtensionException;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.type.Type;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
@@ -71,13 +73,12 @@ public class PojoField extends PojoFieldBase {
   private boolean assertOptionalType(FieldBuilderMethod method) {
     final Optional<OptionalFieldRelation> typeRelation = method.getReturnType().getRelation(type);
 
-    final boolean optionalTypeMatches =
-        typeRelation
-            .filter(
-                r ->
-                    r.equals(OptionalFieldRelation.SAME_TYPE)
-                        || r.equals(OptionalFieldRelation.UNWRAP_OPTIONAL))
-            .isPresent();
+    final Predicate<OptionalFieldRelation> sameTypeOrUnwrapOptional =
+        r ->
+            r.equals(OptionalFieldRelation.SAME_TYPE)
+                || r.equals(OptionalFieldRelation.UNWRAP_OPTIONAL);
+
+    final boolean optionalTypeMatches = typeRelation.filter(sameTypeOrUnwrapOptional).isPresent();
 
     if (not(optionalTypeMatches)) {
       final String message =

@@ -5,6 +5,7 @@ import static io.github.muehmar.pojoextension.Booleans.not;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.Strings;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import io.github.muehmar.pojoextension.generator.data.type.Type;
 import java.util.Optional;
 
 @PojoExtension

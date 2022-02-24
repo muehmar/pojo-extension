@@ -13,8 +13,8 @@ import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.data.Name;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.type.Types;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
@@ -29,9 +29,7 @@ class HashCodeGensTest {
             .getFields()
             .cons(
                 new PojoField(
-                    Name.fromString("byteArray"),
-                    Type.primitive("byte").withIsArray(true),
-                    REQUIRED));
+                    Name.fromString("byteArray"), Types.array(Types.primitiveByte()), REQUIRED));
 
     final Writer writer =
         generator.generate(
@@ -54,7 +52,7 @@ class HashCodeGensTest {
     final Generator<Pojo, PojoSettings> generator = HashCodeGens.genHashCodeMethod();
 
     final PList<PojoField> fields =
-        PList.of(new PojoField(Name.fromString("flag"), Type.primitiveBoolean(), REQUIRED));
+        PList.of(new PojoField(Name.fromString("flag"), Types.primitiveBoolean(), REQUIRED));
 
     final Writer writer =
         generator.generate(
@@ -78,9 +76,9 @@ class HashCodeGensTest {
     final PList<PojoField> fields =
         PList.of(
             new PojoField(
-                Name.fromString("byteArray"), Type.primitive("byte").withIsArray(true), REQUIRED),
+                Name.fromString("byteArray"), Types.array(Types.primitiveByte()), REQUIRED),
             new PojoField(
-                Name.fromString("byteArray2"), Type.primitive("byte").withIsArray(true), REQUIRED));
+                Name.fromString("byteArray2"), Types.array(Types.primitiveByte()), REQUIRED));
 
     final Writer writer =
         generator.generate(
@@ -102,7 +100,7 @@ class HashCodeGensTest {
     final Generator<Pojo, PojoSettings> generator = HashCodeGens.genHashCodeMethod();
 
     final PList<PojoField> fields =
-        PList.of(new PojoField(Name.fromString("flag"), Type.primitiveBoolean(), REQUIRED));
+        PList.of(new PojoField(Name.fromString("flag"), Types.primitiveBoolean(), REQUIRED));
 
     final Writer writer =
         generator.generate(

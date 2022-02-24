@@ -4,6 +4,8 @@ import static io.github.muehmar.pojoextension.Booleans.not;
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import io.github.muehmar.pojoextension.generator.data.type.Type;
+import io.github.muehmar.pojoextension.generator.data.type.Types;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
@@ -25,7 +27,7 @@ public class Getter extends GetterBase {
   }
 
   public static Name javaBeanGetterName(PojoField field) {
-    if (field.getType().equals(Type.primitiveBoolean())) {
+    if (field.getType().equals(Types.primitiveBoolean())) {
       return primitiveBooleanGetterName(field);
     }
     return field.getName().javaBeansName().prefix("get");

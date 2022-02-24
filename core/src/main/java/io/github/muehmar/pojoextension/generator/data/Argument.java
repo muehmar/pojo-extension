@@ -3,6 +3,7 @@ package io.github.muehmar.pojoextension.generator.data;
 import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import io.github.muehmar.pojoextension.generator.data.type.Type;
 import java.util.Optional;
 
 @PojoExtension

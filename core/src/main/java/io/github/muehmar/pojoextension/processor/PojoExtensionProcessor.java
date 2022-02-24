@@ -35,10 +35,12 @@ import io.github.muehmar.pojoextension.generator.data.PackageName;
 import io.github.muehmar.pojoextension.generator.data.Pojo;
 import io.github.muehmar.pojoextension.generator.data.PojoBuilder;
 import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.Type;
 import io.github.muehmar.pojoextension.generator.data.settings.Ability;
 import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
 import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.data.type.ClassnameParser;
+import io.github.muehmar.pojoextension.generator.data.type.DeclaredType;
+import io.github.muehmar.pojoextension.generator.data.type.Type;
 import io.github.muehmar.pojoextension.generator.impl.gen.baseclass.BaseClassGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.SafeBuilderClassGens;
@@ -112,16 +114,21 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   private void processElementAndPath(ElementAndAnnotationPath elementAndPath) {
     final PojoSettings pojoSettings = extractSettingsFromAnnotationPath(elementAndPath.getPath());
     final TypeElement classElement = elementAndPath.getClassElement();
-    final Type pojoType = Type.fromClassName(classElement.toString());
-    final Name className = pojoType.getName();
+    final String fullClassName = classElement.toString();
+
+    final ClassnameParser.NameAndPackage nameAndPackage =
+        ClassnameParser.parseThrowing(fullClassName);
+
     final PackageName classPackage =
-        pojoType
-            .getPackage()
+        nameAndPackage
+            .getPkg()
             .orElseThrow(
                 () ->
-                    new IllegalStateException(
-                        "Class " + className.toString() + " does not have a package"));
-    final Pojo pojo = extractPojo(classElement, pojoSettings, className, classPackage);
+                    new IllegalArgumentException(
+                        "Class " + fullClassName + " does not have a package."));
+
+    final Pojo pojo =
+        extractPojo(classElement, pojoSettings, nameAndPackage.getName(), classPackage);
 
     outputPojo(pojo, deviateExtensionUsage(classElement, pojoSettings, pojo));
   }
@@ -343,8 +350,21 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .filter(
             ignore ->
                 settings.getOptionalDetections().exists(OptionalDetection.OPTIONAL_CLASS::equals))
-        .flatMap(t -> t.onOptional(Function.identity()))
+        .flatMap(this::getOptionalValueType)
         .map(typeParameter -> new PojoField(name, typeParameter, OPTIONAL));
+  }
+
+  private Optional<Type> getOptionalValueType(Type type) {
+    final Function<DeclaredType, Optional<Type>> getOptionalType =
+        classType ->
+            Optional.of(classType)
+                .filter(DeclaredType::isOptional)
+                .flatMap(t -> t.getTypeParameters().headOption());
+    return type.fold(
+        getOptionalType,
+        ignore -> Optional.empty(),
+        ignore -> Optional.empty(),
+        ignore -> Optional.empty());
   }
 
   private Optional<PojoField> mapNullablePojoField(

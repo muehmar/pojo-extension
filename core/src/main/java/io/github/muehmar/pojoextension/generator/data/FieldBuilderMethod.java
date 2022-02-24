@@ -2,6 +2,7 @@ package io.github.muehmar.pojoextension.generator.data;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import io.github.muehmar.pojoextension.generator.data.type.Type;
 import java.util.Optional;
 
 @PojoExtension
