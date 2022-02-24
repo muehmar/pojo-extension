@@ -2,10 +2,10 @@ package io.github.muehmar.pojoextension.processor;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import io.github.muehmar.pojoextension.generator.data.Name;
-import io.github.muehmar.pojoextension.generator.data.PackageName;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.model.Name;
+import io.github.muehmar.pojoextension.generator.model.PackageName;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import org.joor.CompileOptions;

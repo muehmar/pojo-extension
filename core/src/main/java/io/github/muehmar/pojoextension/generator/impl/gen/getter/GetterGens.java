@@ -3,15 +3,15 @@ package io.github.muehmar.pojoextension.generator.impl.gen.getter;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.DEFAULT;
 
 import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.data.FieldGetter;
-import io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation;
-import io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.OnSameType;
-import io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.OnUnwrapOptional;
-import io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.OnWrapOptional;
-import io.github.muehmar.pojoextension.generator.data.PojoAndField;
-import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.Refs;
+import io.github.muehmar.pojoextension.generator.model.FieldGetter;
+import io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation;
+import io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation.OnSameType;
+import io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation.OnUnwrapOptional;
+import io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation.OnWrapOptional;
+import io.github.muehmar.pojoextension.generator.model.PojoAndField;
+import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 
 public class GetterGens {

@@ -1,21 +1,21 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.instantiation;
 
-import static io.github.muehmar.pojoextension.generator.data.Getter.noFieldName;
-import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
-import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
-import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.UNWRAP_OPTIONAL;
-import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.WRAP_INTO_OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.model.Getter.noFieldName;
+import static io.github.muehmar.pojoextension.generator.model.Necessity.OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation.SAME_TYPE;
+import static io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation.UNWRAP_OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation.WRAP_INTO_OPTIONAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.muehmar.pojoextension.generator.Names;
 import io.github.muehmar.pojoextension.generator.Pojos;
-import io.github.muehmar.pojoextension.generator.data.Argument;
-import io.github.muehmar.pojoextension.generator.data.FieldArgument;
-import io.github.muehmar.pojoextension.generator.data.FieldGetter;
-import io.github.muehmar.pojoextension.generator.data.Getter;
-import io.github.muehmar.pojoextension.generator.data.Name;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.type.Types;
+import io.github.muehmar.pojoextension.generator.model.Argument;
+import io.github.muehmar.pojoextension.generator.model.FieldArgument;
+import io.github.muehmar.pojoextension.generator.model.FieldGetter;
+import io.github.muehmar.pojoextension.generator.model.Getter;
+import io.github.muehmar.pojoextension.generator.model.Name;
+import io.github.muehmar.pojoextension.generator.model.PojoField;
+import io.github.muehmar.pojoextension.generator.model.type.Types;
 import org.junit.jupiter.api.Test;
 
 class FinalConstructorArgumentTest {

@@ -4,11 +4,11 @@ import static io.github.muehmar.pojoextension.Booleans.not;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.FieldBuilder;
-import io.github.muehmar.pojoextension.generator.data.Argument;
-import io.github.muehmar.pojoextension.generator.data.FieldBuilderMethod;
-import io.github.muehmar.pojoextension.generator.data.FieldBuilderMethodBuilder;
-import io.github.muehmar.pojoextension.generator.data.Name;
-import io.github.muehmar.pojoextension.generator.data.type.Type;
+import io.github.muehmar.pojoextension.generator.model.Argument;
+import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;
+import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethodBuilder;
+import io.github.muehmar.pojoextension.generator.model.Name;
+import io.github.muehmar.pojoextension.generator.model.type.Type;
 import java.util.Optional;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;

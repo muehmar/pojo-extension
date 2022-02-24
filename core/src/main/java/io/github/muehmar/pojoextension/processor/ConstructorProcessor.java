@@ -1,8 +1,8 @@
 package io.github.muehmar.pojoextension.processor;
 
 import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.generator.data.Constructor;
-import io.github.muehmar.pojoextension.generator.data.Name;
+import io.github.muehmar.pojoextension.generator.model.Constructor;
+import io.github.muehmar.pojoextension.generator.model.Name;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;

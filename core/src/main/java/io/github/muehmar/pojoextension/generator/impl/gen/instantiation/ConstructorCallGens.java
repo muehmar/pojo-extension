@@ -1,18 +1,18 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.instantiation;
 
-import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
-import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.WRAP_INTO_OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation.SAME_TYPE;
+import static io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation.WRAP_INTO_OPTIONAL;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.Mapper;
 import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.data.FieldGetter;
-import io.github.muehmar.pojoextension.generator.data.MatchingConstructor;
-import io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.model.FieldGetter;
+import io.github.muehmar.pojoextension.generator.model.MatchingConstructor;
+import io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.PojoField;
+import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
 import java.util.Objects;
 import java.util.Optional;
 

@@ -1,16 +1,16 @@
 package io.github.muehmar.pojoextension.generator;
 
-import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
-import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
-import static io.github.muehmar.pojoextension.generator.data.type.Types.string;
+import static io.github.muehmar.pojoextension.generator.model.Necessity.OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.model.Necessity.REQUIRED;
+import static io.github.muehmar.pojoextension.generator.model.type.Types.string;
 
-import io.github.muehmar.pojoextension.generator.data.Argument;
-import io.github.muehmar.pojoextension.generator.data.Getter;
-import io.github.muehmar.pojoextension.generator.data.GetterBuilder;
-import io.github.muehmar.pojoextension.generator.data.Name;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.type.Type;
-import io.github.muehmar.pojoextension.generator.data.type.Types;
+import io.github.muehmar.pojoextension.generator.model.Argument;
+import io.github.muehmar.pojoextension.generator.model.Getter;
+import io.github.muehmar.pojoextension.generator.model.GetterBuilder;
+import io.github.muehmar.pojoextension.generator.model.Name;
+import io.github.muehmar.pojoextension.generator.model.PojoField;
+import io.github.muehmar.pojoextension.generator.model.type.Type;
+import io.github.muehmar.pojoextension.generator.model.type.Types;
 
 public class PojoFields {
   private PojoFields() {}

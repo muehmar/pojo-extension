@@ -11,10 +11,10 @@ import static javax.lang.model.type.TypeKind.SHORT;
 import static javax.lang.model.type.TypeKind.VOID;
 
 import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.generator.data.Name;
-import io.github.muehmar.pojoextension.generator.data.type.ClassnameParser;
-import io.github.muehmar.pojoextension.generator.data.type.Type;
-import io.github.muehmar.pojoextension.generator.data.type.Types;
+import io.github.muehmar.pojoextension.generator.model.Name;
+import io.github.muehmar.pojoextension.generator.model.type.ClassnameParser;
+import io.github.muehmar.pojoextension.generator.model.type.Type;
+import io.github.muehmar.pojoextension.generator.model.type.Types;
 import java.util.function.Function;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;

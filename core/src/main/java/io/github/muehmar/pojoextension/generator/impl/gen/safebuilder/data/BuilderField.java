@@ -1,8 +1,8 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.PojoField;
 
 @PojoExtension
 @SuppressWarnings("java:S2160")
