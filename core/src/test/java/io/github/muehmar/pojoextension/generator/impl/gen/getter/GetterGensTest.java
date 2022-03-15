@@ -6,12 +6,12 @@ import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.Pojos;
-import io.github.muehmar.pojoextension.generator.data.Getter;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoAndField;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.Refs;
+import io.github.muehmar.pojoextension.generator.model.Getter;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.PojoAndField;
+import io.github.muehmar.pojoextension.generator.model.PojoField;
+import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 

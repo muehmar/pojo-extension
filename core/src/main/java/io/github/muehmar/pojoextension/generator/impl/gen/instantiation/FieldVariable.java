@@ -1,8 +1,8 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.instantiation;
 
-import io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
+import io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.PojoField;
 import java.util.Objects;
 
 public class FieldVariable {

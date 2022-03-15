@@ -1,10 +1,10 @@
 package io.github.muehmar.pojoextension.processor;
 
 import static io.github.muehmar.pojoextension.Booleans.not;
-import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
-import static io.github.muehmar.pojoextension.generator.data.Necessity.REQUIRED;
-import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.INHERITED;
-import static io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage.STATIC;
+import static io.github.muehmar.pojoextension.generator.model.Necessity.OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.model.Necessity.REQUIRED;
+import static io.github.muehmar.pojoextension.generator.model.settings.ExtensionUsage.INHERITED;
+import static io.github.muehmar.pojoextension.generator.model.settings.ExtensionUsage.STATIC;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getBaseClassName;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getBuilderName;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getBuilderSetMethodPrefix;
@@ -26,22 +26,24 @@ import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.data.Constructor;
-import io.github.muehmar.pojoextension.generator.data.FieldBuilderMethod;
-import io.github.muehmar.pojoextension.generator.data.Generic;
-import io.github.muehmar.pojoextension.generator.data.Getter;
-import io.github.muehmar.pojoextension.generator.data.Name;
-import io.github.muehmar.pojoextension.generator.data.PackageName;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoBuilder;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.Type;
-import io.github.muehmar.pojoextension.generator.data.settings.Ability;
-import io.github.muehmar.pojoextension.generator.data.settings.ExtensionUsage;
-import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.baseclass.BaseClassGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.SafeBuilderClassGens;
+import io.github.muehmar.pojoextension.generator.model.Constructor;
+import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;
+import io.github.muehmar.pojoextension.generator.model.Generic;
+import io.github.muehmar.pojoextension.generator.model.Getter;
+import io.github.muehmar.pojoextension.generator.model.Name;
+import io.github.muehmar.pojoextension.generator.model.PackageName;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.PojoBuilder;
+import io.github.muehmar.pojoextension.generator.model.PojoField;
+import io.github.muehmar.pojoextension.generator.model.settings.Ability;
+import io.github.muehmar.pojoextension.generator.model.settings.ExtensionUsage;
+import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.model.type.ClassnameParser;
+import io.github.muehmar.pojoextension.generator.model.type.DeclaredType;
+import io.github.muehmar.pojoextension.generator.model.type.Type;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -112,16 +114,21 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   private void processElementAndPath(ElementAndAnnotationPath elementAndPath) {
     final PojoSettings pojoSettings = extractSettingsFromAnnotationPath(elementAndPath.getPath());
     final TypeElement classElement = elementAndPath.getClassElement();
-    final Type pojoType = Type.fromClassName(classElement.toString());
-    final Name className = pojoType.getName();
+    final String fullClassName = classElement.toString();
+
+    final ClassnameParser.NameAndPackage nameAndPackage =
+        ClassnameParser.parseThrowing(fullClassName);
+
     final PackageName classPackage =
-        pojoType
-            .getPackage()
+        nameAndPackage
+            .getPkg()
             .orElseThrow(
                 () ->
-                    new IllegalStateException(
-                        "Class " + className.toString() + " does not have a package"));
-    final Pojo pojo = extractPojo(classElement, pojoSettings, className, classPackage);
+                    new IllegalArgumentException(
+                        "Class " + fullClassName + " does not have a package."));
+
+    final Pojo pojo =
+        extractPojo(classElement, pojoSettings, nameAndPackage.getName(), classPackage);
 
     outputPojo(pojo, deviateExtensionUsage(classElement, pojoSettings, pojo));
   }
@@ -343,8 +350,17 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .filter(
             ignore ->
                 settings.getOptionalDetections().exists(OptionalDetection.OPTIONAL_CLASS::equals))
-        .flatMap(t -> t.onOptional(Function.identity()))
+        .flatMap(this::getOptionalValueType)
         .map(typeParameter -> new PojoField(name, typeParameter, OPTIONAL));
+  }
+
+  private Optional<Type> getOptionalValueType(Type type) {
+    final Function<DeclaredType, Optional<Type>> getOptionalType =
+        classType ->
+            Optional.of(classType)
+                .filter(DeclaredType::isOptional)
+                .flatMap(t -> t.getTypeParameters().headOption());
+    return type.onDeclaredType(getOptionalType).flatMap(Function.identity());
   }
 
   private Optional<PojoField> mapNullablePojoField(

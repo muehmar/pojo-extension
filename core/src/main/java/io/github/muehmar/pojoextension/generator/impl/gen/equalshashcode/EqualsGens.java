@@ -6,12 +6,12 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.data.FieldGetter;
-import io.github.muehmar.pojoextension.generator.data.Name;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.Type;
-import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
+import io.github.muehmar.pojoextension.generator.model.FieldGetter;
+import io.github.muehmar.pojoextension.generator.model.Name;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.model.type.Types;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.UnaryOperator;
 
@@ -80,7 +80,7 @@ public class EqualsGens {
       if (fg.getField().getType().isArray()) {
         return w.print("Arrays.equals(%s(), other.%s())", getterName, getterName)
             .ref(JAVA_UTIL_ARRAYS);
-      } else if (fg.getField().getType().equals(Type.primitiveDouble())) {
+      } else if (fg.getField().getType().equals(Types.primitiveDouble())) {
         return w.print("Double.compare(%s(), other.%s()) == 0", getterName, getterName);
       } else if (fg.getField().getType().isPrimitive()) {
         return w.print("%s() == other.%s()", getterName, getterName);

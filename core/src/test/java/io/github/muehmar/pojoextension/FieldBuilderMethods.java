@@ -1,11 +1,11 @@
 package io.github.muehmar.pojoextension;
 
 import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.generator.data.Argument;
-import io.github.muehmar.pojoextension.generator.data.FieldBuilderMethod;
-import io.github.muehmar.pojoextension.generator.data.FieldBuilderMethodBuilder;
-import io.github.muehmar.pojoextension.generator.data.Name;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
+import io.github.muehmar.pojoextension.generator.model.Argument;
+import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;
+import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethodBuilder;
+import io.github.muehmar.pojoextension.generator.model.Name;
+import io.github.muehmar.pojoextension.generator.model.PojoField;
 
 public class FieldBuilderMethods {
   private FieldBuilderMethods() {}

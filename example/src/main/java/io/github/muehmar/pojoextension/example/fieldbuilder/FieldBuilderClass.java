@@ -47,6 +47,10 @@ public class FieldBuilderClass<T> {
     static String fromInt(Integer i) {
       return i.toString();
     }
+
+    static String fromVarargs(String... args) {
+      return String.join("-", args);
+    }
   }
 
   @FieldBuilder(fieldName = "prop3")

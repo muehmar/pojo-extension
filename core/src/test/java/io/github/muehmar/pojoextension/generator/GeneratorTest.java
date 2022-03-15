@@ -2,12 +2,12 @@ package io.github.muehmar.pojoextension.generator;
 
 import static io.github.muehmar.pojoextension.generator.Generator.ofWriterFunction;
 import static io.github.muehmar.pojoextension.generator.Settings.noSettings;
-import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.model.Necessity.OPTIONAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.PojoField;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 

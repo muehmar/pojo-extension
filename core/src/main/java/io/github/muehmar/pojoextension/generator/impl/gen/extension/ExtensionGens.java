@@ -2,10 +2,6 @@ package io.github.muehmar.pojoextension.generator.impl.gen.extension;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.data.FieldGetter;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoAndField;
-import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
@@ -16,6 +12,10 @@ import io.github.muehmar.pojoextension.generator.impl.gen.getter.GetterGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.map.MapGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.tostring.ToStringGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.WithGens;
+import io.github.muehmar.pojoextension.generator.model.FieldGetter;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.PojoAndField;
+import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
 import java.util.function.Function;
 
 public class ExtensionGens {

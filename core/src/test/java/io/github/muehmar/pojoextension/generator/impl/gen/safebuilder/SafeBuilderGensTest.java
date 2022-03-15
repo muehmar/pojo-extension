@@ -1,11 +1,11 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder;
 
-import static io.github.muehmar.pojoextension.generator.data.Necessity.OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_INTEGER;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_LANG_STRING;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_LIST;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_MAP;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
+import static io.github.muehmar.pojoextension.generator.model.Necessity.OPTIONAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,14 +15,14 @@ import io.github.muehmar.pojoextension.generator.FullBuilderFields;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.Pojos;
-import io.github.muehmar.pojoextension.generator.data.Argument;
-import io.github.muehmar.pojoextension.generator.data.FieldBuilderMethod;
-import io.github.muehmar.pojoextension.generator.data.Name;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.Type;
-import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FullBuilderField;
+import io.github.muehmar.pojoextension.generator.model.Argument;
+import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;
+import io.github.muehmar.pojoextension.generator.model.Name;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.PojoField;
+import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.model.type.Types;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -224,15 +224,15 @@ class SafeBuilderGensTest {
             Name.fromString("id"),
             Optional.empty(),
             Name.fromString("customMethod1"),
-            Type.integer(),
+            Types.integer(),
             PList.empty());
     final FieldBuilderMethod fieldBuilderMethod2 =
         new FieldBuilderMethod(
             Name.fromString("id"),
             Optional.empty(),
             Name.fromString("customMethod2"),
-            Type.integer(),
-            PList.of(new Argument(Name.fromString("val"), Type.integer())));
+            Types.integer(),
+            PList.of(new Argument(Name.fromString("val"), Types.integer())));
     final FullBuilderField field =
         FullBuilderFields.of(Pojos.sample(), PojoFields.requiredId(), 2)
             .withFieldBuilderMethods(PList.of(fieldBuilderMethod1, fieldBuilderMethod2));
@@ -621,7 +621,7 @@ class SafeBuilderGensTest {
         FieldBuilderMethods.forField(
             PojoFields.requiredId(),
             Name.fromString("customRandomId"),
-            new Argument(Name.fromString("value"), Type.integer()));
+            new Argument(Name.fromString("value"), Types.integer()));
 
     final FullBuilderField field =
         FullBuilderFields.of(Pojos.sample(), PojoFields.requiredId(), 2)
@@ -648,7 +648,7 @@ class SafeBuilderGensTest {
         FieldBuilderMethods.forField(
             PojoFields.optionalName(),
             Name.fromString("customRandomName"),
-            new Argument(Name.fromString("value"), Type.string()));
+            new Argument(Name.fromString("value"), Types.string()));
 
     final FullBuilderField field =
         FullBuilderFields.of(Pojos.sample(), PojoFields.optionalName(), 2)
@@ -675,7 +675,7 @@ class SafeBuilderGensTest {
         FieldBuilderMethods.forField(
             PojoFields.requiredId(),
             Name.fromString("customRandomId"),
-            new Argument(Name.fromString("value"), Type.integer()));
+            new Argument(Name.fromString("value"), Types.integer()));
 
     final FullBuilderField field =
         FullBuilderFields.of(Pojos.genericSample(), PojoFields.requiredId(), 2)
@@ -702,7 +702,7 @@ class SafeBuilderGensTest {
         FieldBuilderMethods.forField(
                 PojoFields.optionalName(),
                 Name.fromString("customRandomName"),
-                new Argument(Name.fromString("value"), Type.string()))
+                new Argument(Name.fromString("value"), Types.string()))
             .withInnerClassName(Name.fromString("NameBuilder"));
 
     final FullBuilderField field =

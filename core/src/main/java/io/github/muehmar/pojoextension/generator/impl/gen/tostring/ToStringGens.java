@@ -1,18 +1,18 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.tostring;
 
-import static io.github.muehmar.pojoextension.generator.data.OptionalFieldRelation.SAME_TYPE;
 import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.DEFAULT;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_ARRAYS;
+import static io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation.SAME_TYPE;
 
 import ch.bluecare.commons.data.PList;
 import ch.bluecare.commons.data.Pair;
 import io.github.muehmar.pojoextension.Mapper;
 import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.data.FieldGetter;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.Type;
-import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
+import io.github.muehmar.pojoextension.generator.model.FieldGetter;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.model.type.Types;
 
 public class ToStringGens {
   private ToStringGens() {}
@@ -73,7 +73,7 @@ public class ToStringGens {
   }
 
   private static Pair<String, String> getWrapper(FieldGetter fg) {
-    return fg.getField().getType().equals(Type.string()) && fg.getRelation().equals(SAME_TYPE)
+    return fg.getField().getType().equals(Types.string()) && fg.getRelation().equals(SAME_TYPE)
         ? Pair.of("'", " + '\\''")
         : Pair.of("", "");
   }

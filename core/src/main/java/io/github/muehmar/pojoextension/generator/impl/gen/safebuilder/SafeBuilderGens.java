@@ -8,10 +8,6 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newL
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 
 import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.data.Argument;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
-import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.Generators;
@@ -20,6 +16,10 @@ import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.BuilderField;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FieldBuilderField;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FullBuilderField;
+import io.github.muehmar.pojoextension.generator.model.Argument;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.PojoField;
+import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;

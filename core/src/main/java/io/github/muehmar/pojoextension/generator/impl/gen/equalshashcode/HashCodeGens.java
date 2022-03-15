@@ -7,10 +7,10 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.Mapper;
 import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.data.FieldGetter;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
+import io.github.muehmar.pojoextension.generator.model.FieldGetter;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.util.function.BiFunction;
 

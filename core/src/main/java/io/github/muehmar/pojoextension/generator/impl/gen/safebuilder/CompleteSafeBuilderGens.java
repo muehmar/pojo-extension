@@ -5,11 +5,11 @@ import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC
 import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newLine;
 
 import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FullBuilderField;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
 
 public class CompleteSafeBuilderGens {
 

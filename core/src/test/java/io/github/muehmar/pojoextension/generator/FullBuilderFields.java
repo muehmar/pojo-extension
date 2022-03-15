@@ -1,10 +1,10 @@
 package io.github.muehmar.pojoextension.generator;
 
 import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.generator.data.Pojo;
-import io.github.muehmar.pojoextension.generator.data.PojoField;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.BuilderField;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FullBuilderField;
+import io.github.muehmar.pojoextension.generator.model.Pojo;
+import io.github.muehmar.pojoextension.generator.model.PojoField;
 
 public class FullBuilderFields {
   private FullBuilderFields() {}

@@ -26,6 +26,17 @@ class FieldBuilderClassTest {
   }
 
   @Test
+  void fromVarargs_when_usedInBuilder_then_compilesAndCorrectProp1() {
+    final FieldBuilderClass<String> fieldBuilder =
+        FieldBuilderClassBuilder.<String>create()
+            .fromVarargs("hello", "world", "!")
+            .prop2("prop2")
+            .build();
+
+    assertEquals("hello-world-!", fieldBuilder.getProp1());
+  }
+
+  @Test
   void constant_when_usedInBuilder_then_prop3WithConstantValue() {
     final FieldBuilderClass<String> fieldBuilder =
         FieldBuilderClassBuilder.<String>create()

@@ -1,6 +1,6 @@
 package io.github.muehmar.pojoextension.generator;
 
-import io.github.muehmar.pojoextension.generator.data.Name;
+import io.github.muehmar.pojoextension.generator.model.Name;
 
 public class Names {
   private Names() {}
