@@ -6,11 +6,8 @@ import io.github.muehmar.pojoextension.generator.impl.gen.ClassGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.EqualsGens;
-import io.github.muehmar.pojoextension.generator.impl.gen.equalshashcode.HashCodeGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.getter.GetterGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.map.MapGens;
-import io.github.muehmar.pojoextension.generator.impl.gen.tostring.ToStringGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.withers.WithGens;
 import io.github.muehmar.pojoextension.generator.model.FieldGetter;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
@@ -55,13 +52,7 @@ public class ExtensionGens {
         .appendNewLine()
         .append(MapGens.mapIfMethod())
         .appendNewLine()
-        .append(MapGens.mapIfPresentMethod())
-        .appendNewLine()
-        .append(EqualsGens.genEqualsMethod())
-        .appendNewLine()
-        .append(HashCodeGens.genHashCodeMethod())
-        .appendNewLine()
-        .append(ToStringGens.genToStringMethod());
+        .append(MapGens.mapIfPresentMethod());
   }
 
   public static Generator<FieldGetter, PojoSettings> getterMethod() {

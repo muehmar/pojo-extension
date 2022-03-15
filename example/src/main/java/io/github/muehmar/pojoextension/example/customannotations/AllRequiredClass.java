@@ -2,28 +2,12 @@ package io.github.muehmar.pojoextension.example.customannotations;
 
 import io.github.muehmar.pojoextension.annotations.Nullable;
 import java.util.Optional;
+import lombok.Value;
 
+@Value
 @AllRequiredExtension(extensionName = "CustomExtension")
-public class AllRequiredClass extends AllRequiredClassBase {
-  private final String id;
-  private final Optional<Boolean> flag;
-  @Nullable private final Integer age;
-
-  public AllRequiredClass(String id, Optional<Boolean> flag, Integer age) {
-    this.id = id;
-    this.flag = flag;
-    this.age = age;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public Optional<Boolean> getFlag() {
-    return flag;
-  }
-
-  public Integer getAge() {
-    return age;
-  }
+public class AllRequiredClass implements CustomExtension {
+  String id;
+  Optional<Boolean> flag;
+  @Nullable Integer age;
 }

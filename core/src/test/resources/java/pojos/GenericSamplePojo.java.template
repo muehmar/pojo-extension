@@ -1,7 +1,6 @@
 package io.github.muehmar;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -51,27 +50,5 @@ interface CustomerExtension<T extends List<String>, S> {
     final Customer<T, S> self =
       new Customer<>(getId(), getData(), getAdditionalData().orElse(null));
     return value.map(v -> f.apply(self, v)).orElse(self);
-  }
-
-  default boolean genEquals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null || this.getClass() != obj.getClass()) return false;
-    final Customer<?, ?> other = (Customer<?, ?>) obj;
-    return Objects.equals(getId(), other.getId())
-        && Objects.equals(getData(), other.getData())
-        && Objects.equals(getAdditionalData(), other.getAdditionalData());
-  }
-
-  default int genHashCode() {
-    int result = Objects.hash(getId(), getData(), getAdditionalData());
-    return result;
-  }
-
-  default String genToString() {
-    return "Customer{"
-        + "id='" + getId() + '\''
-        + ", data=" + getData()
-        + ", additionalData=" + getAdditionalData()
-        + '}';
   }
 }

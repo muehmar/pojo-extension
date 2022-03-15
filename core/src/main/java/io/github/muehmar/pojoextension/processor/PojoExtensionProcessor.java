@@ -26,7 +26,6 @@ import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.impl.gen.baseclass.BaseClassGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.SafeBuilderClassGens;
 import io.github.muehmar.pojoextension.generator.model.Constructor;
@@ -295,12 +294,6 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         pojo,
         settings,
         settings.createDiscreteBuilder());
-    writeJavaFile(
-        settings.qualifiedBaseClassName(pojo),
-        BaseClassGens.baseClass(),
-        pojo,
-        settings,
-        settings.createBaseClass());
   }
 
   private void writeJavaFile(
