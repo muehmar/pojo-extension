@@ -9,57 +9,28 @@ import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.model.Name;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
 import java.util.Optional;
+import lombok.Value;
 
+@Value
 @PojoExtension
-@SuppressWarnings("java:S2160")
-public class PojoSettings extends PojoSettingsBase {
+public class PojoSettings implements PojoSettingsExtension {
   private static final Name CLASS_NAME_PLACEHOLDER = Name.fromString("{CLASSNAME}");
   public static final Name BUILDER_CLASS_POSTFIX = Name.fromString("Builder");
   public static final Name EXTENSION_IFC_POSTFIX = Name.fromString("Extension");
   public static final Name BASE_CLASS_POSTFIX = Name.fromString("Base");
-  private final PList<OptionalDetection> optionalDetections;
-  private final ExtensionUsage extensionUsage;
-  private final Optional<Name> extensionName;
-  private final Optional<Name> builderName;
-  private final Optional<Name> builderSetMethodPrefix;
-  private final Optional<Name> baseClassName;
-  private final Ability safeBuilderAbility;
-  private final Ability equalsHashCodeAbility;
-  private final Ability toStringAbility;
-  private final Ability withersAbility;
-  private final Ability optionalGettersAbility;
-  private final Ability mappersAbility;
-  private final Ability baseClassAbility;
-
-  @SuppressWarnings("java:S107")
-  PojoSettings(
-      PList<OptionalDetection> optionalDetections,
-      ExtensionUsage extensionUsage,
-      Optional<Name> extensionName,
-      Optional<Name> builderName,
-      Optional<Name> builderSetMethodPrefix,
-      Optional<Name> baseClassName,
-      Ability safeBuilderAbility,
-      Ability equalsHashCodeAbility,
-      Ability toStringAbility,
-      Ability withAbility,
-      Ability optionalGettersAbility,
-      Ability mapAbility,
-      Ability baseClassAbility) {
-    this.optionalDetections = optionalDetections;
-    this.extensionUsage = extensionUsage;
-    this.extensionName = extensionName;
-    this.builderName = builderName;
-    this.builderSetMethodPrefix = builderSetMethodPrefix;
-    this.baseClassName = baseClassName;
-    this.safeBuilderAbility = safeBuilderAbility;
-    this.equalsHashCodeAbility = equalsHashCodeAbility;
-    this.toStringAbility = toStringAbility;
-    this.withersAbility = withAbility;
-    this.optionalGettersAbility = optionalGettersAbility;
-    this.mappersAbility = mapAbility;
-    this.baseClassAbility = baseClassAbility;
-  }
+  PList<OptionalDetection> optionalDetections;
+  ExtensionUsage extensionUsage;
+  Optional<Name> extensionName;
+  Optional<Name> builderName;
+  Optional<Name> builderSetMethodPrefix;
+  Optional<Name> baseClassName;
+  Ability safeBuilderAbility;
+  Ability equalsHashCodeAbility;
+  Ability toStringAbility;
+  Ability withersAbility;
+  Ability optionalGettersAbility;
+  Ability mappersAbility;
+  Ability baseClassAbility;
 
   public static PojoSettings defaultSettings() {
     return PojoSettingsBuilder.create()
@@ -79,58 +50,6 @@ public class PojoSettings extends PojoSettingsBase {
         .builderSetMethodPrefix(empty())
         .baseClassName(Optional.of(CLASS_NAME_PLACEHOLDER.append(BASE_CLASS_POSTFIX)))
         .build();
-  }
-
-  public PList<OptionalDetection> getOptionalDetections() {
-    return optionalDetections;
-  }
-
-  public ExtensionUsage getExtensionUsage() {
-    return extensionUsage;
-  }
-
-  public Optional<Name> getExtensionName() {
-    return extensionName;
-  }
-
-  public Optional<Name> getBuilderName() {
-    return builderName;
-  }
-
-  public Optional<Name> getBuilderSetMethodPrefix() {
-    return builderSetMethodPrefix;
-  }
-
-  public Optional<Name> getBaseClassName() {
-    return baseClassName;
-  }
-
-  public Ability getSafeBuilderAbility() {
-    return safeBuilderAbility;
-  }
-
-  public Ability getEqualsHashCodeAbility() {
-    return equalsHashCodeAbility;
-  }
-
-  public Ability getToStringAbility() {
-    return toStringAbility;
-  }
-
-  public Ability getWithersAbility() {
-    return withersAbility;
-  }
-
-  public Ability getOptionalGettersAbility() {
-    return optionalGettersAbility;
-  }
-
-  public Ability getMappersAbility() {
-    return mappersAbility;
-  }
-
-  public Ability getBaseClassAbility() {
-    return baseClassAbility;
   }
 
   public Name qualifiedExtensionName(Pojo pojo) {

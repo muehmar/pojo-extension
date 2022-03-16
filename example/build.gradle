@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation libs.lombok
+    compileOnly libs.lombok
     annotationProcessor libs.lombok
 
     implementation project(':core-annotations')

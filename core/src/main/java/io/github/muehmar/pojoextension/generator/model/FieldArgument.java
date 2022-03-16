@@ -1,27 +1,14 @@
 package io.github.muehmar.pojoextension.generator.model;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import lombok.Value;
 
+@Value
 @PojoExtension
-@SuppressWarnings("java:S2160")
-public class FieldArgument extends FieldArgumentBase {
-  private final PojoField field;
-  private final Argument argument;
-  private final OptionalFieldRelation relation;
-
-  public FieldArgument(PojoField field, Argument argument, OptionalFieldRelation relation) {
-    this.field = field;
-    this.argument = argument;
-    this.relation = relation;
-  }
-
-  public PojoField getField() {
-    return field;
-  }
-
-  public Argument getArgument() {
-    return argument;
-  }
+public class FieldArgument implements FieldArgumentExtension {
+  PojoField field;
+  Argument argument;
+  OptionalFieldRelation relation;
 
   /** Returns the relation from the field to the argument */
   public OptionalFieldRelation getRelation() {

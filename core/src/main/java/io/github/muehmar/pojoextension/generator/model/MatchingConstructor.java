@@ -2,23 +2,11 @@ package io.github.muehmar.pojoextension.generator.model;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import lombok.Value;
 
+@Value
 @PojoExtension
-@SuppressWarnings("java:S2160")
-public class MatchingConstructor extends MatchingConstructorBase {
-  private final Constructor constructor;
-  private final PList<FieldArgument> fieldArguments;
-
-  public MatchingConstructor(Constructor constructor, PList<FieldArgument> fieldArguments) {
-    this.constructor = constructor;
-    this.fieldArguments = fieldArguments;
-  }
-
-  public Constructor getConstructor() {
-    return constructor;
-  }
-
-  public PList<FieldArgument> getFieldArguments() {
-    return fieldArguments;
-  }
+public class MatchingConstructor implements MatchingConstructorExtension {
+  Constructor constructor;
+  PList<FieldArgument> fieldArguments;
 }

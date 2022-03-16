@@ -5,28 +5,16 @@ import static io.github.muehmar.pojoextension.generator.model.OptionalFieldRelat
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.model.type.Type;
 import java.util.Optional;
+import lombok.Value;
 
+@Value
 @PojoExtension
-@SuppressWarnings("java:S2160")
-public class Argument extends ArgumentBase {
-  private final Name name;
-  private final Type type;
-
-  public Argument(Name name, Type type) {
-    this.name = name;
-    this.type = type;
-  }
+public class Argument implements ArgumentExtension {
+  Name name;
+  Type type;
 
   public static Argument of(Name name, Type type) {
     return new Argument(name, type);
-  }
-
-  public Name getName() {
-    return name;
-  }
-
-  public Type getType() {
-    return type;
   }
 
   public String formatted() {

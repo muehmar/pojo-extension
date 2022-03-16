@@ -5,19 +5,14 @@ import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.model.Name;
 import io.github.muehmar.pojoextension.generator.model.PackageName;
 import java.util.Optional;
+import lombok.Value;
 
+@Value
 @PojoExtension
-@SuppressWarnings("java:S2160")
-public class DeclaredType extends DeclaredTypeBase implements SpecificType {
-  private final Name name;
-  private final Optional<PackageName> pkg;
-  private final PList<Type> typeParameters;
-
-  DeclaredType(Name name, Optional<PackageName> pkg, PList<Type> typeParameters) {
-    this.name = name;
-    this.pkg = pkg;
-    this.typeParameters = typeParameters;
-  }
+public class DeclaredType implements DeclaredTypeExtension, SpecificType {
+  Name name;
+  Optional<PackageName> pkg;
+  PList<Type> typeParameters;
 
   public static DeclaredType fromNameAndPackage(Name name, PackageName packageName) {
     return new DeclaredType(name, Optional.of(packageName), PList.empty());
@@ -64,14 +59,6 @@ public class DeclaredType extends DeclaredTypeBase implements SpecificType {
   @Override
   public Name getName() {
     return name;
-  }
-
-  public Optional<PackageName> getPkg() {
-    return pkg;
-  }
-
-  public PList<Type> getTypeParameters() {
-    return typeParameters;
   }
 
   public boolean isOptional() {

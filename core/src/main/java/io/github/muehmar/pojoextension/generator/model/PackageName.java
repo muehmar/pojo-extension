@@ -1,9 +1,10 @@
 package io.github.muehmar.pojoextension.generator.model;
 
-import java.util.Objects;
+import lombok.Value;
 
+@Value
 public class PackageName {
-  private final String pkg;
+  String pkg;
 
   private PackageName(String pkg) {
     this.pkg = pkg;
@@ -27,19 +28,6 @@ public class PackageName {
 
   public String asString() {
     return pkg;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    PackageName packageName = (PackageName) o;
-    return Objects.equals(pkg, packageName.pkg);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(pkg);
   }
 
   @Override

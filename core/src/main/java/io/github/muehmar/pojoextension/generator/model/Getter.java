@@ -7,19 +7,14 @@ import io.github.muehmar.pojoextension.generator.model.type.Type;
 import io.github.muehmar.pojoextension.generator.model.type.Types;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
+import lombok.Value;
 
+@Value
 @PojoExtension
-@SuppressWarnings("java:S2160")
-public class Getter extends GetterBase {
-  private final Name name;
-  private final Type returnType;
-  private final Optional<Name> fieldName;
-
-  public Getter(Name name, Type returnType, Optional<Name> fieldName) {
-    this.name = name;
-    this.returnType = returnType;
-    this.fieldName = fieldName;
-  }
+public class Getter implements GetterExtension {
+  Name name;
+  Type returnType;
+  Optional<Name> fieldName;
 
   public static Optional<Name> noFieldName() {
     return Optional.empty();
@@ -42,18 +37,6 @@ public class Getter extends GetterBase {
                 .equals(fieldName);
 
     return isAlreadyGetterName ? fieldName : createGetter.apply(fieldName);
-  }
-
-  public Name getName() {
-    return name;
-  }
-
-  public Type getReturnType() {
-    return returnType;
-  }
-
-  public Optional<Name> getFieldName() {
-    return fieldName;
   }
 
   public Optional<FieldGetter> getFieldGetter(PojoField field) {
