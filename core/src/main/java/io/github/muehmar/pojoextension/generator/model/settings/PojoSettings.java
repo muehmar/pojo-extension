@@ -23,8 +23,6 @@ public class PojoSettings implements PojoSettingsExtension {
   Optional<Name> builderName;
   Optional<Name> builderSetMethodPrefix;
   Ability safeBuilderAbility;
-  Ability equalsHashCodeAbility;
-  Ability toStringAbility;
   Ability withersAbility;
   Ability optionalGettersAbility;
   Ability mappersAbility;
@@ -35,8 +33,6 @@ public class PojoSettings implements PojoSettingsExtension {
             PList.of(OptionalDetection.OPTIONAL_CLASS, OptionalDetection.NULLABLE_ANNOTATION))
         .extensionUsage(INHERITED)
         .safeBuilderAbility(Ability.ENABLED)
-        .equalsHashCodeAbility(Ability.ENABLED)
-        .toStringAbility(Ability.ENABLED)
         .withersAbility(Ability.ENABLED)
         .optionalGettersAbility(Ability.ENABLED)
         .mappersAbility(Ability.ENABLED)
@@ -77,9 +73,7 @@ public class PojoSettings implements PojoSettingsExtension {
   }
 
   public boolean createExtension() {
-    return equalsHashCodeAbility.isEnabled()
-        || toStringAbility.isEnabled()
-        || withersAbility.isEnabled()
+    return withersAbility.isEnabled()
         || optionalGettersAbility.isEnabled()
         || mappersAbility.isEnabled();
   }

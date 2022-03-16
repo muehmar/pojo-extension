@@ -7,11 +7,9 @@ import static io.github.muehmar.pojoextension.generator.model.settings.Extension
 import static io.github.muehmar.pojoextension.generator.model.settings.ExtensionUsage.STATIC;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getBuilderName;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getBuilderSetMethodPrefix;
-import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableEqualsAndHashCode;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableMappers;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableOptionalGetters;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableSafeBuilder;
-import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableToString;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableWithers;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getExtensionName;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getOptionalDetection;
@@ -250,12 +248,6 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .mapIfPresent(
             getEnableSafeBuilder(annotation).map(Ability::fromBoolean),
             PojoSettings::withSafeBuilderAbility)
-        .mapIfPresent(
-            getEnableEqualsAndHashCode(annotation).map(Ability::fromBoolean),
-            PojoSettings::withEqualsHashCodeAbility)
-        .mapIfPresent(
-            getEnableToString(annotation).map(Ability::fromBoolean),
-            PojoSettings::withToStringAbility)
         .mapIfPresent(
             getEnableWithers(annotation).map(Ability::fromBoolean),
             PojoSettings::withWithersAbility)

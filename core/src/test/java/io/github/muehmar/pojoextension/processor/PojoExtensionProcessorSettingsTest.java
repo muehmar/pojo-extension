@@ -111,48 +111,6 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
   }
 
   @Test
-  void run_when_disabledEqualsAndHashCode_then_correctSettings() {
-    final Name className = randomClassName();
-
-    final String classString =
-        TestPojoComposer.ofPackage(PACKAGE)
-            .withImport(PojoExtension.class)
-            .annotationBooleanParam(PojoExtension.class, "enableEqualsAndHashCode", false)
-            .className(className)
-            .create();
-
-    final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className), classString);
-
-    assertEquals(
-        PojoSettings.defaultSettings()
-            .withExtensionUsage(ExtensionUsage.STATIC)
-            .withEqualsHashCodeAbility(DISABLED),
-        pojoAndSettings.getSettings());
-  }
-
-  @Test
-  void run_when_disabledToString_then_correctSettings() {
-    final Name className = randomClassName();
-
-    final String classString =
-        TestPojoComposer.ofPackage(PACKAGE)
-            .withImport(PojoExtension.class)
-            .annotationBooleanParam(PojoExtension.class, "enableToString", false)
-            .className(className)
-            .create();
-
-    final PojoAndSettings pojoAndSettings =
-        runAnnotationProcessor(qualifiedClassName(className), classString);
-
-    assertEquals(
-        PojoSettings.defaultSettings()
-            .withExtensionUsage(ExtensionUsage.STATIC)
-            .withToStringAbility(DISABLED),
-        pojoAndSettings.getSettings());
-  }
-
-  @Test
   void run_when_disabledWithers_then_correctSettings() {
     final Name className = randomClassName();
 
@@ -280,8 +238,6 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
             .withExtensionUsage(ExtensionUsage.STATIC)
             .withWithersAbility(DISABLED)
             .withOptionalGettersAbility(DISABLED)
-            .withEqualsHashCodeAbility(DISABLED)
-            .withToStringAbility(DISABLED)
             .withMappersAbility(DISABLED),
         pojoAndSettings.getSettings());
   }
@@ -305,8 +261,6 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
             .withExtensionUsage(ExtensionUsage.STATIC)
             .withWithersAbility(DISABLED)
             .withOptionalGettersAbility(DISABLED)
-            .withEqualsHashCodeAbility(DISABLED)
-            .withToStringAbility(DISABLED)
             .withMappersAbility(DISABLED)
             .withBuilderName(Name.fromString("SafeBuilder")),
         pojoAndSettings.getSettings());

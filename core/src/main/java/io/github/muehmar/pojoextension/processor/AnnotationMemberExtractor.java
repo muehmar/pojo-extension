@@ -64,16 +64,6 @@ public class AnnotationMemberExtractor {
         annotationMirror, new ExtensionMember<>(BUILDER_SET_METHOD_PREFIX, String.class::cast));
   }
 
-  public static Optional<Boolean> getEnableEqualsAndHashCode(AnnotationMirror annotationMirror) {
-    return getMember(
-        annotationMirror, new ExtensionMember<>(ENABLE_EQUALS_AND_HASH_CODE, Boolean.class::cast));
-  }
-
-  public static Optional<Boolean> getEnableToString(AnnotationMirror annotationMirror) {
-    return getMember(
-        annotationMirror, new ExtensionMember<>(ENABLE_TO_STRING, Boolean.class::cast));
-  }
-
   public static Optional<Boolean> getEnableWithers(AnnotationMirror annotationMirror) {
     return getMember(annotationMirror, new ExtensionMember<>(ENABLE_WITHERS, Boolean.class::cast));
   }

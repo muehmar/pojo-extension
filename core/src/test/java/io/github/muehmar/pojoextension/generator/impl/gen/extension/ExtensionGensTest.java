@@ -47,8 +47,6 @@ class ExtensionGensTest {
             .generate(
                 Pojos.sample(),
                 PojoSettings.defaultSettings()
-                    .withEqualsHashCodeAbility(DISABLED)
-                    .withToStringAbility(DISABLED)
                     .withSafeBuilderAbility(DISABLED)
                     .withWithersAbility(DISABLED)
                     .withOptionalGettersAbility(DISABLED)
