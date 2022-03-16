@@ -5,10 +5,8 @@ import static io.github.muehmar.pojoextension.generator.model.Necessity.OPTIONAL
 import static io.github.muehmar.pojoextension.generator.model.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.model.settings.ExtensionUsage.INHERITED;
 import static io.github.muehmar.pojoextension.generator.model.settings.ExtensionUsage.STATIC;
-import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getBaseClassName;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getBuilderName;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getBuilderSetMethodPrefix;
-import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableBaseClass;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableEqualsAndHashCode;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableMappers;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableOptionalGetters;
@@ -266,12 +264,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             PojoSettings::withOptionalGettersAbility)
         .mapIfPresent(
             getEnableMappers(annotation).map(Ability::fromBoolean),
-            PojoSettings::withMappersAbility)
-        .mapIfPresent(
-            getBaseClassName(annotation).map(Name::fromString), PojoSettings::withBaseClassName)
-        .mapIfPresent(
-            getEnableBaseClass(annotation).map(Ability::fromBoolean),
-            PojoSettings::withBaseClassAbility);
+            PojoSettings::withMappersAbility);
   }
 
   private void outputPojo(Pojo pojo, PojoSettings pojoSettings) {

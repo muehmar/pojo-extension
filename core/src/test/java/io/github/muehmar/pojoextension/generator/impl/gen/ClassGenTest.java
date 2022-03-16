@@ -9,6 +9,7 @@ import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
 import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.writer.Writer;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -144,15 +145,14 @@ class ClassGenTest {
             .packageGen(Generator.emptyGen())
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> s.extensionName(p).asString())
-            .superClassName((p, s) -> s.baseClassName(p))
+            .superClass((p, s) -> Optional.of("Superclass"))
             .noInterfaces()
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")))
             .build();
 
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
-    assertEquals(
-        "public class CustomerExtension extends CustomerBase {\n" + "}", writer.asString());
+    assertEquals("public class CustomerExtension extends Superclass {\n" + "}", writer.asString());
   }
 
   @Test
@@ -164,7 +164,7 @@ class ClassGenTest {
             .packageGen(Generator.emptyGen())
             .modifiers(JavaModifier.PUBLIC)
             .className((p, s) -> p.getName().asString())
-            .superClassName((p, s) -> s.baseClassName(p))
+            .superClass((p, s) -> Optional.of("Superclass"))
             .singleInterface((p, s) -> s.extensionName(p).asString())
             .content(Generator.ofWriterFunction(w -> w.ref("import java.util.Optional;")))
             .build();
@@ -172,7 +172,7 @@ class ClassGenTest {
     final Writer writer =
         generator.generate(Pojos.sample(), PojoSettings.defaultSettings(), Writer.createDefault());
     assertEquals(
-        "public class Customer extends CustomerBase implements CustomerExtension {\n" + "}",
+        "public class Customer extends Superclass implements CustomerExtension {\n" + "}",
         writer.asString());
   }
 

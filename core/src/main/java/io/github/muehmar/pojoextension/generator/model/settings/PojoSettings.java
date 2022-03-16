@@ -17,20 +17,17 @@ public class PojoSettings implements PojoSettingsExtension {
   private static final Name CLASS_NAME_PLACEHOLDER = Name.fromString("{CLASSNAME}");
   public static final Name BUILDER_CLASS_POSTFIX = Name.fromString("Builder");
   public static final Name EXTENSION_IFC_POSTFIX = Name.fromString("Extension");
-  public static final Name BASE_CLASS_POSTFIX = Name.fromString("Base");
   PList<OptionalDetection> optionalDetections;
   ExtensionUsage extensionUsage;
   Optional<Name> extensionName;
   Optional<Name> builderName;
   Optional<Name> builderSetMethodPrefix;
-  Optional<Name> baseClassName;
   Ability safeBuilderAbility;
   Ability equalsHashCodeAbility;
   Ability toStringAbility;
   Ability withersAbility;
   Ability optionalGettersAbility;
   Ability mappersAbility;
-  Ability baseClassAbility;
 
   public static PojoSettings defaultSettings() {
     return PojoSettingsBuilder.create()
@@ -43,12 +40,10 @@ public class PojoSettings implements PojoSettingsExtension {
         .withersAbility(Ability.ENABLED)
         .optionalGettersAbility(Ability.ENABLED)
         .mappersAbility(Ability.ENABLED)
-        .baseClassAbility(Ability.ENABLED)
         .andAllOptionals()
         .extensionName(Optional.of(CLASS_NAME_PLACEHOLDER.append(EXTENSION_IFC_POSTFIX)))
         .builderName(Optional.of(CLASS_NAME_PLACEHOLDER.append(BUILDER_CLASS_POSTFIX)))
         .builderSetMethodPrefix(empty())
-        .baseClassName(Optional.of(CLASS_NAME_PLACEHOLDER.append(BASE_CLASS_POSTFIX)))
         .build();
   }
 
@@ -66,14 +61,6 @@ public class PojoSettings implements PojoSettingsExtension {
 
   public Name builderName(Pojo pojo) {
     return getNameOrAppend(builderName, BUILDER_CLASS_POSTFIX, pojo);
-  }
-
-  public Name qualifiedBaseClassName(Pojo pojo) {
-    return pojo.getPackage().qualifiedName(baseClassName(pojo));
-  }
-
-  public Name baseClassName(Pojo pojo) {
-    return getNameOrAppend(baseClassName, BASE_CLASS_POSTFIX, pojo);
   }
 
   private Name getNameOrAppend(Optional<Name> name, Name postfix, Pojo pojo) {
@@ -95,10 +82,5 @@ public class PojoSettings implements PojoSettingsExtension {
         || withersAbility.isEnabled()
         || optionalGettersAbility.isEnabled()
         || mappersAbility.isEnabled();
-  }
-
-  public boolean createBaseClass() {
-    return (equalsHashCodeAbility.isEnabled() || toStringAbility.isEnabled())
-        && baseClassAbility.isEnabled();
   }
 }
