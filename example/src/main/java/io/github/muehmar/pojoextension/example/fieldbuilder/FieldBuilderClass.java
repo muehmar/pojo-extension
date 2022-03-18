@@ -5,36 +5,15 @@ import io.github.muehmar.pojoextension.annotations.SafeBuilder;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
+import lombok.Value;
 
+@Value
 @SafeBuilder
 public class FieldBuilderClass<T> {
-  private final String prop1;
-  private final String prop2;
-  private final Optional<String> prop3;
-  private final Optional<T> data;
-
-  FieldBuilderClass(String prop1, String prop2, Optional<String> prop3, Optional<T> data) {
-    this.prop1 = prop1;
-    this.prop2 = prop2;
-    this.prop3 = prop3;
-    this.data = data;
-  }
-
-  public String getProp1() {
-    return prop1;
-  }
-
-  public String getProp2() {
-    return prop2;
-  }
-
-  public Optional<String> getProp3() {
-    return prop3;
-  }
-
-  public Optional<T> getData() {
-    return data;
-  }
+  String prop1;
+  String prop2;
+  Optional<String> prop3;
+  Optional<T> data;
 
   @FieldBuilder(fieldName = "prop1")
   static class Prop1Builder {

@@ -8,31 +8,14 @@ import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.model.type.Type;
 import java.util.Optional;
 import java.util.function.Predicate;
+import lombok.Value;
 
+@Value
 @PojoExtension
-@SuppressWarnings("java:S2160")
-public class PojoField extends PojoFieldBase {
-  private final Name name;
-  private final Type type;
-  private final Necessity necessity;
-
-  public PojoField(Name name, Type type, Necessity necessity) {
-    this.name = name;
-    this.type = type;
-    this.necessity = necessity;
-  }
-
-  public Type getType() {
-    return type;
-  }
-
-  public Name getName() {
-    return name;
-  }
-
-  public Necessity getNecessity() {
-    return necessity;
-  }
+public class PojoField implements PojoFieldExtension {
+  Name name;
+  Type type;
+  Necessity necessity;
 
   public boolean isRequired() {
     return necessity.isRequired();

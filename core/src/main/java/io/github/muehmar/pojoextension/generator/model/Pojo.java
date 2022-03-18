@@ -7,69 +7,29 @@ import io.github.muehmar.pojoextension.Strings;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.model.type.Type;
 import java.util.Optional;
+import lombok.Value;
 
+@Value
 @PojoExtension
-@SuppressWarnings("java:S2160")
-public class Pojo extends PojoBase {
+public class Pojo implements io.github.muehmar.pojoextension.generator.model.PojoExtension {
   private static final PList<Name> LETTERS_AZ =
       PList.range(65, 91).map(n -> Character.toString((char) n.intValue())).map(Name::fromString);
 
-  private final Name name;
-  private final PackageName pkg;
-  private final PList<PojoField> fields;
-  private final PList<Constructor> constructors;
-  private final PList<Getter> getters;
-  private final PList<Generic> generics;
-  private final PList<FieldBuilderMethod> fieldBuilderMethods;
-
-  public Pojo(
-      Name name,
-      PackageName pkg,
-      PList<PojoField> fields,
-      PList<Constructor> constructors,
-      PList<Getter> getters,
-      PList<Generic> generics,
-      PList<FieldBuilderMethod> fieldBuilderMethods) {
-    this.name = name;
-    this.pkg = pkg;
-    this.fields = fields;
-    this.constructors = constructors;
-    this.getters = getters;
-    this.generics = generics;
-    this.fieldBuilderMethods = fieldBuilderMethods;
-  }
-
-  public Name getName() {
-    return name;
-  }
+  Name name;
+  PackageName pkg;
+  PList<PojoField> fields;
+  PList<Constructor> constructors;
+  PList<Getter> getters;
+  PList<Generic> generics;
+  PList<FieldBuilderMethod> fieldBuilderMethods;
 
   @io.github.muehmar.pojoextension.annotations.Getter("pkg")
   public PackageName getPackage() {
     return pkg;
   }
 
-  public PList<PojoField> getFields() {
-    return fields;
-  }
-
   public PList<PojoAndField> getPojoAndFields() {
     return fields.map(f -> new PojoAndField(this, f));
-  }
-
-  public PList<Constructor> getConstructors() {
-    return constructors;
-  }
-
-  public PList<Getter> getGetters() {
-    return getters;
-  }
-
-  public PList<Generic> getGenerics() {
-    return generics;
-  }
-
-  public PList<FieldBuilderMethod> getFieldBuilderMethods() {
-    return fieldBuilderMethods;
   }
 
   public PList<Name> getGenericImports() {

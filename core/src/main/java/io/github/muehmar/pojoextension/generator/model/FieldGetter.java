@@ -1,33 +1,16 @@
 package io.github.muehmar.pojoextension.generator.model;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import lombok.Value;
 
+@Value
 @PojoExtension
-@SuppressWarnings("java:S2160")
-public class FieldGetter extends FieldGetterBase {
-  private final Getter getter;
-  private final PojoField field;
-  private final OptionalFieldRelation relation;
-
-  FieldGetter(Getter getter, PojoField field, OptionalFieldRelation relation) {
-    this.getter = getter;
-    this.field = field;
-    this.relation = relation;
-  }
+public class FieldGetter implements FieldGetterExtension {
+  Getter getter;
+  PojoField field;
+  OptionalFieldRelation relation;
 
   public static FieldGetter of(Getter getter, PojoField field, OptionalFieldRelation relation) {
     return new FieldGetter(getter, field, relation);
-  }
-
-  public Getter getGetter() {
-    return getter;
-  }
-
-  public PojoField getField() {
-    return field;
-  }
-
-  public OptionalFieldRelation getRelation() {
-    return relation;
   }
 }

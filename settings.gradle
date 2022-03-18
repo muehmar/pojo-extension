@@ -21,6 +21,8 @@ dependencyResolutionManagement {
 
             alias('google-autoservice').to('com.google.auto.service:auto-service:1.0')
             alias('joor').to('org.jooq:joor-java-8:0.9.14')
+
+            alias('lombok').to('org.projectlombok:lombok:1.18.22')
         }
     }
 }

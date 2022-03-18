@@ -3,25 +3,13 @@ package io.github.muehmar.pojoextension.generator.model;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.Optional;
+import lombok.Value;
 
+@Value
 @PojoExtension
-@SuppressWarnings("java:S2160")
-public class Constructor extends ConstructorBase {
-  private final Name name;
-  private final PList<Argument> arguments;
-
-  public Constructor(Name name, PList<Argument> arguments) {
-    this.name = name;
-    this.arguments = arguments;
-  }
-
-  public Name getName() {
-    return name;
-  }
-
-  public PList<Argument> getArguments() {
-    return arguments;
-  }
+public class Constructor implements ConstructorExtension {
+  Name name;
+  PList<Argument> arguments;
 
   /**
    * Return the list of fields in the order of the match of the arguments for this constructor or

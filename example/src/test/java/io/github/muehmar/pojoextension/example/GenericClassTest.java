@@ -30,18 +30,6 @@ class GenericClassTest {
     assertEquals("Hello World!", data.get(0));
   }
 
-  @Test
-  void equals_when_calledWithTwoSampleInstances_then_equals() {
-    assertEquals(sampleInstance(), sampleInstance());
-  }
-
-  @Test
-  void toString_when_sampleInstance_then_correctOutput() {
-    assertEquals(
-        "GenericClass{prop1='prop1', data=Data{}, additionalData=Optional[additionalData]}",
-        sampleInstance().toString());
-  }
-
   public static class Data extends ArrayList<String> implements Comparable<Data> {
     @Override
     public int compareTo(Data o) {

@@ -6,6 +6,9 @@ plugins {
 dependencies {
     api project(":core-annotations")
 
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+
     compileOnly libs.pojoextension.annotations
     annotationProcessor libs.pojoextension
 

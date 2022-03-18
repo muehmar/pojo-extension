@@ -3,7 +3,6 @@ package io.github.muehmar.pojoextension.example;
 import static java.util.Optional.empty;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -32,36 +31,6 @@ class CustomerTest {
     assertArrayEquals(new byte[] {0x15}, customer.getKey());
     assertEquals(Optional.of("Dex"), customer.getNick());
     assertEquals(empty(), customer.getAge());
-  }
-
-  @Test
-  void equals_when_eitherSameInstanceOrWithSameFields_then_equals() {
-    final Customer customer1 = sampleCustomer();
-    final Customer customer2 = sampleCustomer();
-
-    assertEquals(customer1, customer1);
-    assertEquals(customer1, customer2);
-    assertEquals(
-        customer1,
-        new Customer(
-            customer1.getIdentification(),
-            customer1.getName(),
-            customer1.getNick().orElse(null),
-            customer1.getAge().orElse(null),
-            customer1.getRandom(),
-            customer1.getKey(),
-            customer1.isFlag()));
-  }
-
-  @Test
-  void equals_when_oneFieldChanged_then_notEquals() {
-    final Customer customer1 = sampleCustomer();
-    assertNotEquals(customer1, customer1.withId("id"));
-    assertNotEquals(customer1, customer1.withName("name"));
-    assertNotEquals(customer1, customer1.withNickname("nickname"));
-    assertNotEquals(customer1, customer1.withAge(15));
-    assertNotEquals(customer1, customer1.withRandom(987L));
-    assertNotEquals(customer1, customer1.withKey(new byte[] {0x7E}));
   }
 
   @Test
@@ -138,14 +107,6 @@ class CustomerTest {
     final Customer customer =
         sampleCustomer().mapIfPresent(Optional.<String>empty(), CustomerExtension::withId);
     assertEquals(sampleCustomer(), customer);
-  }
-
-  @Test
-  void toString_when_calledForPopulatedCustomer_then_correctString() {
-    final Customer customer = sampleCustomer();
-    assertEquals(
-        "Customer{id='123456', name='Dexter', nickname=Optional[Dex], age=Optional.empty, random=12.5, key=[21], flag=true}",
-        customer.toString());
   }
 
   private static Customer sampleCustomer() {

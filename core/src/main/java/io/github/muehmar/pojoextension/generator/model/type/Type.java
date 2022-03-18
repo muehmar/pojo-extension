@@ -6,19 +6,12 @@ import io.github.muehmar.pojoextension.generator.model.Name;
 import io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation;
 import java.util.Optional;
 import java.util.function.Function;
+import lombok.Value;
 
+@Value
 @PojoExtension
-@SuppressWarnings("java:S2160")
-public class Type extends TypeBase {
-  private final SpecificType specificType;
-
-  Type(SpecificType specificType) {
-    this.specificType = specificType;
-  }
-
-  public SpecificType getSpecificType() {
-    return specificType;
-  }
+public class Type implements TypeExtension {
+  SpecificType specificType;
 
   public static Type fromSpecificType(SpecificType specificType) {
     return new Type(specificType);

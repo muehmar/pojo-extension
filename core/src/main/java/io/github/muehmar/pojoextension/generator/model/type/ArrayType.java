@@ -3,17 +3,13 @@ package io.github.muehmar.pojoextension.generator.model.type;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.model.Name;
+import lombok.Value;
 
+@Value
 @PojoExtension
-@SuppressWarnings("java:S2160")
-public class ArrayType extends ArrayTypeBase implements SpecificType {
-  private final Type itemType;
-  private final boolean isVarargs;
-
-  ArrayType(Type itemType, boolean isVarargs) {
-    this.itemType = itemType;
-    this.isVarargs = isVarargs;
-  }
+public class ArrayType implements ArrayTypeExtension, SpecificType {
+  Type itemType;
+  boolean isVarargs;
 
   public static ArrayType fromItemType(Type itemType) {
     return new ArrayType(itemType, false);
@@ -42,13 +38,5 @@ public class ArrayType extends ArrayTypeBase implements SpecificType {
   @Override
   public PList<Name> getImports() {
     return itemType.getImports();
-  }
-
-  public Type getItemType() {
-    return itemType;
-  }
-
-  public boolean isVarargs() {
-    return isVarargs;
   }
 }

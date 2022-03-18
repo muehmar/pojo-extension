@@ -4,46 +4,22 @@ import io.github.muehmar.pojoextension.annotations.Getter;
 import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import java.util.Optional;
+import lombok.Value;
 
 @PojoExtension(builderSetMethodPrefix = "set")
-@SuppressWarnings("java:S2160")
-public class Customer extends CustomerBase {
-  private final String id;
-  private final String name;
-  private final Optional<String> nickname;
-  @Nullable private final Integer age;
-  private final double random;
-  private final byte[] key;
-  private final boolean flag;
-
-  Customer(
-      String id,
-      String name,
-      String nickname,
-      Integer age,
-      double random,
-      byte[] key,
-      boolean flag) {
-    this.id = id;
-    this.name = name;
-    this.nickname = Optional.ofNullable(nickname);
-    this.age = age;
-    this.random = random;
-    this.key = key;
-    this.flag = flag;
-  }
+@Value
+public class Customer implements CustomerExtension {
+  String id;
+  String name;
+  Optional<String> nickname;
+  @Nullable Integer age;
+  double random;
+  byte[] key;
+  boolean flag;
 
   @Getter("id")
   public String getIdentification() {
     return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public double getRandom() {
-    return random;
   }
 
   @Getter("nickname")
@@ -55,30 +31,10 @@ public class Customer extends CustomerBase {
     return Optional.ofNullable(age);
   }
 
-  public byte[] getKey() {
-    return key;
-  }
-
-  public boolean isFlag() {
-    return flag;
-  }
-
+  @Value
   @PojoExtension
-  public static class Address extends CustomerAddressBase {
-    private final String street;
-    private final String city;
-
-    public Address(String street, String city) {
-      this.street = street;
-      this.city = city;
-    }
-
-    public String getStreet() {
-      return street;
-    }
-
-    public String getCity() {
-      return city;
-    }
+  public static class Address implements CustomerAddressExtension {
+    String street;
+    String city;
   }
 }

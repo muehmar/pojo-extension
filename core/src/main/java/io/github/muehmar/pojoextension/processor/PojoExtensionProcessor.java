@@ -5,15 +5,11 @@ import static io.github.muehmar.pojoextension.generator.model.Necessity.OPTIONAL
 import static io.github.muehmar.pojoextension.generator.model.Necessity.REQUIRED;
 import static io.github.muehmar.pojoextension.generator.model.settings.ExtensionUsage.INHERITED;
 import static io.github.muehmar.pojoextension.generator.model.settings.ExtensionUsage.STATIC;
-import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getBaseClassName;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getBuilderName;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getBuilderSetMethodPrefix;
-import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableBaseClass;
-import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableEqualsAndHashCode;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableMappers;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableOptionalGetters;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableSafeBuilder;
-import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableToString;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableWithers;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getExtensionName;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getOptionalDetection;
@@ -26,7 +22,6 @@ import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.impl.gen.baseclass.BaseClassGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.SafeBuilderClassGens;
 import io.github.muehmar.pojoextension.generator.model.Constructor;
@@ -254,12 +249,6 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             getEnableSafeBuilder(annotation).map(Ability::fromBoolean),
             PojoSettings::withSafeBuilderAbility)
         .mapIfPresent(
-            getEnableEqualsAndHashCode(annotation).map(Ability::fromBoolean),
-            PojoSettings::withEqualsHashCodeAbility)
-        .mapIfPresent(
-            getEnableToString(annotation).map(Ability::fromBoolean),
-            PojoSettings::withToStringAbility)
-        .mapIfPresent(
             getEnableWithers(annotation).map(Ability::fromBoolean),
             PojoSettings::withWithersAbility)
         .mapIfPresent(
@@ -267,12 +256,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             PojoSettings::withOptionalGettersAbility)
         .mapIfPresent(
             getEnableMappers(annotation).map(Ability::fromBoolean),
-            PojoSettings::withMappersAbility)
-        .mapIfPresent(
-            getBaseClassName(annotation).map(Name::fromString), PojoSettings::withBaseClassName)
-        .mapIfPresent(
-            getEnableBaseClass(annotation).map(Ability::fromBoolean),
-            PojoSettings::withBaseClassAbility);
+            PojoSettings::withMappersAbility);
   }
 
   private void outputPojo(Pojo pojo, PojoSettings pojoSettings) {
@@ -295,12 +279,6 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         pojo,
         settings,
         settings.createDiscreteBuilder());
-    writeJavaFile(
-        settings.qualifiedBaseClassName(pojo),
-        BaseClassGens.baseClass(),
-        pojo,
-        settings,
-        settings.createBaseClass());
   }
 
   private void writeJavaFile(
