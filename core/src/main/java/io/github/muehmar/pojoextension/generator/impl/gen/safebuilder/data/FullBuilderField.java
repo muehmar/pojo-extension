@@ -6,18 +6,13 @@ import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
 import io.github.muehmar.pojoextension.generator.model.PojoField;
 import java.util.function.Predicate;
+import lombok.Value;
 
+@Value
 @PojoExtension
-@SuppressWarnings("java:S2160")
-public class FullBuilderField extends FullBuilderFieldBase {
-  private final BuilderField builderField;
-  private final PList<FieldBuilderMethod> fieldBuilderMethods;
-
-  public FullBuilderField(
-      BuilderField builderField, PList<FieldBuilderMethod> fieldBuilderMethods) {
-    this.builderField = builderField;
-    this.fieldBuilderMethods = fieldBuilderMethods;
-  }
+public class FullBuilderField implements FullBuilderFieldExtension {
+  BuilderField builderField;
+  PList<FieldBuilderMethod> fieldBuilderMethods;
 
   public static PList<FullBuilderField> requiredFromPojo(Pojo pojo) {
     return fromPojo(pojo, PojoField::isRequired);
@@ -40,14 +35,6 @@ public class FullBuilderField extends FullBuilderFieldBase {
                   pojo.getFieldBuilderMethods().filter(field::isFieldBuilderMethod);
               return new FullBuilderField(builderField, fieldBuilderMethods);
             });
-  }
-
-  public BuilderField getBuilderField() {
-    return builderField;
-  }
-
-  public PList<FieldBuilderMethod> getFieldBuilderMethods() {
-    return fieldBuilderMethods;
   }
 
   public Pojo getPojo() {
