@@ -37,7 +37,7 @@ public class Pojos {
             .constructors(PList.empty())
             .getters(getters)
             .generics(PList.empty())
-            .fieldBuilderMethods(PList.empty())
+            .fieldBuilders(PList.empty())
             .andAllOptionals()
             .build();
     return pojo.withConstructors(PList.single(deviateStandardConstructor(pojo)));
@@ -83,7 +83,7 @@ public class Pojos {
             .constructors(PList.empty())
             .getters(getters)
             .generics(generics)
-            .fieldBuilderMethods(PList.empty())
+            .fieldBuilders(PList.empty())
             .andAllOptionals()
             .build();
     return pojo.withConstructors(PList.single(deviateStandardConstructor(pojo)));

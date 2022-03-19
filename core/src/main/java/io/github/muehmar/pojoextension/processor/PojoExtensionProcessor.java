@@ -25,6 +25,7 @@ import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.SafeBuilderClassGens;
 import io.github.muehmar.pojoextension.generator.model.Constructor;
+import io.github.muehmar.pojoextension.generator.model.FieldBuilder;
 import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;
 import io.github.muehmar.pojoextension.generator.model.Generic;
 import io.github.muehmar.pojoextension.generator.model.Getter;
@@ -188,9 +189,15 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .constructors(constructors)
         .getters(getters)
         .generics(generics)
-        .fieldBuilderMethods(fieldBuilderMethods)
+        .fieldBuilders(toFieldBuilders(fieldBuilderMethods))
         .andAllOptionals()
         .build();
+  }
+
+  private PList<FieldBuilder> toFieldBuilders(PList<FieldBuilderMethod> methods) {
+    return methods.groupBy(FieldBuilderMethod::getFieldName).values().stream()
+        .map(m -> new FieldBuilder(false, m))
+        .collect(PList.collector());
   }
 
   private PojoSettings deviateExtensionUsage(

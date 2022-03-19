@@ -9,6 +9,7 @@ import static io.github.muehmar.pojoextension.generator.model.Necessity.OPTIONAL
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import ch.bluecare.commons.data.NonEmptyList;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.FieldBuilderMethods;
 import io.github.muehmar.pojoextension.generator.FullBuilderFields;
@@ -17,6 +18,7 @@ import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FullBuilderField;
 import io.github.muehmar.pojoextension.generator.model.Argument;
+import io.github.muehmar.pojoextension.generator.model.FieldBuilder;
 import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;
 import io.github.muehmar.pojoextension.generator.model.Name;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
@@ -235,7 +237,8 @@ class SafeBuilderGensTest {
             PList.of(new Argument(Name.fromString("val"), Types.integer())));
     final FullBuilderField field =
         FullBuilderFields.of(Pojos.sample(), PojoFields.requiredId(), 2)
-            .withFieldBuilderMethods(PList.of(fieldBuilderMethod1, fieldBuilderMethod2));
+            .withFieldBuilder(
+                new FieldBuilder(false, NonEmptyList.of(fieldBuilderMethod1, fieldBuilderMethod2)));
     final String output =
         generator
             .generate(field, PojoSettings.defaultSettings(), Writer.createDefault())
@@ -625,7 +628,7 @@ class SafeBuilderGensTest {
 
     final FullBuilderField field =
         FullBuilderFields.of(Pojos.sample(), PojoFields.requiredId(), 2)
-            .withFieldBuilderMethods(PList.single(fieldBuilderMethod));
+            .withFieldBuilder(new FieldBuilder(false, NonEmptyList.single(fieldBuilderMethod)));
 
     final Writer writer =
         generator.generate(field, PojoSettings.defaultSettings(), Writer.createDefault());
@@ -652,7 +655,7 @@ class SafeBuilderGensTest {
 
     final FullBuilderField field =
         FullBuilderFields.of(Pojos.sample(), PojoFields.optionalName(), 2)
-            .withFieldBuilderMethods(PList.single(fieldBuilderMethod));
+            .withFieldBuilder(new FieldBuilder(false, NonEmptyList.single(fieldBuilderMethod)));
 
     final Writer writer =
         generator.generate(field, PojoSettings.defaultSettings(), Writer.createDefault());
@@ -679,7 +682,7 @@ class SafeBuilderGensTest {
 
     final FullBuilderField field =
         FullBuilderFields.of(Pojos.genericSample(), PojoFields.requiredId(), 2)
-            .withFieldBuilderMethods(PList.single(fieldBuilderMethod));
+            .withFieldBuilder(new FieldBuilder(false, NonEmptyList.single(fieldBuilderMethod)));
 
     final Writer writer =
         generator.generate(field, PojoSettings.defaultSettings(), Writer.createDefault());
@@ -707,7 +710,7 @@ class SafeBuilderGensTest {
 
     final FullBuilderField field =
         FullBuilderFields.of(Pojos.sample(), PojoFields.optionalName(), 2)
-            .withFieldBuilderMethods(PList.single(fieldBuilderMethod));
+            .withFieldBuilder(new FieldBuilder(false, NonEmptyList.single(fieldBuilderMethod)));
 
     final Writer writer =
         generator.generate(field, PojoSettings.defaultSettings(), Writer.createDefault());

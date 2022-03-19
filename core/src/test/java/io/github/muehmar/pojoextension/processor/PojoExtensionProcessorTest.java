@@ -7,6 +7,7 @@ import static io.github.muehmar.pojoextension.generator.model.type.Types.primiti
 import static io.github.muehmar.pojoextension.generator.model.type.Types.string;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import ch.bluecare.commons.data.NonEmptyList;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.FieldBuilder;
 import io.github.muehmar.pojoextension.annotations.Nullable;
@@ -64,7 +65,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.empty())
-            .fieldBuilderMethods(PList.empty())
+            .fieldBuilders(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -98,7 +99,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.empty())
-            .fieldBuilderMethods(PList.empty())
+            .fieldBuilders(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -132,7 +133,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.empty())
-            .fieldBuilderMethods(PList.empty())
+            .fieldBuilders(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -175,7 +176,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.empty())
-            .fieldBuilderMethods(PList.empty())
+            .fieldBuilders(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -222,7 +223,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                         className, PList.single(new Argument(Names.id(), Types.string())))))
             .getters(PList.empty())
             .generics(PList.empty())
-            .fieldBuilderMethods(PList.empty())
+            .fieldBuilders(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -269,7 +270,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.empty())
-            .fieldBuilderMethods(PList.empty())
+            .fieldBuilders(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -308,7 +309,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.empty())
-            .fieldBuilderMethods(PList.empty())
+            .fieldBuilders(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -409,7 +410,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.empty())
-            .fieldBuilderMethods(PList.empty())
+            .fieldBuilders(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -463,7 +464,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.single(generic))
-            .fieldBuilderMethods(PList.empty())
+            .fieldBuilders(PList.empty())
             .build();
 
     assertEquals(expected, pojoAndSettings.getPojo());
@@ -493,8 +494,8 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className), classString);
 
-    final PList<FieldBuilderMethod> expected =
-        PList.of(
+    final NonEmptyList<FieldBuilderMethod> methods =
+        NonEmptyList.of(
             FieldBuilderMethodBuilder.create()
                 .fieldName(Name.fromString("key"))
                 .methodName(Name.fromString("sumKey"))
@@ -507,7 +508,10 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 .innerClassName(Optional.empty())
                 .build());
 
-    assertEquals(expected, pojoAndSettings.getPojo().getFieldBuilderMethods());
+    final io.github.muehmar.pojoextension.generator.model.FieldBuilder fieldBuilder =
+        new io.github.muehmar.pojoextension.generator.model.FieldBuilder(false, methods);
+
+    assertEquals(PList.single(fieldBuilder), pojoAndSettings.getPojo().getFieldBuilders());
   }
 
   @Test
@@ -548,7 +552,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
     final PojoAndSettings pojoAndSettings =
         runAnnotationProcessor(qualifiedClassName(className), classString);
 
-    final PList<FieldBuilderMethod> expected =
+    final PList<FieldBuilderMethod> methods =
         PList.of(
             FieldBuilderMethodBuilder.create()
                 .fieldName(Name.fromString("id"))
@@ -577,6 +581,9 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 .innerClassName(Optional.of(Name.fromString("CustomIdBuilder")))
                 .build());
 
-    assertEquals(expected, pojoAndSettings.getPojo().getFieldBuilderMethods());
+    assertEquals(1, pojoAndSettings.getPojo().getFieldBuilders().size());
+    assertEquals(
+        methods.toHashSet(),
+        pojoAndSettings.getPojo().getFieldBuilders().apply(0).getMethods().toPList().toHashSet());
   }
 }

@@ -1,10 +1,12 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data;
 
+import ch.bluecare.commons.data.NonEmptyList;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;
+import io.github.muehmar.pojoextension.generator.model.FieldBuilder;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
 import io.github.muehmar.pojoextension.generator.model.PojoField;
+import java.util.Optional;
 import java.util.function.Predicate;
 import lombok.Value;
 
@@ -12,7 +14,7 @@ import lombok.Value;
 @PojoExtension
 public class FullBuilderField implements FullBuilderFieldExtension {
   BuilderField builderField;
-  PList<FieldBuilderMethod> fieldBuilderMethods;
+  Optional<FieldBuilder> fieldBuilder;
 
   public static PList<FullBuilderField> requiredFromPojo(Pojo pojo) {
     return fromPojo(pojo, PojoField::isRequired);
@@ -31,9 +33,9 @@ public class FullBuilderField implements FullBuilderFieldExtension {
               final PojoField field = p.first();
               final Integer index = p.second();
               final BuilderField builderField = new BuilderField(pojo, field, index);
-              final PList<FieldBuilderMethod> fieldBuilderMethods =
-                  pojo.getFieldBuilderMethods().filter(field::isFieldBuilderMethod);
-              return new FullBuilderField(builderField, fieldBuilderMethods);
+              final Optional<FieldBuilder> fieldBuilder =
+                  pojo.getFieldBuilders().find(field::isFieldBuilder);
+              return new FullBuilderField(builderField, fieldBuilder);
             });
   }
 
@@ -50,7 +52,10 @@ public class FullBuilderField implements FullBuilderFieldExtension {
   }
 
   public PList<FieldBuilderField> getFieldBuilderFields() {
-    return fieldBuilderMethods.map(
-        fieldBuilderMethod -> new FieldBuilderField(builderField, fieldBuilderMethod));
+    return fieldBuilder
+        .map(FieldBuilder::getMethods)
+        .map(NonEmptyList::toPList)
+        .orElse(PList.empty())
+        .map(fieldBuilderMethod -> new FieldBuilderField(builderField, fieldBuilderMethod));
   }
 }
