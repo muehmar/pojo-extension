@@ -3,9 +3,9 @@ package io.github.muehmar.pojoextension.generator;
 import static java.util.Optional.empty;
 
 import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.BuilderField;
-import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FullBuilderField;
-import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FullBuilderFieldBuilder;
+import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model.BuilderField;
+import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model.FullBuilderField;
+import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model.FullBuilderFieldBuilder;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
 import io.github.muehmar.pojoextension.generator.model.PojoField;
 

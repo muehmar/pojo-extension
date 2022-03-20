@@ -16,7 +16,7 @@ import io.github.muehmar.pojoextension.generator.FullBuilderFields;
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.Pojos;
-import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FullBuilderField;
+import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model.FullBuilderField;
 import io.github.muehmar.pojoextension.generator.model.Argument;
 import io.github.muehmar.pojoextension.generator.model.FieldBuilder;
 import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;

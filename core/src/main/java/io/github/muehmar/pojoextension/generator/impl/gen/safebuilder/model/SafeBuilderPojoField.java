@@ -1,4 +1,4 @@
-package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data;
+package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model;
 
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
