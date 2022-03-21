@@ -28,6 +28,18 @@ public class BuilderField implements BuilderFieldExtension {
     return indexedField.getIndex();
   }
 
+  public boolean hasFieldBuilder() {
+    return fieldBuilder.isPresent();
+  }
+
+  public boolean isDisableDefaultMethods() {
+    return fieldBuilder.map(FieldBuilder::isDisableDefaultMethod).orElse(false);
+  }
+
+  public boolean isFieldOptional() {
+    return indexedField.getField().isOptional();
+  }
+
   public static PList<BuilderField> requiredFromPojo(Pojo pojo) {
     return fromPojo(pojo, PojoField::isRequired);
   }

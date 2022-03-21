@@ -74,10 +74,10 @@ public class SafeBuilderGens {
         .append(newLine())
         .append(setMethod())
         .appendConditionally(
-            f -> f.getBuilderFieldsWithMethod().nonEmpty(),
+            BuilderField::hasFieldBuilder,
             Generators.<BuilderField, PojoSettings>newLine().append(fieldBuilderMethods()))
         .appendConditionally(
-            (f, s) -> f.getField().isOptional(),
+            BuilderField::isFieldOptional,
             Generators.<BuilderField, PojoSettings>newLine().append(setMethodOptional()));
   }
 
