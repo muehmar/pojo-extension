@@ -143,7 +143,8 @@ public class SafeBuilderGens {
                     "%s %s", f.getField().getType().getTypeDeclaration(), f.getField().getName()))
         .content(content)
         .build()
-        .append(RefsGen.fieldRefs(), BuilderField::getField);
+        .append(RefsGen.fieldRefs(), BuilderField::getField)
+        .filter(BuilderField::isEnableDefaultMethods);
   }
 
   public static Generator<BuilderField, PojoSettings> setMethodOptional() {
@@ -168,7 +169,8 @@ public class SafeBuilderGens {
         .content(content)
         .build()
         .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
-        .append(RefsGen.fieldRefs(), BuilderField::getField);
+        .append(RefsGen.fieldRefs(), BuilderField::getField)
+        .filter(BuilderField::isEnableDefaultMethods);
   }
 
   public static Generator<BuilderField, PojoSettings> fieldBuilderMethods() {

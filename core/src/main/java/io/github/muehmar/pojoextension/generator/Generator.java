@@ -112,4 +112,12 @@ public interface Generator<A, B> {
       return writer;
     });
   }
+
+  /**
+   * Filters the current generator, i.e. if the given predicate does not hold true, the returned
+   * generator is an empty generator.
+   */
+  default Generator<A, B> filter(Predicate<A> predicate) {
+    return filter((data, settings) -> predicate.test(data));
+  }
 }
