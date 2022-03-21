@@ -36,6 +36,10 @@ public class BuilderField implements BuilderFieldExtension {
     return fieldBuilder.map(FieldBuilder::isDisableDefaultMethod).orElse(false);
   }
 
+  public boolean isEnableDefaultMethods() {
+    return !isDisableDefaultMethods();
+  }
+
   public boolean isFieldOptional() {
     return indexedField.getField().isOptional();
   }

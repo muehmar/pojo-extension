@@ -10,7 +10,6 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGenBuilder;
-import io.github.muehmar.pojoextension.generator.impl.gen.Generators;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model.BuilderField;
@@ -73,12 +72,8 @@ public class SafeBuilderGens {
         .append(constructor())
         .append(newLine())
         .append(setMethod())
-        .appendConditionally(
-            BuilderField::hasFieldBuilder,
-            Generators.<BuilderField, PojoSettings>newLine().append(fieldBuilderMethods()))
-        .appendConditionally(
-            BuilderField::isFieldOptional,
-            Generators.<BuilderField, PojoSettings>newLine().append(setMethodOptional()));
+        .appendConditionally(BuilderField::hasFieldBuilder, fieldBuilderMethods().prependNewLine())
+        .appendConditionally(BuilderField::isFieldOptional, setMethodOptional().prependNewLine());
   }
 
   public static <A> Generator<Pojo, A> fieldDeclaration() {
