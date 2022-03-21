@@ -3,14 +3,17 @@ package io.github.muehmar.pojoextension.processor;
 import static io.github.muehmar.pojoextension.Booleans.not;
 import static io.github.muehmar.pojoextension.Functions.mapFirst;
 
+import ch.bluecare.commons.data.NonEmptyList;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.FieldBuilder;
+import io.github.muehmar.pojoextension.exception.PojoExtensionException;
 import io.github.muehmar.pojoextension.generator.model.Argument;
 import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;
 import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethodBuilder;
 import io.github.muehmar.pojoextension.generator.model.Name;
 import io.github.muehmar.pojoextension.generator.model.type.Type;
 import io.github.muehmar.pojoextension.generator.model.type.Types;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import javax.lang.model.element.Element;
@@ -22,14 +25,50 @@ import javax.lang.model.element.TypeElement;
 public class FieldBuilderProcessor {
   private FieldBuilderProcessor() {}
 
-  public static PList<FieldBuilderMethod> process(TypeElement element) {
-    final PList<ElementAndAnnotation> elementAndAnnotations =
+  public static PList<io.github.muehmar.pojoextension.generator.model.FieldBuilder> process(
+      TypeElement element) {
+    final Map<String, NonEmptyList<ElementAndAnnotation>> elementAndAnnotationByFieldName =
         PList.fromIter(element.getEnclosedElements())
-            .flatMapOptional(FieldBuilderProcessor::getAnnotatedElements);
+            .flatMapOptional(FieldBuilderProcessor::getAnnotatedElements)
+            .groupBy(elementAndAnnotation -> elementAndAnnotation.getFieldBuilder().fieldName());
 
-    return elementAndAnnotations
-        .flatMap(FieldBuilderProcessor::processClass)
-        .concat(elementAndAnnotations.flatMapOptional(FieldBuilderProcessor::processMethod));
+    return elementAndAnnotationByFieldName.values().stream()
+        .collect(PList.collector())
+        .flatMapOptional(FieldBuilderProcessor::processElementsForSameField);
+  }
+
+  public static Optional<io.github.muehmar.pojoextension.generator.model.FieldBuilder>
+      processElementsForSameField(NonEmptyList<ElementAndAnnotation> elementAndAnnotations) {
+    final PList<FieldBuilderMethod> singleMethodMethods =
+        elementAndAnnotations.toPList().flatMapOptional(FieldBuilderProcessor::processMethod);
+    final PList<FieldBuilderMethod> classMethods =
+        elementAndAnnotations.toPList().flatMap(FieldBuilderProcessor::processClass);
+    return NonEmptyList.fromIter(singleMethodMethods.concat(classMethods))
+        .map(
+            methods -> {
+              final boolean disableDefaultMethods =
+                  extractDisableDefaultMethods(elementAndAnnotations);
+              return new io.github.muehmar.pojoextension.generator.model.FieldBuilder(
+                  disableDefaultMethods, methods);
+            });
+  }
+
+  public static boolean extractDisableDefaultMethods(
+      NonEmptyList<ElementAndAnnotation> elementAndAnnotations) {
+    final boolean allFlagsReducedWithAnd =
+        elementAndAnnotations
+            .map(ElementAndAnnotation::isDisableDefaultMethods)
+            .reduce(Boolean::logicalAnd);
+    final boolean allFlagsReducedWithOr =
+        elementAndAnnotations
+            .map(ElementAndAnnotation::isDisableDefaultMethods)
+            .reduce(Boolean::logicalOr);
+    if (allFlagsReducedWithAnd == allFlagsReducedWithOr) {
+      return allFlagsReducedWithAnd;
+    } else {
+      return throwDisableDefaultMethodsMismatch(
+          elementAndAnnotations.head().getFieldBuilder().fieldName());
+    }
   }
 
   private static PList<FieldBuilderMethod> processClass(ElementAndAnnotation elementAndAnnotation) {
@@ -109,6 +148,21 @@ public class FieldBuilderProcessor {
     throw new IllegalArgumentException(message);
   }
 
+  private static <T> T throwDisableDefaultMethodsMismatch(String fieldName) {
+    final String message =
+        String.format(
+            "Multiple @FieldBuilder annotations found for the field %s, but the flag 'disableDefaultMethods' "
+                + "is enable and disabled at the same time. Consider using a static class for declaring multiple methods "
+                + "or disable or enable the flags in all annotations for the same field.",
+            fieldName);
+    throw new IllegalArgumentException(message);
+  }
+
+  private static PojoExtensionException noMethodsFoundException(String fieldName) {
+    final String message = String.format("", fieldName);
+    throw new IllegalArgumentException(message);
+  }
+
   private static Optional<ElementAndAnnotation> getAnnotatedElements(Element element) {
     return Optional.ofNullable(element.getAnnotation(FieldBuilder.class))
         .map(annotation -> new ElementAndAnnotation(element, annotation));
@@ -129,6 +183,10 @@ public class FieldBuilderProcessor {
 
     public FieldBuilder getFieldBuilder() {
       return fieldBuilder;
+    }
+
+    public boolean isDisableDefaultMethods() {
+      return fieldBuilder.disableDefaultMethods();
     }
   }
 }

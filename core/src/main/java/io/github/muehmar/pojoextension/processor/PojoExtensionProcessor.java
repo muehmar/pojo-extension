@@ -26,7 +26,6 @@ import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGen
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.SafeBuilderClassGens;
 import io.github.muehmar.pojoextension.generator.model.Constructor;
 import io.github.muehmar.pojoextension.generator.model.FieldBuilder;
-import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;
 import io.github.muehmar.pojoextension.generator.model.Generic;
 import io.github.muehmar.pojoextension.generator.model.Getter;
 import io.github.muehmar.pojoextension.generator.model.Name;
@@ -174,7 +173,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     final PList<Constructor> constructors = ConstructorProcessor.process(element);
     final PList<Getter> getters = GetterProcessor.process(element);
     final PList<Generic> generics = ClassTypeVariableProcessor.processGenerics(element);
-    final PList<FieldBuilderMethod> fieldBuilderMethods = FieldBuilderProcessor.process(element);
+    final PList<FieldBuilder> fieldBuilders = FieldBuilderProcessor.process(element);
 
     final PList<PojoField> fields =
         PList.fromIter(element.getEnclosedElements())
@@ -189,15 +188,9 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .constructors(constructors)
         .getters(getters)
         .generics(generics)
-        .fieldBuilders(toFieldBuilders(fieldBuilderMethods))
+        .fieldBuilders(fieldBuilders)
         .andAllOptionals()
         .build();
-  }
-
-  private PList<FieldBuilder> toFieldBuilders(PList<FieldBuilderMethod> methods) {
-    return methods.groupBy(FieldBuilderMethod::getFieldName).values().stream()
-        .map(m -> new FieldBuilder(false, m))
-        .collect(PList.collector());
   }
 
   private PojoSettings deviateExtensionUsage(
