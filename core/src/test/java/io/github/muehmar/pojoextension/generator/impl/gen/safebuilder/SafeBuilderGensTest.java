@@ -7,6 +7,7 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.model.Necessity.OPTIONAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.bluecare.commons.data.NonEmptyList;
@@ -521,6 +522,46 @@ class SafeBuilderGensTest {
   }
 
   @Test
+  void setMethod_when_defaultMethodsDisabled_then_noOutput() {
+    final Generator<BuilderField, PojoSettings> generator = SafeBuilderGens.setMethod();
+    final PojoField field = PojoFields.requiredMap();
+    final FieldBuilder fieldBuilder =
+        new FieldBuilder(
+            true,
+            NonEmptyList.of(
+                FieldBuilderMethods.forField(
+                    field,
+                    Name.fromString("method"),
+                    Argument.of(Name.fromString("arg"), Types.integer()))));
+    final BuilderField builderField =
+        BuilderFields.of(Pojos.sample(), field, 2).withFieldBuilder(fieldBuilder);
+    final Writer writer =
+        generator.generate(builderField, PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals("", writer.asString());
+  }
+
+  @Test
+  void setMethod_when_defaultMethodsEnabled_then_outputNonEmpty() {
+    final Generator<BuilderField, PojoSettings> generator = SafeBuilderGens.setMethod();
+    final PojoField field = PojoFields.requiredMap();
+    final FieldBuilder fieldBuilder =
+        new FieldBuilder(
+            false,
+            NonEmptyList.of(
+                FieldBuilderMethods.forField(
+                    field,
+                    Name.fromString("method"),
+                    Argument.of(Name.fromString("arg"), Types.integer()))));
+    final BuilderField builderField =
+        BuilderFields.of(Pojos.sample(), field, 2).withFieldBuilder(fieldBuilder);
+    final Writer writer =
+        generator.generate(builderField, PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertFalse(writer.asString().isEmpty());
+  }
+
+  @Test
   void setMethodOptional_when_generatorUsedWithOptionalField_then_correctOutput() {
     final Generator<BuilderField, PojoSettings> generator = SafeBuilderGens.setMethodOptional();
     final BuilderField field =
@@ -586,6 +627,46 @@ class SafeBuilderGensTest {
     assertTrue(writer.getRefs().exists(JAVA_UTIL_LIST::equals));
     assertTrue(writer.getRefs().exists(JAVA_LANG_STRING::equals));
     assertTrue(writer.getRefs().exists(JAVA_UTIL_MAP::equals));
+  }
+
+  @Test
+  void setMethodOptional_when_defaultMethodsDisabled_then_noOutput() {
+    final Generator<BuilderField, PojoSettings> generator = SafeBuilderGens.setMethodOptional();
+    final PojoField field = PojoFields.optionalName();
+    final FieldBuilder fieldBuilder =
+        new FieldBuilder(
+            true,
+            NonEmptyList.of(
+                FieldBuilderMethods.forField(
+                    field,
+                    Name.fromString("method"),
+                    Argument.of(Name.fromString("arg"), Types.integer()))));
+    final BuilderField builderField =
+        BuilderFields.of(Pojos.sample(), field, 2).withFieldBuilder(fieldBuilder);
+    final Writer writer =
+        generator.generate(builderField, PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertEquals("", writer.asString());
+  }
+
+  @Test
+  void setMethodOptional_when_defaultMethodsEnabled_then_outputNonEmpty() {
+    final Generator<BuilderField, PojoSettings> generator = SafeBuilderGens.setMethodOptional();
+    final PojoField field = PojoFields.optionalName();
+    final FieldBuilder fieldBuilder =
+        new FieldBuilder(
+            false,
+            NonEmptyList.of(
+                FieldBuilderMethods.forField(
+                    field,
+                    Name.fromString("method"),
+                    Argument.of(Name.fromString("arg"), Types.integer()))));
+    final BuilderField builderField =
+        BuilderFields.of(Pojos.sample(), field, 2).withFieldBuilder(fieldBuilder);
+    final Writer writer =
+        generator.generate(builderField, PojoSettings.defaultSettings(), Writer.createDefault());
+
+    assertFalse(writer.asString().isEmpty());
   }
 
   @Test
