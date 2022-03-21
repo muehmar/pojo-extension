@@ -8,9 +8,13 @@ import lombok.Value;
 
 @Value
 @PojoExtension
-public class FieldBuilderField implements FieldBuilderFieldExtension {
+public class BuilderFieldWithMethod implements BuilderFieldWithMethodExtension {
   BuilderField builderField;
   FieldBuilderMethod fieldBuilderMethod;
+
+  public IndexedField getIndexedField() {
+    return builderField.getIndexedField();
+  }
 
   public Pojo getPojo() {
     return builderField.getPojo();
