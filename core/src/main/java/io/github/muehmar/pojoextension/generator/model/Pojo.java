@@ -5,6 +5,7 @@ import static io.github.muehmar.pojoextension.Booleans.not;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.Strings;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import io.github.muehmar.pojoextension.exception.PojoExtensionException;
 import io.github.muehmar.pojoextension.generator.model.type.Type;
 import java.util.Optional;
 import lombok.Value;
@@ -69,14 +70,15 @@ public class Pojo implements io.github.muehmar.pojoextension.generator.model.Poj
 
   public MatchingConstructor getMatchingConstructorOrThrow() {
     return findMatchingConstructor()
-        .orElseThrow(() -> new IllegalArgumentException(noMatchingConstructorMessage()));
+        .orElseThrow(() -> new PojoExtensionException(noMatchingConstructorMessage()));
   }
 
   private String noMatchingConstructorMessage() {
     return String.format(
         "No matching constructor found for class/record %s."
             + " A constructor should have all the fields as arguments in the order of declaration and matching type,"
-            + " where the actual type of a non-required field can be wrapped into an java.util.Optional",
+            + " where the actual type of a non-required field can be wrapped into an java.util.Optional. Furthermore"
+            + "it should be accessible from within the same package, i.e. at least package-private.",
         getName());
   }
 
