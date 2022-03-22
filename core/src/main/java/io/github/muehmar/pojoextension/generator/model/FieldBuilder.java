@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 @PojoExtension
 public class FieldBuilder implements FieldBuilderExtension {
-  boolean disableDefaultMethod;
+  boolean disableDefaultMethods;
   NonEmptyList<FieldBuilderMethod> methods;
 
   public Name getFieldName() {

@@ -170,7 +170,7 @@ class PojoExtensionProcessorFieldBuilderTest extends BaseExtensionProcessorTest 
     final io.github.muehmar.pojoextension.generator.model.FieldBuilder fieldBuilder =
         fieldBuilders.apply(0);
 
-    assertEquals(disableDefaultMethods, fieldBuilder.isDisableDefaultMethod());
+    assertEquals(disableDefaultMethods, fieldBuilder.isDisableDefaultMethods());
   }
 
   @ParameterizedTest
@@ -222,6 +222,6 @@ class PojoExtensionProcessorFieldBuilderTest extends BaseExtensionProcessorTest 
     final io.github.muehmar.pojoextension.generator.model.FieldBuilder fieldBuilder =
         fieldBuilders.apply(0);
 
-    assertEquals(disableDefaultMethods, fieldBuilder.isDisableDefaultMethod());
+    assertEquals(disableDefaultMethods, fieldBuilder.isDisableDefaultMethods());
   }
 }

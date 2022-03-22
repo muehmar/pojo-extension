@@ -33,7 +33,7 @@ public class BuilderField implements BuilderFieldExtension {
   }
 
   public boolean isDisableDefaultMethods() {
-    return fieldBuilder.map(FieldBuilder::isDisableDefaultMethod).orElse(false);
+    return fieldBuilder.map(FieldBuilder::isDisableDefaultMethods).orElse(false);
   }
 
   public boolean isEnableDefaultMethods() {
