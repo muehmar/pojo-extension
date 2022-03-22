@@ -32,6 +32,16 @@ public class PojoField implements PojoFieldExtension {
         .orElse(name);
   }
 
+  public boolean isFieldBuilder(FieldBuilder fieldBuilder) {
+    final boolean fieldNameMatches = fieldBuilder.getFieldName().equals(name);
+
+    if (not(fieldNameMatches)) {
+      return false;
+    }
+
+    return fieldBuilder.getMethods().toPList().forall(this::isFieldBuilderMethod);
+  }
+
   public boolean isFieldBuilderMethod(FieldBuilderMethod method) {
     final boolean fieldNameMatches = method.getFieldName().equals(name);
 

@@ -10,12 +10,11 @@ import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_
 import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.impl.gen.ClassGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGenBuilder;
-import io.github.muehmar.pojoextension.generator.impl.gen.Generators;
 import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.BuilderField;
-import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FieldBuilderField;
-import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data.FullBuilderField;
+import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model.BuilderField;
+import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model.BuilderFieldWithMethod;
+import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model.IndexedField;
 import io.github.muehmar.pojoextension.generator.model.Argument;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
 import io.github.muehmar.pojoextension.generator.model.PojoField;
@@ -31,76 +30,60 @@ public class SafeBuilderGens {
 
   private SafeBuilderGens() {}
 
-  public static Generator<FullBuilderField, PojoSettings> fieldBuilderClass() {
-    return ClassGenBuilder.<FullBuilderField, PojoSettings>create()
+  public static Generator<BuilderField, PojoSettings> fieldBuilderClass() {
+    return ClassGenBuilder.<BuilderField, PojoSettings>create()
         .clazz()
         .nested()
         .packageGen(Generator.emptyGen())
         .modifiers(PUBLIC, STATIC, FINAL)
-        .className(SafeBuilderGens::classDeclaration)
+        .className(f -> classDeclaration(f.getIndexedField()))
         .noSuperClass()
         .noInterfaces()
         .content(builderClassContent())
         .build()
-        .append(RefsGen.genericRefs(), FullBuilderField::getPojo);
+        .append(RefsGen.genericRefs(), BuilderField::getPojo);
   }
 
-  private static String rawClassName(BuilderField field) {
+  private static String rawClassName(IndexedField field) {
     final String prefix = field.getField().isRequired() ? "" : "Opt";
     return String.format("%sBuilder%d", prefix, field.getIndex());
   }
 
-  private static String rawClassName(FullBuilderField field) {
-    return rawClassName(field.getBuilderField());
-  }
-
-  private static String classDeclaration(BuilderField field) {
+  private static String classDeclaration(IndexedField field) {
     return rawClassName(field) + field.getPojo().getGenericTypeDeclarationSection();
   }
 
-  private static String classDeclaration(FullBuilderField field) {
-    return classDeclaration(field.getBuilderField());
-  }
-
-  private static String nextClassTypeVariables(BuilderField field) {
+  private static String nextClassTypeVariables(IndexedField field) {
     return nextRawClassName(field) + field.getPojo().getTypeVariablesSection();
   }
 
-  private static String nextClassTypeVariables(FullBuilderField field) {
-    return nextClassTypeVariables(field.getBuilderField());
-  }
-
-  private static String nextClassDiamond(BuilderField field) {
+  private static String nextClassDiamond(IndexedField field) {
     return nextRawClassName(field) + field.getPojo().getDiamond();
   }
 
-  private static String nextRawClassName(BuilderField field) {
+  private static String nextRawClassName(IndexedField field) {
     return rawClassName(field.withIndex(field.getIndex() + 1));
   }
 
-  public static Generator<FullBuilderField, PojoSettings> builderClassContent() {
+  public static Generator<BuilderField, PojoSettings> builderClassContent() {
     return SafeBuilderGens.<PojoSettings>fieldDeclaration()
-        .contraMap(FullBuilderField::getPojo)
+        .contraMap(BuilderField::getPojo)
         .append(newLine())
         .append(constructor())
         .append(newLine())
         .append(setMethod())
-        .appendConditionally(
-            f -> f.getFieldBuilderFields().nonEmpty(),
-            Generators.<FullBuilderField, PojoSettings>newLine().append(fieldBuilderMethods()))
-        .appendConditionally(
-            (f, s) -> f.getField().isOptional(),
-            Generators.<FullBuilderField, PojoSettings>newLine().append(setMethodOptional()));
+        .appendConditionally(BuilderField::hasFieldBuilder, fieldBuilderMethods().prependNewLine())
+        .appendConditionally(BuilderField::isFieldOptional, setMethodOptional().prependNewLine());
   }
 
   public static <A> Generator<Pojo, A> fieldDeclaration() {
     return (p, s, w) -> w.println("private final Builder%s builder;", p.getTypeVariablesSection());
   }
 
-  public static Generator<FullBuilderField, PojoSettings> constructor() {
-    return ConstructorGenBuilder.<FullBuilderField, PojoSettings>create()
+  public static Generator<BuilderField, PojoSettings> constructor() {
+    return ConstructorGenBuilder.<BuilderField, PojoSettings>create()
         .modifiers(PRIVATE)
-        .className(SafeBuilderGens::rawClassName)
+        .className(f -> rawClassName(f.getIndexedField()))
         .singleArgument(
             f -> String.format("Builder%s builder", f.getPojo().getTypeVariablesSection()))
         .content(BUILDER_ASSIGNMENT)
@@ -140,19 +123,19 @@ public class SafeBuilderGens {
         .build();
   }
 
-  public static Generator<FullBuilderField, PojoSettings> setMethod() {
-    final Generator<FullBuilderField, PojoSettings> content =
+  public static Generator<BuilderField, PojoSettings> setMethod() {
+    final Generator<BuilderField, PojoSettings> content =
         (f, s, w) ->
             w.println(
                 "return new %s(builder.%s(%s));",
-                nextClassDiamond(f.getBuilderField()),
+                nextClassDiamond(f.getIndexedField()),
                 f.getField().builderSetMethodName(s),
                 f.getField().getName());
 
-    return MethodGenBuilder.<FullBuilderField, PojoSettings>create()
+    return MethodGenBuilder.<BuilderField, PojoSettings>create()
         .modifiers(PUBLIC)
         .noGenericTypes()
-        .returnType(SafeBuilderGens::nextClassTypeVariables)
+        .returnType(f -> nextClassTypeVariables(f.getIndexedField()))
         .methodName((f, s) -> f.getField().builderSetMethodName(s).asString())
         .singleArgument(
             f ->
@@ -160,22 +143,23 @@ public class SafeBuilderGens {
                     "%s %s", f.getField().getType().getTypeDeclaration(), f.getField().getName()))
         .content(content)
         .build()
-        .append(RefsGen.fieldRefs(), FullBuilderField::getField);
+        .append(RefsGen.fieldRefs(), BuilderField::getField)
+        .filter(BuilderField::isEnableDefaultMethods);
   }
 
-  public static Generator<FullBuilderField, PojoSettings> setMethodOptional() {
-    final Generator<FullBuilderField, PojoSettings> content =
+  public static Generator<BuilderField, PojoSettings> setMethodOptional() {
+    final Generator<BuilderField, PojoSettings> content =
         (f, s, w) ->
             w.println(
                 "return new %s(%s.map(builder::%s).orElse(builder));",
-                nextClassDiamond(f.getBuilderField()),
+                nextClassDiamond(f.getIndexedField()),
                 f.getField().getName(),
                 f.getField().builderSetMethodName(s));
 
-    return MethodGenBuilder.<FullBuilderField, PojoSettings>create()
+    return MethodGenBuilder.<BuilderField, PojoSettings>create()
         .modifiers(PUBLIC)
         .noGenericTypes()
-        .returnType(SafeBuilderGens::nextClassTypeVariables)
+        .returnType(f -> nextClassTypeVariables(f.getIndexedField()))
         .methodName((f, s) -> f.getField().builderSetMethodName(s).asString())
         .singleArgument(
             f ->
@@ -185,15 +169,16 @@ public class SafeBuilderGens {
         .content(content)
         .build()
         .append(w -> w.ref(JAVA_UTIL_OPTIONAL))
-        .append(RefsGen.fieldRefs(), FullBuilderField::getField);
+        .append(RefsGen.fieldRefs(), BuilderField::getField)
+        .filter(BuilderField::isEnableDefaultMethods);
   }
 
-  public static Generator<FullBuilderField, PojoSettings> fieldBuilderMethods() {
-    final Generator<FieldBuilderField, PojoSettings> content =
+  public static Generator<BuilderField, PojoSettings> fieldBuilderMethods() {
+    final Generator<BuilderFieldWithMethod, PojoSettings> content =
         (f, s, w) ->
             w.println(
                 "return new %s(builder.%s(%s%s.%s(%s)));",
-                nextClassDiamond(f.getBuilderField()),
+                nextClassDiamond(f.getIndexedField()),
                 f.getField().builderSetMethodName(s),
                 f.getPojo().getName(),
                 f.getFieldBuilderMethod()
@@ -203,11 +188,11 @@ public class SafeBuilderGens {
                 f.getFieldBuilderMethod().getMethodName(),
                 f.getFieldBuilderMethod().getArgumentNames().mkString(", "));
 
-    final Function<FieldBuilderField, String> nextClassTypeVariables =
-        f -> SafeBuilderGens.nextClassTypeVariables(f.getBuilderField());
+    final Function<BuilderFieldWithMethod, String> nextClassTypeVariables =
+        f -> SafeBuilderGens.nextClassTypeVariables(f.getIndexedField());
 
-    final Generator<FieldBuilderField, PojoSettings> singleMethod =
-        MethodGenBuilder.<FieldBuilderField, PojoSettings>create()
+    final Generator<BuilderFieldWithMethod, PojoSettings> singleMethod =
+        MethodGenBuilder.<BuilderFieldWithMethod, PojoSettings>create()
             .modifiers(PUBLIC)
             .noGenericTypes()
             .returnType(nextClassTypeVariables)
@@ -215,12 +200,13 @@ public class SafeBuilderGens {
             .arguments(f -> f.getFieldBuilderMethod().getArguments().map(Argument::formatted))
             .content(content)
             .build()
-            .append(RefsGen.fieldBuilderMethodRefs(), FieldBuilderField::getFieldBuilderMethod);
+            .append(
+                RefsGen.fieldBuilderMethodRefs(), BuilderFieldWithMethod::getFieldBuilderMethod);
 
-    return Generator.<FullBuilderField, PojoSettings>emptyGen()
+    return Generator.<BuilderField, PojoSettings>emptyGen()
         .appendList(
             singleMethod,
-            FullBuilderField::getFieldBuilderFields,
+            BuilderField::getBuilderFieldsWithMethod,
             Generator.ofWriterFunction(Writer::println));
   }
 

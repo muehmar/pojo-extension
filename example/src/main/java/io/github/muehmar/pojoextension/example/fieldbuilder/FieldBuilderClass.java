@@ -15,7 +15,7 @@ public class FieldBuilderClass<T> {
   Optional<String> prop3;
   Optional<T> data;
 
-  @FieldBuilder(fieldName = "prop1")
+  @FieldBuilder(fieldName = "prop1", disableDefaultMethods = true)
   static class Prop1Builder {
     private Prop1Builder() {}
 

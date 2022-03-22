@@ -137,6 +137,26 @@ class GeneratorTest {
   }
 
   @Test
+  void appendNewLine_when_called_then_outputHasNewLineAppended() {
+    final Generator<Void, Void> genA = ofWriterFunction(w -> w.println("genA"));
+
+    final Writer writer =
+        genA.appendNewLine().generate((Void) null, noSettings(), Writer.createDefault());
+
+    assertEquals("genA\n", writer.asString());
+  }
+
+  @Test
+  void prependNewLine_when_called_then_outputHasNewLinePrepended() {
+    final Generator<Void, Void> genA = ofWriterFunction(w -> w.println("genA"));
+
+    final Writer writer =
+        genA.prependNewLine().generate((Void) null, noSettings(), Writer.createDefault());
+
+    assertEquals("\ngenA", writer.asString());
+  }
+
+  @Test
   void contraMap_when_newGenCalled_then_inputTransformedAccordingly() {
     final Generator<String, Void> genA = (s, ignore, w) -> w.println(s);
 

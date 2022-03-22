@@ -1,4 +1,4 @@
-package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.data;
+package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model;
 
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;
@@ -8,9 +8,13 @@ import lombok.Value;
 
 @Value
 @PojoExtension
-public class FieldBuilderField implements FieldBuilderFieldExtension {
+public class BuilderFieldWithMethod implements BuilderFieldWithMethodExtension {
   BuilderField builderField;
   FieldBuilderMethod fieldBuilderMethod;
+
+  public IndexedField getIndexedField() {
+    return builderField.getIndexedField();
+  }
 
   public Pojo getPojo() {
     return builderField.getPojo();
