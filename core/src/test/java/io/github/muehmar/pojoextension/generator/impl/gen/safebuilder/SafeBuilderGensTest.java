@@ -79,7 +79,7 @@ class SafeBuilderGensTest {
             + "  }\n"
             + "\n"
             + "  public OptBuilder3 id(Optional<Integer> id) {\n"
-            + "    return new OptBuilder3(id.map(builder::id).orElse(builder));\n"
+            + "    return new OptBuilder3(builder.id(id));\n"
             + "  }\n"
             + "}",
         output);
@@ -131,7 +131,7 @@ class SafeBuilderGensTest {
             + "  }\n"
             + "\n"
             + "  public OptBuilder3<T, S> id(Optional<Integer> id) {\n"
-            + "    return new OptBuilder3<>(id.map(builder::id).orElse(builder));\n"
+            + "    return new OptBuilder3<>(builder.id(id));\n"
             + "  }\n"
             + "}",
         writer.asString());
@@ -184,7 +184,7 @@ class SafeBuilderGensTest {
             + "}\n"
             + "\n"
             + "public OptBuilder3<T, S> id(Optional<Integer> id) {\n"
-            + "  return new OptBuilder3<>(id.map(builder::id).orElse(builder));\n"
+            + "  return new OptBuilder3<>(builder.id(id));\n"
             + "}",
         output);
   }
@@ -573,7 +573,7 @@ class SafeBuilderGensTest {
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
     assertEquals(
         "public OptBuilder3 id(Optional<Integer> id) {\n"
-            + "  return new OptBuilder3(id.map(builder::id).orElse(builder));\n"
+            + "  return new OptBuilder3(builder.id(id));\n"
             + "}",
         writer.asString());
   }
@@ -592,7 +592,7 @@ class SafeBuilderGensTest {
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
     assertEquals(
         "public OptBuilder3 setId(Optional<Integer> id) {\n"
-            + "  return new OptBuilder3(id.map(builder::setId).orElse(builder));\n"
+            + "  return new OptBuilder3(builder.setId(id));\n"
             + "}",
         writer.asString());
   }
@@ -610,7 +610,7 @@ class SafeBuilderGensTest {
     assertTrue(writer.getRefs().exists(JAVA_LANG_INTEGER::equals));
     assertEquals(
         "public OptBuilder3<T, S> id(Optional<Integer> id) {\n"
-            + "  return new OptBuilder3<>(id.map(builder::id).orElse(builder));\n"
+            + "  return new OptBuilder3<>(builder.id(id));\n"
             + "}",
         output);
   }

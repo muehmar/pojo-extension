@@ -151,10 +151,10 @@ public class SafeBuilderGens {
     final Generator<BuilderField, PojoSettings> content =
         (f, s, w) ->
             w.println(
-                "return new %s(%s.map(builder::%s).orElse(builder));",
+                "return new %s(builder.%s(%s));",
                 nextClassDiamond(f.getIndexedField()),
-                f.getField().getName(),
-                f.getField().builderSetMethodName(s));
+                f.getField().builderSetMethodName(s),
+                f.getField().getName());
 
     return MethodGenBuilder.<BuilderField, PojoSettings>create()
         .modifiers(PUBLIC)
