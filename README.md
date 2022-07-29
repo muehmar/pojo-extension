@@ -36,8 +36,8 @@ annotation processor.In gradle this would look like the following:
 
 ```
 dependencies {
-    compileOnly "io.github.muehmar:pojo-extension-annotations:0.12.0"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.12.0"
+    compileOnly "io.github.muehmar:pojo-extension-annotations:0.13.0"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.13.0"
 }
 ```
 
@@ -375,6 +375,23 @@ private final Optional<String> nickname;
 }
 ```
 
+In case there is a field which is instantiated in the constructor and no argument is present, you can use the `@Ignore`
+annotation for this field:
+```
+@SafeBuilder
+public class IgnoreFieldClass {
+  private final String id;
+  private final String name;
+  @Ignore private final String deviated;
+
+  public IgnoreFieldClass(String id, String name) {
+    this.id = id;
+    this.name = name;
+    this.deviated = String.format("%s-%s", id, name);
+  }
+}
+```
+
 ### Getter
 
 For each field a getter must be present. A getter is detected by the processor for the following cases:
@@ -397,6 +414,8 @@ The following annotations exists, where only one single annotation should be use
   well as the abstract base class.
 * `@FieldBuilder` Used to mark custom methods used in the SafeBuilder. `fieldName` is required and defines the field for
   which the custom method should be used.
+* `@Ignore` Used to mark a field which should get ignored by the processor. Used particularly for fields which are
+  instantiated withing the constructor and not present as argument in the constructor.
 
 ### Annotation Parameters
 

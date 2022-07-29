@@ -18,6 +18,7 @@ import ch.bluecare.commons.data.PList;
 import com.google.auto.service.AutoService;
 import io.github.muehmar.pojoextension.Optionals;
 import io.github.muehmar.pojoextension.Strings;
+import io.github.muehmar.pojoextension.annotations.Ignore;
 import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
@@ -179,6 +180,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         PList.fromIter(element.getEnclosedElements())
             .filter(e -> e.getKind().equals(ElementKind.FIELD))
             .filter(this::isNonConstantField)
+            .filter(this::isNotIgnoredField)
             .map(e -> convertToPojoField(e, detectionSettings));
 
     return PojoBuilder.create()
@@ -305,6 +307,11 @@ public class PojoExtensionProcessor extends AbstractProcessor {
   private boolean isNonConstantField(Element element) {
     final Set<Modifier> modifiers = element.getModifiers();
     return !modifiers.contains(Modifier.STATIC);
+  }
+
+  private boolean isNotIgnoredField(Element element) {
+    final Optional<Ignore> annotation = Optional.ofNullable(element.getAnnotation(Ignore.class));
+    return not(annotation.isPresent());
   }
 
   private PojoField convertToPojoField(Element element, DetectionSettings settings) {
