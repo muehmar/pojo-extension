@@ -78,7 +78,8 @@ public class Pojo implements io.github.muehmar.pojoextension.generator.model.Poj
         "No matching constructor found for class/record %s."
             + " A constructor should have all the fields as arguments in the order of declaration and matching type,"
             + " where the actual type of a non-required field can be wrapped into an java.util.Optional. Furthermore"
-            + "it should be accessible from within the same package, i.e. at least package-private.",
+            + "it should be accessible from within the same package, i.e. at least package-private. If a field is"
+            + "instantiated in the constructor and not part of the arguments, you can annotate it with @Ignore.",
         getName());
   }
 
