@@ -1,6 +1,7 @@
 package io.github.muehmar.pojoextension.processor;
 
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.annotations.Ignore;
 import io.github.muehmar.pojoextension.generator.model.Name;
 import io.github.muehmar.pojoextension.generator.model.PackageName;
 
@@ -151,9 +152,14 @@ public class TestPojoComposer {
     }
 
     public PojoFields withField(String type, String name, Class<?> annotation) {
+      final String finalModifier = annotation.equals(Ignore.class) ? "" : "final";
       builder.append(String.format("  @%s\n", annotation.getSimpleName()));
-      builder.append(String.format("  private final %s %s;\n", type, name));
-      return new PojoFields(builder, className, fields.add(new TypeAndName(type, name)));
+      builder.append(String.format("  private %s %s %s;\n", finalModifier, type, name));
+      final PList<TypeAndName> fields =
+          annotation.equals(Ignore.class)
+              ? this.fields
+              : this.fields.add(new TypeAndName(type, name));
+      return new PojoFields(builder, className, fields);
     }
 
     public String create() {

@@ -8,6 +8,7 @@ import static io.github.muehmar.pojoextension.generator.model.type.Types.string;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.annotations.Ignore;
 import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
@@ -217,6 +218,38 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(
                     new Constructor(
                         className, PList.single(new Argument(Names.id(), Types.string())))))
+            .getters(PList.empty())
+            .generics(PList.empty())
+            .fieldBuilders(PList.empty())
+            .build();
+
+    assertEquals(expected, pojoAndSettings.getPojo());
+  }
+
+  @Test
+  void run_when_fieldAnnotatedWithIgnore_then_fieldIgnored() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .withImport(Ignore.class)
+            .annotation(PojoExtension.class)
+            .className(className)
+            .withField("String", "id", Ignore.class)
+            .constructor()
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    final PList<PojoField> fields = PList.empty();
+    final Pojo expected =
+        PojoBuilder.create()
+            .name(className)
+            .pkg(PACKAGE)
+            .fields(fields)
+            .constructors(PList.single(new Constructor(className, PList.empty())))
             .getters(PList.empty())
             .generics(PList.empty())
             .fieldBuilders(PList.empty())
