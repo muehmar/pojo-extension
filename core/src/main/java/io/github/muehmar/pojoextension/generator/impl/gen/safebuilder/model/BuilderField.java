@@ -62,7 +62,8 @@ public class BuilderField implements BuilderFieldExtension {
               final Integer index = p.second();
               final IndexedField indexedField = new IndexedField(pojo, field, index);
               final Optional<FieldBuilder> fieldBuilder =
-                  pojo.getFieldBuilders().find(field::isFieldBuilder);
+                  pojo.getFieldBuilders()
+                      .find(builder -> field.isFieldBuilder(pojo.getName(), builder));
               return new BuilderField(indexedField, fieldBuilder);
             });
   }
