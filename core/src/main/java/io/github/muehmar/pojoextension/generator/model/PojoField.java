@@ -32,17 +32,20 @@ public class PojoField implements PojoFieldExtension {
         .orElse(name);
   }
 
-  public boolean isFieldBuilder(FieldBuilder fieldBuilder) {
+  public boolean isFieldBuilder(Name pojoName, FieldBuilder fieldBuilder) {
     final boolean fieldNameMatches = fieldBuilder.getFieldName().equals(name);
 
     if (not(fieldNameMatches)) {
       return false;
     }
 
-    return fieldBuilder.getMethods().toPList().forall(this::isFieldBuilderMethod);
+    return fieldBuilder
+        .getMethods()
+        .toPList()
+        .forall(method -> isFieldBuilderMethod(pojoName, method));
   }
 
-  public boolean isFieldBuilderMethod(FieldBuilderMethod method) {
+  public boolean isFieldBuilderMethod(Name pojoName, FieldBuilderMethod method) {
     final boolean fieldNameMatches = method.getFieldName().equals(name);
 
     if (not(fieldNameMatches)) {
@@ -50,20 +53,20 @@ public class PojoField implements PojoFieldExtension {
     }
 
     return necessity
-        .onRequired(() -> assertRequiredType(method))
-        .onOptional(() -> assertOptionalType(method));
+        .onRequired(() -> assertRequiredType(pojoName, method))
+        .onOptional(() -> assertOptionalType(pojoName, method));
   }
 
-  private boolean assertRequiredType(FieldBuilderMethod method) {
+  private boolean assertRequiredType(Name pojoName, FieldBuilderMethod method) {
     final boolean sameType = method.getReturnType().equals(type);
     if (not(sameType)) {
-      final String message = formatErrorMessage(method);
+      final String message = formatErrorMessage(pojoName, method);
       throw new PojoExtensionException(message);
     }
     return true;
   }
 
-  private boolean assertOptionalType(FieldBuilderMethod method) {
+  private boolean assertOptionalType(Name pojoName, FieldBuilderMethod method) {
     final Optional<OptionalFieldRelation> typeRelation = method.getReturnType().getRelation(type);
 
     final Predicate<OptionalFieldRelation> sameTypeOrUnwrapOptional =
@@ -75,16 +78,27 @@ public class PojoField implements PojoFieldExtension {
 
     if (not(optionalTypeMatches)) {
       final String message =
-          formatErrorMessage(method)
+          formatErrorMessage(pojoName, method)
               + " As this field is optional, the actual type could also be wrapped into a java.util.Optional.";
       throw new PojoExtensionException(message);
     }
     return true;
   }
 
-  private String formatErrorMessage(FieldBuilderMethod method) {
+  private String formatErrorMessage(Name pojoName, FieldBuilderMethod method) {
+    final String innerClassNameMessage =
+        method
+            .getInnerClassName()
+            .map(innerClassName -> String.format("(in class %s) ", innerClassName))
+            .orElse("");
     return String.format(
-        "The return type '%s' of the method '%s' annotated with @FieldBuilder for field '%s' does not match the type '%s' of the field '%s'.",
-        method.getReturnType().getName(), method.getMethodName(), name, type.getName(), name);
+        "The return type '%s' of the method '%s' %sannotated with @FieldBuilder for field '%s' of '%s' does not match the type '%s' of the field '%s'.",
+        method.getReturnType().getName(),
+        method.getMethodName(),
+        innerClassNameMessage,
+        name,
+        pojoName,
+        type.getName(),
+        name);
   }
 }
