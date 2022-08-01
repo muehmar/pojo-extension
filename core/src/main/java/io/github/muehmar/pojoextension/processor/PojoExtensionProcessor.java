@@ -16,13 +16,14 @@ import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtracto
 
 import ch.bluecare.commons.data.PList;
 import com.google.auto.service.AutoService;
+import io.github.muehmar.codegenerator.Generator;
+import io.github.muehmar.codegenerator.writer.Writer;
 import io.github.muehmar.pojoextension.Optionals;
 import io.github.muehmar.pojoextension.Strings;
 import io.github.muehmar.pojoextension.annotations.Ignore;
 import io.github.muehmar.pojoextension.annotations.Nullable;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
-import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.SafeBuilderClassGens;
 import io.github.muehmar.pojoextension.generator.model.Constructor;
@@ -40,7 +41,6 @@ import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.model.type.ClassnameParser;
 import io.github.muehmar.pojoextension.generator.model.type.DeclaredType;
 import io.github.muehmar.pojoextension.generator.model.type.Type;
-import io.github.muehmar.pojoextension.generator.writer.Writer;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;

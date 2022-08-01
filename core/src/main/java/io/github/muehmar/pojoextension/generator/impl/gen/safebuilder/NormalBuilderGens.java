@@ -1,20 +1,17 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder;
 
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.FINAL;
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PRIVATE;
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
+import static io.github.muehmar.codegenerator.java.JavaModifier.FINAL;
+import static io.github.muehmar.codegenerator.java.JavaModifier.PRIVATE;
+import static io.github.muehmar.codegenerator.java.JavaModifier.PUBLIC;
+import static io.github.muehmar.codegenerator.java.JavaModifier.STATIC;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newLine;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 
-import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
-import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
-import io.github.muehmar.pojoextension.generator.impl.gen.ClassGenBuilder;
-import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGenBuilder;
+import io.github.muehmar.codegenerator.Generator;
+import io.github.muehmar.codegenerator.java.JavaGenerators;
+import io.github.muehmar.codegenerator.java.JavaModifier;
+import io.github.muehmar.codegenerator.java.JavaModifiers;
 import io.github.muehmar.pojoextension.generator.impl.gen.FieldDeclarationGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
@@ -34,8 +31,8 @@ public class NormalBuilderGens {
   private NormalBuilderGens() {}
 
   public static Generator<Pojo, PojoSettings> builderClass() {
-    final ConstructorGen<Pojo, PojoSettings> constructor =
-        ConstructorGenBuilder.<Pojo, PojoSettings>create()
+    final Generator<Pojo, PojoSettings> constructor =
+        JavaGenerators.<Pojo, PojoSettings>constructorGen()
             .modifiers(PRIVATE)
             .className(BUILDER_CLASSNAME)
             .noArguments()
@@ -52,7 +49,7 @@ public class NormalBuilderGens {
                 p -> p.getFields().filter(PojoField::isOptional).map(f -> new PojoAndField(p, f)))
             .append(buildMethod());
 
-    return ClassGenBuilder.<Pojo, PojoSettings>create()
+    return JavaGenerators.<Pojo, PojoSettings>classGen()
         .clazz()
         .nested()
         .packageGen(new PackageGen())
@@ -65,7 +62,7 @@ public class NormalBuilderGens {
   }
 
   public static Generator<Pojo, PojoSettings> buildMethod() {
-    return MethodGenBuilder.<Pojo, PojoSettings>create()
+    return JavaGenerators.<Pojo, PojoSettings>methodGen()
         .modifiers(PUBLIC)
         .noGenericTypes()
         .returnTypeName(Pojo::getNameWithTypeVariables)
@@ -82,8 +79,8 @@ public class NormalBuilderGens {
                 .println("this.%s = %s;", paf.getField().getName(), paf.getField().getName())
                 .println("return this;");
 
-    return MethodGenBuilder.<PojoAndField, PojoSettings>create()
-        .createModifiers(
+    return JavaGenerators.<PojoAndField, PojoSettings>methodGen()
+        .modifiers(
             (paf, s) ->
                 JavaModifiers.of(
                     paf.getField().isRequired() ? JavaModifier.PRIVATE : JavaModifier.PUBLIC))
@@ -109,7 +106,7 @@ public class NormalBuilderGens {
                     paf.getField().getName(), paf.getField().getName())
                 .println("return this;");
 
-    return MethodGenBuilder.<PojoAndField, PojoSettings>create()
+    return JavaGenerators.<PojoAndField, PojoSettings>methodGen()
         .modifiers(PUBLIC)
         .noGenericTypes()
         .returnType(paf -> BUILDER_CLASSNAME + paf.getPojo().getTypeVariablesSection())

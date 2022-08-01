@@ -1,6 +1,6 @@
 package io.github.muehmar.pojoextension.generator.impl.gen;
 
-import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.codegenerator.Generator;
 
 public class Annotations {
   private Annotations() {}

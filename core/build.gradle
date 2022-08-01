@@ -12,6 +12,8 @@ dependencies {
     compileOnly libs.pojoextension.annotations
     annotationProcessor libs.pojoextension
 
+    implementation libs.codeGenerator
+
     implementation libs.google.autoservice
     annotationProcessor libs.google.autoservice
 

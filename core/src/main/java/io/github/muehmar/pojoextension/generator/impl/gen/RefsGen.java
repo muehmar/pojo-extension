@@ -1,7 +1,8 @@
 package io.github.muehmar.pojoextension.generator.impl.gen;
 
 import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.codegenerator.Generator;
+import io.github.muehmar.codegenerator.writer.Writer;
 import io.github.muehmar.pojoextension.generator.model.Argument;
 import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;
 import io.github.muehmar.pojoextension.generator.model.Name;
@@ -9,7 +10,6 @@ import io.github.muehmar.pojoextension.generator.model.Pojo;
 import io.github.muehmar.pojoextension.generator.model.PojoField;
 import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
 import io.github.muehmar.pojoextension.generator.model.type.Type;
-import io.github.muehmar.pojoextension.generator.writer.Writer;
 
 public class RefsGen {
   private RefsGen() {}

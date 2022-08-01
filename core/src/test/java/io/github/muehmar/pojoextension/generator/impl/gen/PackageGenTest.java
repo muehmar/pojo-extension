@@ -2,9 +2,9 @@ package io.github.muehmar.pojoextension.generator.impl.gen;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import io.github.muehmar.codegenerator.writer.Writer;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
 class PackageGenTest {

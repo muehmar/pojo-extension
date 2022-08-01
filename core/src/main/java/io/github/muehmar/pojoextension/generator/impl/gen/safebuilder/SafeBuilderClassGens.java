@@ -1,15 +1,12 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder;
 
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.FINAL;
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PRIVATE;
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
+import static io.github.muehmar.codegenerator.java.JavaModifier.FINAL;
+import static io.github.muehmar.codegenerator.java.JavaModifier.PRIVATE;
+import static io.github.muehmar.codegenerator.java.JavaModifier.PUBLIC;
+import static io.github.muehmar.codegenerator.java.JavaModifier.STATIC;
 
-import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.impl.gen.ClassGenBuilder;
-import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGen;
-import io.github.muehmar.pojoextension.generator.impl.gen.ConstructorGenBuilder;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
+import io.github.muehmar.codegenerator.Generator;
+import io.github.muehmar.codegenerator.java.JavaGenerators;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.model.Generic;
@@ -22,7 +19,7 @@ public class SafeBuilderClassGens {
   private SafeBuilderClassGens() {}
 
   public static Generator<Pojo, PojoSettings> safeBuilderClass() {
-    return ClassGenBuilder.<Pojo, PojoSettings>create()
+    return JavaGenerators.<Pojo, PojoSettings>classGen()
         .clazz()
         .topLevel()
         .packageGen(new PackageGen())
@@ -35,8 +32,8 @@ public class SafeBuilderClassGens {
   }
 
   private static Generator<Pojo, PojoSettings> content() {
-    final ConstructorGen<Pojo, PojoSettings> constructor =
-        ConstructorGenBuilder.<Pojo, PojoSettings>create()
+    final Generator<Pojo, PojoSettings> constructor =
+        JavaGenerators.<Pojo, PojoSettings>constructorGen()
             .modifiers(PRIVATE)
             .className((p, s) -> s.builderName(p).asString())
             .noArguments()
@@ -58,7 +55,7 @@ public class SafeBuilderClassGens {
             String.format(
                 "return new Builder0%s(new Builder%s());",
                 p.getDiamond(), p.getTypeVariablesSection());
-    return MethodGenBuilder.<Pojo, PojoSettings>create()
+    return JavaGenerators.<Pojo, PojoSettings>methodGen()
         .modifiers(PUBLIC, STATIC)
         .genericTypes(p -> p.getGenerics().map(Generic::getTypeDeclaration).map(Name::asString))
         .returnType(returnType)

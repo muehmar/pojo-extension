@@ -1,9 +1,10 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.getter;
 
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.DEFAULT;
+import static io.github.muehmar.codegenerator.java.JavaModifier.DEFAULT;
 
-import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
+import io.github.muehmar.codegenerator.Generator;
+import io.github.muehmar.codegenerator.java.JavaGenerators;
+import io.github.muehmar.codegenerator.writer.Writer;
 import io.github.muehmar.pojoextension.generator.impl.gen.Refs;
 import io.github.muehmar.pojoextension.generator.model.FieldGetter;
 import io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation;
@@ -12,14 +13,13 @@ import io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation.OnU
 import io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation.OnWrapOptional;
 import io.github.muehmar.pojoextension.generator.model.PojoAndField;
 import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.writer.Writer;
 
 public class GetterGens {
 
   private GetterGens() {}
 
   public static Generator<PojoAndField, PojoSettings> optionalGetterMethod() {
-    return MethodGenBuilder.<PojoAndField, PojoSettings>create()
+    return JavaGenerators.<PojoAndField, PojoSettings>methodGen()
         .modifiers(DEFAULT)
         .noGenericTypes()
         .returnTypeName(paf -> paf.getField().getType().getTypeDeclaration())

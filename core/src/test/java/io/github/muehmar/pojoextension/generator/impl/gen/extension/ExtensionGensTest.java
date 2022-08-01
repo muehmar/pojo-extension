@@ -5,12 +5,12 @@ import static io.github.muehmar.pojoextension.generator.model.OptionalFieldRelat
 import static io.github.muehmar.pojoextension.generator.model.settings.Ability.DISABLED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.github.muehmar.pojoextension.generator.Generator;
+import io.github.muehmar.codegenerator.Generator;
+import io.github.muehmar.codegenerator.writer.Writer;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.model.FieldGetter;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
 import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.writer.Writer;
 import org.junit.jupiter.api.Test;
 
 class ExtensionGensTest {

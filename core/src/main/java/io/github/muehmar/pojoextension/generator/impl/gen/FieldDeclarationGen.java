@@ -1,11 +1,11 @@
 package io.github.muehmar.pojoextension.generator.impl.gen;
 
-import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.impl.JavaModifier;
-import io.github.muehmar.pojoextension.generator.impl.JavaModifiers;
+import io.github.muehmar.codegenerator.Generator;
+import io.github.muehmar.codegenerator.java.JavaModifier;
+import io.github.muehmar.codegenerator.java.JavaModifiers;
+import io.github.muehmar.codegenerator.writer.Writer;
 import io.github.muehmar.pojoextension.generator.model.PojoField;
 import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
-import io.github.muehmar.pojoextension.generator.writer.Writer;
 
 public class FieldDeclarationGen implements Generator<PojoField, PojoSettings> {
   private final JavaModifiers modifiers;

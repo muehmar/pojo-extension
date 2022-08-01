@@ -1,7 +1,7 @@
 package io.github.muehmar.pojoextension.generator.impl.gen;
 
-import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.writer.Writer;
+import io.github.muehmar.codegenerator.Generator;
+import io.github.muehmar.codegenerator.writer.Writer;
 
 public class Generators {
   private Generators() {}

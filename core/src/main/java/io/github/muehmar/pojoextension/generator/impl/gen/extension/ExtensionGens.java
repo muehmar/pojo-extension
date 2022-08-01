@@ -1,9 +1,7 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.extension;
 
-import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.impl.gen.ClassGenBuilder;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
+import io.github.muehmar.codegenerator.Generator;
+import io.github.muehmar.codegenerator.java.JavaGenerators;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.getter.GetterGens;
@@ -19,7 +17,7 @@ public class ExtensionGens {
   private ExtensionGens() {}
 
   public static Generator<Pojo, PojoSettings> extensionInterface() {
-    return ClassGenBuilder.<Pojo, PojoSettings>create()
+    return JavaGenerators.<Pojo, PojoSettings>classGen()
         .ifc()
         .topLevel()
         .packageGen(new PackageGen())
@@ -33,7 +31,7 @@ public class ExtensionGens {
   }
 
   private static Generator<Pojo, PojoSettings> content() {
-    final Function<Pojo, PList<FieldGetter>> toFieldGetter =
+    final Function<Pojo, Iterable<FieldGetter>> toFieldGetter =
         pojo -> pojo.getFields().map(pojo::getMatchingGetterOrThrow);
 
     final Generator<PojoAndField, PojoSettings> optionalNewLine =
@@ -56,7 +54,7 @@ public class ExtensionGens {
   }
 
   public static Generator<FieldGetter, PojoSettings> getterMethod() {
-    return MethodGenBuilder.<FieldGetter, PojoSettings>create()
+    return JavaGenerators.<FieldGetter, PojoSettings>methodGen()
         .modifiers()
         .noGenericTypes()
         .returnType(fg -> fg.getGetter().getReturnType().getTypeDeclaration().asString())

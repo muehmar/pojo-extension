@@ -1,14 +1,14 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.map;
 
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.DEFAULT;
+import static io.github.muehmar.codegenerator.java.JavaModifier.DEFAULT;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_BIFUNCTION;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_FUNCTION;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_OPTIONAL;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Refs.JAVA_UTIL_UNARYOPERATOR;
 
 import ch.bluecare.commons.data.PList;
-import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
+import io.github.muehmar.codegenerator.Generator;
+import io.github.muehmar.codegenerator.java.JavaGenerators;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
 import io.github.muehmar.pojoextension.generator.model.Name;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
@@ -19,7 +19,7 @@ public class MapGens {
 
   public static Generator<Pojo, PojoSettings> mapMethod() {
     final Name preferred = Name.fromString("T");
-    return MethodGenBuilder.<Pojo, PojoSettings>create()
+    return JavaGenerators.<Pojo, PojoSettings>methodGen()
         .modifiers(DEFAULT)
         .singleGenericType(p -> p.findUnusedTypeVariableName(preferred))
         .returnType(p -> p.findUnusedTypeVariableName(preferred).asString())
@@ -43,7 +43,7 @@ public class MapGens {
   }
 
   public static Generator<Pojo, PojoSettings> mapIfMethod() {
-    return MethodGenBuilder.<Pojo, PojoSettings>create()
+    return JavaGenerators.<Pojo, PojoSettings>methodGen()
         .modifiers(DEFAULT)
         .noGenericTypes()
         .returnTypeName(Pojo::getNameWithTypeVariables)
@@ -68,7 +68,7 @@ public class MapGens {
 
   public static Generator<Pojo, PojoSettings> mapIfPresentMethod() {
     final Name preferred = Name.fromString("T");
-    return MethodGenBuilder.<Pojo, PojoSettings>create()
+    return JavaGenerators.<Pojo, PojoSettings>methodGen()
         .modifiers(DEFAULT)
         .singleGenericType(p -> p.findUnusedTypeVariableName(preferred))
         .returnTypeName(Pojo::getNameWithTypeVariables)

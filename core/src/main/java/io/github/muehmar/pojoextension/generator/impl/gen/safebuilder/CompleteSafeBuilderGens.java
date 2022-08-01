@@ -1,11 +1,11 @@
 package io.github.muehmar.pojoextension.generator.impl.gen.safebuilder;
 
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.PUBLIC;
-import static io.github.muehmar.pojoextension.generator.impl.JavaModifier.STATIC;
+import static io.github.muehmar.codegenerator.java.JavaModifier.PUBLIC;
+import static io.github.muehmar.codegenerator.java.JavaModifier.STATIC;
 import static io.github.muehmar.pojoextension.generator.impl.gen.Generators.newLine;
 
-import io.github.muehmar.pojoextension.generator.Generator;
-import io.github.muehmar.pojoextension.generator.impl.gen.MethodGenBuilder;
+import io.github.muehmar.codegenerator.Generator;
+import io.github.muehmar.codegenerator.java.JavaGenerators;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model.BuilderField;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
@@ -29,7 +29,7 @@ public class CompleteSafeBuilderGens {
   }
 
   public static Generator<Pojo, PojoSettings> newBuilderMethod() {
-    return MethodGenBuilder.<Pojo, PojoSettings>create()
+    return JavaGenerators.<Pojo, PojoSettings>methodGen()
         .modifiers(PUBLIC, STATIC)
         .genericTypes(Pojo::getGenericTypeDeclarations)
         .returnType(p -> "Builder0" + p.getTypeVariablesSection())

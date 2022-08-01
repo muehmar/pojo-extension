@@ -5,8 +5,8 @@ import static io.github.muehmar.pojoextension.generator.model.OptionalFieldRelat
 import static io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation.WRAP_INTO_OPTIONAL;
 
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.codegenerator.Generator;
 import io.github.muehmar.pojoextension.Mapper;
-import io.github.muehmar.pojoextension.generator.Generator;
 import io.github.muehmar.pojoextension.generator.model.FieldGetter;
 import io.github.muehmar.pojoextension.generator.model.MatchingConstructor;
 import io.github.muehmar.pojoextension.generator.model.OptionalFieldRelation;
