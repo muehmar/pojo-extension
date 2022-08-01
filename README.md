@@ -481,6 +481,7 @@ public @interface AllRequiredExtension {
 
 ## Change Log
 
+* 0.13.0 - Add `@Ignore` annotation
 * 0.12.0
     * Drop support for `equals/hashCode` and `toString` method
     * Allow to disable the default methods in SafeBuilder when defining custom methods
