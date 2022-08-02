@@ -15,10 +15,13 @@ import io.github.muehmar.pojoextension.generator.impl.gen.FieldDeclarationGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.instantiation.ConstructorCallGens;
+import io.github.muehmar.pojoextension.generator.model.BuildMethod;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
 import io.github.muehmar.pojoextension.generator.model.PojoAndField;
 import io.github.muehmar.pojoextension.generator.model.PojoField;
 import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.model.type.Type;
+import java.util.function.Function;
 
 /**
  * Factory which creates more or less the well-known standard builder pattern used for the
@@ -62,14 +65,32 @@ public class NormalBuilderGens {
   }
 
   public static Generator<Pojo, PojoSettings> buildMethod() {
+    final Function<Pojo, Object> createReturnType =
+        p ->
+            p.getBuildMethod()
+                .map(BuildMethod::getReturnType)
+                .map(Type::getTypeDeclaration)
+                .orElseGet(p::getNameWithTypeVariables);
     return JavaGenerators.<Pojo, PojoSettings>methodGen()
         .modifiers(PUBLIC)
         .noGenericTypes()
-        .returnTypeName(Pojo::getNameWithTypeVariables)
+        .returnTypeName(createReturnType)
         .methodName("build")
         .noArguments()
-        .content(ConstructorCallGens.callWithAllLocalVariables("return "))
+        .content(buildMethodContent())
         .build();
+  }
+
+  public static Generator<Pojo, PojoSettings> buildMethodContent() {
+    final Generator<Pojo, PojoSettings> returnGenerator =
+        (p, s, w) ->
+            p.getBuildMethod()
+                .map(bm -> w.println("return %s.%s(instance);", p.getName(), bm.getName()))
+                .orElse(w.println("return instance;"));
+    return Generator.<Pojo, PojoSettings>emptyGen()
+        .append((p, s, w) -> w.println("final %s instance =", p.getNameWithTypeVariables()))
+        .append(ConstructorCallGens.callWithAllLocalVariables(""), 2)
+        .append(returnGenerator);
   }
 
   public static Generator<PojoAndField, PojoSettings> setMethod() {
