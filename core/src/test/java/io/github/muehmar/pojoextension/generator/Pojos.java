@@ -14,6 +14,7 @@ import io.github.muehmar.pojoextension.generator.model.Pojo;
 import io.github.muehmar.pojoextension.generator.model.PojoBuilder;
 import io.github.muehmar.pojoextension.generator.model.PojoField;
 import io.github.muehmar.pojoextension.generator.model.type.Types;
+import java.util.Optional;
 
 public class Pojos {
   public static final PackageName PACKAGE_NAME = PackageName.fromString("io.github.muehmar");
@@ -39,6 +40,7 @@ public class Pojos {
             .generics(PList.empty())
             .fieldBuilders(PList.empty())
             .andAllOptionals()
+            .buildMethod(Optional.empty())
             .build();
     return pojo.withConstructors(PList.single(deviateStandardConstructor(pojo)));
   }
@@ -85,6 +87,7 @@ public class Pojos {
             .generics(generics)
             .fieldBuilders(PList.empty())
             .andAllOptionals()
+            .buildMethod(Optional.empty())
             .build();
     return pojo.withConstructors(PList.single(deviateStandardConstructor(pojo)));
   }

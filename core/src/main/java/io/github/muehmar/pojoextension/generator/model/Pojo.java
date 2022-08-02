@@ -23,6 +23,7 @@ public class Pojo implements io.github.muehmar.pojoextension.generator.model.Poj
   PList<Getter> getters;
   PList<Generic> generics;
   PList<FieldBuilder> fieldBuilders;
+  Optional<BuildMethod> buildMethod;
 
   @io.github.muehmar.pojoextension.annotations.Getter("pkg")
   public PackageName getPackage() {

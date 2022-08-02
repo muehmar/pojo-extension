@@ -26,6 +26,7 @@ import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.SafeBuilderClassGens;
+import io.github.muehmar.pojoextension.generator.model.BuildMethod;
 import io.github.muehmar.pojoextension.generator.model.Constructor;
 import io.github.muehmar.pojoextension.generator.model.FieldBuilder;
 import io.github.muehmar.pojoextension.generator.model.Generic;
@@ -175,6 +176,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
     final PList<Getter> getters = GetterProcessor.process(element);
     final PList<Generic> generics = ClassTypeVariableProcessor.processGenerics(element);
     final PList<FieldBuilder> fieldBuilders = FieldBuilderProcessor.process(element);
+    final Optional<BuildMethod> buildMethod = BuildMethodProcessor.process(element);
 
     final PList<PojoField> fields =
         PList.fromIter(element.getEnclosedElements())
@@ -192,6 +194,7 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .generics(generics)
         .fieldBuilders(fieldBuilders)
         .andAllOptionals()
+        .buildMethod(buildMethod)
         .build();
   }
 
