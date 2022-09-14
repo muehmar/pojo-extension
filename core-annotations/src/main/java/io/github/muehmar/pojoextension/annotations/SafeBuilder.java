@@ -5,12 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@PojoExtension(
-    enableWithers = false,
-    enableOptionalGetters = false,
-    enableMappers = false,
-    enableToString = false,
-    enableEqualsAndHashCode = false)
+@PojoExtension(enableWithers = false, enableOptionalGetters = false, enableMappers = false)
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.CLASS)
 public @interface SafeBuilder {

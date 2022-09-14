@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@PojoExtension(enableToString = false, enableEqualsAndHashCode = false)
+@PojoExtension
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.CLASS)
 public @interface RecordExtension {
