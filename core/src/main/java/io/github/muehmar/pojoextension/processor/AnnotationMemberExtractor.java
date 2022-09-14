@@ -19,10 +19,6 @@ public class AnnotationMemberExtractor {
   public static final String ENABLE_SAFE_BUILDER = "enableSafeBuilder";
   public static final String BUILDER_NAME = "builderName";
   public static final String BUILDER_SET_METHOD_PREFIX = "builderSetMethodPrefix";
-  public static final String BASE_CLASS_NAME = "baseClassName";
-  public static final String ENABLE_BASE_CLASS = "enableBaseClass";
-  public static final String ENABLE_EQUALS_AND_HASH_CODE = "enableEqualsAndHashCode";
-  public static final String ENABLE_TO_STRING = "enableToString";
   public static final String ENABLE_WITHERS = "enableWithers";
   public static final String ENABLE_OPTIONAL_GETTERS = "enableOptionalGetters";
   public static final String ENABLE_MAPPERS = "enableMappers";

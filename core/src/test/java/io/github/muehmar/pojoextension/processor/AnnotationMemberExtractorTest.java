@@ -19,10 +19,6 @@ class AnnotationMemberExtractorTest {
     assertTrue(hasMethod(clazz, AnnotationMemberExtractor.ENABLE_SAFE_BUILDER));
     assertTrue(hasMethod(clazz, AnnotationMemberExtractor.BUILDER_NAME));
     assertTrue(hasMethod(clazz, AnnotationMemberExtractor.BUILDER_SET_METHOD_PREFIX));
-    assertTrue(hasMethod(clazz, AnnotationMemberExtractor.BASE_CLASS_NAME));
-    assertTrue(hasMethod(clazz, AnnotationMemberExtractor.ENABLE_BASE_CLASS));
-    assertTrue(hasMethod(clazz, AnnotationMemberExtractor.ENABLE_EQUALS_AND_HASH_CODE));
-    assertTrue(hasMethod(clazz, AnnotationMemberExtractor.ENABLE_TO_STRING));
     assertTrue(hasMethod(clazz, AnnotationMemberExtractor.ENABLE_WITHERS));
     assertTrue(hasMethod(clazz, AnnotationMemberExtractor.ENABLE_OPTIONAL_GETTERS));
     assertTrue(hasMethod(clazz, AnnotationMemberExtractor.ENABLE_MAPPERS));
