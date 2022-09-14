@@ -173,7 +173,7 @@ generation
 
 The first character of the field name is automatically converted to uppercase if a prefix is used.
 
-### Custom methods in SafeBuilder
+### Custom methods for fields in SafeBuilder
 
 It is possible define custom methods for the SafeBuilder for a specific field which can be used to populate the
 corresponding field when using the builder. One could define one or more methods which return an instance of the
@@ -247,6 +247,33 @@ static <T> List<T> singleItem(T item) {
 ```
 
 Other generic methods are not yet supported (it will lead currently to a compile error when used).
+
+### Custom build method
+
+A custom build method can be defined, which may return another type than the actual type of the class. A custom build
+method maps the actual build instance to another type and is called by the builder automatically. The following example
+returns a String instead of the `Customer` instance:
+
+```
+@SafeBuilder
+public class Customer {
+    ...
+    
+    @BuildMethod
+    String customBuildMethod(Customer customer) {
+        return customer.toString();
+    }
+}
+```
+
+```
+final String customerString = CustomerBuilder.create()
+                                .foo(1)
+                                .bar("Test")
+                                .build();
+```
+
+A custom build method must be statis and can be package-private.
 
 ### Method `withXX`
 
@@ -377,6 +404,7 @@ private final Optional<String> nickname;
 
 In case there is a field which is instantiated in the constructor and no argument is present, you can use the `@Ignore`
 annotation for this field:
+
 ```
 @SafeBuilder
 public class IgnoreFieldClass {
@@ -481,6 +509,9 @@ public @interface AllRequiredExtension {
 
 ## Change Log
 
+* Next
+    * Add custom build method (issue `#6`)
+    * Remove obsolete base class settings (issue `#8`)
 * 0.13.0 - Add `@Ignore` annotation
 * 0.12.0
     * Drop support for `equals/hashCode` and `toString` method
