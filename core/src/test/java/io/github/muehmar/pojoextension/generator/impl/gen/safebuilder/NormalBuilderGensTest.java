@@ -13,10 +13,12 @@ import io.github.muehmar.codegenerator.Generator;
 import io.github.muehmar.codegenerator.writer.Writer;
 import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.Pojos;
+import io.github.muehmar.pojoextension.generator.model.BuildMethod;
 import io.github.muehmar.pojoextension.generator.model.Name;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
 import io.github.muehmar.pojoextension.generator.model.PojoAndField;
 import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.model.type.Types;
 import org.junit.jupiter.api.Test;
 
 class NormalBuilderGensTest {
@@ -29,7 +31,11 @@ class NormalBuilderGensTest {
             .asString();
 
     assertEquals(
-        "public Customer build() {\n" + "  return new Customer(id, username, nickname);\n" + "}",
+        "public Customer build() {\n"
+            + "  final Customer instance =\n"
+            + "      new Customer(id, username, nickname);\n"
+            + "  return instance;\n"
+            + "}",
         output);
   }
 
@@ -43,7 +49,27 @@ class NormalBuilderGensTest {
 
     assertEquals(
         "public Customer<T, S> build() {\n"
-            + "  return new Customer<>(id, data, additionalData);\n"
+            + "  final Customer<T, S> instance =\n"
+            + "      new Customer<>(id, data, additionalData);\n"
+            + "  return instance;\n"
+            + "}",
+        output);
+  }
+
+  @Test
+  void buildMethod_when_calledWithGenericSampleAndBuildMethod_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = NormalBuilderGens.buildMethod();
+    final BuildMethod buildMethod =
+        new BuildMethod(Name.fromString("customBuildMethod"), Types.string());
+    final Pojo pojo = Pojos.genericSample().withBuildMethod(buildMethod);
+    final String output =
+        generator.generate(pojo, PojoSettings.defaultSettings(), Writer.createDefault()).asString();
+
+    assertEquals(
+        "public String build() {\n"
+            + "  final Customer<T, S> instance =\n"
+            + "      new Customer<>(id, data, additionalData);\n"
+            + "  return Customer.customBuildMethod(instance);\n"
             + "}",
         output);
   }
@@ -62,7 +88,9 @@ class NormalBuilderGensTest {
     assertTrue(writer.getRefs().exists(JAVA_UTIL_OPTIONAL::equals));
     assertEquals(
         "public Customer build() {\n"
-            + "  return new Customer(id, username, Optional.ofNullable(nickname));\n"
+            + "  final Customer instance =\n"
+            + "      new Customer(id, username, Optional.ofNullable(nickname));\n"
+            + "  return instance;\n"
             + "}",
         output);
   }
@@ -268,7 +296,9 @@ class NormalBuilderGensTest {
             + "  }\n"
             + "\n"
             + "  public Customer build() {\n"
-            + "    return new Customer(id, username, nickname);\n"
+            + "    final Customer instance =\n"
+            + "        new Customer(id, username, nickname);\n"
+            + "    return instance;\n"
             + "  }\n"
             + "}",
         output);
@@ -312,7 +342,9 @@ class NormalBuilderGensTest {
             + "  }\n"
             + "\n"
             + "  public Customer<T, S> build() {\n"
-            + "    return new Customer<>(id, data, additionalData);\n"
+            + "    final Customer<T, S> instance =\n"
+            + "        new Customer<>(id, data, additionalData);\n"
+            + "    return instance;\n"
             + "  }\n"
             + "}",
         output);

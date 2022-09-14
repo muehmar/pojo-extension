@@ -15,9 +15,11 @@ import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model.Buil
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model.BuilderFieldWithMethod;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model.IndexedField;
 import io.github.muehmar.pojoextension.generator.model.Argument;
+import io.github.muehmar.pojoextension.generator.model.BuildMethod;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
 import io.github.muehmar.pojoextension.generator.model.PojoField;
 import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
+import io.github.muehmar.pojoextension.generator.model.type.Type;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
@@ -111,10 +113,17 @@ public class SafeBuilderGens {
   }
 
   public static Generator<Pojo, PojoSettings> buildMethod() {
+    final Function<Pojo, String> createReturnType =
+        p ->
+            p.getBuildMethod()
+                .map(BuildMethod::getReturnType)
+                .map(Type::getTypeDeclaration)
+                .orElseGet(p::getNameWithTypeVariables)
+                .asString();
     return JavaGenerators.<Pojo, PojoSettings>methodGen()
         .modifiers(PUBLIC)
         .noGenericTypes()
-        .returnType(p -> p.getName().asString() + p.getTypeVariablesSection())
+        .returnType(createReturnType)
         .methodName("build")
         .noArguments()
         .content("return builder.build();")

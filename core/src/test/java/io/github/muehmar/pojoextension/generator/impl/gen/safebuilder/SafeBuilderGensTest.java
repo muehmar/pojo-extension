@@ -20,6 +20,7 @@ import io.github.muehmar.pojoextension.generator.PojoFields;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.model.BuilderField;
 import io.github.muehmar.pojoextension.generator.model.Argument;
+import io.github.muehmar.pojoextension.generator.model.BuildMethod;
 import io.github.muehmar.pojoextension.generator.model.FieldBuilder;
 import io.github.muehmar.pojoextension.generator.model.FieldBuilderMethod;
 import io.github.muehmar.pojoextension.generator.model.Name;
@@ -31,6 +32,31 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 class SafeBuilderGensTest {
+
+  @Test
+  void buildMethod_when_calledWithGenericSample_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = SafeBuilderGens.buildMethod();
+    final Writer writer =
+        generator.generate(
+            Pojos.genericSample(), PojoSettings.defaultSettings(), Writer.createDefault());
+    assertEquals(
+        "public Customer<T, S> build() {\n" + "  return builder.build();\n" + "}",
+        writer.asString());
+  }
+
+  @Test
+  void buildMethod_when_calledWithGenericSampleWithCustomBuildMethod_then_correctOutput() {
+    final Generator<Pojo, PojoSettings> generator = SafeBuilderGens.buildMethod();
+    final BuildMethod buildMethod =
+        new BuildMethod(Name.fromString("customBuildMethod"), Types.string());
+    final Writer writer =
+        generator.generate(
+            Pojos.genericSample().withBuildMethod(buildMethod),
+            PojoSettings.defaultSettings(),
+            Writer.createDefault());
+    assertEquals(
+        "public String build() {\n" + "  return builder.build();\n" + "}", writer.asString());
+  }
 
   @Test
   void fieldBuilderClass_when_generatorUsedWithRequiredField_then_correctOutput() {
