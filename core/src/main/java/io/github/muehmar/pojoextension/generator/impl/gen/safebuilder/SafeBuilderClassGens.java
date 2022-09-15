@@ -5,8 +5,10 @@ import static io.github.muehmar.codegenerator.java.JavaModifier.PRIVATE;
 import static io.github.muehmar.codegenerator.java.JavaModifier.PUBLIC;
 import static io.github.muehmar.codegenerator.java.JavaModifier.STATIC;
 
+import ch.bluecare.commons.data.PList;
 import io.github.muehmar.codegenerator.Generator;
 import io.github.muehmar.codegenerator.java.JavaGenerators;
+import io.github.muehmar.codegenerator.java.JavaModifier;
 import io.github.muehmar.pojoextension.generator.impl.gen.PackageGen;
 import io.github.muehmar.pojoextension.generator.impl.gen.RefsGen;
 import io.github.muehmar.pojoextension.generator.model.Generic;
@@ -23,12 +25,16 @@ public class SafeBuilderClassGens {
         .clazz()
         .topLevel()
         .packageGen(new PackageGen())
-        .modifiers(PUBLIC, FINAL)
+        .modifierList((pojo, settings) -> createClassModifiers(settings))
         .className((p, s) -> s.builderName(p).asString())
         .noSuperClass()
         .noInterfaces()
         .content(content())
         .build();
+  }
+
+  private static PList<JavaModifier> createClassModifiers(PojoSettings settings) {
+    return PList.fromOptional(settings.getBuilderAccessLevel().asJavaModifier()).cons(FINAL);
   }
 
   private static Generator<Pojo, PojoSettings> content() {

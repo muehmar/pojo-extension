@@ -8,9 +8,12 @@ import io.github.muehmar.codegenerator.Generator;
 import io.github.muehmar.codegenerator.writer.Writer;
 import io.github.muehmar.pojoextension.generator.Pojos;
 import io.github.muehmar.pojoextension.generator.impl.gen.Refs;
+import io.github.muehmar.pojoextension.generator.model.ClassAccessLevelModifier;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
 import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 class SafeBuilderClassGensTest {
 
@@ -25,17 +28,28 @@ class SafeBuilderClassGensTest {
         writer.asString());
   }
 
-  @Test
-  void safeBuilderClass_when_calledWithSamplePojo_then_correctOutput() {
+  @ParameterizedTest
+  @EnumSource(ClassAccessLevelModifier.class)
+  void safeBuilderClass_when_calledWithSamplePojo_then_correctOutput(
+      ClassAccessLevelModifier accessLevelModifier) {
     final Generator<Pojo, PojoSettings> gen = SafeBuilderClassGens.safeBuilderClass();
 
-    final Writer writer = gen.generate(Pojos.sample(), defaultSettings(), Writer.createDefault());
+    final Writer writer =
+        gen.generate(
+            Pojos.sample(),
+            defaultSettings().withBuilderAccessLevel(accessLevelModifier),
+            Writer.createDefault());
+
+    final String accessModifier =
+        accessLevelModifier.equals(ClassAccessLevelModifier.PUBLIC) ? "public " : "";
+
     assertEquals(
         "package io.github.muehmar;\n"
             + "\n"
             + "import java.util.Optional;\n"
             + "\n"
-            + "public final class CustomerBuilder {\n"
+            + accessModifier
+            + "final class CustomerBuilder {\n"
             + "\n"
             + "  private CustomerBuilder() {\n"
             + "  }\n"
