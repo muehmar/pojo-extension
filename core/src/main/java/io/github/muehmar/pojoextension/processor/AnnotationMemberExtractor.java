@@ -17,6 +17,7 @@ public class AnnotationMemberExtractor {
   public static final String OPTIONAL_DETECTION = "optionalDetection";
   public static final String EXTENSION_NAME = "extensionName";
   public static final String ENABLE_SAFE_BUILDER = "enableSafeBuilder";
+  public static final String PACKAGE_PRIVATE_BUILDER = "packagePrivateBuilder";
   public static final String BUILDER_NAME = "builderName";
   public static final String BUILDER_SET_METHOD_PREFIX = "builderSetMethodPrefix";
   public static final String ENABLE_WITHERS = "enableWithers";
@@ -49,6 +50,11 @@ public class AnnotationMemberExtractor {
   public static Optional<Boolean> getEnableSafeBuilder(AnnotationMirror annotationMirror) {
     return getMember(
         annotationMirror, new ExtensionMember<>(ENABLE_SAFE_BUILDER, Boolean.class::cast));
+  }
+
+  public static Optional<Boolean> getPackagePrivateBuilder(AnnotationMirror annotationMirror) {
+    return getMember(
+        annotationMirror, new ExtensionMember<>(PACKAGE_PRIVATE_BUILDER, Boolean.class::cast));
   }
 
   public static Optional<String> getBuilderName(AnnotationMirror annotationMirror) {

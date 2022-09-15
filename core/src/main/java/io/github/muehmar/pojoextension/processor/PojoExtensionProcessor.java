@@ -13,6 +13,7 @@ import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtracto
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getEnableWithers;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getExtensionName;
 import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getOptionalDetection;
+import static io.github.muehmar.pojoextension.processor.AnnotationMemberExtractor.getPackagePrivateBuilder;
 
 import ch.bluecare.commons.data.PList;
 import com.google.auto.service.AutoService;
@@ -27,6 +28,7 @@ import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.generator.impl.gen.extension.ExtensionGens;
 import io.github.muehmar.pojoextension.generator.impl.gen.safebuilder.SafeBuilderClassGens;
 import io.github.muehmar.pojoextension.generator.model.BuildMethod;
+import io.github.muehmar.pojoextension.generator.model.ClassAccessLevelModifier;
 import io.github.muehmar.pojoextension.generator.model.Constructor;
 import io.github.muehmar.pojoextension.generator.model.FieldBuilder;
 import io.github.muehmar.pojoextension.generator.model.Generic;
@@ -254,6 +256,10 @@ public class PojoExtensionProcessor extends AbstractProcessor {
             getEnableSafeBuilder(annotation).map(Ability::fromBoolean),
             PojoSettings::withSafeBuilderAbility)
         .mapIfPresent(
+            getPackagePrivateBuilder(annotation)
+                .map(this::classAccessLevelModifierFromIsPackagePrivateFlag),
+            PojoSettings::withBuilderAccessLevel)
+        .mapIfPresent(
             getEnableWithers(annotation).map(Ability::fromBoolean),
             PojoSettings::withWithersAbility)
         .mapIfPresent(
@@ -262,6 +268,13 @@ public class PojoExtensionProcessor extends AbstractProcessor {
         .mapIfPresent(
             getEnableMappers(annotation).map(Ability::fromBoolean),
             PojoSettings::withMappersAbility);
+  }
+
+  private ClassAccessLevelModifier classAccessLevelModifierFromIsPackagePrivateFlag(
+      boolean isPackagePrivate) {
+    return isPackagePrivate
+        ? ClassAccessLevelModifier.PACKAGE_PRIVATE
+        : ClassAccessLevelModifier.PUBLIC;
   }
 
   private void outputPojo(Pojo pojo, PojoSettings pojoSettings) {

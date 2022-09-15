@@ -7,6 +7,7 @@ import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
 import io.github.muehmar.pojoextension.annotations.SafeBuilder;
+import io.github.muehmar.pojoextension.generator.model.ClassAccessLevelModifier;
 import io.github.muehmar.pojoextension.generator.model.Name;
 import io.github.muehmar.pojoextension.generator.model.settings.ExtensionUsage;
 import io.github.muehmar.pojoextension.generator.model.settings.PojoSettings;
@@ -170,6 +171,27 @@ class PojoExtensionProcessorSettingsTest extends BaseExtensionProcessorTest {
         PojoSettings.defaultSettings()
             .withExtensionUsage(ExtensionUsage.STATIC)
             .withBuilderName(Name.fromString("CustomBuilderName")),
+        pojoAndSettings.getSettings());
+  }
+
+  @Test
+  void run_when_overridePackagePrivateBuilder_then_correctSettings() {
+    final Name className = randomClassName();
+
+    final String classString =
+        TestPojoComposer.ofPackage(PACKAGE)
+            .withImport(PojoExtension.class)
+            .annotationBooleanParam(PojoExtension.class, "packagePrivateBuilder", true)
+            .className(className)
+            .create();
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    assertEquals(
+        PojoSettings.defaultSettings()
+            .withExtensionUsage(ExtensionUsage.STATIC)
+            .withBuilderAccessLevel(ClassAccessLevelModifier.PACKAGE_PRIVATE),
         pojoAndSettings.getSettings());
   }
 

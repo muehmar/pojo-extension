@@ -6,6 +6,7 @@ import static java.util.Optional.empty;
 import ch.bluecare.commons.data.PList;
 import io.github.muehmar.pojoextension.annotations.OptionalDetection;
 import io.github.muehmar.pojoextension.annotations.PojoExtension;
+import io.github.muehmar.pojoextension.generator.model.ClassAccessLevelModifier;
 import io.github.muehmar.pojoextension.generator.model.Name;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
 import java.util.Optional;
@@ -26,6 +27,7 @@ public class PojoSettings implements PojoSettingsExtension {
   Ability withersAbility;
   Ability optionalGettersAbility;
   Ability mappersAbility;
+  ClassAccessLevelModifier builderAccessLevel;
 
   public static PojoSettings defaultSettings() {
     return PojoSettingsBuilder.create()
@@ -36,6 +38,7 @@ public class PojoSettings implements PojoSettingsExtension {
         .withersAbility(Ability.ENABLED)
         .optionalGettersAbility(Ability.ENABLED)
         .mappersAbility(Ability.ENABLED)
+        .builderAccessLevel(ClassAccessLevelModifier.PUBLIC)
         .andAllOptionals()
         .extensionName(Optional.of(CLASS_NAME_PLACEHOLDER.append(EXTENSION_IFC_POSTFIX)))
         .builderName(Optional.of(CLASS_NAME_PLACEHOLDER.append(BUILDER_CLASS_POSTFIX)))
