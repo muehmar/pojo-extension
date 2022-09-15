@@ -512,6 +512,7 @@ public @interface AllRequiredExtension {
 * Next
     * Add custom build method (issue `#6`)
     * Remove obsolete base class settings (issue `#8`)
+    * Add option for package-private builder class (issue `#2`)
 * 0.13.0 - Add `@Ignore` annotation
 * 0.12.0
     * Drop support for `equals/hashCode` and `toString` method
