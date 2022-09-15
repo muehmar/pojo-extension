@@ -509,7 +509,7 @@ public @interface AllRequiredExtension {
 
 ## Change Log
 
-* Next
+* 0.14.0
     * Add custom build method (issue `#6`)
     * Remove obsolete base class settings (issue `#8`)
     * Add option for package-private builder class (issue `#2`)
