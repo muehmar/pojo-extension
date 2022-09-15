@@ -30,6 +30,9 @@ public @interface RecordExtension {
   /** Prefix which is used for the setter methods of the builder. */
   String builderSetMethodPrefix() default "";
 
+  /** Generates a package-private builder which is only accessible from within the same package. */
+  boolean packagePrivateBuilder() default false;
+
   /** Enables or disables the generation of the with methods. */
   boolean enableWithers() default true;
 
