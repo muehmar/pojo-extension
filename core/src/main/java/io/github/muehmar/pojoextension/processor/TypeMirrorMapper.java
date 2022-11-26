@@ -9,12 +9,15 @@ import static javax.lang.model.type.TypeKind.INT;
 import static javax.lang.model.type.TypeKind.LONG;
 import static javax.lang.model.type.TypeKind.SHORT;
 import static javax.lang.model.type.TypeKind.VOID;
+import static javax.lang.model.type.TypeKind.WILDCARD;
 
 import ch.bluecare.commons.data.PList;
+import io.github.muehmar.pojoextension.exception.PojoExtensionException;
 import io.github.muehmar.pojoextension.generator.model.Name;
 import io.github.muehmar.pojoextension.generator.model.type.ClassnameParser;
 import io.github.muehmar.pojoextension.generator.model.type.Type;
 import io.github.muehmar.pojoextension.generator.model.type.Types;
+import io.github.muehmar.pojoextension.generator.model.type.WildcardType;
 import java.util.function.Function;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
@@ -33,7 +36,7 @@ public class TypeMirrorMapper {
         .map(mapper -> mapper.apply(typeMirror))
         .orElseThrow(
             () ->
-                new IllegalArgumentException(
+                new PojoExtensionException(
                     "TypeKind "
                         + typeMirror.getKind()
                         + " not supported for TypeMirror "
@@ -53,7 +56,8 @@ public class TypeMirrorMapper {
         Mapper.forFixMapping(LONG, Types.primitiveLong()),
         Mapper.forFixMapping(SHORT, Types.primitiveShort()),
         Mapper.forFixMapping(BYTE, Types.primitiveByte()),
-        Mapper.forFixMapping(VOID, Types.voidType()));
+        Mapper.forFixMapping(VOID, Types.voidType()),
+        Mapper.forFixMapping(WILDCARD, Type.fromSpecificType(WildcardType.create())));
   }
 
   private static Mapper declaredTypeMapper() {

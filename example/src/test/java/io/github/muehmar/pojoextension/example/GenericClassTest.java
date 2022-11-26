@@ -12,10 +12,11 @@ class GenericClassTest {
     data.add("Hello World!");
 
     final GenericClass<Data, String> genericClass =
-        GenericClassBuilder.<Data, String>create().prop1("prop1").data(data).build();
+        GenericClassBuilder.<Data, String>create().prop1("prop1").data(data).code(Code.A1).build();
 
     assertEquals("Hello World!", genericClass.getData().get(0));
     assertEquals("prop1", genericClass.getProp1());
+    assertEquals(Code.A1, genericClass.getCode());
   }
 
   @Test
@@ -48,8 +49,14 @@ class GenericClassTest {
     return GenericClassBuilder.<Data, String>create()
         .prop1("prop1")
         .data(data)
+        .code(Code.A2)
         .andAllOptionals()
         .additionalData("additionalData")
         .build();
+  }
+
+  private enum Code {
+    A1,
+    A2
   }
 }
