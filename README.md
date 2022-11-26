@@ -36,8 +36,8 @@ annotation processor.In gradle this would look like the following:
 
 ```
 dependencies {
-    compileOnly "io.github.muehmar:pojo-extension-annotations:0.13.0"
-    annotationProcessor "io.github.muehmar:pojo-extension:0.13.0"
+    compileOnly "io.github.muehmar:pojo-extension-annotations:0.15.0"
+    annotationProcessor "io.github.muehmar:pojo-extension:0.15.0"
 }
 ```
 
@@ -509,6 +509,8 @@ public @interface AllRequiredExtension {
 
 ## Change Log
 
+* 0.15.0
+    * Add support for wildcards (issue `#13`) 
 * 0.14.0
     * Add custom build method (issue `#6`)
     * Remove obsolete base class settings (issue `#8`)
