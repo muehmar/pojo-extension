@@ -27,6 +27,7 @@ import io.github.muehmar.pojoextension.generator.model.PojoBuilder;
 import io.github.muehmar.pojoextension.generator.model.PojoField;
 import io.github.muehmar.pojoextension.generator.model.type.Type;
 import io.github.muehmar.pojoextension.generator.model.type.Types;
+import io.github.muehmar.pojoextension.generator.model.type.WildcardType;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -493,6 +494,55 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
                 PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
             .getters(PList.empty())
             .generics(PList.single(generic))
+            .fieldBuilders(PList.empty())
+            .build();
+
+    assertEquals(expected, pojoAndSettings.getPojo());
+  }
+
+  @Test
+  void run_when_wildcardTypeVariable_then_correctWildcard() {
+    final Name className = randomClassName();
+
+    final String classString =
+        "package "
+            + PACKAGE
+            + ";\n"
+            + "import io.github.muehmar.pojoextension.annotations.PojoExtension;\n"
+            + "@PojoExtension\n"
+            + "public class "
+            + className
+            + " {\n"
+            + "  private final Enum<?> code;\n"
+            + "\n"
+            + "  public "
+            + className
+            + "(Enum<?> code) {\n"
+            + "    this.code = code;\n"
+            + "  }\n"
+            + "}";
+
+    final PojoAndSettings pojoAndSettings =
+        runAnnotationProcessor(qualifiedClassName(className), classString);
+
+    final Type type =
+        Types.declaredType(
+            Name.fromString("Enum"),
+            Optional.of(PackageName.javaLang()),
+            PList.single(Type.fromSpecificType(WildcardType.create())));
+
+    final PojoField f1 = new PojoField(Name.fromString("code"), type, REQUIRED);
+    final PList<PojoField> fields = PList.of(f1);
+
+    final Pojo expected =
+        PojoBuilder.create()
+            .name(className)
+            .pkg(PACKAGE)
+            .fields(fields)
+            .constructors(
+                PList.single(new Constructor(className, fields.map(PojoFields::toArgument))))
+            .getters(PList.empty())
+            .generics(PList.empty())
             .fieldBuilders(PList.empty())
             .build();
 

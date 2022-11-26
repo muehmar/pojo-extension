@@ -7,9 +7,12 @@ public enum TypeKind {
   /** Array */
   ARRAY,
 
-  /** One of the eight primitves */
+  /** One of the eight primitives */
   PRIMITIVE,
 
   /** Type variable */
-  TYPE_VAR
+  TYPE_VAR,
+
+  /** Type wildcard */
+  WILDCARD
 }

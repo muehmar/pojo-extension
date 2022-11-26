@@ -12,4 +12,5 @@ public class GenericClass<T extends List<String> & Comparable<T>, S>
   String prop1;
   T data;
   Optional<S> additionalData;
+  Enum<?> code;
 }
