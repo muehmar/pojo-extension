@@ -8,4 +8,10 @@ import lombok.Value;
 public class BuilderClass {
   String prop1;
   String prop2;
+  OuterClass.InnerClass prop3;
+
+  @Value
+  static class StringProp {
+    String value;
+  }
 }

@@ -13,9 +13,20 @@ class DeclaredTypeTest {
   void getTypeDeclaration_when_javaMap_then_correctNameReturned() {
     final DeclaredType declaredType =
         DeclaredType.of(
-            Name.fromString("Map"),
+            Classname.fromFullClassName("Map"),
             PackageName.javaUtil(),
             PList.of(Types.string(), Types.integer()));
     assertEquals("Map<String,Integer>", declaredType.getTypeDeclaration().asString());
+  }
+
+  @Test
+  void getImports_when_nestedClass_then_correctImportWithOuterClass() {
+    final DeclaredType declaredType =
+        DeclaredType.of(
+            Classname.fromFullClassName("Customer.Address"),
+            PackageName.fromString("io.github.muehmar"),
+            PList.empty());
+    assertEquals(
+        PList.single(Name.fromString("io.github.muehmar.Customer")), declaredType.getImports());
   }
 }

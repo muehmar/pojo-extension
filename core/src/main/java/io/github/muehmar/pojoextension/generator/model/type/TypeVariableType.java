@@ -32,7 +32,7 @@ public class TypeVariableType implements TypeVariableTypeExtension, SpecificType
 
   @Override
   public Name getTypeDeclaration() {
-    return getName();
+    return this.getName();
   }
 
   @Override

@@ -42,19 +42,20 @@ public class Types {
 
   public static Type voidType() {
     return new Type(
-        DeclaredType.fromNameAndPackage(Name.fromString("Void"), PackageName.javaLang()));
+        DeclaredType.fromNameAndPackage(
+            Classname.fromFullClassName("Void"), PackageName.javaLang()));
   }
 
   public static Type string() {
-    return declaredType(Name.fromString("String"), PackageName.javaLang());
+    return declaredType(Classname.fromFullClassName("String"), PackageName.javaLang());
   }
 
   public static Type integer() {
-    return declaredType(Name.fromString("Integer"), PackageName.javaLang());
+    return declaredType(Classname.fromFullClassName("Integer"), PackageName.javaLang());
   }
 
   public static Type booleanClass() {
-    return declaredType(Name.fromString("Boolean"), PackageName.javaLang());
+    return declaredType(Classname.fromFullClassName("Boolean"), PackageName.javaLang());
   }
 
   public static Type optional(Type value) {
@@ -63,12 +64,14 @@ public class Types {
 
   public static Type map(Type key, Type value) {
     return new Type(
-        DeclaredType.of(Name.fromString("Map"), PackageName.javaUtil(), PList.of(key, value)));
+        DeclaredType.of(
+            Classname.fromFullClassName("Map"), PackageName.javaUtil(), PList.of(key, value)));
   }
 
   public static Type list(Type value) {
     return new Type(
-        DeclaredType.of(Name.fromString("List"), PackageName.javaUtil(), PList.single(value)));
+        DeclaredType.of(
+            Classname.fromFullClassName("List"), PackageName.javaUtil(), PList.single(value)));
   }
 
   public static Type array(Type itemType) {
@@ -81,19 +84,20 @@ public class Types {
 
   public static Type comparable(Type objType) {
     return new Type(
-        DeclaredType.of(Name.fromString("Comparable"), PackageName.javaLang(), objType));
+        DeclaredType.of(
+            Classname.fromFullClassName("Comparable"), PackageName.javaLang(), objType));
   }
 
   public static Type typeVariable(Name name) {
     return new Type(TypeVariableType.ofName(name));
   }
 
-  public static Type declaredType(Name name, PackageName pkg) {
+  public static Type declaredType(Classname name, PackageName pkg) {
     return new Type(DeclaredType.fromNameAndPackage(name, pkg));
   }
 
   public static Type declaredType(
-      Name name, Optional<PackageName> pkg, PList<Type> typeParameters) {
+      Classname name, Optional<PackageName> pkg, PList<Type> typeParameters) {
     return new Type(DeclaredType.of(name, pkg, typeParameters));
   }
 }

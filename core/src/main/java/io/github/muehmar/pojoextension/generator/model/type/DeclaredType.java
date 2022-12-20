@@ -10,29 +10,30 @@ import lombok.Value;
 @Value
 @PojoExtension
 public class DeclaredType implements DeclaredTypeExtension, SpecificType {
-  Name name;
+  Classname classname;
   Optional<PackageName> pkg;
   PList<Type> typeParameters;
 
-  public static DeclaredType fromNameAndPackage(Name name, PackageName packageName) {
+  public static DeclaredType fromNameAndPackage(Classname name, PackageName packageName) {
     return new DeclaredType(name, Optional.of(packageName), PList.empty());
   }
 
-  public static DeclaredType of(Name name, PackageName packageName, Type singeTypeParameter) {
+  public static DeclaredType of(Classname name, PackageName packageName, Type singeTypeParameter) {
     return new DeclaredType(name, Optional.of(packageName), PList.single(singeTypeParameter));
   }
 
-  public static DeclaredType of(Name name, PackageName packageName, PList<Type> typeParameters) {
+  public static DeclaredType of(
+      Classname name, PackageName packageName, PList<Type> typeParameters) {
     return new DeclaredType(name, Optional.of(packageName), typeParameters);
   }
 
   public static DeclaredType of(
-      Name name, Optional<PackageName> packageName, PList<Type> typeParameters) {
+      Classname name, Optional<PackageName> packageName, PList<Type> typeParameters) {
     return new DeclaredType(name, packageName, typeParameters);
   }
 
   public static DeclaredType optional(Type value) {
-    return of(Name.fromString("Optional"), PackageName.javaUtil(), value);
+    return of(Classname.fromFullClassName("Optional"), PackageName.javaUtil(), value);
   }
 
   @Override
@@ -47,18 +48,17 @@ public class DeclaredType implements DeclaredTypeExtension, SpecificType {
             .map(Type::getTypeDeclaration)
             .reduce((s1, s2) -> s1.append(",").append(s2))
             .map(s -> s.prefix("<").append(">"));
-    return name.append(formattedTypeParameters.map(Name::asString).orElse(""));
+    return classname.asName().append(formattedTypeParameters.map(Name::asString).orElse(""));
   }
 
   @Override
   public PList<Name> getImports() {
-    return PList.fromOptional(pkg.map(p -> name.prefix(p + ".")))
+    return PList.fromOptional(pkg.map(p -> classname.getOuterClassname().prefix(p + ".")))
         .concat(typeParameters.flatMap(Type::getImports));
   }
 
-  @Override
   public Name getName() {
-    return name;
+    return classname.asName();
   }
 
   public boolean isOptional() {
