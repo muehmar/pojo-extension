@@ -25,6 +25,7 @@ import io.github.muehmar.pojoextension.generator.model.PackageName;
 import io.github.muehmar.pojoextension.generator.model.Pojo;
 import io.github.muehmar.pojoextension.generator.model.PojoBuilder;
 import io.github.muehmar.pojoextension.generator.model.PojoField;
+import io.github.muehmar.pojoextension.generator.model.type.Classname;
 import io.github.muehmar.pojoextension.generator.model.type.Type;
 import io.github.muehmar.pojoextension.generator.model.type.Types;
 import io.github.muehmar.pojoextension.generator.model.type.WildcardType;
@@ -527,7 +528,7 @@ class PojoExtensionProcessorTest extends BaseExtensionProcessorTest {
 
     final Type type =
         Types.declaredType(
-            Name.fromString("Enum"),
+            Classname.fromFullClassName("Enum"),
             Optional.of(PackageName.javaLang()),
             PList.single(Type.fromSpecificType(WildcardType.create())));
 

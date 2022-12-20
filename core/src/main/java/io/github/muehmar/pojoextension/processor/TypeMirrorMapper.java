@@ -70,7 +70,7 @@ public class TypeMirrorMapper {
           final PList<Type> typeParameters =
               PList.fromIter(declaredType.getTypeArguments()).map(TypeMirrorMapper::map);
           return Types.declaredType(
-              nameAndPackage.getName(), nameAndPackage.getPkg(), typeParameters);
+              nameAndPackage.getClassname(), nameAndPackage.getPkg(), typeParameters);
         });
   }
 

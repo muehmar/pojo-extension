@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.github.muehmar.pojoextension.generator.model.Name;
 import io.github.muehmar.pojoextension.generator.model.PackageName;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,7 @@ class ClassnameParserTest {
     final Optional<ClassnameParser.NameAndPackage> parse =
         ClassnameParser.parse("java.lang.String");
     assertTrue(parse.isPresent());
-    assertEquals(Name.fromString("String"), parse.get().getName());
+    assertEquals(Classname.fromFullClassName("String"), parse.get().getClassname());
     assertEquals(Optional.of(PackageName.javaLang()), parse.get().getPkg());
   }
 
@@ -27,7 +26,7 @@ class ClassnameParserTest {
     final Optional<ClassnameParser.NameAndPackage> parse =
         ClassnameParser.parse("java.util.Optional<java.lang.String>");
     assertTrue(parse.isPresent());
-    assertEquals(Name.fromString("Optional"), parse.get().getName());
+    assertEquals(Classname.fromFullClassName("Optional"), parse.get().getClassname());
     assertEquals(Optional.of(PackageName.javaUtil()), parse.get().getPkg());
   }
 
@@ -36,7 +35,7 @@ class ClassnameParserTest {
     final Optional<ClassnameParser.NameAndPackage> parse =
         ClassnameParser.parse("io.github.muehmar.Customer.Address");
     assertTrue(parse.isPresent());
-    assertEquals(Name.fromString("Customer.Address"), parse.get().getName());
+    assertEquals(Classname.fromFullClassName("Customer.Address"), parse.get().getClassname());
     assertEquals(Optional.of(PackageName.fromString("io.github.muehmar")), parse.get().getPkg());
   }
 

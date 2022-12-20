@@ -127,7 +127,8 @@ public class PojoExtensionProcessor extends AbstractProcessor {
                         "Class " + fullClassName + " does not have a package."));
 
     final Pojo pojo =
-        extractPojo(classElement, pojoSettings, nameAndPackage.getName(), classPackage);
+        extractPojo(
+            classElement, pojoSettings, nameAndPackage.getClassname().asName(), classPackage);
 
     outputPojo(pojo, deviateExtensionUsage(classElement, pojoSettings, pojo));
   }
