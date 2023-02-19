@@ -3,6 +3,9 @@
 
 # Pojo Extension
 
+IMPORTANT NOTE: This project is no longer under active development. The extension class is not considered as helpful
+enough by the author. The generated builder is developed and released by the fork [Pojo-Builder](https://github.com/muehmar/pojo-builder).
+
 Generates advanced boilerplate code for your immutable data classes or Java 16 records.
 
 This annotation processor extends your data classes or records with simple, well known boilerplate code but also with
